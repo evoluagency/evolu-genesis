@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="80 80 540 540" fill="none">
+  <defs>
+    <linearGradient id="gradPurple" x1="120" y1="120" x2="540" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A88CFF"/>
+      <stop offset="0.55" stop-color="#6E4FF6"/>
+      <stop offset="1" stop-color="#3413D8"/>
+    </linearGradient>
+    <linearGradient id="glossLight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.18"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+    <linearGradient id="glossDark" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E08A9" stop-opacity="0.25"/><stop offset="1" stop-color="#1E08A9" stop-opacity="0"/></linearGradient>
+  </defs>
+  <g transform="translate(0,10)">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M180 120C146.863 120 120 146.863 120 180V500C120 533.137 146.863 560 180 560H500C533.137 560 560 533.137 560 500V180C560 146.863 533.137 120 500 120H180ZM220 220H460V460H220V220ZM125 515L515 125H595L205 515H125Z" fill="url(#gradPurple)"/>
+    <polygon points="120,180 180,120 220,160 160,220" fill="url(#glossLight)"/>
+    <polygon points="460,220 560,120 560,240 500,300" fill="url(#glossDark)"/>
+    <polygon points="220,460 320,560 200,560 140,500" fill="url(#glossDark)"/>
+    <polygon points="460,460 520,520 500,560 400,460" fill="url(#glossLight)"/>
+    <line x1="223" y1="462" x2="458" y2="227" stroke="#8665F8" stroke-width="7" stroke-linecap="round" opacity="0.95"/>
+  </g>
+</svg>

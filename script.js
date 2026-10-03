@@ -1,243 +1,178 @@
-const companies = [
-  {
-    id: 'acme',
-    name: 'ACME Indústria Ltda.',
-    trade: 'ACME Industrial',
-    regime: 'Lucro Real',
-    activity: 'Fabricação de máquinas industriais',
-    revenue: 'R$ 1.386.373',
-    purchases: 'R$ 1.214.916',
-    pending: 7,
-    insights: 12,
+const I18N = {
+  pt: {
+    introEyebrow:'PUBLIC PRODUCT EXPERIENCE', introTitle:'Dados não são contexto. Contexto não é conclusão.', introBody:'Genesis demonstra como a EVOLU conecta operação, reconciliação, contexto empresarial e julgamento humano antes de recomendar uma ação.', startGuided:'Começar experiência guiada', exploreFreely:'Explorar livremente', syntheticData:'DADOS SINTÉTICOS', noAdvice:'SEM ORIENTAÇÃO TRIBUTÁRIA REAL',
+    p1Title:'Observe',p1Body:'A Platform organiza fatos operacionais.',p2Title:'Reconcilie',p2Body:'Fontes divergentes viram casos explícitos.',p3Title:'Contextualize',p3Body:'A Intelligence pergunta somente o que falta.',p4Title:'Aja',p4Body:'O usuário escolhe executar ou aprender como fazer.', sandboxEyebrow:'INTERACTIVE SANDBOX',sandboxTitle:'Uma operação contábil-fiscal, com contexto vivo.',deterministic:'Simulação determinística · sem LLM',tenantType:'Contabilidade & Assessoria',navOverview:'Visão geral',navFiscal:'FISCAL',navDocuments:'Documentos',navAccounting:'CONTÁBIL',navEntries:'Lançamentos',navIntelligence:'INTELIGÊNCIA OPERACIONAL',navReconciliation:'Reconciliação',navContext:'Context Ledger',selectedCompany:'EMPRESA SELECIONADA',companyLabel:'Empresa',periodLabel:'Competência',chatPlaceholder:'Pergunte à EVOLU…',demoFooter:'Simulação pública · respostas e ações são pré-configuradas',skipTour:'Sair do guia',continueTour:'Continuar',conceptEyebrow:'THE PRODUCT THESIS',conceptTitle:'A EVOLU não tenta adivinhar. Ela torna a incerteza explícita.',known:'O QUE SABEMOS',divergent:'O QUE DIVERGE',missing:'O QUE FALTA',decision:'O QUE FOI DECIDIDO'
   },
-  {
-    id: 'nova',
-    name: 'Nova Comércio Ltda.',
-    trade: 'Nova Comércio',
-    regime: 'Simples Nacional',
-    activity: 'Comércio atacadista de peças e componentes',
-    revenue: 'R$ 642.118',
-    purchases: 'R$ 401.502',
-    pending: 4,
-    insights: 5,
-  },
-  {
-    id: 'orion',
-    name: 'Orion Serviços Empresariais Ltda.',
-    trade: 'Orion Serviços',
-    regime: 'Lucro Presumido',
-    activity: 'Serviços administrativos e consultivos',
-    revenue: 'R$ 318.400',
-    purchases: 'R$ 74.260',
-    pending: 2,
-    insights: 3,
-  },
-];
-
-const purposes = [
-  'Production component',
-  'Machine maintenance',
-  'Resale',
-  'Fixed asset',
-  'Internal consumption',
-];
-
-const confidenceMap = {
-  'Production component': 91,
-  'Machine maintenance': 82,
-  'Resale': 88,
-  'Fixed asset': 78,
-  'Internal consumption': 69,
+  en: {
+    introEyebrow:'PUBLIC PRODUCT EXPERIENCE', introTitle:'Data is not context. Context is not a conclusion.', introBody:'Genesis shows how EVOLU connects operations, reconciliation, company context and human judgment before recommending an action.', startGuided:'Start guided experience', exploreFreely:'Explore freely', syntheticData:'SYNTHETIC DATA', noAdvice:'NO REAL TAX ADVICE',
+    p1Title:'Observe',p1Body:'Platform organizes operational facts.',p2Title:'Reconcile',p2Body:'Divergent sources become explicit cases.',p3Title:'Contextualize',p3Body:'Intelligence asks only for what is missing.',p4Title:'Act',p4Body:'The user chooses to execute or learn how to do it.', sandboxEyebrow:'INTERACTIVE SANDBOX',sandboxTitle:'An accounting and tax operation with living context.',deterministic:'Deterministic simulation · no LLM',tenantType:'Accounting & Advisory',navOverview:'Overview',navFiscal:'TAX',navDocuments:'Documents',navAccounting:'ACCOUNTING',navEntries:'Entries',navIntelligence:'OPERATIONAL INTELLIGENCE',navReconciliation:'Reconciliation',navContext:'Context Ledger',selectedCompany:'SELECTED COMPANY',companyLabel:'Company',periodLabel:'Period',chatPlaceholder:'Ask EVOLU…',demoFooter:'Public simulation · responses and actions are preconfigured',skipTour:'Exit guide',continueTour:'Continue',conceptEyebrow:'THE PRODUCT THESIS',conceptTitle:'EVOLU does not try to guess. It makes uncertainty explicit.',known:'WHAT WE KNOW',divergent:'WHAT DIVERGES',missing:'WHAT IS MISSING',decision:'WHAT WAS DECIDED'
+  }
 };
 
-let state = {
-  mode: 'guided',
-  companyId: 'acme',
-  purpose: null,
-  architectureOpen: false,
+const DATA = {
+  invoices:[
+    {id:'NF-e 48392',supplier:'ABC Rolamentos Ltda.',date:'18/09/2026',value:'R$ 1.420,00',item:'Rolamento 6305',ncm:'8482.10.90',cfop:'5102',icms:'R$ 182,40',purpose:null,status:'Context gap'},
+    {id:'NF-e 48377',supplier:'MetalSul Componentes',date:'17/09/2026',value:'R$ 8.930,00',item:'Chapa de aço',ncm:'7208.51.00',cfop:'5102',icms:'R$ 1.142,00',purpose:'Produção',status:'Validado'},
+    {id:'NF-e 48291',supplier:'Office Max Ltda.',date:'11/09/2026',value:'R$ 980,00',item:'Materiais de escritório',ncm:'4820.10.00',cfop:'5102',icms:'R$ 0,00',purpose:'Administrativo',status:'Validado'}
+  ],
+  entries:[
+    {id:'CTB-9284',date:'02/09/2026',supplier:'ABC Consultoria Ltda.',history:'Serviços mensais',value:'R$ 4.850,00',account:'Outros',costCenter:'Não definido',status:'Revisão'},
+    {id:'CTB-9278',date:'01/09/2026',supplier:'Energia SP',history:'Energia unidade industrial',value:'R$ 12.546,52',account:'Energia elétrica',costCenter:'Produção',status:'Classificado'}
+  ],
+  sources:[
+    {name:'SIEG / XML',value:'R$ 641.366,84',note:'Documentos fiscais importados'},
+    {name:'Domínio / Razão',value:'R$ 646.112,18',note:'Escrituração contábil'},
+    {name:'Domínio / Faturamento',value:'R$ 513.674,48',note:'Demonstrativo agregado'},
+    {name:'Banco',value:'R$ 638.920,11',note:'Movimentação conciliável'}
+  ]
 };
 
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => [...document.querySelectorAll(selector)];
+const state = {
+  lang: localStorage.getItem('genesis_lang') || 'pt',
+  theme: localStorage.getItem('genesis_theme') || 'dark',
+  page:'dashboard', selectedInvoice:'NF-e 48392', selectedEntry:'CTB-9284',
+  assistantOpen:false, conversation:[], conversationNode:null, collected:{}, guided:false, tourIndex:0,
+  ledger:[
+    {fact:'Regime tributário',value:'Lucro Real',source:'Cadastro da empresa',status:'verified'},
+    {fact:'Atividade principal',value:'Fabricação de máquinas industriais',source:'Cadastro + validação',status:'verified'},
+    {fact:'Finalidade · Rolamento 6305',value:'Não definida',source:'—',status:'missing'}
+  ]
+};
 
-function currentCompany() {
-  return companies.find((company) => company.id === state.companyId) || companies[0];
+const $ = s => document.querySelector(s); const $$ = s => [...document.querySelectorAll(s)];
+const t = key => I18N[state.lang][key] || key;
+
+const PAGE_META = {
+  dashboard:{pt:['Visão geral','NEXUS / ACME Industrial'],en:['Overview','NEXUS / ACME Industrial']},
+  'fiscal-documents':{pt:['Documentos fiscais','Fiscal / Entradas'],en:['Tax documents','Tax / Purchases']},
+  'fiscal-detail':{pt:['Detalhe da NF-e','Fiscal / Entradas / NF-e 48392'],en:['Invoice detail','Tax / Purchases / NF-e 48392']},
+  'accounting-entries':{pt:['Lançamentos contábeis','Contábil / Lançamentos'],en:['Accounting entries','Accounting / Entries']},
+  'accounting-detail':{pt:['Detalhe do lançamento','Contábil / Lançamentos / CTB-9284'],en:['Entry detail','Accounting / Entries / CTB-9284']},
+  reconciliation:{pt:['Reconciliação','Inteligência operacional / Reconciliação'],en:['Reconciliation','Operational intelligence / Reconciliation']},
+  'context-ledger':{pt:['Context Ledger','Inteligência operacional / Context Ledger'],en:['Context Ledger','Operational intelligence / Context Ledger']}
+};
+
+const QUICK = {
+  dashboard:{pt:['O que exige minha atenção hoje?','Quais dados estão incompletos?','Onde existem divergências?'],en:['What needs my attention today?','Which data is incomplete?','Where are the divergences?']},
+  'fiscal-documents':{pt:['Quais notas precisam de contexto?','Existe alguma inconsistência?','O que ainda não foi conciliado?'],en:['Which invoices need context?','Is there any inconsistency?','What is still unreconciled?']},
+  'fiscal-detail':{pt:['Essa compra pode gerar crédito?','O que está faltando nesta operação?','Como essa operação afeta a contabilidade?'],en:['Can this purchase generate a tax benefit?','What is missing in this transaction?','How does this affect accounting?']},
+  'accounting-entries':{pt:['Quais lançamentos precisam de revisão?','Onde a classificação parece genérica?','Há divergência com documentos fiscais?'],en:['Which entries need review?','Where is classification too generic?','Is there divergence with tax documents?']},
+  'accounting-detail':{pt:['Como devo classificar este lançamento?','Esse custo é operacional ou administrativo?','Mostre o que ainda falta para concluir.'],en:['How should I classify this entry?','Is this operational or administrative?','Show what is still missing to conclude.']},
+  reconciliation:{pt:['Onde está a divergência?','O que falta para conciliar?','Crie uma pendência para o cliente.'],en:['Where is the divergence?','What is missing to reconcile?','Create a client follow-up.']},
+  'context-ledger':{pt:['Quais fatos estão sem evidência?','O que foi informado pelo cliente?','Quais contextos estão desatualizados?'],en:['Which facts lack evidence?','What came from the client?','Which contexts are outdated?']}
+};
+
+const TOUR = [
+  {target:'[data-page="fiscal-documents"]',title:{pt:'Entre no Fiscal',en:'Open Tax'},body:{pt:'A demo começa pela operação, não pelo chat. Abra os documentos fiscais da ACME.',en:'The demo starts from the operation, not the chat. Open ACME tax documents.'},action:'click'},
+  {target:'[data-invoice="NF-e 48392"]',title:{pt:'Abra a operação com contexto incompleto',en:'Open the transaction with missing context'},body:{pt:'Esta nota possui dados estruturados, mas ainda não sabemos a finalidade econômica do item.',en:'This invoice has structured data, but the economic purpose of the item is still unknown.'},action:'click'},
+  {target:'#intelligenceFab',title:{pt:'Chame a Intelligence no contexto atual',en:'Open Intelligence in the current context'},body:{pt:'A EVOLU recebe empresa, área, tela e objeto selecionado. Você não precisa reexplicar o caso.',en:'EVOLU receives company, area, screen and selected object. You do not need to restate the case.'},action:'click'},
+  {target:'#suggestions button',title:{pt:'Use uma pergunta contextual',en:'Use a contextual question'},body:{pt:'Clique em “O que está faltando nesta operação?” e depois envie. A Intelligence vai perguntar apenas pelo fato ausente.',en:'Choose “What is missing in this transaction?” and send it. Intelligence will ask only for the missing fact.'},action:'manual'},
+  {target:'#economicPurpose',title:{pt:'Complete o contexto manualmente',en:'Complete the context manually'},body:{pt:'Quando a Intelligence oferecer “Quero fazer manualmente”, este campo será destacado. O usuário aprende enquanto executa.',en:'When Intelligence offers “I want to do it manually”, this field is highlighted. The user learns while acting.'},action:'manual'}
+];
+
+function applyI18n(){
+  document.documentElement.lang = state.lang === 'pt' ? 'pt-BR' : 'en';
+  $$('[data-i18n]').forEach(el=>el.textContent=t(el.dataset.i18n));
+  $$('[data-i18n-placeholder]').forEach(el=>el.placeholder=t(el.dataset.i18nPlaceholder));
+  $$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===state.lang));
+  renderPage(); renderAssistantContext(); renderSuggestions();
+}
+function applyTheme(){
+  const resolved = state.theme==='system' ? (matchMedia('(prefers-color-scheme: light)').matches?'light':'dark') : state.theme;
+  document.documentElement.dataset.theme=resolved;
+  $$('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===state.theme));
 }
 
-function renderCompanies() {
-  const grid = $('#companyGrid');
-  grid.innerHTML = companies.map((company) => `
-    <button class="company-card ${company.id === state.companyId ? 'active' : ''}" data-company="${company.id}">
-      <span>${company.regime}</span>
-      <strong>${company.trade}</strong>
-      <small>${company.activity}</small>
-      <i>${company.pending} pending · ${company.insights} insights</i>
-    </button>
-  `).join('');
-
-  $$('[data-company]').forEach((button) => {
-    button.addEventListener('click', () => {
-      state.companyId = button.dataset.company;
-      state.purpose = null;
-      renderAll();
-    });
-  });
+function renderPage(){
+  const meta = PAGE_META[state.page][state.lang]; $('#pageTitle').textContent=meta[0]; $('#breadcrumb').textContent=meta[1];
+  $$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===state.page));
+  const w=$('#workspace');
+  if(state.page==='dashboard') w.innerHTML=renderDashboard();
+  if(state.page==='fiscal-documents') w.innerHTML=renderFiscalList();
+  if(state.page==='fiscal-detail') w.innerHTML=renderFiscalDetail();
+  if(state.page==='accounting-entries') w.innerHTML=renderAccountingList();
+  if(state.page==='accounting-detail') w.innerHTML=renderAccountingDetail();
+  if(state.page==='reconciliation') w.innerHTML=renderReconciliation();
+  if(state.page==='context-ledger') w.innerHTML=renderLedger();
+  bindWorkspace(); renderAssistantContext(); renderSuggestions();
+  const alertPages=['fiscal-detail','reconciliation']; $('#intelligenceFab .fab-pulse').hidden=!alertPages.includes(state.page);
 }
+function renderDashboard(){return `<div class="grid metrics"><div class="metric"><span>${state.lang==='pt'?'Empresas':'Companies'}</span><strong>84</strong><small>${state.lang==='pt'?'carteira simulada':'simulated portfolio'}</small></div><div class="metric"><span>${state.lang==='pt'?'Context gaps':'Context gaps'}</span><strong>13</strong><small>${state.lang==='pt'?'exigem validação humana':'require human validation'}</small></div><div class="metric"><span>${state.lang==='pt'?'Divergências':'Divergences'}</span><strong>7</strong><small>${state.lang==='pt'?'entre fontes':'across sources'}</small></div><div class="metric"><span>${state.lang==='pt'?'Casos revisados':'Reviewed cases'}</span><strong>327</strong><small>${state.lang==='pt'?'trilha de decisão':'decision trail'}</small></div></div><div class="workspace-grid"><section class="card"><div class="card-head"><div><span class="tiny-label">${state.lang==='pt'?'ATENÇÃO':'ATTENTION'}</span><h4>${state.lang==='pt'?'Casos que precisam de contexto':'Cases that need context'}</h4></div></div><table class="table"><thead><tr><th>${state.lang==='pt'?'Área':'Area'}</th><th>${state.lang==='pt'?'Objeto':'Object'}</th><th>${state.lang==='pt'?'Lacuna':'Gap'}</th></tr></thead><tbody><tr data-page-jump="fiscal-detail"><td>Fiscal</td><td>NF-e 48392</td><td><span class="pill warn">${state.lang==='pt'?'Finalidade econômica':'Economic purpose'}</span></td></tr><tr data-page-jump="accounting-detail"><td>${state.lang==='pt'?'Contábil':'Accounting'}</td><td>CTB-9284</td><td><span class="pill warn">${state.lang==='pt'?'Classificação genérica':'Generic classification'}</span></td></tr></tbody></table></section><aside class="card"><span class="tiny-label">CONTEXT LAYER</span><h4>${state.lang==='pt'?'O que a EVOLU sabe agora':'What EVOLU knows now'}</h4><div class="source-grid"><div class="source-card"><span>${state.lang==='pt'?'Empresa':'Company'}</span><b>ACME Industrial</b><small>${state.lang==='pt'?'Cadastro validado':'Validated registry'}</small></div><div class="source-card"><span>${state.lang==='pt'?'Regime':'Tax regime'}</span><b>Lucro Real</b><small>${state.lang==='pt'?'Referência 09/2026':'Reference 09/2026'}</small></div><div class="source-card"><span>${state.lang==='pt'?'Atividade':'Activity'}</span><b>${state.lang==='pt'?'Máquinas industriais':'Industrial machinery'}</b><small>${state.lang==='pt'?'Contexto empresarial':'Company context'}</small></div></div></aside></div>`}
+function renderFiscalList(){return `<section class="card"><div class="card-head"><div><span class="tiny-label">FISCAL · ENTRADAS</span><h4>${state.lang==='pt'?'Documentos de setembro':'September documents'}</h4></div><small>${state.lang==='pt'?'Clique em uma nota para abrir':'Open an invoice'}</small></div><table class="table"><thead><tr><th>Documento</th><th>${state.lang==='pt'?'Fornecedor':'Supplier'}</th><th>${state.lang==='pt'?'Valor':'Value'}</th><th>Status</th></tr></thead><tbody>${DATA.invoices.map(i=>`<tr data-invoice="${i.id}"><td><strong>${i.id}</strong><br><small>${i.date}</small></td><td>${i.supplier}</td><td>${i.value}</td><td><span class="pill ${i.status==='Validado'?'good':'warn'}">${i.status==='Validado'?(state.lang==='pt'?'Validado':'Validated'):'Context gap'}</span></td></tr>`).join('')}</tbody></table></section>`}
+function purposeOptions(){const opts=[['','Não definido','Not defined'],['Produção','Produção','Production'],['Manutenção','Manutenção de máquina','Machine maintenance'],['Revenda','Revenda','Resale'],['Ativo','Ativo imobilizado','Fixed asset'],['Consumo','Consumo interno','Internal use'],['Administrativo','Administrativo','Administrative']];return opts.map(([v,pt,en])=>`<option value="${v}">${state.lang==='pt'?pt:en}</option>`).join('')}
+function renderFiscalDetail(){const i=DATA.invoices[0]; const purpose=state.collected.purpose||i.purpose||'';return `<div class="workspace-grid"><section class="card"><div class="card-head"><div><span class="tiny-label">${i.id}</span><h4>${i.item}</h4></div><span class="pill warn">${purpose?(state.lang==='pt'?'Contexto atualizado':'Context updated'):'Context gap'}</span></div><div class="details-grid"><div class="field"><span>${state.lang==='pt'?'Fornecedor':'Supplier'}</span><strong>${i.supplier}</strong></div><div class="field"><span>NCM</span><strong>${i.ncm}</strong></div><div class="field"><span>CFOP</span><strong>${i.cfop}</strong></div><div class="field"><span>ICMS ${state.lang==='pt'?'destacado':'highlighted'}</span><strong>${i.icms}</strong></div><div class="field"><span>${state.lang==='pt'?'Empresa':'Company'}</span><strong>ACME Industrial</strong></div><div class="field" id="purposeField"><span>${state.lang==='pt'?'Finalidade econômica':'Economic purpose'}</span><select id="economicPurpose">${purposeOptions()}</select></div></div><div class="actions-row"><button class="inline-btn" id="savePurpose">${state.lang==='pt'?'Salvar contexto':'Save context'}</button><button class="inline-btn" data-jump="context-ledger">${state.lang==='pt'?'Ver Context Ledger':'View Context Ledger'}</button></div></section><aside class="card"><span class="tiny-label">WHY CONTEXT MATTERS</span><h4>${state.lang==='pt'?'O XML descreve a operação. Não descreve sozinho a função econômica.':'The XML describes the transaction. It does not, by itself, describe economic purpose.'}</h4><div class="context-gap"><strong>${state.lang==='pt'?'Fato ausente':'Missing fact'}</strong><p>${state.lang==='pt'?'Como este rolamento é usado pela ACME? Produção, manutenção, revenda, ativo ou consumo?':'How is this bearing used by ACME? Production, maintenance, resale, fixed asset or internal use?'}</p></div></aside></div>`}
+function renderAccountingList(){return `<section class="card"><div class="card-head"><div><span class="tiny-label">CONTÁBIL</span><h4>${state.lang==='pt'?'Lançamentos de setembro':'September entries'}</h4></div></div><table class="table"><thead><tr><th>ID</th><th>${state.lang==='pt'?'Histórico':'Description'}</th><th>${state.lang==='pt'?'Conta':'Account'}</th><th>Status</th></tr></thead><tbody>${DATA.entries.map(e=>`<tr data-entry="${e.id}"><td>${e.id}</td><td>${e.history}<br><small>${e.supplier}</small></td><td>${e.account}</td><td><span class="pill ${e.status==='Classificado'?'good':'warn'}">${e.status==='Classificado'?(state.lang==='pt'?'Classificado':'Classified'):(state.lang==='pt'?'Revisão':'Review')}</span></td></tr>`).join('')}</tbody></table></section>`}
+function renderAccountingDetail(){const e=DATA.entries[0]; const account=state.collected.account||e.account; const cost=state.collected.costCenter||e.costCenter;return `<div class="workspace-grid"><section class="card"><div class="card-head"><div><span class="tiny-label">${e.id}</span><h4>${e.history}</h4></div><span class="pill warn">${state.lang==='pt'?'Revisão':'Review'}</span></div><div class="details-grid"><div class="field"><span>${state.lang==='pt'?'Fornecedor':'Supplier'}</span><strong>${e.supplier}</strong></div><div class="field"><span>${state.lang==='pt'?'Valor':'Value'}</span><strong>${e.value}</strong></div><div class="field"><span>${state.lang==='pt'?'Conta atual':'Current account'}</span><strong>${account}</strong></div><div class="field"><span>${state.lang==='pt'?'Centro de custo':'Cost center'}</span><strong>${cost}</strong></div><div class="field"><span>${state.lang==='pt'?'Competência':'Period'}</span><strong>09/2026</strong></div><div class="field"><span>${state.lang==='pt'?'Documento associado':'Linked document'}</span><strong>NFS-e 2198</strong></div></div></section><aside class="card"><span class="tiny-label">ACCOUNTING CONTEXT</span><h4>${state.lang==='pt'?'“Outros” é uma classificação válida, mas pouco informativa.':'“Other” is valid, but low-information classification.'}</h4><div class="context-gap"><strong>${state.lang==='pt'?'Pergunta material':'Material question'}</strong><p>${state.lang==='pt'?'Esse serviço está ligado à produção ou à estrutura administrativa?':'Is this service linked to production or to the administrative structure?'}</p></div></aside></div>`}
+function renderReconciliation(){return `<div class="workspace-grid"><section class="card"><div class="card-head"><div><span class="tiny-label">RECONCILIATION CASE</span><h4>${state.lang==='pt'?'Receita / competência 09/2026':'Revenue / period 09/2026'}</h4></div><span class="pill warn">${state.lang==='pt'?'Divergência aberta':'Open divergence'}</span></div><div class="source-grid">${DATA.sources.map((s,idx)=>`<div class="source-card"><span>${s.name}</span><b class="${idx>0?'delta':''}">${s.value}</b><small>${s.note}</small></div>`).join('')}</div></section><aside class="card"><span class="tiny-label">OPEN QUESTION</span><h4>${state.lang==='pt'?'O número não é o problema. A origem da diferença é.':'The number is not the problem. The source of the difference is.'}</h4><div class="context-gap"><strong>${state.lang==='pt'?'Hipóteses em investigação':'Hypotheses under review'}</strong><p>${state.lang==='pt'?'Cancelamentos · acumuladores · documentos ausentes · competência · lançamentos manuais.':'Cancellations · accumulators · missing documents · period cut-off · manual entries.'}</p></div></aside></div>`}
+function renderLedger(){return `<section class="card"><div class="card-head"><div><span class="tiny-label">CONTEXT LEDGER</span><h4>${state.lang==='pt'?'Fatos, fontes e lacunas da ACME':'Facts, sources and gaps for ACME'}</h4></div><small>${state.lang==='pt'?'Conhecimento operacional revisável':'Reviewable operational knowledge'}</small></div><div class="ledger">${state.ledger.map(row=>`<div class="ledger-row"><div><span>${state.lang==='pt'?'Fato':'Fact'}</span><strong>${row.fact}</strong></div><div><span>${state.lang==='pt'?'Valor':'Value'}</span><strong>${row.value}</strong></div><div><span>${state.lang==='pt'?'Fonte':'Source'}</span><small>${row.source}</small></div><span class="pill ${row.status==='verified'?'good':'warn'}">${row.status==='verified'?(state.lang==='pt'?'Verificado':'Verified'):(state.lang==='pt'?'Ausente':'Missing')}</span></div>`).join('')}</div></section>`}
 
-function renderCompanySummary() {
-  const company = currentCompany();
-  $('#companyTitle').textContent = company.trade;
-  $('#companySummary').innerHTML = `
-    <div><span>Legal name</span><strong>${company.name}</strong></div>
-    <div><span>Tax regime</span><strong>${company.regime}</strong></div>
-    <div><span>Primary activity</span><strong>${company.activity}</strong></div>
-    <div><span>Revenue</span><strong>${company.revenue}</strong></div>
-    <div><span>Purchases</span><strong>${company.purchases}</strong></div>
-    <div><span>Open intelligence items</span><strong>${company.insights}</strong></div>
-  `;
-
-  $('#guidedStep').hidden = state.mode !== 'guided';
+function bindWorkspace(){
+  $$('[data-page-jump],[data-jump]').forEach(el=>el.addEventListener('click',()=>go(el.dataset.pageJump||el.dataset.jump)));
+  $$('[data-invoice]').forEach(el=>el.addEventListener('click',()=>{state.selectedInvoice=el.dataset.invoice;go('fiscal-detail')}));
+  $$('[data-entry]').forEach(el=>el.addEventListener('click',()=>{state.selectedEntry=el.dataset.entry;go('accounting-detail')}));
+  const p=$('#economicPurpose'); if(p){p.value=state.collected.purpose||'';p.addEventListener('change',()=>{state.collected.pendingPurpose=p.value})}
+  const save=$('#savePurpose'); if(save) save.addEventListener('click',()=>{const value=$('#economicPurpose').value;if(!value)return;updatePurpose(value,'manual')});
 }
+function go(page){state.page=page;state.conversation=[];state.conversationNode=null;renderPage(); if(state.assistantOpen) openAssistant(); if(state.guided) maybeAdvanceTour(page)}
 
-function renderTransaction() {
-  const company = currentCompany();
-  $('#transactionGrid').innerHTML = `
-    <div><span>Supplier</span><strong>ABC Rolamentos Ltda.</strong></div>
-    <div><span>NCM</span><strong>8482.10.90</strong></div>
-    <div><span>CFOP</span><strong>5102</strong></div>
-    <div><span>ICMS highlighted</span><strong>R$ 182,40</strong></div>
-    <div><span>Company</span><strong>${company.trade}</strong></div>
-    <div><span>Regime</span><strong>${company.regime}</strong></div>
-  `;
+function renderAssistantContext(){
+  const panel=$('#panelContext'); if(!panel)return; const meta=PAGE_META[state.page][state.lang]; panel.textContent=`ACME Industrial · ${meta[0]}`;
+  const context=$('#contextStrip'); if(context) context.innerHTML=`<span>ACME Industrial</span><span>${state.page.startsWith('fiscal')?'Fiscal':state.page.startsWith('accounting')?(state.lang==='pt'?'Contábil':'Accounting'):(state.lang==='pt'?'Operação':'Operation')}</span><span>09/2026</span>${state.page==='fiscal-detail'?'<span>NF-e 48392</span>':''}${state.page==='accounting-detail'?'<span>CTB-9284</span>':''}`;
 }
+function renderSuggestions(){const host=$('#suggestions'); if(!host)return;host.innerHTML=(QUICK[state.page]?.[state.lang]||[]).map(q=>`<button type="button" data-suggestion>${q}</button>`).join('');$$('[data-suggestion]').forEach(b=>b.addEventListener('click',()=>{$('#chatInput').value=b.textContent;$('#chatInput').focus()}))}
+function openAssistant(){state.assistantOpen=true;$('#intelligencePanel').hidden=false;$('#intelligenceFab').hidden=true;renderAssistantContext();renderConversation();renderSuggestions();if(!state.conversation.length){pushAssistant(state.lang==='pt'?'Estou acompanhando esta tela. Já tenho empresa, competência e objeto selecionado. Posso analisar o que está faltando sem você reexplicar o caso.':'I am following this screen. I already have the company, period and selected object. I can analyze what is missing without you restating the case.')}}
+function closeAssistant(){state.assistantOpen=false;$('#intelligencePanel').hidden=true;$('#intelligenceFab').hidden=false}
+function pushUser(text){state.conversation.push({role:'user',text});renderConversation()}
+function pushAssistant(text,choices=[]){state.conversation.push({role:'assistant',text,choices});renderConversation()}
+function renderConversation(){const host=$('#messages'); if(!host)return;host.innerHTML=state.conversation.map((m,i)=>`<div class="message ${m.role}">${escapeHtml(m.text)}${m.choices?.length?`<div class="choice-row">${m.choices.map(c=>`<button class="choice" data-choice-index="${i}" data-choice-value="${escapeAttr(c.value)}">${escapeHtml(c.label)}</button>`).join('')}</div>`:''}</div>`).join('');host.scrollTop=host.scrollHeight;$$('[data-choice-index]').forEach(b=>b.addEventListener('click',()=>handleChoice(b.dataset.choiceValue)))}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function escapeAttr(v){return escapeHtml(v)}
 
-function renderPurposeOptions() {
-  $('#purposeOptions').innerHTML = purposes.map((purpose) => `
-    <button class="option ${purpose === state.purpose ? 'active' : ''}" data-purpose="${purpose}">${purpose}</button>
-  `).join('');
-
-  $$('[data-purpose]').forEach((button) => {
-    button.addEventListener('click', () => {
-      state.purpose = button.dataset.purpose;
-      renderPurposeOptions();
-      renderTrace();
-      renderResult();
-      $('#contextStatus').textContent = 'Context resolved';
-      $('#contextStatus').classList.remove('warning');
-      $('#contextStatus').classList.add('context');
-    });
-  });
+function handleQuestion(text){
+  const q=text.toLowerCase(); pushUser(text);
+  if(state.page==='fiscal-detail' && (q.includes('crédito')||q.includes('credit')||q.includes('benefit'))){state.conversationNode='tax_scope';pushAssistant(state.lang==='pt'?'Depende do que você chama de “crédito”. Para evitar uma conclusão errada, qual perspectiva você quer analisar primeiro?':'It depends on what you mean by “credit”. To avoid a wrong conclusion, which perspective do you want to analyze first?',taxChoices());return}
+  if(state.page==='fiscal-detail' && (q.includes('faltando')||q.includes('missing'))){state.conversationNode='missing_context';pushAssistant(state.lang==='pt'?'O documento informa fornecedor, item, NCM, CFOP e tributos destacados. O fato material que ainda não está registrado é a finalidade econômica do rolamento na ACME. Quer que eu registre isso com você ou prefere preencher manualmente?':'The document gives supplier, item, NCM, CFOP and highlighted taxes. The material fact still missing is the economic purpose of the bearing at ACME. Do you want me to record it with you, or do you prefer to fill it manually?',actionChoices());return}
+  if(state.page==='fiscal-detail' && (q.includes('contabilidade')||q.includes('accounting'))){pushAssistant(state.lang==='pt'?'A mesma operação pode ter leituras diferentes. Na visão contábil, o ponto principal é a natureza econômica e a classificação do gasto; na visão fiscal, o tratamento depende do tributo e dos fatos aplicáveis. Posso abrir a visão contábil do caso.':'The same transaction can have different readings. In accounting, the key point is economic nature and classification; in tax, treatment depends on the tax and applicable facts. I can open the accounting view.',[{label:state.lang==='pt'?'Abrir visão contábil':'Open accounting view',value:'open_accounting'}]);return}
+  if(state.page==='accounting-detail' && (q.includes('classificar')||q.includes('classify'))){state.conversationNode='accounting_relation';pushAssistant(state.lang==='pt'?'Antes de sugerir uma conta, preciso entender a relação econômica do serviço. Ele está diretamente ligado à produção?':'Before suggesting an account, I need to understand the economic relationship of the service. Is it directly linked to production?',relationChoices());return}
+  if(state.page==='accounting-detail' && (q.includes('operacional')||q.includes('administr')||q.includes('operational'))){state.conversationNode='accounting_relation';pushAssistant(state.lang==='pt'?'Essa distinção não deveria ser inferida apenas pelo fornecedor. Onde esse serviço é efetivamente utilizado?':'That distinction should not be inferred from the supplier alone. Where is this service actually used?',relationChoices());return}
+  if(state.page==='reconciliation' && (q.includes('diverg')||q.includes('where'))){pushAssistant(state.lang==='pt'?'Há três números incompatíveis para a mesma competência. Antes de “escolher o certo”, a EVOLU trataria isso como caso de reconciliação: mapear documento de origem, critérios de competência, cancelamentos e lançamentos manuais. A divergência principal entre SIEG/XML e Razão é de R$ 4.745,34.':'There are three incompatible values for the same period. Before “choosing the right one”, EVOLU would treat this as a reconciliation case: map source documents, cut-off criteria, cancellations and manual entries. The main divergence between SIEG/XML and the ledger is R$ 4,745.34.',[{label:state.lang==='pt'?'O que falta para conciliar?':'What is missing to reconcile?',value:'recon_missing'},{label:state.lang==='pt'?'Criar pendência':'Create follow-up',value:'create_followup'}]);return}
+  if(state.page==='reconciliation' && (q.includes('pendência')||q.includes('follow-up'))){createFollowup();return}
+  if(state.page==='context-ledger'){pushAssistant(state.lang==='pt'?'O Context Ledger separa fato, valor, fonte e status. Hoje existe uma lacuna explícita: a finalidade do Rolamento 6305 ainda não foi confirmada.':'Context Ledger separates fact, value, source and status. There is one explicit gap: the purpose of Bearing 6305 has not yet been confirmed.');return}
+  pushAssistant(state.lang==='pt'?'Esta versão pública demonstra cenários controlados. Use uma das perguntas sugeridas nesta tela para experimentar o fluxo contextual.':'This public version demonstrates controlled scenarios. Use one of the suggested questions on this screen to experience the contextual flow.')
 }
-
-function renderTrace() {
-  const company = currentCompany();
-  const resolved = Boolean(state.purpose);
-  const steps = [
-    ['done', 'Reading document', 'Product, supplier and tax fields extracted'],
-    ['done', 'Loading Company Context', company.activity],
-    ['done', 'Checking known relationships', 'Historical use not found for this item'],
-    [resolved ? 'done' : 'current', 'Resolving economic purpose', state.purpose || 'Waiting for human context'],
-    [resolved ? 'done' : 'muted', 'Re-evaluating treatment', resolved ? 'Context incorporated into analysis' : 'Pending'],
-    [resolved ? 'done' : 'muted', 'Generating evidence', resolved ? 'Recommendation + uncertainty generated' : 'Pending'],
-  ];
-
-  $('#traceList').innerHTML = steps.map((step, index) => `
-    <li class="${step[0]}">
-      <b class="step">${index + 1}</b>
-      <div><strong>${step[1]}</strong><span>${step[2]}</span></div>
-    </li>
-  `).join('');
+function taxChoices(){return ['ICMS','IPI','PIS/COFINS','IRPJ/CSLL'].map(v=>({label:v,value:`tax:${v}`})).concat([{label:state.lang==='pt'?'Analisar todos':'Analyze all',value:'tax:all'}])}
+function actionChoices(){return [{label:state.lang==='pt'?'Faça por mim':'Do it for me',value:'auto_context'},{label:state.lang==='pt'?'Quero fazer manualmente':'I want to do it manually',value:'manual_context'},{label:state.lang==='pt'?'Por que isso importa?':'Why does this matter?',value:'why_context'}]}
+function relationChoices(){return [{label:state.lang==='pt'?'Sim, produção':'Yes, production',value:'relation:production'},{label:state.lang==='pt'?'Não, administrativo':'No, administrative',value:'relation:admin'},{label:state.lang==='pt'?'Não tenho certeza':'I am not sure',value:'relation:unknown'}]}
+function purposeChoices(){return [['Produção','Produção','Production component'],['Manutenção','Manutenção de máquina','Machine maintenance'],['Revenda','Revenda','Resale'],['Ativo','Ativo imobilizado','Fixed asset'],['Consumo','Consumo interno','Internal use']].map(([v,pt,en])=>({label:state.lang==='pt'?pt:en,value:`purpose:${v}`}))}
+function handleChoice(value){
+  if(value.startsWith('tax:')){const tax=value.split(':')[1];state.collected.tax=tax;if(tax==='IRPJ/CSLL'){pushAssistant(state.lang==='pt'?'Aqui eu mudaria a linguagem: em IRPJ/CSLL, muitas análises não tratam de “crédito” no mesmo sentido dos tributos indiretos. O foco passa a ser natureza, documentação, classificação e eventual efeito na apuração. Para esta demo, o próximo fato material é a finalidade econômica do gasto.':'Here I would change the language: for corporate income taxes, many analyses are not about a “credit” in the same sense as indirect taxes. The focus becomes nature, documentation, classification and potential impact on the tax calculation. In this demo, the next material fact is the economic purpose of the expense.',actionChoices());}else{pushAssistant((state.lang==='pt'?`Certo. Vou analisar a perspectiva de ${tax}. `:`Understood. I will analyze the ${tax} perspective. `)+(state.lang==='pt'?'Antes de qualquer conclusão, falta confirmar como este item é utilizado pela empresa.':'Before any conclusion, we still need to confirm how this item is used by the company.'),actionChoices())}return}
+  if(value==='why_context'){pushAssistant(state.lang==='pt'?'Porque documento fiscal, classificação contábil e tratamento tributário respondem perguntas diferentes. Sem saber a função econômica do item, a EVOLU registra incerteza em vez de transformar uma hipótese em fato.':'Because tax documents, accounting classification and tax treatment answer different questions. Without knowing the item’s economic function, EVOLU records uncertainty instead of turning a hypothesis into a fact.',actionChoices());return}
+  if(value==='auto_context'){pushAssistant(state.lang==='pt'?'Certo. Qual é a finalidade econômica do rolamento nesta empresa?':'Understood. What is the economic purpose of the bearing in this company?',purposeChoices());return}
+  if(value==='manual_context'){pushAssistant(state.lang==='pt'?'Vou sair do caminho e mostrar onde preencher. O campo ficará destacado; selecione a finalidade e salve.':'I will get out of the way and show you where to fill it in. The field will be highlighted; select the purpose and save.');closeAssistant();startManualSpotlight('purpose');return}
+  if(value.startsWith('purpose:')){updatePurpose(value.split(':')[1],'assistant');pushAssistant(state.lang==='pt'?'Contexto atualizado. Esse fato agora está registrado com origem “confirmação do usuário na demo”. A análise pode ser reavaliada sem perder a trilha de onde a informação veio.':'Context updated. This fact is now recorded with source “user confirmation in demo”. The analysis can be re-evaluated without losing provenance.',[{label:state.lang==='pt'?'Ver Context Ledger':'View Context Ledger',value:'open_ledger'},{label:state.lang==='pt'?'Analisar outro tributo':'Analyze another tax',value:'restart_tax'}]);return}
+  if(value==='open_ledger'){go('context-ledger');return} if(value==='restart_tax'){pushAssistant(state.lang==='pt'?'Qual perspectiva você quer analisar agora?':'Which perspective do you want to analyze now?',taxChoices());return}
+  if(value==='open_accounting'){go('accounting-detail');return}
+  if(value.startsWith('relation:')){const rel=value.split(':')[1]; if(rel==='unknown'){pushAssistant(state.lang==='pt'?'Sem problema. Em vez de pedir uma classificação técnica, posso decompor a pergunta: esse serviço é usado na fábrica, na manutenção, no escritório ou em outra área?':'No problem. Instead of asking for a technical classification, I can decompose the question: is this service used in the factory, maintenance, office or another area?',relationChoices());}else{state.collected.account=rel==='production'?'Serviços de terceiros produtivos':'Serviços de terceiros administrativos';state.collected.costCenter=rel==='production'?'Produção':'Administrativo';renderPage();pushAssistant(state.lang==='pt'?`Com esse contexto, a demo registrou a relação econômica como ${rel==='production'?'produção':'administrativa'}. Quer que eu aplique a classificação simulada ou prefere fazer manualmente?`:`With that context, the demo recorded the economic relationship as ${rel==='production'?'production':'administrative'}. Do you want me to apply the simulated classification or do it manually?`,[{label:state.lang==='pt'?'Aplicar na demo':'Apply in demo',value:'apply_accounting'},{label:state.lang==='pt'?'Mostrar como':'Show me how',value:'manual_accounting'}]);}return}
+  if(value==='apply_accounting'){pushAssistant(state.lang==='pt'?'Classificação simulada aplicada. A mudança permanece vinculada ao contexto usado na decisão, não apenas ao resultado final.':'Simulated classification applied. The change remains linked to the context used in the decision, not only to the final result.');return}
+  if(value==='manual_accounting'){pushAssistant(state.lang==='pt'?'Na versão completa, a Intelligence destacaria os campos “Conta” e “Centro de custo” em sequência e aguardaria cada ação do usuário.':'In the full version, Intelligence would highlight the “Account” and “Cost center” fields in sequence and wait for each user action.');return}
+  if(value==='recon_missing'){pushAssistant(state.lang==='pt'?'Precisamos provar a origem da diferença. Próximas verificações: cancelamentos, documentos fora da competência, acumuladores do Domínio e lançamentos manuais. Se nenhuma fonte resolver, o caso vira uma pergunta objetiva para o cliente ou para a equipe responsável.':'We need to prove the source of the difference. Next checks: cancellations, documents outside the period, Domínio accumulators and manual entries. If no source resolves it, the case becomes a precise question for the client or responsible team.',[{label:state.lang==='pt'?'Criar pendência':'Create follow-up',value:'create_followup'}]);return}
+  if(value==='create_followup'){createFollowup();return}
 }
+function createFollowup(){state.collected.followup=true;pushAssistant(state.lang==='pt'?'Pendência simulada criada: “Confirmar origem da diferença de R$ 4.745,34 entre SIEG/XML e Razão em 09/2026”. A pendência preserva empresa, competência, fontes comparadas e hipótese em aberto.':'Simulated follow-up created: “Confirm the source of the R$ 4,745.34 difference between SIEG/XML and the ledger for 09/2026”. The follow-up preserves company, period, compared sources and open hypothesis.')}
+function updatePurpose(value,source){state.collected.purpose=value;const row=state.ledger.find(r=>r.fact.includes('Rolamento'));row.value=value;row.source=source==='assistant'?'Confirmação via EVOLU Intelligence':'Preenchimento manual na Platform';row.status='verified';if(state.page==='fiscal-detail')renderPage();}
 
-function renderResult() {
-  const panel = $('#resultPanel');
-  if (!state.purpose) {
-    panel.hidden = true;
-    return;
-  }
+function startManualSpotlight(kind){if(kind!=='purpose')return;setTimeout(()=>{const target=$('#purposeField');if(!target)return;target.classList.add('tour-target');const overlay=$('#tourOverlay');overlay.hidden=false;$('#tourStep').textContent=state.lang==='pt'?'TUTORIAL MANUAL':'MANUAL TUTORIAL';$('#tourTitle').textContent=state.lang==='pt'?'Selecione a finalidade econômica':'Select the economic purpose';$('#tourBody').textContent=state.lang==='pt'?'Escolha uma opção no campo destacado. Depois clique em “Salvar contexto”.':'Choose an option in the highlighted field. Then click “Save context”.';positionTourCard(target);$('#tourNext').onclick=()=>{target.classList.remove('tour-target');overlay.hidden=true};},80)}
 
-  const confidence = confidenceMap[state.purpose];
-  panel.hidden = false;
-  panel.innerHTML = `
-    <span class="kicker">SIMULATED RESULT</span>
-    <h4>Context updated. Analysis re-evaluated.</h4>
-    <p>The declared economic purpose is now part of this synthetic Company Context and changes how the transaction is interpreted.</p>
-    <div class="result-grid">
-      <div><span>Purpose</span><strong>${state.purpose}</strong></div>
-      <div><span>Confidence</span><strong>${confidence}%</strong></div>
-      <div><span>Status</span><strong>Reviewable recommendation</strong></div>
-      <div><span>Decision authority</span><strong>Human validation</strong></div>
-    </div>
-    <div class="evidence">
-      <span>✓ product classification</span>
-      <span>✓ company activity</span>
-      <span>✓ declared economic purpose</span>
-      <span>✓ tax regime context</span>
-      <span>✓ document fields</span>
-    </div>
-    <div class="disclaimer">This demo does not calculate or grant tax credits. It demonstrates context acquisition, evidence and review.</div>
-  `;
-}
+function startTour(){state.guided=true;state.tourIndex=0;document.querySelector('#experience').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(showTourStep,550)}
+function showTourStep(){clearTourTarget();const item=TOUR[state.tourIndex];if(!item){finishTour();return}const target=$(item.target);if(!target){setTimeout(showTourStep,120);return}$('#tourOverlay').hidden=false;target.classList.add('tour-target');$('#tourStep').textContent=`${state.lang==='pt'?'PASSO':'STEP'} ${state.tourIndex+1} / ${TOUR.length}`;$('#tourTitle').textContent=item.title[state.lang];$('#tourBody').textContent=item.body[state.lang];positionTourCard(target);$('#tourNext').style.display=item.action==='manual'?'inline-flex':'none';if(item.action==='click'){const handler=()=>{target.removeEventListener('click',handler);advanceTour()};target.addEventListener('click',handler,{once:true})}else{$('#tourNext').onclick=advanceTour}}
+function positionTourCard(target){const shell=$('#osShell').getBoundingClientRect(),r=target.getBoundingClientRect(),card=$('#tourCard');const left=Math.min(Math.max(14,r.right-shell.left+16),shell.width-374);const top=Math.min(Math.max(14,r.top-shell.top),shell.height-210);card.style.left=`${left}px`;card.style.top=`${top}px`}
+function advanceTour(){clearTourTarget();state.tourIndex++;setTimeout(showTourStep,140)}function maybeAdvanceTour(){if(state.guided)setTimeout(showTourStep,140)}function clearTourTarget(){$$('.tour-target').forEach(e=>e.classList.remove('tour-target'))}function finishTour(){clearTourTarget();$('#tourOverlay').hidden=true;state.guided=false}
 
-function setView(view) {
-  const platformView = $('#platformView');
-  const intelligenceView = $('#intelligenceView');
-  const intelligence = view === 'intelligence';
-  platformView.hidden = intelligence;
-  intelligenceView.hidden = !intelligence;
+$$('[data-lang]').forEach(b=>b.addEventListener('click',()=>{state.lang=b.dataset.lang;localStorage.setItem('genesis_lang',state.lang);applyI18n()}));
+$$('[data-theme-choice]').forEach(b=>b.addEventListener('click',()=>{state.theme=b.dataset.themeChoice;localStorage.setItem('genesis_theme',state.theme);applyTheme()}));
+$$('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+$('#intelligenceFab').addEventListener('click',openAssistant);$('#closePanel').addEventListener('click',closeAssistant);$('#minimizePanel').addEventListener('click',closeAssistant);
+$('#composer').addEventListener('submit',e=>{e.preventDefault();const input=$('#chatInput'),text=input.value.trim();if(!text)return;input.value='';handleQuestion(text)});
+$('#startGuided').addEventListener('click',startTour);$('#startFree').addEventListener('click',()=>document.querySelector('#experience').scrollIntoView({behavior:'smooth',block:'start'}));
+$('#tourSkip').addEventListener('click',finishTour);
 
-  $$('.mode').forEach((button) => {
-    button.classList.toggle('active', button.dataset.mode === state.mode);
-  });
-}
-
-function setMode(mode) {
-  state.mode = mode;
-  setView(mode === 'intelligence' ? 'intelligence' : 'platform');
-  renderCompanySummary();
-  if (mode === 'intelligence') {
-    renderTransaction();
-    renderPurposeOptions();
-    renderTrace();
-    renderResult();
-  }
-}
-
-function reset() {
-  state = { mode: 'guided', companyId: 'acme', purpose: null, architectureOpen: false };
-  $('#contextStatus').textContent = 'Context required';
-  $('#contextStatus').classList.add('warning');
-  $('#contextStatus').classList.remove('context');
-  $('#miniArchitecture').hidden = true;
-  $('#toggleArchitecture').textContent = 'View reasoning architecture';
-  renderAll();
-}
-
-function renderAll() {
-  renderCompanies();
-  renderCompanySummary();
-  renderTransaction();
-  renderPurposeOptions();
-  renderTrace();
-  renderResult();
-  setView(state.mode === 'intelligence' ? 'intelligence' : 'platform');
-}
-
-$('#startDemo').addEventListener('click', () => {
-  document.querySelector('#demo').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  setMode('guided');
-});
-
-$$('.mode').forEach((button) => button.addEventListener('click', () => setMode(button.dataset.mode)));
-$('#openIntelligence').addEventListener('click', () => setMode('intelligence'));
-$('#backPlatform').addEventListener('click', () => setMode('platform'));
-$$('[data-open-intelligence]').forEach((button) => button.addEventListener('click', () => setMode('intelligence')));
-$('#restartTop').addEventListener('click', reset);
-
-$('#toggleArchitecture').addEventListener('click', () => {
-  state.architectureOpen = !state.architectureOpen;
-  $('#miniArchitecture').hidden = !state.architectureOpen;
-  $('#toggleArchitecture').textContent = state.architectureOpen ? 'Hide architecture' : 'View reasoning architecture';
-});
-
-renderAll();
+applyTheme();applyI18n();renderPage();
