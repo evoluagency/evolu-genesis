@@ -1,190 +1,154 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#08080b" />
-  <meta name="description" content="EVOLU Genesis — public interactive demonstration of EVOLU Platform + EVOLU Intelligence." />
-  <title>EVOLU Genesis</title>
+  <meta name="theme-color" content="#0b0d12" />
+  <meta name="description" content="EVOLU Genesis — a deterministic public simulation of contextual accounting and tax intelligence." />
+  <title>EVOLU Genesis · Context Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#top" aria-label="EVOLU Genesis">
-      <img src="evolu-logo.svg" alt="EVOLU" />
-      <span><strong>LAB</strong><small>Experiment 01 · Genesis</small></span>
-    </a>
-    <nav class="top-actions">
-      <a href="#architecture" class="button ghost">Architecture</a>
-      <button class="button ghost" id="restartTop">Restart</button>
-    </nav>
-  </header>
-
-  <main id="top">
-    <section class="hero section-pad">
-      <div class="eyebrow">PUBLIC INTERACTIVE DEMONSTRATION</div>
-      <h1>Uma contabilidade fictícia.<br><span>Uma Platform white-label.</span><br>Uma Intelligence orientada por contexto.</h1>
-      <p class="hero-copy">Genesis demonstra como uma assessoria contábil pode operar vários CNPJs sobre a EVOLU Platform e usar a EVOLU Intelligence para transformar dados operacionais em contexto, evidência e decisões revisáveis.</p>
-      <div class="hero-actions">
-        <button class="button primary" id="startDemo">Start experiment →</button>
-        <a href="#architecture" class="button secondary">Understand the architecture</a>
+  <div class="site-shell">
+    <header class="global-header">
+      <a class="brand" href="#intro" aria-label="EVOLU Genesis">
+        <img src="evolu-symbol.svg" alt="" />
+        <div><strong>EVOLU</strong><span>GENESIS · EXPERIMENT 01</span></div>
+      </a>
+      <div class="global-actions">
+        <div class="segmented" aria-label="Language">
+          <button data-lang="pt" class="active">PT</button>
+          <button data-lang="en">EN</button>
+        </div>
+        <div class="segmented" aria-label="Theme">
+          <button data-theme-choice="light" title="Light">☀</button>
+          <button data-theme-choice="dark" class="active" title="Dark">☾</button>
+          <button data-theme-choice="system" title="System">◐</button>
+        </div>
       </div>
-      <div class="hero-meta">
-        <span>NO LOGIN</span><span>SYNTHETIC DATA</span><span>NO REAL TAX ADVICE</span>
-      </div>
-    </section>
+    </header>
 
-    <section class="split-intro section-pad" id="about">
-      <article>
-        <div class="eyebrow">EVOLU PLATFORM</div>
-        <h2>The operating layer.</h2>
-        <p>Clientes, documentos, dados, operações, permissões e contexto empresarial organizados em uma infraestrutura white-label.</p>
-      </article>
-      <article>
-        <div class="eyebrow">EVOLU INTELLIGENCE</div>
-        <h2>The intelligence layer.</h2>
-        <p>Contexto da empresa, regras, conhecimento, skills, ferramentas e modelos combinados para produzir análises explicáveis e revisáveis.</p>
-      </article>
-    </section>
+    <main>
+      <section id="intro" class="intro">
+        <div class="intro-copy">
+          <span class="eyebrow" data-i18n="introEyebrow">PUBLIC PRODUCT EXPERIENCE</span>
+          <h1 data-i18n="introTitle">Dados não são contexto. Contexto não é conclusão.</h1>
+          <p data-i18n="introBody">Genesis demonstra como a EVOLU conecta operação, reconciliação, contexto empresarial e julgamento humano antes de recomendar uma ação.</p>
+          <div class="intro-actions">
+            <button id="startGuided" class="primary" data-i18n="startGuided">Começar experiência guiada</button>
+            <button id="startFree" class="secondary" data-i18n="exploreFreely">Explorar livremente</button>
+          </div>
+          <div class="intro-meta">
+            <span>~ 4 MIN</span><span data-i18n="syntheticData">DADOS SINTÉTICOS</span><span data-i18n="noAdvice">SEM ORIENTAÇÃO TRIBUTÁRIA REAL</span>
+          </div>
+        </div>
+        <div class="intro-principles" aria-label="How Genesis works">
+          <article><b>01</b><strong data-i18n="p1Title">Observe</strong><span data-i18n="p1Body">A Platform organiza fatos operacionais.</span></article>
+          <article><b>02</b><strong data-i18n="p2Title">Reconcilie</strong><span data-i18n="p2Body">Fontes divergentes viram casos explícitos.</span></article>
+          <article><b>03</b><strong data-i18n="p3Title">Contextualize</strong><span data-i18n="p3Body">A Intelligence pergunta somente o que falta.</span></article>
+          <article><b>04</b><strong data-i18n="p4Title">Aja</strong><span data-i18n="p4Body">O usuário escolhe executar ou aprender como fazer.</span></article>
+        </div>
+      </section>
 
-    <section class="demo section-pad" id="demo">
-      <div class="section-heading">
+      <section id="experience" class="experience" aria-label="Genesis experience">
+        <div class="experience-head">
+          <div>
+            <span class="eyebrow" data-i18n="sandboxEyebrow">INTERACTIVE SANDBOX</span>
+            <h2 data-i18n="sandboxTitle">Uma operação contábil-fiscal, com contexto vivo.</h2>
+          </div>
+          <div class="experience-status"><span class="status-dot"></span><span data-i18n="deterministic">Simulação determinística · sem LLM</span></div>
+        </div>
+
+        <div class="os-shell" id="osShell">
+          <aside class="os-sidebar">
+            <div class="tenant-brand">
+              <div class="tenant-mark">N</div>
+              <div><strong>NEXUS</strong><span data-i18n="tenantType">Contabilidade & Assessoria</span></div>
+            </div>
+            <small>powered by EVOLU</small>
+            <nav id="appNav">
+              <button data-page="dashboard" class="active"><span>⌂</span><b data-i18n="navOverview">Visão geral</b></button>
+              <div class="nav-group"><em data-i18n="navFiscal">FISCAL</em>
+                <button data-page="fiscal-documents"><span>▤</span><b data-i18n="navDocuments">Documentos</b></button>
+              </div>
+              <div class="nav-group"><em data-i18n="navAccounting">CONTÁBIL</em>
+                <button data-page="accounting-entries"><span>≣</span><b data-i18n="navEntries">Lançamentos</b></button>
+              </div>
+              <div class="nav-group"><em data-i18n="navIntelligence">INTELIGÊNCIA OPERACIONAL</em>
+                <button data-page="reconciliation"><span>⇄</span><b data-i18n="navReconciliation">Reconciliação</b></button>
+                <button data-page="context-ledger"><span>◫</span><b data-i18n="navContext">Context Ledger</b></button>
+              </div>
+            </nav>
+            <div class="sidebar-foot">
+              <span class="tiny-label" data-i18n="selectedCompany">EMPRESA SELECIONADA</span>
+              <strong>ACME Industrial</strong>
+              <small>Lucro Real · SP</small>
+            </div>
+          </aside>
+
+          <section class="os-main">
+            <header class="os-topbar">
+              <div>
+                <span class="breadcrumb" id="breadcrumb">NEXUS / ACME Industrial</span>
+                <h3 id="pageTitle">Visão geral</h3>
+              </div>
+              <div class="top-context">
+                <span><b data-i18n="companyLabel">Empresa</b> ACME Industrial</span>
+                <span><b data-i18n="periodLabel">Competência</b> 09/2026</span>
+              </div>
+            </header>
+
+            <div id="workspace" class="workspace"></div>
+          </section>
+
+          <button id="intelligenceFab" class="intelligence-fab" aria-label="Open EVOLU Intelligence">
+            <img src="evolu-symbol.svg" alt="" />
+            <span class="fab-pulse" hidden></span>
+          </button>
+
+          <aside id="intelligencePanel" class="intelligence-panel" aria-live="polite" hidden>
+            <header>
+              <div class="intelligence-brand"><img src="evolu-symbol.svg" alt="" /><div><strong>EVOLU Intelligence</strong><span id="panelContext">ACME Industrial</span></div></div>
+              <div class="panel-actions"><button id="minimizePanel" title="Minimize">—</button><button id="closePanel" title="Close">×</button></div>
+            </header>
+            <div id="contextStrip" class="context-strip"></div>
+            <div id="messages" class="messages"></div>
+            <div id="suggestions" class="suggestions"></div>
+            <form id="composer" class="composer">
+              <textarea id="chatInput" rows="2" data-i18n-placeholder="chatPlaceholder" placeholder="Pergunte à EVOLU…"></textarea>
+              <button type="submit" class="send">→</button>
+            </form>
+            <footer><span data-i18n="demoFooter">Simulação pública · respostas e ações são pré-configuradas</span></footer>
+          </aside>
+
+          <div id="tourOverlay" class="tour-overlay" hidden>
+            <div id="tourCard" class="tour-card">
+              <span id="tourStep" class="tour-step"></span>
+              <h4 id="tourTitle"></h4>
+              <p id="tourBody"></p>
+              <div class="tour-actions"><button id="tourSkip" class="ghost" data-i18n="skipTour">Sair do guia</button><button id="tourNext" class="primary small" data-i18n="continueTour">Continuar</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="concept">
         <div>
-          <div class="eyebrow">EXPERIMENT 01 · GENESIS</div>
-          <h2>Entre em uma operação white-label.</h2>
-          <p>NEXUS é uma contabilidade fictícia criada para demonstrar como uma assessoria poderia operar sobre a EVOLU Platform.</p>
+          <span class="eyebrow" data-i18n="conceptEyebrow">THE PRODUCT THESIS</span>
+          <h2 data-i18n="conceptTitle">A EVOLU não tenta adivinhar. Ela torna a incerteza explícita.</h2>
         </div>
-        <div class="mode-switch" role="group" aria-label="Demo mode">
-          <button class="mode active" data-mode="guided">Guided Demo</button>
-          <button class="mode" data-mode="platform">Explore Platform</button>
-          <button class="mode" data-mode="intelligence">Test Intelligence</button>
+        <div class="concept-grid">
+          <article><span data-i18n="known">O QUE SABEMOS</span><strong>Documentos · ERP · banco · histórico</strong></article>
+          <article><span data-i18n="divergent">O QUE DIVERGE</span><strong>Conciliação entre fontes</strong></article>
+          <article><span data-i18n="missing">O QUE FALTA</span><strong>Context gaps · perguntas ao humano</strong></article>
+          <article><span data-i18n="decision">O QUE FOI DECIDIDO</span><strong>Evidência · ação · trilha de decisão</strong></article>
         </div>
-      </div>
-
-      <div class="workspace" id="workspace">
-        <aside class="sidebar">
-          <div class="tenant-lockup">
-            <div class="tenant-mark">N</div>
-            <div><strong>NEXUS</strong><span>Contabilidade & Assessoria</span></div>
-          </div>
-          <small class="powered">powered by EVOLU</small>
-          <nav class="side-nav">
-            <button class="active">Overview</button>
-            <button>Clients</button>
-            <button>Documents</button>
-            <button>Fiscal</button>
-            <button data-open-intelligence>Intelligence</button>
-          </nav>
-          <div class="sidebar-note"><b>WHITE-LABEL INSTANCE</b><p>Marca, carteira e operação fictícias. A infraestrutura demonstrada pertence ao conceito EVOLU Platform.</p></div>
-        </aside>
-
-        <div class="workspace-main">
-          <div id="platformView">
-            <div class="workspace-header">
-              <div><span class="kicker">NEXUS CONTABILIDADE</span><h3>Portfolio overview</h3></div>
-              <span class="badge live">DEMO ENVIRONMENT</span>
-            </div>
-
-            <div class="metrics">
-              <div><span>Clients</span><strong>84</strong><small>3 represented here</small></div>
-              <div><span>Documents processed</span><strong>8.429</strong><small>synthetic monthly volume</small></div>
-              <div><span>Pending reviews</span><strong>13</strong><small>human validation required</small></div>
-              <div><span>Intelligence findings</span><strong>327</strong><small>simulated analyses</small></div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-head"><div><span>CLIENT PORTFOLIO</span><h4>Select a company</h4></div><small id="guidedStep">Step 1 of 3 · choose a CNPJ context</small></div>
-              <div class="company-grid" id="companyGrid"></div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-head"><div><span>COMPANY WORKSPACE</span><h4 id="companyTitle">ACME Industrial</h4></div><span class="badge context">Company Context loaded</span></div>
-              <div class="company-summary" id="companySummary"></div>
-              <button class="button primary small" id="openIntelligence">Open Intelligence case →</button>
-            </div>
-          </div>
-
-          <div id="intelligenceView" hidden>
-            <div class="workspace-header">
-              <div><span class="kicker">EVOLU INTELLIGENCE</span><h3>Context-aware fiscal analysis</h3></div>
-              <button class="button secondary small" id="backPlatform">← Back to Platform</button>
-            </div>
-
-            <div class="intel-grid">
-              <div class="panel no-margin">
-                <div class="panel-head"><div><span>NEW TRANSACTION</span><h4>ROLAMENTO 6305</h4></div><span class="badge warning" id="contextStatus">Context required</span></div>
-                <div class="transaction-grid" id="transactionGrid"></div>
-                <div class="question-box">
-                  <span>CONTEXT GAP DETECTED</span>
-                  <h4>Como este item é utilizado pela empresa?</h4>
-                  <p>O documento informa o produto e a tributação destacada, mas não determina sozinho a função econômica da compra.</p>
-                  <div class="options" id="purposeOptions"></div>
-                </div>
-              </div>
-
-              <aside class="trace-panel">
-                <span class="kicker">WHAT EVOLU IS DOING</span>
-                <ol class="trace" id="traceList"></ol>
-                <button class="button ghost small" id="toggleArchitecture">View reasoning architecture</button>
-              </aside>
-            </div>
-
-            <div class="result-panel" id="resultPanel" hidden></div>
-            <div class="architecture-panel" id="miniArchitecture" hidden>
-              <span class="kicker">REASONING ARCHITECTURE · NOT CHAIN-OF-THOUGHT</span>
-              <div class="pipeline compact">
-                <div><strong>Document</strong><span>structured fields</span></div><b>→</b>
-                <div><strong>Platform</strong><span>operational state</span></div><b>→</b>
-                <div><strong>Company Context</strong><span>business meaning</span></div><b>→</b>
-                <div><strong>Rules + Knowledge</strong><span>domain constraints</span></div><b>→</b>
-                <div><strong>Model</strong><span>replaceable engine</span></div><b>→</b>
-                <div><strong>Evidence</strong><span>reviewable output</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="demo-footnotes">
-        <div><strong>PUBLIC DEMONSTRATION</strong><span>All companies, documents, values and outputs shown here are synthetic.</span></div>
-        <div><strong>PRIVATE CORE</strong><span>Production runtime, customer data, internal skills and proprietary rules are not included.</span></div>
-      </div>
-    </section>
-
-    <section class="architecture section-pad" id="architecture">
-      <div class="section-heading single">
-        <div><div class="eyebrow">ARCHITECTURE</div><h2>O produto é maior do que a tela da assessoria.</h2><p>A contabilidade fictícia é apenas uma instância. A EVOLU Platform é a infraestrutura white-label; a EVOLU Intelligence é a camada que interpreta cada CNPJ dentro desse ambiente.</p></div>
-      </div>
-      <div class="pipeline">
-        <div><strong>Accounting firm</strong><span>white-label operator</span></div><b>→</b>
-        <div><strong>EVOLU Platform</strong><span>data + operations</span></div><b>→</b>
-        <div><strong>Company Context</strong><span>business meaning</span></div><b>→</b>
-        <div><strong>EVOLU Intelligence</strong><span>analysis + evidence</span></div><b>→</b>
-        <div><strong>Human review</strong><span>validation + action</span></div>
-      </div>
-    </section>
-
-    <section class="public-private section-pad">
-      <div>
-        <div class="eyebrow">PUBLIC</div>
-        <h2>What Genesis exposes</h2>
-        <p>Product narrative, interaction patterns, synthetic scenarios, architecture diagrams and selected experiments.</p>
-      </div>
-      <div>
-        <div class="eyebrow">PRIVATE</div>
-        <h2>What stays protected</h2>
-        <p>Production runtime, customer data, proprietary knowledge, internal rules, private skills, credentials and infrastructure.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <span>EVOLU Lab · Experiment 01: Genesis</span>
-    <strong>The model can change. The intelligence should remain.</strong>
-  </footer>
+      </section>
+    </main>
+  </div>
 
   <script src="script.js"></script>
 </body>
