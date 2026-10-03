@@ -19,7 +19,7 @@
   <div class="demo-app">
     <header class="demo-header">
       <a class="demo-brand" href="../" aria-label="Voltar para EVOLU Genesis">
-        <img src="../evolu-symbol.svg" alt="" />
+        <span class="demo-brand-symbol"><img src="../evolu-symbol.svg" alt="" /></span>
         <div><strong>EVOLU</strong><span>GENESIS · DEMO</span></div>
       </a>
       <div class="demo-mode"><span class="status-dot"></span><span data-i18n="deterministic">Ambiente demonstrativo · dados sintéticos</span></div>
@@ -41,7 +41,7 @@
 
     <main id="experience" class="demo-experience" aria-label="EVOLU Genesis demo">
       <div class="os-shell" id="osShell">
-        <aside class="os-sidebar">
+        <aside class="os-sidebar" data-surface="navigation">
           <div class="tenant-brand">
             <div class="tenant-mark">N</div>
             <div><strong>NEXUS</strong><span data-i18n="tenantType">Contabilidade & Assessoria</span></div>
@@ -70,7 +70,7 @@
           </div>
         </aside>
 
-        <section class="os-main">
+        <section class="os-main" data-surface="workspace">
           <header class="os-topbar">
             <div>
               <span class="breadcrumb" id="breadcrumb">NEXUS / ACME Industrial</span>
@@ -84,7 +84,7 @@
           <div id="workspace" class="workspace"></div>
         </section>
 
-        <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
+        <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation" data-surface="mobile-navigation">
           <button data-page="dashboard"><span>⌂</span><b data-i18n="mobileOverview">Início</b></button>
           <button data-page="fiscal-documents"><span>▤</span><b data-i18n="mobileFiscal">Fiscal</b></button>
           <button data-page="accounting-entries"><span>≣</span><b data-i18n="mobileAccounting">Contábil</b></button>
@@ -97,10 +97,10 @@
           <span class="fab-pulse" hidden></span>
         </button>
 
-        <aside id="intelligencePanel" class="intelligence-panel" aria-live="polite" hidden>
+        <aside id="intelligencePanel" class="intelligence-panel" aria-live="polite" hidden data-surface="assistant">
           <header>
             <div class="intelligence-brand">
-              <img src="../evolu-symbol.svg" alt="" />
+              <span class="assistant-brand-symbol"><img src="../evolu-symbol.svg" alt="" /></span>
               <div><strong>EVOLU</strong><span id="panelContext">ACME Industrial</span></div>
             </div>
             <div class="panel-actions">
@@ -119,6 +119,11 @@
         </aside>
 
         <div id="tourOverlay" class="tour-overlay" hidden>
+          <div class="tour-mask tour-mask-top" aria-hidden="true"></div>
+          <div class="tour-mask tour-mask-right" aria-hidden="true"></div>
+          <div class="tour-mask tour-mask-bottom" aria-hidden="true"></div>
+          <div class="tour-mask tour-mask-left" aria-hidden="true"></div>
+          <div id="tourFocusRing" class="tour-focus-ring" aria-hidden="true"></div>
           <div id="tourCard" class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
             <span id="tourStep" class="tour-step"></span>
             <h4 id="tourTitle"></h4>
