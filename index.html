@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b0d12" />
-  <meta name="description" content="EVOLU Genesis — demonstração pública de fluxos contábeis e fiscais com análise, conciliação, revisão e rastreabilidade." />
+  <meta name="description" content="EVOLU Genesis — demonstração pública de análise contábil e fiscal com conciliação, revisão profissional e rastreabilidade." />
   <title>EVOLU Genesis</title>
   <link rel="icon" href="evolu-symbol.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,12 +15,12 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="EVOLU Genesis">
-      <img src="evolu-symbol.svg" alt="" />
+      <span class="brand-symbol"><img src="evolu-symbol.svg" alt="" /></span>
       <div><strong>EVOLU</strong><span>GENESIS</span></div>
     </a>
     <nav class="site-nav" aria-label="Navegação principal">
-      <a href="#problem" data-pt="O problema" data-en="The problem">O problema</a>
-      <a href="#workflow" data-pt="Como funciona" data-en="How it works">Como funciona</a>
+      <a href="#information" data-pt="Informações" data-en="Information">Informações</a>
+      <a href="#workflow" data-pt="Processo" data-en="Process">Processo</a>
       <a href="#architecture" data-pt="Arquitetura" data-en="Architecture">Arquitetura</a>
       <a href="#demo" data-pt="Demonstração" data-en="Demo">Demonstração</a>
     </nav>
@@ -37,8 +37,8 @@
     <section class="hero">
       <div class="hero-copy">
         <span class="eyebrow">EVOLU GENESIS</span>
-        <h1 data-pt="Análise contábil e fiscal com conciliação, histórico e revisão profissional." data-en="Accounting and tax analysis with reconciliation, history and professional review.">Análise contábil e fiscal com conciliação, histórico e revisão profissional.</h1>
-        <p data-pt="A demonstração reúne documentos, escrituração e informações da empresa para mostrar como uma análise é revisada, aprovada e registrada." data-en="The demo brings together documents, bookkeeping and company information to show how an analysis is reviewed, approved and recorded.">A demonstração reúne documentos, escrituração e informações da empresa para mostrar como uma análise é revisada, aprovada e registrada.</p>
+        <h1 data-pt="Análise contábil e fiscal com informações de diferentes fontes" data-en="Accounting and tax analysis using information from different sources">Análise contábil e fiscal com informações de diferentes fontes</h1>
+        <p data-pt="A demonstração relaciona documentos fiscais, escrituração, histórico e informações confirmadas pela empresa. Pendências, sugestões, aprovações e alterações permanecem registradas durante a análise." data-en="The demonstration relates tax documents, bookkeeping, history and information confirmed by the company. Pending information, suggestions, approvals and changes remain recorded throughout the analysis.">A demonstração relaciona documentos fiscais, escrituração, histórico e informações confirmadas pela empresa. Pendências, sugestões, aprovações e alterações permanecem registradas durante a análise.</p>
         <div class="hero-actions">
           <a class="primary" href="demo/?mode=guided" data-pt="Iniciar demonstração" data-en="Start demo">Iniciar demonstração</a>
           <a class="secondary" href="#workflow" data-pt="Ver processo" data-en="View process">Ver processo</a>
@@ -49,68 +49,88 @@
           <span>PT / EN</span>
         </div>
       </div>
-      <div class="hero-diagram" aria-label="Fluxo resumido da EVOLU">
-        <div class="diagram-node"><span data-pt="Fontes" data-en="Sources">Fontes</span><strong data-pt="Documentos · Escrituração · Financeiro · Cliente" data-en="Documents · Bookkeeping · Financial · Client">Documentos · Escrituração · Financeiro · Cliente</strong></div>
+
+      <div class="hero-diagram" aria-label="Resumo do processo demonstrado">
+        <div class="diagram-node">
+          <span data-pt="Fontes de dados" data-en="Data sources">Fontes de dados</span>
+          <strong data-pt="Documentos · Escrituração · Financeiro · Cliente" data-en="Documents · Bookkeeping · Financial · Client">Documentos · Escrituração · Financeiro · Cliente</strong>
+        </div>
         <i>↓</i>
-        <div class="diagram-node"><span data-pt="Conciliação" data-en="Reconciliation">Conciliação</span><strong data-pt="Relações e critérios entre registros" data-en="Relationships and criteria across records">Relações e critérios entre registros</strong></div>
+        <div class="diagram-node">
+          <span data-pt="Conciliação" data-en="Reconciliation">Conciliação</span>
+          <strong data-pt="Relações, critérios e divergências" data-en="Relationships, criteria and divergences">Relações, critérios e divergências</strong>
+        </div>
         <i>↓</i>
-        <div class="diagram-node accent"><span data-pt="Análise" data-en="Analysis">Análise</span><strong data-pt="Informações disponíveis e pendentes" data-en="Available and missing information">Informações disponíveis e pendentes</strong></div>
+        <div class="diagram-node accent">
+          <span data-pt="Análise e revisão" data-en="Analysis and review">Análise e revisão</span>
+          <strong data-pt="Informações disponíveis, pendências e sugestões" data-en="Available information, pending items and suggestions">Informações disponíveis, pendências e sugestões</strong>
+        </div>
         <i>↓</i>
-        <div class="diagram-node"><span data-pt="Revisão profissional" data-en="Professional review">Revisão profissional</span><strong data-pt="Sugestão · Aprovação · Registro" data-en="Suggestion · Approval · Record">Sugestão · Aprovação · Registro</strong></div>
+        <div class="diagram-node">
+          <span data-pt="Aprovação e registro" data-en="Approval and record">Aprovação e registro</span>
+          <strong data-pt="Responsável · Evidência · Alteração" data-en="Responsible party · Evidence · Change">Responsável · Evidência · Alteração</strong>
+        </div>
       </div>
     </section>
 
-    <section id="problem" class="section split">
+    <section id="information" class="section split">
       <div>
-        <span class="eyebrow" data-pt="O PROBLEMA" data-en="THE PROBLEM">O PROBLEMA</span>
-        <h2 data-pt="Informações necessárias à análise podem estar fora do documento fiscal ou do lançamento contábil." data-en="Information required for an analysis may sit outside the tax document or accounting entry.">Informações necessárias à análise podem estar fora do documento fiscal ou do lançamento contábil.</h2>
+        <span class="eyebrow" data-pt="INFORMAÇÕES" data-en="INFORMATION">INFORMAÇÕES</span>
+        <h2 data-pt="Informações utilizadas em uma análise" data-en="Information used in an analysis">Informações utilizadas em uma análise</h2>
       </div>
       <div class="body-copy">
-        <p data-pt="A finalidade econômica, a situação específica da empresa e decisões anteriores podem permanecer em conversas, planilhas, e-mails ou no conhecimento da equipe." data-en="Economic purpose, company-specific circumstances and prior decisions may remain in conversations, spreadsheets, emails or team knowledge.">A finalidade econômica, a situação específica da empresa e decisões anteriores podem permanecer em conversas, planilhas, e-mails ou no conhecimento da equipe.</p>
-        <p data-pt="A EVOLU registra a origem dessas informações, diferencia histórico de confirmação atual e mantém a alteração separada da aprovação profissional." data-en="EVOLU records the source of this information, distinguishes history from current confirmation and keeps the proposed change separate from professional approval.">A EVOLU registra a origem dessas informações, diferencia histórico de confirmação atual e mantém a alteração separada da aprovação profissional.</p>
+        <p data-pt="Documentos fiscais e lançamentos contábeis nem sempre registram todas as informações necessárias para classificar ou revisar uma operação. A finalidade do gasto, o uso de um item, decisões anteriores ou uma confirmação do cliente podem estar em outras fontes." data-en="Tax documents and accounting entries do not always contain all the information needed to classify or review a transaction. The purpose of an expense, the use of an item, prior decisions or a client confirmation may exist in other sources.">Documentos fiscais e lançamentos contábeis nem sempre registram todas as informações necessárias para classificar ou revisar uma operação. A finalidade do gasto, o uso de um item, decisões anteriores ou uma confirmação do cliente podem estar em outras fontes.</p>
+        <p data-pt="A demonstração identifica a origem das informações, diferencia histórico de confirmação atual e mantém uma sugestão separada da alteração até que exista aprovação." data-en="The demonstration identifies the source of information, distinguishes history from current confirmation and keeps a suggestion separate from the change until it is approved.">A demonstração identifica a origem das informações, diferencia histórico de confirmação atual e mantém uma sugestão separada da alteração até que exista aprovação.</p>
       </div>
     </section>
 
     <section id="workflow" class="section">
       <div class="section-head">
-        <span class="eyebrow" data-pt="COMO FUNCIONA" data-en="HOW IT WORKS">COMO FUNCIONA</span>
-        <h2 data-pt="O processo reúne fontes, identifica pendências, solicita confirmação e registra a decisão." data-en="The process brings sources together, identifies missing information, requests confirmation and records the decision.">O processo reúne fontes, identifica pendências, solicita confirmação e registra a decisão.</h2>
+        <div>
+          <span class="eyebrow" data-pt="PROCESSO" data-en="PROCESS">PROCESSO</span>
+          <h2 data-pt="Processo de análise e revisão" data-en="Analysis and review process">Processo de análise e revisão</h2>
+        </div>
+        <p class="section-note" data-pt="A Genesis demonstra um fluxo em que informações de diferentes fontes são relacionadas, revisadas e registradas antes de uma alteração." data-en="Genesis demonstrates a workflow in which information from different sources is related, reviewed and recorded before a change is applied.">A Genesis demonstra um fluxo em que informações de diferentes fontes são relacionadas, revisadas e registradas antes de uma alteração.</p>
       </div>
       <div class="workflow-grid">
-        <article><b>01</b><h3 data-pt="Fontes de dados" data-en="Data sources">Fontes de dados</h3><p data-pt="Documentos fiscais, escrituração, financeiro, ERP, planilhas e informações do cliente." data-en="Tax documents, bookkeeping, financial data, ERP, spreadsheets and client information.">Documentos fiscais, escrituração, financeiro, ERP, planilhas e informações do cliente.</p></article>
-        <article><b>02</b><h3 data-pt="Conciliação" data-en="Reconciliation">Conciliação</h3><p data-pt="Compara registros relacionados e identifica diferenças que precisam ser explicadas." data-en="Compares related records and identifies differences that need explanation.">Compara registros relacionados e identifica diferenças que precisam ser explicadas.</p></article>
-        <article><b>03</b><h3 data-pt="Informação pendente" data-en="Missing information">Informação pendente</h3><p data-pt="Registra o que ainda precisa ser confirmado antes da conclusão." data-en="Records what still needs confirmation before the analysis is completed.">Registra o que ainda precisa ser confirmado antes da conclusão.</p></article>
-        <article><b>04</b><h3 data-pt="Confirmação" data-en="Confirmation">Confirmação</h3><p data-pt="Solicita a informação necessária em linguagem compatível com quem pode respondê-la." data-en="Requests the required information in language suited to the person who can answer it.">Solicita a informação necessária em linguagem compatível com quem pode respondê-la.</p></article>
-        <article><b>05</b><h3 data-pt="Análise" data-en="Analysis">Análise</h3><p data-pt="Relaciona documento, histórico e informação confirmada e mantém as incertezas visíveis." data-en="Relates documents, history and confirmed information while keeping uncertainty visible.">Relaciona documento, histórico e informação confirmada e mantém as incertezas visíveis.</p></article>
-        <article><b>06</b><h3 data-pt="Aprovação" data-en="Approval">Aprovação</h3><p data-pt="A sugestão permanece separada da alteração até a autorização do profissional." data-en="The suggestion remains separate from the change until professional approval.">A sugestão permanece separada da alteração até a autorização do profissional.</p></article>
-        <article><b>07</b><h3 data-pt="Registro e histórico" data-en="Record and history">Registro e histórico</h3><p data-pt="Origem, evidência, responsável e alteração ficam disponíveis para revisão e uso futuro." data-en="Source, evidence, responsible party and change remain available for review and future use.">Origem, evidência, responsável e alteração ficam disponíveis para revisão e uso futuro.</p></article>
+        <article><b>01</b><h3 data-pt="Fontes de dados" data-en="Data sources">Fontes de dados</h3><p data-pt="Documentos fiscais, escrituração contábil, financeiro, ERP, planilhas e informações fornecidas pela empresa." data-en="Tax documents, bookkeeping, financial data, ERP, spreadsheets and information provided by the company.">Documentos fiscais, escrituração contábil, financeiro, ERP, planilhas e informações fornecidas pela empresa.</p></article>
+        <article><b>02</b><h3 data-pt="Conciliação" data-en="Reconciliation">Conciliação</h3><p data-pt="Registros relacionados são comparados de acordo com sua natureza, competência e origem." data-en="Related records are compared according to their nature, period and source.">Registros relacionados são comparados de acordo com sua natureza, competência e origem.</p></article>
+        <article><b>03</b><h3 data-pt="Informações pendentes" data-en="Pending information">Informações pendentes</h3><p data-pt="Quando falta uma informação necessária, a análise permanece pendente até que ela seja confirmada." data-en="When required information is missing, the analysis remains pending until it is confirmed.">Quando falta uma informação necessária, a análise permanece pendente até que ela seja confirmada.</p></article>
+        <article><b>04</b><h3 data-pt="Confirmação" data-en="Confirmation">Confirmação</h3><p data-pt="A informação pode ser solicitada ao profissional ou ao responsável que possui conhecimento sobre a operação." data-en="Information may be requested from the professional or the person who has knowledge of the transaction.">A informação pode ser solicitada ao profissional ou ao responsável que possui conhecimento sobre a operação.</p></article>
+        <article><b>05</b><h3 data-pt="Análise" data-en="Analysis">Análise</h3><p data-pt="Documento, histórico e informações confirmadas são apresentados em conjunto para revisão." data-en="Documents, history and confirmed information are presented together for review.">Documento, histórico e informações confirmadas são apresentados em conjunto para revisão.</p></article>
+        <article><b>06</b><h3 data-pt="Aprovação" data-en="Approval">Aprovação</h3><p data-pt="Uma sugestão não altera o registro operacional sem confirmação do usuário." data-en="A suggestion does not change the operational record without user confirmation.">Uma sugestão não altera o registro operacional sem confirmação do usuário.</p></article>
+        <article><b>07</b><h3 data-pt="Registro" data-en="Record">Registro</h3><p data-pt="Origem, evidência, responsável e alteração ficam disponíveis na trilha da análise." data-en="Source, evidence, responsible party and change remain available in the analysis trail.">Origem, evidência, responsável e alteração ficam disponíveis na trilha da análise.</p></article>
       </div>
     </section>
 
     <section id="architecture" class="section architecture">
       <div class="section-head">
-        <span class="eyebrow" data-pt="ARQUITETURA" data-en="ARCHITECTURE">ARQUITETURA</span>
-        <h2 data-pt="A arquitetura separa fontes, conciliação, análise, revisão e registro." data-en="The architecture separates sources, reconciliation, analysis, review and recordkeeping.">A arquitetura separa fontes, conciliação, análise, revisão e registro.</h2>
+        <div>
+          <span class="eyebrow" data-pt="ARQUITETURA" data-en="ARCHITECTURE">ARQUITETURA</span>
+          <h2 data-pt="Arquitetura da demonstração" data-en="Demonstration architecture">Arquitetura da demonstração</h2>
+        </div>
+        <p class="section-note" data-pt="Fontes de dados, conciliação, análise, revisão profissional e registro permanecem identificados durante o fluxo." data-en="Data sources, reconciliation, analysis, professional review and recordkeeping remain identifiable throughout the workflow.">Fontes de dados, conciliação, análise, revisão profissional e registro permanecem identificados durante o fluxo.</p>
       </div>
+
       <div class="architecture-flow">
         <div><span data-pt="Fontes de dados" data-en="Data sources">Fontes de dados</span><small data-pt="Documentos · Escrituração · Financeiro · Cliente" data-en="Documents · Bookkeeping · Financial · Client">Documentos · Escrituração · Financeiro · Cliente</small></div><i>→</i>
         <div><span data-pt="Normalização" data-en="Normalization">Normalização</span><small data-pt="Estrutura comum" data-en="Common structure">Estrutura comum</small></div><i>→</i>
         <div><span data-pt="Conciliação" data-en="Reconciliation">Conciliação</span><small data-pt="Relações e divergências" data-en="Relationships and divergences">Relações e divergências</small></div><i>→</i>
-        <div class="accent"><span>EVOLU</span><small data-pt="Análise e informação pendente" data-en="Analysis and missing information">Análise e informação pendente</small></div><i>→</i>
-        <div><span data-pt="Revisão" data-en="Review">Revisão</span><small data-pt="Aprovação profissional" data-en="Professional approval">Aprovação profissional</small></div><i>→</i>
+        <div class="accent"><span>EVOLU</span><small data-pt="Apoio à análise e revisão" data-en="Support for analysis and review">Apoio à análise e revisão</small></div><i>→</i>
+        <div><span data-pt="Revisão profissional" data-en="Professional review">Revisão profissional</span><small data-pt="Confirmação e aprovação" data-en="Confirmation and approval">Confirmação e aprovação</small></div><i>→</i>
         <div><span data-pt="Registro" data-en="Record">Registro</span><small data-pt="Evidência e histórico" data-en="Evidence and history">Evidência e histórico</small></div>
       </div>
-      <p class="architecture-note" data-pt="Sistemas como SIEG, Domínio, ERPs, bancos e planilhas são exemplos de possíveis origens de dados. A disponibilidade depende dos conectores efetivamente implementados." data-en="Systems such as SIEG, Domínio, ERPs, banks and spreadsheets are examples of possible data sources. Availability depends on connectors actually implemented.">Sistemas como SIEG, Domínio, ERPs, bancos e planilhas são exemplos de possíveis origens de dados. A disponibilidade depende dos conectores efetivamente implementados.</p>
+      <p class="architecture-note" data-pt="SIEG, Domínio, ERPs, bancos e planilhas são exemplos de sistemas que podem atuar como origem de dados. A disponibilidade depende dos conectores efetivamente implementados." data-en="SIEG, Domínio, ERPs, banks and spreadsheets are examples of systems that may act as data sources. Availability depends on connectors that are actually implemented.">SIEG, Domínio, ERPs, bancos e planilhas são exemplos de sistemas que podem atuar como origem de dados. A disponibilidade depende dos conectores efetivamente implementados.</p>
     </section>
 
     <section id="demo" class="section demo-entry">
       <div>
         <span class="eyebrow" data-pt="DEMONSTRAÇÃO" data-en="DEMO">DEMONSTRAÇÃO</span>
-        <h2 data-pt="A demonstração operacional utiliza um ambiente separado desta apresentação." data-en="The operational demo runs in an environment separate from this presentation.">A demonstração operacional utiliza um ambiente separado desta apresentação.</h2>
-        <p data-pt="Empresas, documentos, valores e análises são sintéticos. As respostas são pré-configuradas e não constituem orientação contábil ou tributária." data-en="Companies, documents, values and analyses are synthetic. Responses are preconfigured and do not constitute accounting or tax advice.">Empresas, documentos, valores e análises são sintéticos. As respostas são pré-configuradas e não constituem orientação contábil ou tributária.</p>
+        <h2 data-pt="Demonstração operacional" data-en="Operational demonstration">Demonstração operacional</h2>
+        <p data-pt="O ambiente utiliza cenários sintéticos para demonstrar revisão fiscal e contábil, confirmação de informações, aprovação e registro. As análises são pré-configuradas e não constituem orientação contábil ou tributária." data-en="The environment uses synthetic scenarios to demonstrate tax and accounting review, information confirmation, approval and recordkeeping. Analyses are preconfigured and do not constitute accounting or tax advice.">O ambiente utiliza cenários sintéticos para demonstrar revisão fiscal e contábil, confirmação de informações, aprovação e registro. As análises são pré-configuradas e não constituem orientação contábil ou tributária.</p>
       </div>
       <div class="demo-options">
-        <a class="demo-option" href="demo/?mode=guided"><strong data-pt="Demonstração guiada" data-en="Guided demo">Demonstração guiada</strong><span data-pt="Percorra um caso com informação pendente, confirmação, aprovação e reutilização." data-en="Walk through a case with missing information, confirmation, approval and reuse.">Percorra um caso com informação pendente, confirmação, aprovação e reutilização.</span><b>→</b></a>
+        <a class="demo-option" href="demo/?mode=guided"><strong data-pt="Demonstração guiada" data-en="Guided demo">Demonstração guiada</strong><span data-pt="Percorra um caso com informação pendente, confirmação, aprovação e reutilização de uma informação previamente validada." data-en="Walk through a case with pending information, confirmation, approval and reuse of previously validated information.">Percorra um caso com informação pendente, confirmação, aprovação e reutilização de uma informação previamente validada.</span><b>→</b></a>
         <a class="demo-option" href="demo/"><strong data-pt="Explorar ambiente" data-en="Explore environment">Explorar ambiente</strong><span data-pt="Navegue pelas áreas Fiscal, Contábil, Conciliação e Informações da empresa." data-en="Explore Tax, Accounting, Reconciliation and Company information.">Navegue pelas áreas Fiscal, Contábil, Conciliação e Informações da empresa.</span><b>→</b></a>
       </div>
     </section>
