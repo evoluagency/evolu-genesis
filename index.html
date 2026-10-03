@@ -4,179 +4,119 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b0d12" />
-  <meta name="description" content="EVOLU Genesis — deterministic public simulation of contextual accounting and tax intelligence." />
-  <title>EVOLU Genesis · Context Intelligence</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="v22.css" />
+  <meta name="description" content="EVOLU Genesis — demonstração pública de fluxos contábeis e fiscais com análise, conciliação, revisão e rastreabilidade." />
+  <title>EVOLU Genesis</title>
+  <link rel="icon" href="evolu-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="landing.css" />
 </head>
 <body>
-  <div class="site-shell">
-    <header class="global-header">
-      <a class="brand" href="#intro" aria-label="EVOLU Genesis">
-        <img src="evolu-symbol.svg" alt="" />
-        <div><strong>EVOLU</strong><span>GENESIS · EXPERIMENT 01</span></div>
-      </a>
-      <div class="global-actions">
-        <div class="segmented" role="group" aria-label="Language">
-          <button type="button" data-lang="pt" aria-pressed="true">PT</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
-        </div>
-        <div class="segmented" role="group" aria-label="Theme">
-          <button type="button" data-theme-choice="light" aria-label="Light theme" aria-pressed="false">☀</button>
-          <button type="button" data-theme-choice="dark" aria-label="Dark theme" aria-pressed="true">☾</button>
-          <button type="button" data-theme-choice="system" aria-label="System theme" aria-pressed="false">◐</button>
-        </div>
-        <button type="button" id="resetExperience" class="header-action" data-i18n="reset">Reiniciar</button>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="EVOLU Genesis">
+      <img src="evolu-symbol.svg" alt="" />
+      <div><strong>EVOLU</strong><span>GENESIS</span></div>
+    </a>
+    <nav class="site-nav" aria-label="Navegação principal">
+      <a href="#problem" data-pt="O problema" data-en="The problem">O problema</a>
+      <a href="#workflow" data-pt="Como funciona" data-en="How it works">Como funciona</a>
+      <a href="#architecture" data-pt="Arquitetura" data-en="Architecture">Arquitetura</a>
+      <a href="#demo" data-pt="Demonstração" data-en="Demo">Demonstração</a>
+    </nav>
+    <div class="header-actions">
+      <div class="segmented" role="group" aria-label="Idioma">
+        <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
-    </header>
+      <button class="theme-button" type="button" id="themeToggle" aria-label="Alternar tema">◐</button>
+    </div>
+  </header>
 
-    <main>
-      <section id="intro" class="intro">
-        <div class="intro-copy">
-          <span class="eyebrow" data-i18n="introEyebrow">EXPERIÊNCIA PÚBLICA DE PRODUTO</span>
-          <h1 data-i18n="introTitle">Dados não são contexto. Contexto não é conclusão.</h1>
-          <p data-i18n="introBody">Genesis demonstra como a EVOLU conecta operação, reconciliação, contexto empresarial e julgamento humano antes de recomendar uma ação.</p>
-          <div class="intro-actions">
-            <button id="startGuided" class="primary" data-i18n="startGuided">Começar experiência guiada</button>
-            <button id="startFree" class="secondary" data-i18n="exploreFreely">Explorar livremente</button>
-          </div>
-          <div class="intro-meta">
-            <span>~ 5 MIN</span>
-            <span data-i18n="syntheticData">DADOS SINTÉTICOS</span>
-            <span data-i18n="noAdvice">SEM ORIENTAÇÃO TRIBUTÁRIA REAL</span>
-          </div>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">EVOLU GENESIS</span>
+        <h1 data-pt="Informação suficiente para decidir." data-en="Enough information to decide.">Informação suficiente para decidir.</h1>
+        <p data-pt="A EVOLU conecta documentos, escrituração, histórico e informações da empresa para apoiar análises contábeis e fiscais com revisão, aprovação e rastreabilidade." data-en="EVOLU connects documents, bookkeeping, history and company information to support accounting and tax analysis with review, approval and traceability.">A EVOLU conecta documentos, escrituração, histórico e informações da empresa para apoiar análises contábeis e fiscais com revisão, aprovação e rastreabilidade.</p>
+        <div class="hero-actions">
+          <a class="primary" href="demo/?mode=guided" data-pt="Iniciar demonstração" data-en="Start demo">Iniciar demonstração</a>
+          <a class="secondary" href="#workflow" data-pt="Ver como funciona" data-en="See how it works">Ver como funciona</a>
         </div>
-        <div class="intro-principles" aria-label="How Genesis works">
-          <article><b>01</b><strong data-i18n="p1Title">Observe</strong><span data-i18n="p1Body">A Platform organiza fatos operacionais.</span></article>
-          <article><b>02</b><strong data-i18n="p2Title">Reconcilie</strong><span data-i18n="p2Body">Fontes divergentes viram casos explícitos.</span></article>
-          <article><b>03</b><strong data-i18n="p3Title">Contextualize</strong><span data-i18n="p3Body">A Intelligence pergunta somente o que falta.</span></article>
-          <article><b>04</b><strong data-i18n="p4Title">Aja</strong><span data-i18n="p4Body">O usuário escolhe executar ou aprender como fazer.</span></article>
+        <div class="hero-meta">
+          <span data-pt="Ambiente demonstrativo" data-en="Demo environment">Ambiente demonstrativo</span>
+          <span data-pt="Dados sintéticos" data-en="Synthetic data">Dados sintéticos</span>
+          <span>PT / EN</span>
         </div>
-      </section>
+      </div>
+      <div class="hero-diagram" aria-label="Fluxo resumido da EVOLU">
+        <div class="diagram-node"><span data-pt="Fontes" data-en="Sources">Fontes</span><strong data-pt="Documentos · Escrituração · Financeiro · Cliente" data-en="Documents · Bookkeeping · Financial · Client">Documentos · Escrituração · Financeiro · Cliente</strong></div>
+        <i>↓</i>
+        <div class="diagram-node"><span data-pt="Conciliação" data-en="Reconciliation">Conciliação</span><strong data-pt="O que deveria coincidir?" data-en="What should reconcile?">O que deveria coincidir?</strong></div>
+        <i>↓</i>
+        <div class="diagram-node accent"><span data-pt="Análise" data-en="Analysis">Análise</span><strong data-pt="O que sabemos e o que ainda precisa ser confirmado?" data-en="What do we know and what still needs confirmation?">O que sabemos e o que ainda precisa ser confirmado?</strong></div>
+        <i>↓</i>
+        <div class="diagram-node"><span data-pt="Revisão profissional" data-en="Professional review">Revisão profissional</span><strong data-pt="Sugestão · Aprovação · Registro" data-en="Suggestion · Approval · Record">Sugestão · Aprovação · Registro</strong></div>
+      </div>
+    </section>
 
-      <section id="experience" class="experience" aria-label="Genesis experience">
-        <div class="experience-head">
-          <div>
-            <span class="eyebrow" data-i18n="sandboxEyebrow">SANDBOX INTERATIVO</span>
-            <h2 data-i18n="sandboxTitle">Uma operação contábil-fiscal, com contexto vivo.</h2>
-          </div>
-          <div class="experience-status"><span class="status-dot"></span><span data-i18n="deterministic">Simulação determinística · sem LLM</span></div>
-        </div>
+    <section id="problem" class="section split">
+      <div>
+        <span class="eyebrow" data-pt="O PROBLEMA" data-en="THE PROBLEM">O PROBLEMA</span>
+        <h2 data-pt="A informação necessária nem sempre está no documento." data-en="The information you need is not always in the document.">A informação necessária nem sempre está no documento.</h2>
+      </div>
+      <div class="body-copy">
+        <p data-pt="Documentos fiscais e registros contábeis mostram parte da operação. A finalidade econômica, a situação específica da empresa e decisões anteriores muitas vezes permanecem em conversas, planilhas, e-mails ou no conhecimento da equipe." data-en="Tax documents and accounting records show only part of the operation. Economic purpose, company-specific circumstances and prior decisions often remain in conversations, spreadsheets, emails or team knowledge.">Documentos fiscais e registros contábeis mostram parte da operação. A finalidade econômica, a situação específica da empresa e decisões anteriores muitas vezes permanecem em conversas, planilhas, e-mails ou no conhecimento da equipe.</p>
+        <p data-pt="A EVOLU organiza essas informações sem transformar histórico em verdade automática e sem aplicar alterações sem aprovação." data-en="EVOLU organizes this information without treating history as automatic truth and without applying changes without approval.">A EVOLU organiza essas informações sem transformar histórico em verdade automática e sem aplicar alterações sem aprovação.</p>
+      </div>
+    </section>
 
-        <div class="os-shell" id="osShell">
-          <aside class="os-sidebar">
-            <div class="tenant-brand">
-              <div class="tenant-mark">N</div>
-              <div><strong>NEXUS</strong><span data-i18n="tenantType">Contabilidade & Assessoria</span></div>
-            </div>
-            <small>powered by EVOLU</small>
-            <nav id="appNav" aria-label="Main navigation">
-              <button data-page="dashboard" class="active"><span>⌂</span><b data-i18n="navOverview">Visão geral</b></button>
-              <div class="nav-group">
-                <em data-i18n="navFiscal">FISCAL</em>
-                <button data-page="fiscal-documents"><span>▤</span><b data-i18n="navDocuments">Documentos</b></button>
-              </div>
-              <div class="nav-group">
-                <em data-i18n="navAccounting">CONTÁBIL</em>
-                <button data-page="accounting-entries"><span>≣</span><b data-i18n="navEntries">Lançamentos</b></button>
-              </div>
-              <div class="nav-group">
-                <em data-i18n="navOperational">INTELIGÊNCIA OPERACIONAL</em>
-                <button data-page="reconciliation"><span>⇄</span><b data-i18n="navReconciliation">Reconciliação</b></button>
-                <button data-page="context-ledger"><span>◫</span><b>Context Ledger</b></button>
-              </div>
-            </nav>
-            <div class="sidebar-foot">
-              <span class="tiny-label" data-i18n="selectedCompany">EMPRESA SELECIONADA</span>
-              <strong>ACME Industrial</strong>
-              <small>Lucro Real · SP</small>
-            </div>
-          </aside>
+    <section id="workflow" class="section">
+      <div class="section-head">
+        <span class="eyebrow" data-pt="COMO FUNCIONA" data-en="HOW IT WORKS">COMO FUNCIONA</span>
+        <h2 data-pt="Da informação dispersa à análise revisável." data-en="From fragmented information to reviewable analysis.">Da informação dispersa à análise revisável.</h2>
+      </div>
+      <div class="workflow-grid">
+        <article><b>01</b><h3 data-pt="Fontes de dados" data-en="Data sources">Fontes de dados</h3><p data-pt="Documentos fiscais, escrituração, financeiro, ERP, planilhas e informações do cliente." data-en="Tax documents, bookkeeping, financial data, ERP, spreadsheets and client information.">Documentos fiscais, escrituração, financeiro, ERP, planilhas e informações do cliente.</p></article>
+        <article><b>02</b><h3 data-pt="Conciliação" data-en="Reconciliation">Conciliação</h3><p data-pt="Compara registros relacionados e identifica diferenças que precisam ser explicadas." data-en="Compares related records and identifies differences that need explanation.">Compara registros relacionados e identifica diferenças que precisam ser explicadas.</p></article>
+        <article><b>03</b><h3 data-pt="Informação pendente" data-en="Missing information">Informação pendente</h3><p data-pt="Explicita o que ainda falta antes de concluir uma análise." data-en="Makes explicit what is still missing before an analysis can be completed.">Explicita o que ainda falta antes de concluir uma análise.</p></article>
+        <article><b>04</b><h3 data-pt="Confirmação" data-en="Confirmation">Confirmação</h3><p data-pt="Solicita a informação necessária em linguagem compatível com quem pode respondê-la." data-en="Requests the required information in language suited to the person who can answer it.">Solicita a informação necessária em linguagem compatível com quem pode respondê-la.</p></article>
+        <article><b>05</b><h3 data-pt="Análise" data-en="Analysis">Análise</h3><p data-pt="Relaciona documento, histórico e informação confirmada sem ocultar incertezas." data-en="Relates documents, history and confirmed information without hiding uncertainty.">Relaciona documento, histórico e informação confirmada sem ocultar incertezas.</p></article>
+        <article><b>06</b><h3 data-pt="Aprovação" data-en="Approval">Aprovação</h3><p data-pt="A sugestão permanece separada da alteração até a autorização do profissional." data-en="The suggestion remains separate from the change until professional approval.">A sugestão permanece separada da alteração até a autorização do profissional.</p></article>
+        <article><b>07</b><h3 data-pt="Registro e histórico" data-en="Record and history">Registro e histórico</h3><p data-pt="Origem, evidência, responsável e alteração ficam disponíveis para revisão e uso futuro." data-en="Source, evidence, responsible party and change remain available for review and future use.">Origem, evidência, responsável e alteração ficam disponíveis para revisão e uso futuro.</p></article>
+      </div>
+    </section>
 
-          <section class="os-main">
-            <header class="os-topbar">
-              <div>
-                <span class="breadcrumb" id="breadcrumb">NEXUS / ACME Industrial</span>
-                <h3 id="pageTitle">Visão geral</h3>
-              </div>
-              <div class="top-context">
-                <span><b data-i18n="companyLabel">Empresa</b> ACME Industrial</span>
-                <span><b data-i18n="periodLabel">Competência</b> 09/2026</span>
-              </div>
-            </header>
-            <div id="workspace" class="workspace"></div>
-          </section>
+    <section id="architecture" class="section architecture">
+      <div class="section-head">
+        <span class="eyebrow" data-pt="ARQUITETURA" data-en="ARCHITECTURE">ARQUITETURA</span>
+        <h2 data-pt="A tecnologia acompanha o processo profissional." data-en="Technology follows the professional process.">A tecnologia acompanha o processo profissional.</h2>
+      </div>
+      <div class="architecture-flow">
+        <div><span data-pt="Fontes de dados" data-en="Data sources">Fontes de dados</span><small data-pt="Documentos · Escrituração · Financeiro · Cliente" data-en="Documents · Bookkeeping · Financial · Client">Documentos · Escrituração · Financeiro · Cliente</small></div><i>→</i>
+        <div><span data-pt="Normalização" data-en="Normalization">Normalização</span><small data-pt="Estrutura comum" data-en="Common structure">Estrutura comum</small></div><i>→</i>
+        <div><span data-pt="Conciliação" data-en="Reconciliation">Conciliação</span><small data-pt="Relações e divergências" data-en="Relationships and divergences">Relações e divergências</small></div><i>→</i>
+        <div class="accent"><span>EVOLU</span><small data-pt="Análise e informação pendente" data-en="Analysis and missing information">Análise e informação pendente</small></div><i>→</i>
+        <div><span data-pt="Revisão" data-en="Review">Revisão</span><small data-pt="Aprovação profissional" data-en="Professional approval">Aprovação profissional</small></div><i>→</i>
+        <div><span data-pt="Registro" data-en="Record">Registro</span><small data-pt="Evidência e histórico" data-en="Evidence and history">Evidência e histórico</small></div>
+      </div>
+      <p class="architecture-note" data-pt="Sistemas como SIEG, Domínio, ERPs, bancos e planilhas podem ser exemplos de origem de dados. A disponibilidade de cada integração depende dos conectores efetivamente implementados." data-en="Systems such as SIEG, Domínio, ERPs, banks and spreadsheets may be examples of data sources. Availability depends on connectors actually implemented.">Sistemas como SIEG, Domínio, ERPs, bancos e planilhas podem ser exemplos de origem de dados. A disponibilidade de cada integração depende dos conectores efetivamente implementados.</p>
+    </section>
 
-          <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
-            <button data-page="dashboard"><span>⌂</span><b data-i18n="mobileOverview">Início</b></button>
-            <button data-page="fiscal-documents"><span>▤</span><b data-i18n="mobileFiscal">Fiscal</b></button>
-            <button data-page="accounting-entries"><span>≣</span><b data-i18n="mobileAccounting">Contábil</b></button>
-            <button data-page="reconciliation"><span>⇄</span><b data-i18n="mobileReconciliation">Conciliar</b></button>
-            <button data-page="context-ledger"><span>◫</span><b data-i18n="mobileContext">Contexto</b></button>
-          </nav>
+    <section id="demo" class="section demo-entry">
+      <div>
+        <span class="eyebrow" data-pt="DEMONSTRAÇÃO" data-en="DEMO">DEMONSTRAÇÃO</span>
+        <h2 data-pt="Entre no ambiente operacional." data-en="Enter the operational environment.">Entre no ambiente operacional.</h2>
+        <p data-pt="A demonstração utiliza empresas, documentos, valores e análises inteiramente sintéticos. As respostas são pré-configuradas e não constituem orientação contábil ou tributária." data-en="The demo uses entirely synthetic companies, documents, values and analyses. Responses are preconfigured and do not constitute accounting or tax advice.">A demonstração utiliza empresas, documentos, valores e análises inteiramente sintéticos. As respostas são pré-configuradas e não constituem orientação contábil ou tributária.</p>
+      </div>
+      <div class="demo-options">
+        <a class="demo-option" href="demo/?mode=guided"><strong data-pt="Demonstração guiada" data-en="Guided demo">Demonstração guiada</strong><span data-pt="Percorra um caso completo, da informação pendente ao registro e reutilização." data-en="Walk through a complete case, from missing information to record and reuse.">Percorra um caso completo, da informação pendente ao registro e reutilização.</span><b>→</b></a>
+        <a class="demo-option" href="demo/"><strong data-pt="Explorar ambiente" data-en="Explore environment">Explorar ambiente</strong><span data-pt="Navegue livremente pelas áreas Fiscal, Contábil, Conciliação e Informações da empresa." data-en="Explore Tax, Accounting, Reconciliation and Company information freely.">Navegue livremente pelas áreas Fiscal, Contábil, Conciliação e Informações da empresa.</span><b>→</b></a>
+      </div>
+    </section>
+  </main>
 
-          <button id="intelligenceFab" class="intelligence-fab" aria-label="Open EVOLU Intelligence" title="EVOLU Intelligence">
-            <img src="evolu-symbol.svg" alt="" />
-            <span class="fab-pulse" hidden></span>
-          </button>
-
-          <aside id="intelligencePanel" class="intelligence-panel" aria-live="polite" hidden>
-            <header>
-              <div class="intelligence-brand">
-                <img src="evolu-symbol.svg" alt="" />
-                <div><strong>EVOLU Intelligence</strong><span id="panelContext">ACME Industrial</span></div>
-              </div>
-              <div class="panel-actions">
-                <button type="button" id="minimizePanel" aria-label="Minimize">—</button>
-                <button type="button" id="closePanel" aria-label="Close">×</button>
-              </div>
-            </header>
-            <div id="contextStrip" class="context-strip"></div>
-            <div id="messages" class="messages"></div>
-            <div id="suggestions" class="suggestions"></div>
-            <form id="composer" class="composer">
-              <textarea id="chatInput" rows="2" data-i18n-placeholder="chatPlaceholder" placeholder="Pergunte à EVOLU…"></textarea>
-              <button type="submit" class="send" aria-label="Send">→</button>
-            </form>
-            <footer><span data-i18n="demoFooter">Simulação pública · respostas e ações são pré-configuradas</span></footer>
-          </aside>
-
-          <div id="tourOverlay" class="tour-overlay" hidden>
-            <div id="tourCard" class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
-              <span id="tourStep" class="tour-step"></span>
-              <h4 id="tourTitle"></h4>
-              <p id="tourBody"></p>
-              <div class="tour-actions">
-                <button type="button" id="tourSkip" class="ghost" data-i18n="skipTour">Sair do guia</button>
-                <button type="button" id="tourNext" class="primary small" data-i18n="continueTour">Continuar</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-        </div>
-      </section>
-
-      <section class="concept">
-        <div>
-          <span class="eyebrow" data-i18n="conceptEyebrow">TESE DO PRODUTO</span>
-          <h2 data-i18n="conceptTitle">A EVOLU não tenta adivinhar. Ela torna a incerteza explícita.</h2>
-        </div>
-        <div class="concept-grid">
-          <article><span data-i18n="known">O QUE SABEMOS</span><strong data-i18n="knownBody">Documentos · ERP · banco · histórico</strong></article>
-          <article><span data-i18n="divergent">O QUE DIVERGE</span><strong data-i18n="divergentBody">Conciliação entre fontes</strong></article>
-          <article><span data-i18n="missing">O QUE FALTA</span><strong data-i18n="missingBody">Lacunas de contexto · perguntas ao humano</strong></article>
-          <article><span data-i18n="decision">O QUE FOI DECIDIDO</span><strong data-i18n="decisionBody">Evidência · ação · trilha de decisão</strong></article>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <script src="script.js"></script>
-  <script src="v22.js"></script>
-  <script src="v22-fix.js"></script>
+  <footer class="site-footer"><span>EVOLU Genesis · Experiment 01</span><span data-pt="Ambiente público com dados sintéticos." data-en="Public environment with synthetic data.">Ambiente público com dados sintéticos.</span></footer>
+  <script src="landing.js"></script>
 </body>
 </html>
