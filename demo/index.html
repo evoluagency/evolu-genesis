@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0d12" />
+  <meta name="description" content="EVOLU Genesis — ambiente operacional demonstrativo com dados sintéticos." />
+  <title>EVOLU Genesis · Demo</title>
+  <link rel="icon" href="../evolu-symbol.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../v22.css" />
+  <link rel="stylesheet" href="demo.css" />
+</head>
+<body class="demo-page">
+  <div class="demo-app">
+    <header class="demo-header">
+      <a class="demo-brand" href="../" aria-label="Voltar para EVOLU Genesis">
+        <img src="../evolu-symbol.svg" alt="" />
+        <div><strong>EVOLU</strong><span>GENESIS · DEMO</span></div>
+      </a>
+      <div class="demo-mode"><span class="status-dot"></span><span data-i18n="deterministic">Ambiente demonstrativo · dados sintéticos</span></div>
+      <div class="demo-controls">
+        <button type="button" id="startGuided" class="header-action">Guia</button>
+        <button type="button" id="startFree" hidden aria-hidden="true">Explorar</button>
+        <div class="segmented" role="group" aria-label="Language">
+          <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <div class="segmented theme-segment" role="group" aria-label="Theme">
+          <button type="button" data-theme-choice="light" aria-label="Light theme" aria-pressed="false">☀</button>
+          <button type="button" data-theme-choice="dark" aria-label="Dark theme" aria-pressed="true">☾</button>
+          <button type="button" data-theme-choice="system" aria-label="System theme" aria-pressed="false">◐</button>
+        </div>
+        <button type="button" id="resetExperience" class="header-action" data-i18n="reset">Reiniciar</button>
+      </div>
+    </header>
+
+    <main id="experience" class="demo-experience" aria-label="EVOLU Genesis demo">
+      <div class="os-shell" id="osShell">
+        <aside class="os-sidebar">
+          <div class="tenant-brand">
+            <div class="tenant-mark">N</div>
+            <div><strong>NEXUS</strong><span data-i18n="tenantType">Contabilidade & Assessoria</span></div>
+          </div>
+          <small>powered by EVOLU</small>
+          <nav id="appNav" aria-label="Main navigation">
+            <button data-page="dashboard" class="active"><span>⌂</span><b data-i18n="navOverview">Visão geral</b></button>
+            <div class="nav-group">
+              <em data-i18n="navFiscal">FISCAL</em>
+              <button data-page="fiscal-documents"><span>▤</span><b data-i18n="navDocuments">Documentos</b></button>
+            </div>
+            <div class="nav-group">
+              <em data-i18n="navAccounting">CONTÁBIL</em>
+              <button data-page="accounting-entries"><span>≣</span><b data-i18n="navEntries">Lançamentos</b></button>
+            </div>
+            <div class="nav-group">
+              <em data-i18n="navOperational">REVISÃO E CONTROLE</em>
+              <button data-page="reconciliation"><span>⇄</span><b data-i18n="navReconciliation">Conciliação</b></button>
+              <button data-page="context-ledger"><span>◫</span><b data-ui-label="company-info">Informações da empresa</b></button>
+            </div>
+          </nav>
+          <div class="sidebar-foot">
+            <span class="tiny-label" data-i18n="selectedCompany">EMPRESA SELECIONADA</span>
+            <strong>ACME Industrial</strong>
+            <small>Lucro Real · SP</small>
+          </div>
+        </aside>
+
+        <section class="os-main">
+          <header class="os-topbar">
+            <div>
+              <span class="breadcrumb" id="breadcrumb">NEXUS / ACME Industrial</span>
+              <h3 id="pageTitle">Visão geral</h3>
+            </div>
+            <div class="top-context">
+              <span><b data-i18n="companyLabel">Empresa</b> ACME Industrial</span>
+              <span><b data-i18n="periodLabel">Competência</b> 09/2026</span>
+            </div>
+          </header>
+          <div id="workspace" class="workspace"></div>
+        </section>
+
+        <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
+          <button data-page="dashboard"><span>⌂</span><b data-i18n="mobileOverview">Início</b></button>
+          <button data-page="fiscal-documents"><span>▤</span><b data-i18n="mobileFiscal">Fiscal</b></button>
+          <button data-page="accounting-entries"><span>≣</span><b data-i18n="mobileAccounting">Contábil</b></button>
+          <button data-page="reconciliation"><span>⇄</span><b data-i18n="mobileReconciliation">Conciliar</b></button>
+          <button data-page="context-ledger"><span>◫</span><b data-i18n="mobileContext">Informações</b></button>
+        </nav>
+
+        <button id="intelligenceFab" class="intelligence-fab" aria-label="Abrir EVOLU" title="Abrir EVOLU">
+          <img src="../evolu-symbol.svg" alt="" />
+          <span class="fab-pulse" hidden></span>
+        </button>
+
+        <aside id="intelligencePanel" class="intelligence-panel" aria-live="polite" hidden>
+          <header>
+            <div class="intelligence-brand">
+              <img src="../evolu-symbol.svg" alt="" />
+              <div><strong>EVOLU</strong><span id="panelContext">ACME Industrial</span></div>
+            </div>
+            <div class="panel-actions">
+              <button type="button" id="minimizePanel" aria-label="Minimizar">—</button>
+              <button type="button" id="closePanel" aria-label="Fechar">×</button>
+            </div>
+          </header>
+          <div id="contextStrip" class="context-strip"></div>
+          <div id="messages" class="messages"></div>
+          <div id="suggestions" class="suggestions"></div>
+          <form id="composer" class="composer">
+            <textarea id="chatInput" rows="2" data-i18n-placeholder="chatPlaceholder" placeholder="Pergunte sobre esta operação"></textarea>
+            <button type="submit" class="send" aria-label="Enviar">→</button>
+          </form>
+          <footer><span data-i18n="demoFooter">Ambiente demonstrativo com dados sintéticos · análises pré-configuradas</span></footer>
+        </aside>
+
+        <div id="tourOverlay" class="tour-overlay" hidden>
+          <div id="tourCard" class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+            <span id="tourStep" class="tour-step"></span>
+            <h4 id="tourTitle"></h4>
+            <p id="tourBody"></p>
+            <div class="tour-actions">
+              <button type="button" id="tourSkip" class="ghost" data-i18n="skipTour">Sair do guia</button>
+              <button type="button" id="tourNext" class="primary small" data-i18n="continueTour">Continuar</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+      </div>
+    </main>
+
+    <div class="demo-disclaimer">Ambiente demonstrativo com dados sintéticos. As análises são pré-configuradas e não constituem orientação contábil ou tributária.</div>
+  </div>
+
+  <script src="../script.js"></script>
+  <script src="../v22.js"></script>
+  <script src="../v22-fix.js"></script>
+  <script src="../v23.js"></script>
+</body>
+</html>
