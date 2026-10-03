@@ -1,5 +1,7 @@
 # EVOLU Genesis
 
+**Live demo:** https://evoluagency.github.io/evolu-genesis/
+
 EVOLU Genesis is a public-facing interactive demonstration of the relationship between **EVOLU Platform** and **EVOLU Intelligence**.
 
 The experience simulates a white-label accounting and advisory firm operating multiple CNPJs through EVOLU Platform, while EVOLU Intelligence uses company context to interpret a fiscal scenario, detect missing context and produce a reviewable recommendation.
