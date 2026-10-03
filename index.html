@@ -2,9 +2,9 @@
 <html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b0d12" />
-  <meta name="description" content="EVOLU Genesis — a deterministic public simulation of contextual accounting and tax intelligence." />
+  <meta name="description" content="EVOLU Genesis — deterministic public simulation of contextual accounting and tax intelligence." />
   <title>EVOLU Genesis · Context Intelligence</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,22 +19,23 @@
         <div><strong>EVOLU</strong><span>GENESIS · EXPERIMENT 01</span></div>
       </a>
       <div class="global-actions">
-        <div class="segmented" aria-label="Language">
-          <button data-lang="pt" class="active">PT</button>
-          <button data-lang="en">EN</button>
+        <div class="segmented" role="group" aria-label="Language">
+          <button type="button" data-lang="pt" aria-pressed="true">PT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
         </div>
-        <div class="segmented" aria-label="Theme">
-          <button data-theme-choice="light" title="Light">☀</button>
-          <button data-theme-choice="dark" class="active" title="Dark">☾</button>
-          <button data-theme-choice="system" title="System">◐</button>
+        <div class="segmented" role="group" aria-label="Theme">
+          <button type="button" data-theme-choice="light" aria-label="Light theme" aria-pressed="false">☀</button>
+          <button type="button" data-theme-choice="dark" aria-label="Dark theme" aria-pressed="true">☾</button>
+          <button type="button" data-theme-choice="system" aria-label="System theme" aria-pressed="false">◐</button>
         </div>
+        <button type="button" id="resetExperience" class="header-action" data-i18n="reset">Reiniciar</button>
       </div>
     </header>
 
     <main>
       <section id="intro" class="intro">
         <div class="intro-copy">
-          <span class="eyebrow" data-i18n="introEyebrow">PUBLIC PRODUCT EXPERIENCE</span>
+          <span class="eyebrow" data-i18n="introEyebrow">EXPERIÊNCIA PÚBLICA DE PRODUTO</span>
           <h1 data-i18n="introTitle">Dados não são contexto. Contexto não é conclusão.</h1>
           <p data-i18n="introBody">Genesis demonstra como a EVOLU conecta operação, reconciliação, contexto empresarial e julgamento humano antes de recomendar uma ação.</p>
           <div class="intro-actions">
@@ -42,7 +43,9 @@
             <button id="startFree" class="secondary" data-i18n="exploreFreely">Explorar livremente</button>
           </div>
           <div class="intro-meta">
-            <span>~ 4 MIN</span><span data-i18n="syntheticData">DADOS SINTÉTICOS</span><span data-i18n="noAdvice">SEM ORIENTAÇÃO TRIBUTÁRIA REAL</span>
+            <span>~ 5 MIN</span>
+            <span data-i18n="syntheticData">DADOS SINTÉTICOS</span>
+            <span data-i18n="noAdvice">SEM ORIENTAÇÃO TRIBUTÁRIA REAL</span>
           </div>
         </div>
         <div class="intro-principles" aria-label="How Genesis works">
@@ -56,7 +59,7 @@
       <section id="experience" class="experience" aria-label="Genesis experience">
         <div class="experience-head">
           <div>
-            <span class="eyebrow" data-i18n="sandboxEyebrow">INTERACTIVE SANDBOX</span>
+            <span class="eyebrow" data-i18n="sandboxEyebrow">SANDBOX INTERATIVO</span>
             <h2 data-i18n="sandboxTitle">Uma operação contábil-fiscal, com contexto vivo.</h2>
           </div>
           <div class="experience-status"><span class="status-dot"></span><span data-i18n="deterministic">Simulação determinística · sem LLM</span></div>
@@ -69,17 +72,20 @@
               <div><strong>NEXUS</strong><span data-i18n="tenantType">Contabilidade & Assessoria</span></div>
             </div>
             <small>powered by EVOLU</small>
-            <nav id="appNav">
+            <nav id="appNav" aria-label="Main navigation">
               <button data-page="dashboard" class="active"><span>⌂</span><b data-i18n="navOverview">Visão geral</b></button>
-              <div class="nav-group"><em data-i18n="navFiscal">FISCAL</em>
+              <div class="nav-group">
+                <em data-i18n="navFiscal">FISCAL</em>
                 <button data-page="fiscal-documents"><span>▤</span><b data-i18n="navDocuments">Documentos</b></button>
               </div>
-              <div class="nav-group"><em data-i18n="navAccounting">CONTÁBIL</em>
+              <div class="nav-group">
+                <em data-i18n="navAccounting">CONTÁBIL</em>
                 <button data-page="accounting-entries"><span>≣</span><b data-i18n="navEntries">Lançamentos</b></button>
               </div>
-              <div class="nav-group"><em data-i18n="navIntelligence">INTELIGÊNCIA OPERACIONAL</em>
+              <div class="nav-group">
+                <em data-i18n="navOperational">INTELIGÊNCIA OPERACIONAL</em>
                 <button data-page="reconciliation"><span>⇄</span><b data-i18n="navReconciliation">Reconciliação</b></button>
-                <button data-page="context-ledger"><span>◫</span><b data-i18n="navContext">Context Ledger</b></button>
+                <button data-page="context-ledger"><span>◫</span><b>Context Ledger</b></button>
               </div>
             </nav>
             <div class="sidebar-foot">
@@ -100,51 +106,69 @@
                 <span><b data-i18n="periodLabel">Competência</b> 09/2026</span>
               </div>
             </header>
-
             <div id="workspace" class="workspace"></div>
           </section>
 
-          <button id="intelligenceFab" class="intelligence-fab" aria-label="Open EVOLU Intelligence">
+          <nav id="mobileNav" class="mobile-nav" aria-label="Mobile navigation">
+            <button data-page="dashboard"><span>⌂</span><b data-i18n="mobileOverview">Início</b></button>
+            <button data-page="fiscal-documents"><span>▤</span><b data-i18n="mobileFiscal">Fiscal</b></button>
+            <button data-page="accounting-entries"><span>≣</span><b data-i18n="mobileAccounting">Contábil</b></button>
+            <button data-page="reconciliation"><span>⇄</span><b data-i18n="mobileReconciliation">Conciliar</b></button>
+            <button data-page="context-ledger"><span>◫</span><b data-i18n="mobileContext">Contexto</b></button>
+          </nav>
+
+          <button id="intelligenceFab" class="intelligence-fab" aria-label="Open EVOLU Intelligence" title="EVOLU Intelligence">
             <img src="evolu-symbol.svg" alt="" />
             <span class="fab-pulse" hidden></span>
           </button>
 
           <aside id="intelligencePanel" class="intelligence-panel" aria-live="polite" hidden>
             <header>
-              <div class="intelligence-brand"><img src="evolu-symbol.svg" alt="" /><div><strong>EVOLU Intelligence</strong><span id="panelContext">ACME Industrial</span></div></div>
-              <div class="panel-actions"><button id="minimizePanel" title="Minimize">—</button><button id="closePanel" title="Close">×</button></div>
+              <div class="intelligence-brand">
+                <img src="evolu-symbol.svg" alt="" />
+                <div><strong>EVOLU Intelligence</strong><span id="panelContext">ACME Industrial</span></div>
+              </div>
+              <div class="panel-actions">
+                <button type="button" id="minimizePanel" aria-label="Minimize">—</button>
+                <button type="button" id="closePanel" aria-label="Close">×</button>
+              </div>
             </header>
             <div id="contextStrip" class="context-strip"></div>
             <div id="messages" class="messages"></div>
             <div id="suggestions" class="suggestions"></div>
             <form id="composer" class="composer">
               <textarea id="chatInput" rows="2" data-i18n-placeholder="chatPlaceholder" placeholder="Pergunte à EVOLU…"></textarea>
-              <button type="submit" class="send">→</button>
+              <button type="submit" class="send" aria-label="Send">→</button>
             </form>
             <footer><span data-i18n="demoFooter">Simulação pública · respostas e ações são pré-configuradas</span></footer>
           </aside>
 
           <div id="tourOverlay" class="tour-overlay" hidden>
-            <div id="tourCard" class="tour-card">
+            <div id="tourCard" class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
               <span id="tourStep" class="tour-step"></span>
               <h4 id="tourTitle"></h4>
               <p id="tourBody"></p>
-              <div class="tour-actions"><button id="tourSkip" class="ghost" data-i18n="skipTour">Sair do guia</button><button id="tourNext" class="primary small" data-i18n="continueTour">Continuar</button></div>
+              <div class="tour-actions">
+                <button type="button" id="tourSkip" class="ghost" data-i18n="skipTour">Sair do guia</button>
+                <button type="button" id="tourNext" class="primary small" data-i18n="continueTour">Continuar</button>
+              </div>
             </div>
           </div>
+
+          <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
         </div>
       </section>
 
       <section class="concept">
         <div>
-          <span class="eyebrow" data-i18n="conceptEyebrow">THE PRODUCT THESIS</span>
+          <span class="eyebrow" data-i18n="conceptEyebrow">TESE DO PRODUTO</span>
           <h2 data-i18n="conceptTitle">A EVOLU não tenta adivinhar. Ela torna a incerteza explícita.</h2>
         </div>
         <div class="concept-grid">
-          <article><span data-i18n="known">O QUE SABEMOS</span><strong>Documentos · ERP · banco · histórico</strong></article>
-          <article><span data-i18n="divergent">O QUE DIVERGE</span><strong>Conciliação entre fontes</strong></article>
-          <article><span data-i18n="missing">O QUE FALTA</span><strong>Context gaps · perguntas ao humano</strong></article>
-          <article><span data-i18n="decision">O QUE FOI DECIDIDO</span><strong>Evidência · ação · trilha de decisão</strong></article>
+          <article><span data-i18n="known">O QUE SABEMOS</span><strong data-i18n="knownBody">Documentos · ERP · banco · histórico</strong></article>
+          <article><span data-i18n="divergent">O QUE DIVERGE</span><strong data-i18n="divergentBody">Conciliação entre fontes</strong></article>
+          <article><span data-i18n="missing">O QUE FALTA</span><strong data-i18n="missingBody">Lacunas de contexto · perguntas ao humano</strong></article>
+          <article><span data-i18n="decision">O QUE FOI DECIDIDO</span><strong data-i18n="decisionBody">Evidência · ação · trilha de decisão</strong></article>
         </div>
       </section>
     </main>
