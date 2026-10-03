@@ -48,4 +48,17 @@
     renderPage();
     showToast(t('saved'));
   };
+
+  /* Keep the guided flow usable on mobile: move to the second case from the Intelligence panel,
+     instead of requiring a click behind the full-width mobile panel. */
+  const similarStep=TOUR.find(step=>step.id==='similar');
+  if(similarStep){
+    similarStep.target='[data-choice-value="v22:open_similar"]';
+    similarStep.event='choice:v22:open_similar';
+    similarStep.title={pt:'Abra um novo caso semelhante',en:'Open a similar new case'};
+    similarStep.body={
+      pt:'Use a própria Intelligence para abrir a próxima operação. O contexto validado deve reduzir o esforço do segundo caso.',
+      en:'Use Intelligence itself to open the next transaction. Validated context should reduce the effort in the second case.'
+    };
+  }
 })();
