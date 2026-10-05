@@ -3,7 +3,9 @@
 **Presentation:** https://evoluagency.github.io/evolu-genesis/  
 **Operational demo:** https://evoluagency.github.io/evolu-genesis/demo/
 
-EVOLU Genesis is a public demonstration of how **EVOLU Platform** and **EVOLU Intelligence** can support accounting and tax workflows when the information required for a decision is distributed across documents, bookkeeping, historical records and people.
+EVOLU Genesis is the **public demonstration layer** of the EVOLU ecosystem. It shows how **EVOLU Platform** and **EVOLU Intelligence** can support accounting and tax workflows when the information required for a decision is distributed across documents, bookkeeping, historical records and people.
+
+Genesis is intentionally separated from production runtime. It is a deterministic product-demonstration surface, not a simplified deployment of Platform or Intelligence.
 
 The public experience is divided into two parts:
 
@@ -46,7 +48,13 @@ Change / record
 History and reuse
 ```
 
-EVOLU Intelligence is the formal name of the analysis capability in EVOLU Platform. In the operational interface, the user interacts simply with **EVOLU**, using the official EVOLU symbol as the access point.
+In the EVOLU architecture:
+
+- **EVOLU Platform** is the System of Record / Operational Plane;
+- **EVOLU Intelligence** is the System of Intelligence / Decision Plane;
+- **EVOLU Genesis** is the Public Demonstration Layer.
+
+The operational demo may present these capabilities through one unified EVOLU interface. That presentation does not collapse their production authority boundaries.
 
 ## Data sources and integrations
 
@@ -63,13 +71,31 @@ Names such as SIEG, Domínio, ERPs and banks may appear only as examples of syst
 
 ## What this repository is
 
-This repository contains a simplified and deterministic demonstration layer. It is intended to communicate product behavior and workflow without exposing EVOLU production systems.
+This repository contains a simplified, deterministic and public demonstration layer intended to communicate product behavior and workflow without exposing EVOLU production systems.
 
 ## What this repository is not
 
-It does not contain customer data, production infrastructure, internal tax rules, proprietary skills, production company context, Supabase resources, model credentials or the production EVOLU Intelligence runtime.
+It is not:
+
+- a production runtime;
+- a second implementation of EVOLU Platform;
+- a reduced production runtime of EVOLU Intelligence;
+- a source of operational state;
+- an integration surface for real tenant data.
+
+It does not contain customer data, production infrastructure, internal tax rules, proprietary production Skills, production Company Context, Supabase production resources, model credentials or the production EVOLU Intelligence runtime.
 
 All companies, documents, values and analyses displayed in Genesis are synthetic or simulated. Nothing in the demonstration constitutes accounting, tax or legal advice.
+
+## Production boundary
+
+Genesis must remain independent from production credentials and real data. Any future attempt to connect Genesis directly to Platform or Intelligence production requires an explicit architectural decision and security review; it must not happen as an incidental demo enhancement.
+
+Canonical ecosystem architecture and release traceability are maintained in the Platform repository under:
+
+- `docs/architecture/EVOLU_SYSTEM_ARCHITECTURE.md`;
+- `docs/architecture/PLATFORM_INTELLIGENCE_CONTRACT.md`;
+- `docs/releases/RELEASE_MANIFEST.md`.
 
 ## Brand and interface standard
 
