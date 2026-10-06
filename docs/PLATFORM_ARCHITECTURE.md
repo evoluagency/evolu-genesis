@@ -368,7 +368,7 @@ Candidate reconciliation types:
 | Source × Source | equivalent data from two sources |
 | Payroll × Accounting | payroll × accounting records |
 
-Open decision: whether Reconciliation is presented globally in Core, inside each module, or both through contextual entry points.
+Open decision: validate the proposed Reconciliation presentation rule by `OperatingModel` defined in section 10.1.
 
 ---
 
