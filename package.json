@@ -1,0 +1,13 @@
+{
+  "name": "@evolu/platform-ux-contracts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check": "npm run typecheck"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  }
+}
