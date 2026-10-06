@@ -1,5 +1,7 @@
 # Platform — Contract-First Migration Plan v1
 
+> Canonical architecture source: [PLATFORM_ARCHITECTURE.md](./PLATFORM_ARCHITECTURE.md). Architecture decisions must be updated there before or together with UX implementation.
+
 ## Current repository reality
 
 The current `Platform public UX repository` repository is a static public experience.
