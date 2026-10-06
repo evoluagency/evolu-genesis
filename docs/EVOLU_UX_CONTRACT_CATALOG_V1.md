@@ -1,18 +1,16 @@
 # EVOLU UX Contract Catalog v1
 
 Status: Frozen functional catalog for Platform UX V1
-
 Dependency: EVOLU UX Domain Dictionary v1
 
 ## Contract rule
 
-Every screen declares:
-
+Every screen must declare:
 1. scope
 2. primary entity
 3. context
 4. reads
-5. commands or intents
+5. commands/intents
 6. states
 7. capabilities
 8. integration owner
@@ -35,22 +33,170 @@ Every screen declares:
 | AuditHistory | company/cnpj | AuditEvent | AuditHistoryContext | immutable event timeline | FilterAudit, OpenSubject | loading/ready/empty/error/forbidden | Platform |
 | EvoluPanel | contextual | Analysis | AssistantContext | active screen context, entity refs, pending items | RequestAnalysis, RequestExplanation, RequestInformation | idle/loading/ready/insufficient_context/error | Intelligence |
 
+## Context catalog
+
+### PortfolioContext
+Fields:
+- schemaVersion
+- tenantId
+- companies: CompanySummary[]
+- metrics
+- pendingSummary
+- capabilities
+- provenance
+
+### CompanyContext
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- selectedCnpjId
+- cnpjs: CnpjEntitySummary[]
+- company
+- activeAccountingPeriod
+- pendingSummary
+- capabilities
+- provenance
+- dataQuality
+
+### FiscalDocumentsContext
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriod
+- documents: FiscalDocumentSummary[]
+- filters
+- summary
+- capabilities
+- provenance
+
+### DocumentAnalysisContext
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- referenceDate
+- document
+- analysis
+- pendingItems
+- historicalEvidence
+- capabilities
+- provenance
+- dataQuality
+
+### ReconciliationContext
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriod
+- sources
+- findings
+- evidence
+- pendingItems
+- capabilities
+- provenance
+
+### ApprovalContext
+Fields:
+- schemaVersion
+- tenantId
+- approvals
+- relatedDecisions
+- relatedRecommendations
+- capabilities
+
+## Request/result contracts
+
+### DocumentAnalysisRequest
+Fields:
+- schemaVersion = 1.0.0
+- tenantId
+- companyId
+- cnpjId
+- documentId
+- purpose:
+  - tax_classification_review
+  - economic_purpose_review
+  - document_consistency_review
+- requestedBy
+
+### DocumentAnalysisResult
+Fields:
+- schemaVersion = 1.0.0
+- analysisId
+- status
+- findings
+- evidence
+- recommendations
+- missingContext
+
+### RecordDecisionRequest
+Fields:
+- analysisId
+- recommendationId
+- decision: accept | reject | adjust | request_information | defer
+- rationale
+
+### RecordApprovalRequest
+Fields:
+- decisionId
+- subjectType
+- subjectId
+- outcome: approve | reject
+- rationale
+
+### ActionExecutionRequest
+Fields:
+- approvalId
+- actionType
+- subjectId
+- payload
+
+Returns ActionResult.
+
+## Capability contracts
+
+Capabilities are explicit and should not be inferred only from missing data.
+
+Example DocumentCapabilities:
+- canRequestAnalysis
+- canRequestInformation
+- canRecordDecision
+- canRequestApproval
+- canExecuteApprovedAction
+
+Capability false can mean:
+- role restriction
+- tenant policy
+- workflow state
+- missing prerequisite
+- closed period
+- unavailable feature
+
+UX must distinguish `forbidden` from `not_available`.
+
 ## Provider contracts
 
-PlatformProvider representative operations:
-
+### PlatformProvider
+Representative operations:
 - getPortfolioContext
 - getCompanyContext
 - getFiscalDocuments
 - getDocumentAnalysisContext
+- getReconciliationContext
 - getPendingItems
 - getApprovals
 - recordDecision
 - recordApproval
 - requestActionExecution
 
-IntelligenceProvider representative operations:
-
+### IntelligenceProvider
+Representative operations:
 - requestDocumentAnalysis
 - requestReconciliationAnalysis
 - explainAnalysis
@@ -58,36 +204,82 @@ IntelligenceProvider representative operations:
 ## Mock rule
 
 Mocks implement the same interfaces:
-
 - MockPlatformProvider implements PlatformProvider
 - MockIntelligenceProvider implements IntelligenceProvider
 
 Mock-specific fields must not enter screen props.
 
+Wrong:
+`demoScenarioName`, `mockAnalysisStep`
+
+Correct FiscalDocumentDetail props:
+- document
+- analysis
+- pendingItems
+- capabilities
+
 ## NF-e 70031 / rolamento canonical flow
 
-```text
-FiscalDocument
-→ Analysis
-→ insufficient_context
-→ PendingItem
+Initial:
+- FiscalDocument = NF-e 70031
+- Item = Rolamento
+- known: supplier, description, NCM, CFOP, taxes
+- unknown: economic purpose
+
+State:
+- AnalysisStatus = insufficient_context
+- PendingItem.type = information_request
+
+Then:
+RequestDocumentAnalysis
+→ Finding: economic purpose missing
+→ Evidence: similar historical operations
+→ no Recommendation until context is resolved
 → context supplied
 → reanalysis
-→ Finding + Evidence
 → Recommendation
 → Decision
-→ ApprovalRecord [if controlled]
+→ ApprovalRecord if controlled
 → ActionCommand
+→ Platform
 → ActionResult
 → AuditEvent
-```
 
-While economic purpose is unknown, historical behavior is Evidence only. No Recommendation is produced until required context is resolved.
+## Route intent vocabulary
+
+Recommended future UX routes:
+
+/portfolio
+/company/:companyId
+/company/:companyId/cnpj/:cnpjId
+/company/:companyId/cnpj/:cnpjId/fiscal/documents
+/company/:companyId/cnpj/:cnpjId/fiscal/documents/:documentId
+/company/:companyId/cnpj/:cnpjId/accounting/entries
+/company/:companyId/cnpj/:cnpjId/reconciliation
+/company/:companyId/cnpj/:cnpjId/pending-items
+/company/:companyId/cnpj/:cnpjId/approvals
+/company/:companyId/cnpj/:cnpjId/audit
+
+These are UX routes, not backend API routes.
+
+## Integration ownership
+
+| Contract | Today | Later | Authority |
+|---|---|---|---|
+| PortfolioContext | MockPlatformProvider | PlatformAdapter | Platform |
+| CompanyContext | MockPlatformProvider | PlatformAdapter | Platform |
+| FiscalDocumentsContext | MockPlatformProvider | PlatformAdapter | Platform |
+| DocumentAnalysisContext | MockPlatformProvider + MockIntelligenceProvider | PlatformAdapter + IntelligenceAdapter | Split |
+| DocumentAnalysisResult | MockIntelligenceProvider | IntelligenceAdapter | Intelligence |
+| Decision | MockPlatformProvider | PlatformAdapter | Platform record |
+| ApprovalRecord | MockPlatformProvider | PlatformAdapter | Platform |
+| ActionResult | MockPlatformProvider | PlatformAdapter | Platform |
+| AuditEvent | MockPlatformProvider | PlatformAdapter | Platform |
+| ReconciliationAnalysisResult | MockIntelligenceProvider | IntelligenceAdapter | Intelligence |
 
 ## Definition of done for a screen
 
 A Platform screen is contract-complete only when:
-
 - scope is declared
 - primary entity is canonical
 - input context is versioned
