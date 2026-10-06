@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.2  
+**Version:** 0.3  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -50,13 +50,13 @@ Canonical meanings:
 | EVOLU | Company |
 | Platform | Operational product; state and execution authority |
 | Intelligence | Analysis, evidence, recommendation and explanation product |
-| Tenant | Organization that contracts EVOLU products |
+| Tenant | Organização cliente da EVOLU |
 | BusinessModel | Business model of the Tenant; e.g. Contabilidade, Assessoria |
 | OperatingModel | How the Tenant organizes and executes work; e.g. Departamental, Global, Híbrido |
 | TenantEntitlements | Effective product/modules/capabilities enabled for the Tenant |
 | UserPermissions | What a specific user is allowed to access or operate |
 | Capabilities | Operations currently available/authorized in the active context |
-| Company | Client business served by the Tenant |
+| Company | Cliente atendido pelo Tenant |
 | CnpjEntity | One tax/legal establishment associated with a Company |
 | AccountingPeriod | Operational accounting/tax period |
 
@@ -143,7 +143,7 @@ Examples of `OperatingModel`:
 
 ## 4. Business model, operating model and commercial modularity
 
-A Tenant is not synonymous with a single type of company.
+A `Tenant` é sempre a **Organização cliente da EVOLU**. `Contabilidade` e `Assessoria` são valores de `BusinessModel`, não sinônimos de `Tenant`.
 
 ```text
 Tenant
@@ -166,7 +166,7 @@ Initial values:
 - Contabilidade
 - Assessoria
 
-These are business-model values, not replacements for the canonical `Tenant` concept.
+Esses são valores de `BusinessModel`; não substituem nem renomeiam o conceito canônico `Tenant`.
 
 ### 4.2 OperatingModel
 
@@ -652,13 +652,13 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 - EVOLU = company.
 - Platform = product.
 - Intelligence = product.
-- Tenant = organization that contracts EVOLU products.
+- Tenant = Organização cliente da EVOLU.
 - Contabilidade and Assessoria are BusinessModel values; neither replaces the canonical Tenant concept.
 - OperatingModel defines how the Tenant organizes work (initially Departamental, Global or Híbrido).
 - Modules are configurable according to BusinessModel/OperatingModel, but effective enablement is determined by TenantEntitlements.
 - UserPermissions define per-user access.
 - Capabilities define currently available/authorized operations.
-- Client of the Tenant = Company.
+- Company = Cliente atendido pelo Tenant.
 - CNPJ = CnpjEntity.
 - Core is not a professional module.
 - Intelligence is not a professional module.
@@ -695,9 +695,16 @@ These are not yet frozen:
 
 ## 16. Change log
 
+### 0.3
+
+- standardized the canonical definition as `Tenant = Organização cliente da EVOLU`;
+- standardized `Company = Cliente atendido pelo Tenant`;
+- removed conflicting wording that treated Contabilidade as synonymous with Tenant;
+- preserved Contabilidade and Assessoria exclusively as `BusinessModel` values.
+
 ### 0.2
 
-- generalized `Tenant` from “Contabilidade” to the organization that contracts EVOLU products;
+- standardized `Tenant` as **Organização cliente da EVOLU**;
 - introduced canonical `BusinessModel` and `OperatingModel`;
 - defined Contabilidade and Assessoria as initial `BusinessModel` values;
 - defined Departamental, Global and Híbrido as initial `OperatingModel` values;
@@ -709,7 +716,7 @@ These are not yet frozen:
 ### 0.1
 
 - established EVOLU → Platform / Intelligence;
-- replaced “assessoria” with **Contabilidade** as Tenant concept;
+- legacy decision superseded: Contabilidade is not synonymous with Tenant; it is a `BusinessModel` value.
 - separated Core from professional modules;
 - introduced modular entitlements;
 - separated source category, provider, connector and format;
