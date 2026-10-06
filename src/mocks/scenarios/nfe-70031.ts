@@ -136,7 +136,7 @@ export const portfolioContext: PortfolioContext = {
     {
       companyId: mockCompany.companyId,
       legalName: mockCompany.legalName,
-      tradeName: mockCompany.tradeName,
+      ...(mockCompany.tradeName ? { tradeName: mockCompany.tradeName } : {}),
       cnpjCount: 1,
       pendingCount: 1
     }
