@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.3  
+**Version:** 0.4  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -520,6 +520,123 @@ Recommendation never grants execution authority.
 
 ---
 
+## 10.1 Navigation composition by BusinessModel and OperatingModel
+
+Navigation is not globally fixed. The visible information architecture is composed from canonical modules and capabilities.
+
+Canonical composition order:
+
+```text
+BusinessModel
+→ OperatingModel
+→ TenantEntitlements
+→ UserPermissions
+→ Capabilities
+→ Navigation
+```
+
+Semantics:
+
+- `BusinessModel` influences the recommended product composition for the Tenant.
+- `OperatingModel` influences how enabled modules and transversal capabilities are presented.
+- `TenantEntitlements` determines which modules/capabilities are enabled.
+- `UserPermissions` determines what a user may access.
+- `Capabilities` determines what operations are currently available in the active context.
+- Navigation renders the resulting authorized structure; navigation does not define the domain.
+
+### Departamental OperatingModel
+
+Typical presentation:
+
+```text
+Overview
+Clients
+
+Fiscal
+├── Fiscal Documents
+├── Tax Assessment
+├── Tax Classifications
+└── contextual Reconciliation
+
+Accounting
+├── Accounting Entries
+├── Periods
+├── Closing
+└── contextual Reconciliation
+
+Transversal
+├── Pending Items
+├── Approvals
+├── Audit
+└── Global Search
+```
+
+A transversal capability may be accessible from a department without becoming part of that module's canonical domain.
+
+### Global OperatingModel
+
+Typical presentation:
+
+```text
+Overview
+Clients
+
+Work Areas
+├── Fiscal
+├── Accounting
+├── Financial
+└── other enabled modules
+
+Global Operations
+├── Reconciliation
+├── Pending Items
+├── Approvals
+├── Audit
+└── Global Search
+```
+
+This model favors cross-domain work rather than departmental ownership.
+
+### Híbrido OperatingModel
+
+Typical presentation:
+
+```text
+Overview
+Clients
+
+Modules
+├── Fiscal
+├── Accounting
+└── other enabled modules
+
+Global Operations
+├── Reconciliation
+├── Pending Items
+├── Approvals
+└── Audit
+```
+
+The same canonical object may be reached both globally and contextually.
+
+### Reconciliation placement rule — proposed
+
+`Reconciliation` remains one canonical capability/entity model.
+
+Its **presentation** may vary by `OperatingModel`:
+
+| OperatingModel | Primary presentation | Contextual access |
+|---|---|---|
+| Departamental | inside relevant module workflow | yes |
+| Global | global operation area | yes |
+| Híbrido | global + module contextual access | yes |
+
+This is a presentation rule, not a domain fork. A single `Reconciliation` record must never be duplicated merely because it is reachable through multiple navigation paths.
+
+**Status:** Proposed; requires explicit validation before moving to Frozen decisions.
+
+---
+
 ## 11. Navigation principles
 
 Platform navigation is a graph, not a rigid tree.
@@ -681,7 +798,7 @@ These are not yet frozen:
 1. Financial as a standalone module?
 2. Payroll / HR as a standalone module?
 3. Final public name: Legalization, Corporate, or another term?
-4. Where Reconciliation is presented for each OperatingModel: global, contextual, or hybrid?
+4. Validate the proposed Reconciliation presentation rule by OperatingModel (Departamental=contextual, Global=global, Híbrido=both)?
 5. Tax Benefits as its own Fiscal submenu or inside Tax Classifications?
 6. Statements as its own Accounting submenu or inside Closing?
 7. Will clients of the Tenant have their own login/surface?
@@ -694,6 +811,13 @@ These are not yet frozen:
 ---
 
 ## 16. Change log
+
+### 0.4
+
+- added navigation composition order: BusinessModel → OperatingModel → TenantEntitlements → UserPermissions → Capabilities → Navigation;
+- documented navigation behavior for Departamental, Global and Híbrido OperatingModels;
+- proposed Reconciliation as one canonical capability with presentation varying by OperatingModel;
+- preserved a single Reconciliation object across all entry points.
 
 ### 0.3
 
