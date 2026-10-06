@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.1  
+**Version:** 0.2  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -30,10 +30,14 @@ EVOLU
 ├── Platform
 └── Intelligence
       ↓
-CONTABILIDADE
+ORGANIZAÇÃO CLIENTE DA EVOLU
 (Tenant)
       ↓
-CLIENTES DA CONTABILIDADE
+BusinessModel + OperatingModel
+      ↓
+Modules habilitados por TenantEntitlements
+      ↓
+CLIENTES DO TENANT
 (Company)
       ↓
 1..N CnpjEntity
@@ -46,8 +50,13 @@ Canonical meanings:
 | EVOLU | Company |
 | Platform | Operational product; state and execution authority |
 | Intelligence | Analysis, evidence, recommendation and explanation product |
-| Contabilidade | Tenant; direct EVOLU customer |
-| Company | Client business served by the accounting firm |
+| Tenant | Organization that contracts EVOLU products |
+| BusinessModel | Business model of the Tenant; e.g. Contabilidade, Assessoria |
+| OperatingModel | How the Tenant organizes and executes work; e.g. Departamental, Global, Híbrido |
+| TenantEntitlements | Effective product/modules/capabilities enabled for the Tenant |
+| UserPermissions | What a specific user is allowed to access or operate |
+| Capabilities | Operations currently available/authorized in the active context |
+| Company | Client business served by the Tenant |
 | CnpjEntity | One tax/legal establishment associated with a Company |
 | AccountingPeriod | Operational accounting/tax period |
 
@@ -65,7 +74,9 @@ Tenant
 
 ## 3. Platform composition
 
-Platform is composed of **Core + Professional Modules**.
+Platform is composed of **Core + configurable Professional Modules**.
+
+The module catalog is product architecture. Which modules are effectively available to a Tenant is determined by `TenantEntitlements`, informed by the Tenant's `BusinessModel` and `OperatingModel`.
 
 ### 3.1 Core
 
@@ -95,23 +106,114 @@ Core capabilities are transversal and are not sold as professional departments.
 - Legalization / Corporate
 - Future modules
 
-A module may be independently enabled or disabled by tenant entitlement.
+A module may be independently enabled or disabled by `TenantEntitlements`.
+
+Canonical rule:
+
+```text
+BusinessModel
+→ influences recommended product composition
+
+OperatingModel
+→ influences how enabled modules and capabilities are organized/presented
+
+TenantEntitlements
+→ determines what is effectively enabled
+
+UserPermissions
+→ determines what each user may access
+
+Capabilities
+→ determines what operations are available in the current context
+```
+
+Examples of `BusinessModel`:
+
+- Contabilidade
+- Assessoria
+- future models without changing the canonical Tenant model
+
+Examples of `OperatingModel`:
+
+- Departamental
+- Global
+- Híbrido
 
 ---
 
-## 4. Commercial modularity
+## 4. Business model, operating model and commercial modularity
 
-A tenant can contract only part of Platform.
-
-Example:
+A Tenant is not synonymous with a single type of company.
 
 ```text
-Contabilidade A
+Tenant
+├── BusinessModel
+├── OperatingModel
+├── TenantEntitlements
+├── UserPermissions
+├── Capabilities
+└── Clients
+    └── Company
+        └── 1..N CnpjEntity
+```
+
+### 4.1 BusinessModel
+
+`BusinessModel` identifies how the Tenant operates commercially.
+
+Initial values:
+
+- Contabilidade
+- Assessoria
+
+These are business-model values, not replacements for the canonical `Tenant` concept.
+
+### 4.2 OperatingModel
+
+`OperatingModel` identifies how work is structurally organized.
+
+Initial values:
+
+- Departamental
+- Global
+- Híbrido
+
+Examples:
+
+```text
+BusinessModel: Contabilidade
+OperatingModel: Departamental
+
+TenantEntitlements:
 ├── Fiscal       enabled
 ├── Accounting   enabled
-├── Financial    disabled
-├── Payroll      disabled
+├── Payroll      enabled
 └── Legalization enabled
+```
+
+```text
+BusinessModel: Assessoria
+OperatingModel: Global
+
+TenantEntitlements:
+├── Fiscal       enabled
+├── Accounting   enabled
+├── Financial    enabled
+└── Reconciliation capability enabled
+```
+
+The same canonical module/capability may be presented differently according to `OperatingModel`; it must not be renamed into a new domain concept merely because the UX presentation changes.
+
+### 4.3 Effective enablement
+
+Keep separate:
+
+```text
+feature/module exists in EVOLU
+≠ recommended by BusinessModel
+≠ enabled by TenantEntitlements
+≠ allowed by UserPermissions
+≠ currently available through Capabilities
 ```
 
 Disabled modules:
@@ -121,15 +223,7 @@ Disabled modules:
 - do not expose commands;
 - are not suggested by Intelligence as available functionality.
 
-Keep separate:
-
-```text
-feature existence
-≠ tenant entitlement
-≠ user permission
-```
-
-Canonical concepts:
+Canonical concepts remain:
 
 - `TenantEntitlements`
 - `UserPermissions`
@@ -214,6 +308,26 @@ Not frozen:
 - Legalization / Corporate
 
 Their existence as architectural slots does not mean V1 implementation is approved.
+
+### 6.4 Module configuration rule
+
+Modules are configurable according to the Tenant's business context, but the canonical domain names do not change by customer.
+
+```text
+BusinessModel + OperatingModel
+→ recommended composition/presentation
+
+TenantEntitlements
+→ enabled modules/capabilities
+
+UserPermissions
+→ per-user access
+
+Capabilities
+→ available operations in active context
+```
+
+Do not create parallel names such as `DepartmentPackage`, `BusinessFeature` or `ModuleAccessModel` when the existing canonical concepts already express the requirement.
 
 ---
 
@@ -379,8 +493,11 @@ It operates transversally over the authorized current context.
 
 Intelligence respects:
 
-- tenant entitlements;
-- user permissions;
+- BusinessModel context;
+- OperatingModel context;
+- TenantEntitlements;
+- UserPermissions;
+- Capabilities;
 - module scope;
 - Company/CNPJ/period context;
 - available evidence.
@@ -535,8 +652,13 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 - EVOLU = company.
 - Platform = product.
 - Intelligence = product.
-- Contabilidade = Tenant.
-- Client of accounting firm = Company.
+- Tenant = organization that contracts EVOLU products.
+- Contabilidade and Assessoria are BusinessModel values; neither replaces the canonical Tenant concept.
+- OperatingModel defines how the Tenant organizes work (initially Departamental, Global or Híbrido).
+- Modules are configurable according to BusinessModel/OperatingModel, but effective enablement is determined by TenantEntitlements.
+- UserPermissions define per-user access.
+- Capabilities define currently available/authorized operations.
+- Client of the Tenant = Company.
 - CNPJ = CnpjEntity.
 - Core is not a professional module.
 - Intelligence is not a professional module.
@@ -559,17 +681,30 @@ These are not yet frozen:
 1. Financial as a standalone module?
 2. Payroll / HR as a standalone module?
 3. Final public name: Legalization, Corporate, or another term?
-4. Where Reconciliation is presented: Core, modules, or hybrid?
+4. Where Reconciliation is presented for each OperatingModel: global, contextual, or hybrid?
 5. Tax Benefits as its own Fiscal submenu or inside Tax Classifications?
 6. Statements as its own Accounting submenu or inside Closing?
-7. Will clients of the accounting firm have their own login/surface?
+7. Will clients of the Tenant have their own login/surface?
 8. Which modules can be sold without Intelligence?
 9. White-label depth: full brand replacement or “powered by EVOLU”?
-10. Minimum commercial composition of Platform.
+10. Minimum commercial composition of Platform?
+11. Which BusinessModel values beyond Contabilidade and Assessoria should be supported in the first commercial version?
+12. What default module/capability composition should EVOLU recommend for each BusinessModel/OperatingModel combination?
 
 ---
 
 ## 16. Change log
+
+### 0.2
+
+- generalized `Tenant` from “Contabilidade” to the organization that contracts EVOLU products;
+- introduced canonical `BusinessModel` and `OperatingModel`;
+- defined Contabilidade and Assessoria as initial `BusinessModel` values;
+- defined Departamental, Global and Híbrido as initial `OperatingModel` values;
+- established that modules are configurable according to the Tenant business context;
+- preserved `TenantEntitlements`, `UserPermissions` and `Capabilities` as the canonical enablement/access language;
+- prohibited parallel synonyms when existing canonical contracts already express the concept;
+- updated Reconciliation as an open presentation decision that may vary by `OperatingModel`.
 
 ### 0.1
 
