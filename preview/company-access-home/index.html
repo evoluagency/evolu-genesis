@@ -43,7 +43,7 @@ main{min-width:0}.top{min-height:72px;background:var(--side);border-bottom:1px s
 <div class="field"><label for="cnpj" data-t="cnpj">Estabelecimento</label><select id="cnpj"><option value="a">Matriz · 0001</option><option value="b">Filial · 0002</option></select></div>
 </div></div>
 <div id="pageContent"></div>
-<div class="foot"><small data-t="footer">Exemplo com dados sintéticos. Valores ilustrativos; não constituem apuração contábil, fiscal ou saldo bancário real.</small><small>© NEXUS</small></div>
+<div class="foot"><small data-t="footer">Exemplo com dados sintéticos. Valores ilustrativos; não constituem apuração contábil, fiscal ou saldo bancário real.</small><a href="../ux-journey/" style="color:var(--accent)">Mapa da jornada UX ↗</a><small>© NEXUS</small></div>
 </div></main></div>
 <div class="modalback" id="modalBack" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle"></h3><p id="modalDesc"></p><form id="modalForm"><div id="modalFields" class="modalfields"></div><div class="modalfooter"><button type="button" class="b" id="modalCancel" data-t="cancel">Cancelar</button><button type="submit" class="b primary" id="modalSubmit" data-t="save">Registrar na demonstração</button></div></form></div></div><div id="toast" class="toast" hidden role="status"></div>
 <script>
@@ -94,7 +94,7 @@ $("requestCount").textContent=pending().length;let out="";
 if(page==="home"){
 out=metrics()+'<div class="grid"><div class="stack">'+box(t("recent"),t("recentSub"),movesList(),navBtn("finance",t("all")))+box(t("requestTitle"),t("requestSub"),requestList(),navBtn("requests",t("viewAll")) )+'</div><div class="stack">'+box(t("actions"),t("actionsSub"),quick())+box(t("dataQuality"),"",'<div class="notice">'+t("qualityText")+'</div><div class="spacer"></div><div class="trace"><span class="on">Financeiro</span><b>→</b><span>Fiscal / Contábil</span><b>→</b><span>Assessoria</span></div>')+box(t("sources"),t("sourceDesc"),sources(),'<button class="linkbtn" data-action="source">⋯</button>')+'</div></div>';
 }else if(page==="finance"){
-out=metrics()+'<div class="grid"><div class="stack">'+box(t("recent"),t("recentSub"),movesList(),'<button class="b primary" data-action="expense">'+t("add")+'</button>')+'</div><div class="stack">'+box(t("sources"),t("sourceDesc"),sources())+box(t("phase"),"",'<div class="notice">'+t("phaseDesc")+'</div>')+'</div></div>';
+out=metrics()+'<div class="grid"><div class="stack">'+box(t("recent"),t("recentSub"),movesList(),'<button class="b primary" data-action="expense">'+t("add")+'</button>')+'</div><div class="stack">'+box(t("sources"),t("sourceDesc"),sources())+box(t("phase"),"",'<div class="notice">'+t("phaseDesc")+'</div><p style="margin:12px 0 0"><a class="b primary" href="../company-financial-workspace/?role=company">Abrir Financeiro completo ↗</a></p>')+'</div></div>';
 }else if(page==="documents"){
 out='<div class="grid"><div class="stack">'+box(t("docTitle"),t("docSub"),docList(),'<button class="b primary" data-action="document">'+t("upload")+'</button>')+'</div><div class="stack">'+box(t("sourceTitle"),t("sourceDesc"),sources())+'</div></div>';
 }else if(page==="requests"){
