@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.4  
+**Version:** 0.5  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -57,6 +57,8 @@ Canonical meanings:
 | UserPermissions | What a specific user is allowed to access or operate |
 | Capabilities | Operations currently available/authorized in the active context |
 | Company | Cliente atendido pelo Tenant |
+| CompanyOnboarding | Fluxo de cadastro e configuração inicial de uma Company dentro do Tenant |
+| CompanyAccess | Superfície de acesso externo autorizada para usuários vinculados a uma Company |
 | CnpjEntity | One tax/legal establishment associated with a Company |
 | AccountingPeriod | Operational accounting/tax period |
 
@@ -228,6 +230,94 @@ Canonical concepts remain:
 - `TenantEntitlements`
 - `UserPermissions`
 - `Capabilities`
+
+---
+
+## 4.4 Access surfaces
+
+Platform must distinguish internal Tenant access from external Company access.
+
+```text
+Tenant
+├── Internal Users
+│   └── TenantAccess
+│
+└── Companies
+    └── Company
+        ├── CompanyOnboarding
+        └── CompanyAccess [optional]
+```
+
+### TenantAccess
+
+`TenantAccess` is the internal operational surface for users of the Tenant.
+
+It is governed by:
+
+- `TenantEntitlements`
+- `UserPermissions`
+- `Capabilities`
+
+It may expose all modules and transversal capabilities authorized for that user.
+
+### CompanyOnboarding
+
+`CompanyOnboarding` is the canonical flow used by an authorized Tenant user to register and configure a new `Company`.
+
+Initial scope:
+
+- create/select the Company identity;
+- associate 1..N `CnpjEntity`;
+- define initial `TaxProfile` when available;
+- define enabled service/module scope for that Company when Tenant policy requires it;
+- configure Company-specific data sources or integration overrides when necessary;
+- register responsible contacts;
+- validate required context before operational work begins.
+
+`CompanyOnboarding` does not create a new Tenant. It creates/configures a Company inside an existing Tenant.
+
+### CompanyAccess
+
+`CompanyAccess` is the optional external surface for users belonging to a `Company`.
+
+It must remain distinct from `TenantAccess`.
+
+Canonical rule:
+
+```text
+Tenant user
+≠ Company user
+```
+
+Company users may only access explicitly exposed capabilities.
+
+Candidate capabilities:
+
+- view Company information;
+- view/request documents;
+- answer information requests;
+- respond to PendingItems assigned to the Company;
+- view selected approvals when policy allows;
+- view selected reports/status;
+- interact with Intelligence only within an explicitly authorized Company scope.
+
+Company users must not inherit Tenant-wide access, portfolio access, cross-Company search, Tenant administration, or unrestricted module navigation.
+
+### Access boundary
+
+```text
+EVOLU
+↓
+Tenant
+├── TenantAccess
+│   └── Internal Users
+│
+└── Company
+    └── CompanyAccess [optional]
+        └── Company Users
+```
+
+Authentication implementation is a Backend concern. UX defines the access surfaces, roles, boundaries and expected navigation before Backend work begins.
 
 ---
 
@@ -688,6 +778,7 @@ Use context selectors, filters, tabs or metadata instead.
 
 - Overview
 - Clients
+- Company Onboarding
 - Pending Items
 - Approvals
 - Audit
@@ -725,6 +816,16 @@ Use context selectors, filters, tabs or metadata instead.
 - Tax Profile
 - Company Data Sources
 
+### Company external access
+
+- Company Login / Access Entry
+- Company Home
+- Company Requests / Pending Items
+- Company Documents
+- Company Information
+- Company Approvals [when exposed]
+- Company Reports / Status [when exposed]
+
 ---
 
 ## 13. Navigation Matrix — initial draft
@@ -749,7 +850,9 @@ Initial matrix:
 | Screen | Area | Primary entity | Primary entry | Alternative entries | Max clicks |
 |---|---|---|---|---|---:|
 | CompanyPortfolio | Core | Company | Overview | Search | 1 |
+| CompanyOnboarding | Core | Company | Clients | Overview | 2 |
 | CompanyWorkspace | Core | Company | Clients | Search, Pending Items | 2 |
+| CompanyAccessHome | CompanyAccess | Company | Company Login | direct link | 1 |
 | FiscalDocuments | Fiscal | FiscalDocument | Fiscal | Search, CompanyWorkspace | 2 |
 | FiscalDocumentDetail | Fiscal | FiscalDocument | FiscalDocuments | Search, Pending Items, Reconciliation, Intelligence, Audit | 3 |
 | TaxAssessment | Fiscal | AccountingPeriod | Fiscal | CompanyWorkspace | 2 |
@@ -776,6 +879,9 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 - UserPermissions define per-user access.
 - Capabilities define currently available/authorized operations.
 - Company = Cliente atendido pelo Tenant.
+- CompanyOnboarding = cadastro e configuração inicial de uma Company dentro do Tenant.
+- CompanyAccess = superfície externa opcional e separada para usuários vinculados a uma Company.
+- TenantAccess != CompanyAccess.
 - CNPJ = CnpjEntity.
 - Core is not a professional module.
 - Intelligence is not a professional module.
@@ -801,7 +907,7 @@ These are not yet frozen:
 4. Validate the proposed Reconciliation presentation rule by OperatingModel (Departamental=contextual, Global=global, Híbrido=both)?
 5. Tax Benefits as its own Fiscal submenu or inside Tax Classifications?
 6. Statements as its own Accounting submenu or inside Closing?
-7. Will clients of the Tenant have their own login/surface?
+7. Define the first-release scope of CompanyAccess (which capabilities are exposed to Company users)?
 8. Which modules can be sold without Intelligence?
 9. White-label depth: full brand replacement or “powered by EVOLU”?
 10. Minimum commercial composition of Platform?
@@ -810,7 +916,54 @@ These are not yet frozen:
 
 ---
 
-## 16. Change log
+## 16. UX completion gate before Backend
+
+Backend implementation must not begin merely because individual screens are ready.
+
+Before Backend work starts, the UX architecture must reach an explicit review gate.
+
+Required sequence:
+
+```text
+UX architecture completed
+→ navigation and screen contracts reviewed
+→ access surfaces reviewed
+→ module/capability behavior reviewed
+→ open UX decisions resolved or consciously deferred
+→ USER REVIEW REQUIRED
+→ explicit approval to proceed
+→ Backend planning/implementation
+```
+
+Canonical rule:
+
+**When all planned UX stages are complete, stop before Backend work and notify the user that the UX is ready for final analysis. Backend work only proceeds after explicit user approval.**
+
+This gate applies to:
+
+- Platform navigation;
+- module composition;
+- CompanyOnboarding;
+- TenantAccess;
+- CompanyAccess;
+- screen flows;
+- navigation budget;
+- Intelligence placement;
+- PendingItems / Approvals / Audit;
+- Reconciliation presentation;
+- provider/integration UX boundaries.
+
+---
+
+## 17. Change log
+
+### 0.5
+
+- added `CompanyOnboarding` as the canonical Company registration/configuration flow;
+- added `TenantAccess` and `CompanyAccess` as distinct access surfaces;
+- established that Tenant users and Company users are separate access populations;
+- added Company external-access pages to the navigation skeleton;
+- recorded the UX completion gate: user review is mandatory before Backend work begins.
 
 ### 0.4
 
