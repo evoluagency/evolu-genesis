@@ -39,7 +39,7 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
 <div class="field"><label data-i="period" for="period">Competência</label><select id="period"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
 </div></div>
 <div id="content" aria-live="polite"></div>
-<div class="bottom"><span data-i="foot">Protótipo demonstrativo com dados fictícios. A diferença de movimentações não representa lucro, saldo bancário nem base tributável.</span><a href="../company-access-home/" data-i="back">Ver início da empresa</a></div>
+<div class="bottom"><span data-i="foot">Protótipo demonstrativo com dados fictícios. A diferença de movimentações não representa lucro, saldo bancário nem base tributável.</span><a href="../ux-journey/">Mapa da jornada de UX ↗</a><a href="../company-access-home/" data-i="back">Ver início da empresa</a></div>
 </div></main></div>
 <div id="modalBack" class="modalback" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle"></h3><p id="modalDesc"></p><form id="modalForm"><div id="modalFields" class="modalfields"></div><div class="modalfoot"><button type="button" id="cancel" class="btn" data-i="cancel">Cancelar</button><button class="btn primary" type="submit" id="submit" data-i="save">Aplicar apenas na simulação</button></div></form></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
@@ -253,6 +253,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&& !$('modalBack').hi
 $('profile').addEventListener('change',e=>{role=e.target.value;view=navs[role][0][0];$('sidebar').classList.remove('open');render()});
 $('cnpj').addEventListener('change',e=>{company=e.target.value;render()});
 $('period').addEventListener('change',e=>{period=e.target.value;render()});
+// UX REVIEW ONLY: query selects the synthetic demo perspective, not authentication.
+const demoRole=new URLSearchParams(window.location.search).get('role');
+if(['company','accounting','advisory'].includes(demoRole)){
+role=demoRole;view=navs[role][0][0];
+}
 render();
 })();
 </script></body></html>
