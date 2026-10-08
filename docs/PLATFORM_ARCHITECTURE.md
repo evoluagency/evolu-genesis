@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.11  
+**Version:** 0.12  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -58,7 +58,7 @@ Canonical meanings:
 | Capabilities | Operations currently available/authorized in the active context |
 | Company | Cliente atendido pelo Tenant |
 | CompanyOnboarding | Fluxo de cadastro e configuração inicial de uma Company dentro do Tenant |
-| CompanyAccess | Superfície de acesso externo autorizada para usuários vinculados a uma Company |
+| CompanyAccess | Superfície externa operacional e configurável da empresa cliente, incluindo gestão empresarial quando habilitada |
 | CnpjEntity | One tax/legal establishment associated with a Company |
 | AccountingPeriod | Operational accounting/tax period |
 
@@ -278,7 +278,7 @@ Initial scope:
 
 ### CompanyAccess
 
-`CompanyAccess` is the optional external surface for users belonging to a `Company`.
+`CompanyAccess` is the optional external operational workspace for users belonging to a `Company`. It can support direct business activity and management alongside document exchange. It is not limited to a read-only collaboration portal.
 
 It must remain distinct from `TenantAccess`.
 
@@ -293,6 +293,8 @@ Company users may only access explicitly exposed capabilities.
 
 Candidate capabilities:
 
+- record authorized business activity (sales, purchases and expenses) when enabled;
+- view business performance and financial/operational summaries when enabled;
 - view Company information;
 - view/request documents;
 - answer information requests;
@@ -561,9 +563,16 @@ Authentication mechanics remain Backend scope; UX defines the experience and aut
 
 ### Initial navigation proposal
 
+CompanyAccess supports a lightweight managed-service workspace or a larger business-operation workspace, depending on TenantEntitlements, Company service scope, UserPermissions and Capabilities.
+
 ```text
-CompanyAccess
-├── Home
+CompanyAccess [Tenant-branded]
+├── Home / Business Overview
+├── Sales [when enabled]
+├── Purchases [when enabled]
+├── Expenses [when enabled]
+├── Financial Overview [when enabled]
+├── Inventory [future optional capability]
 ├── Requests
 ├── Documents
 ├── Company Information
@@ -571,12 +580,16 @@ CompanyAccess
 └── Reports / Status [when exposed]
 ```
 
+Sales, Purchases, Expenses and Financial Overview are Company-facing **UX capability candidates** and are not production modules already implemented. An authorized Company user may input operational information directly; an authorized Tenant professional may use these records for accounting/fiscal processing. Existing ERP integration remains optional rather than mandatory. Full ERP substitution, fiscal-document issuance, payments and inventory control cannot be assumed until explicitly designed and validated.
+
 ### CompanyAccessHome
 
-The home surface should prioritize actionable items rather than internal accounting complexity.
+The home surface should prioritize the Company's own operational activity and actionable items, adjusted to enabled capabilities.
 
 Candidate blocks:
 
+- business summary (sales, purchases, expenses, performance) when available;
+- shortcuts to authorized operational entry;
 - requests awaiting response;
 - documents requested or received;
 - approvals awaiting the Company;
@@ -635,6 +648,12 @@ This surface may present:
 - selected fiscal/accounting outputs.
 
 The exact report catalog remains module/entitlement dependent.
+
+### White-label presentation
+
+The default CompanyAccess brand is **the Tenant's own brand**, not EVOLU. Tenant name and visual identity appear in the Company-facing experience; no mandatory EVOLU logo, "powered by EVOLU", footer or vendor identification should be shown. EVOLU remains identifiable to the Tenant as its software licensor where contract/administration requires it. The Company-facing experience can appear to be the Tenant's own system.
+
+Custom domains and optional Company-level branding are technical UX options still to be validated; their availability is not presumed.
 
 ### External-user isolation
 
@@ -965,8 +984,8 @@ Commercialization mechanics are **out of scope for the current UX design cycle**
 **Do not decide or implement at this stage:**
 
 - prices, markup, revenue-sharing or commissions;
-- whether EVOLU bills the Tenant or the Company;
-- paid plans, per-module/per-Company/per-user/usage charging;
+- whether the Tenant charges its Company clients separately for access;
+- paid plans, limits, per-module/per-Company/per-user/usage charging;
 - sublicensing, resale permissions, revenue guarantees or commercial packaging.
 
 **Reopen commercial decisions only after:**
@@ -1002,7 +1021,9 @@ The Tenant remains accountable for the professional services it provides; the Pl
 | TenantAccess — Administration | view enabled modules and configure offered services per Company |
 | TenantAccess — CompanyOnboarding | provision Company, CNPJ, service scope, responsible contacts, sources and optional CompanyAccess |
 | TenantAccess — CompanyWorkspace | see contracted/available services, requests, operational progress and client access status |
-| CompanyAccess — Home | show only services, requests, documents, statuses and actions explicitly exposed |
+| CompanyAccess — Home | show Tenant-branded business dashboard, enabled sales/purchases/expenses and pending collaboration |
+| CompanyAccess — Business Operations | simulate permitted sales, purchases, expenses and Tenant-side consumption of data, without Backend |
+| CompanyAccess — Financial Overview | display available Company financial context and permitted indicators |
 | CompanyAccess — Requests / Documents | support asynchronous information exchange without exposing other Companies |
 | Intelligence | respect TenantEntitlements, Company service scope, UserPermissions and Capabilities |
 | Optional downstream experiences | require separate UX, contracts and permission boundary before inclusion |
@@ -1012,10 +1033,53 @@ The Tenant remains accountable for the professional services it provides; the Pl
 - Platform and Intelligence remain the only named EVOLU products in this architecture.
 - No new technical entity is created merely to describe resale/distribution.
 - `TenantAccess` and `CompanyAccess` remain distinct; neither implies a Company customer's access.
-- White-label branding is configurable; levels of brand visibility and right to sublicense remain open.
+- CompanyAccess defaults to the Tenant's brand with no mandatory EVOLU attribution; custom domains, Company brand variants and extra sublicensing rights remain open.
 - Customer ownership, consent/data governance, support responsibility and multi-region professional requirements remain open contractual/operational decisions. Billing/pricing/resale are deferred by the commercial decision gate above.
 - Do not treat planned partner resale or additional Company capabilities as delivered features.
 - Preserve the UX completion review gate before any Backend implementation.
+
+---
+
+## 6.7 White-label licensing, Company operations and the three repositories
+
+**Status:** user-confirmed licensing topology, proposed Company operation UX; detailed module scope and pricing remain open.
+
+```text
+EVOLU [licenses Platform + Intelligence technology]
+└── Tenant [Contabilidade / Assessoria = EVOLU licensee]
+    ├── TenantAccess [staff, portfolio, fiscal/accounting/advisory work]
+    ├── Company A [1..N CnpjEntity]
+    │   └── CompanyAccess [Tenant-branded, enabled business tools]
+    ├── Company B [1..N CnpjEntity]
+    │   └── CompanyAccess [Tenant-branded, enabled business tools]
+    └── ... scalable Company/CNPJ portfolio
+```
+
+The Tenant contracts the EVOLU license and may accommodate one, several or many CNPJs across its Company portfolio. Company users do not become Tenants by accessing the service. This expresses product scalability, **not** unlimited contractual CNPJ quantities or any specific billing formula.
+
+**Company operating modes:**
+
+1. **Managed service:** the Tenant provides accounting/advisory services and gives the Company access to record day-to-day operations (e.g. sales, purchases, expenses) and submit evidence. Authorized Tenant professionals use those records to execute their professional workflows.
+2. **Extended business workspace:** selected Companies receive fuller business-management capabilities that may replace spreadsheets and selected ERP functions. Existing ERPs may also be connected, but are not obligatory.
+
+These are variations of CompanyAccess enabled by the Tenant's license and Company-level scope, not separate mandatory products or identities.
+
+**UX contract priorities:**
+
+| Company-facing area | Proposed actions | Important boundary |
+|---|---|---|
+| Home | summarize sales, purchases, expenses, results and pending actions | only available/authorized data |
+| Sales | create/list commercial sales records | fiscal invoice issuance is a different capability |
+| Purchases | record acquisition and attach fiscal evidence | professional tax classification remains reviewable |
+| Expenses | record costs and recurring expenses | no automatic tax-credit assertion |
+| Financial overview | view available revenue, costs, margin and cash information | calculated vs. missing data must be explicit |
+| Requests & documents | communicate with Tenant and submit supporting material | scoped by Company and CnpjEntity |
+| Inventory | optional future business capability | not a mandatory CompanyAccess module |
+| Intelligence | contextual explanation and recommendations | no autonomous execution permission |
+
+Genesis is the **front-end visual UX prototype**, with synthetic interactions and no production write access. Platform is the **separate future operational Backend**; Intelligence is the **separate analysis/recommendation service**. They must eventually share contracts, but none should be interconnected with real data/credentials before the final UX review and explicit user approval.
+
+**UX acceptance:** one Tenant may visualize many Companies/CNPJs; CompanyAccess uses solely Tenant brand by default; authorized Company operations may be simulated and seen by authorized Tenant staff; nonenabled Company modules stay hidden/unavailable; optional ERP provenance does not define the navigation; user review is required before Backend.
 
 ---
 
@@ -1496,6 +1560,10 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 - Recommendation is not execution.
 - Platform owns operational state and execution.
 - Intelligence owns analysis and recommendation.
+- EVOLU licenses its white-label Platform/Intelligence solution to the Tenant (Contabilidade or Assessoria).
+- The Tenant may serve multiple Companies and a portfolio of many CNPJs inside its licensed environment; the exact quantitative/license terms are deferred.
+- CompanyAccess can be a directly usable Company business workspace, not merely a collaboration portal.
+- The default Company-facing brand is the Tenant's, with no mandatory EVOLU vendor attribution.
 - The product architecture must support modular commercial packaging.
 - The white-label Platform/Intelligence ecosystem supports Company contexts across different industries through shared contracts and optional sector-specific capabilities; no industry-specific module is automatically part of V1.
 - A Tenant may distribute configured CompanyAccess and enabled services to its Company clients as part of its service offering; this does not automatically authorize sublicensing or define billing terms.
@@ -1517,7 +1585,7 @@ These items can be resolved while designing UX. Commercial pricing or resale ter
 6. Statements as its own Accounting submenu or inside Closing?
 7. Define the first-release scope of CompanyAccess (which capabilities are exposed to Company users)?
 8. Which modules can operate without Intelligence, independently of commercial packaging?
-9. What white-label branding variants must UX technically support (without deciding commercial tiers)?
+9. Which technical white-label variants beyond default Tenant-only branding (e.g. custom domains) should the UX prototype support?
 10. What minimal functional Platform composition is needed for a coherent UX?
 11. Which BusinessModel values beyond Contabilidade and Assessoria should be represented in V1 UX?
 12. What default UX module/capability composition should EVOLU recommend for each BusinessModel/OperatingModel combination?
@@ -1528,17 +1596,20 @@ These items can be resolved while designing UX. Commercial pricing or resale ter
 17. Will the Company be able to offer tools to its own customers/users? If so, what distinct identity/access boundary and commercial responsibility apply?
 18. Which Company industry/operating attributes are needed for UX configuration without inventing parallel identities?
 19. Which Company-facing services are included by default versus selectively enabled by the Tenant?
-20. What is the CompanyAccess branding policy (Tenant brand, Company brand or an approved combination)?
+20. Default is Tenant-branded CompanyAccess with no mandatory EVOLU attribution; should Company-specific branding be supported optionally?
 21. Which remote customer onboarding, communication and professional/jurisdictional compliance conditions must be evidenced in UX?
 22. What support, data-governance and operational boundaries apply if a Company later serves its own customers through additional tools?
+23. What are the minimum Company-facing UX contracts for sales, purchases, expenses and management indicators?
+24. Which Company operational capabilities need to be simulated in Genesis before the UX-completion gate?
+25. Which ERP-equivalent capabilities (invoicing, stock, accounts receivable/payable) should be optional UX extensions?
 
 ---
 
 **Deferred — commercial research after functional product and measured operating costs:**
 
-- Whether Tenant resale/sublicensing is permitted and under which contractual terms.
-- Who pays EVOLU; whether the Tenant passes through or marks up access for a Company.
-- Pricing methodology, commercial bundles, margins and market positioning.
+- Whether Tenant resale/sublicensing beyond providing configured services to its own Companies is permitted and under which contractual terms.
+- Whether the Tenant separately charges or marks up CompanyAccess for a Company.
+- Pricing methodology, quantitative CNPJ limits, commercial bundles, margins and market positioning.
 - Support/cost-sharing arrangements associated with resale.
 
 These items do **not** block UX approval or product development.
@@ -1585,6 +1656,14 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.12
+
+- clarified that EVOLU licenses the white-label technology to the Tenant, which can serve many Companies/CNPJs within its licensed environment;
+- made Tenant-only branding the default CompanyAccess presentation with no mandatory EVOLU attribution;
+- expanded CompanyAccess from collaboration to optionally enabled direct business workflows and financial context;
+- preserved separate Genesis (UX), Platform (future Backend) and Intelligence (future decision support) boundaries;
+- maintained the per-page UX review flow and mandatory final approval before Backend.
 
 ### 0.11
 
