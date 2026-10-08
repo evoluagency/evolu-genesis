@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.13  
+**Version:** 0.14  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -773,7 +773,22 @@ From the Tenant Overview, opening Company configuration should require no more t
 - UX-CFG-4: CompanyAccessHome (external user perspective).
 - UX-CFG-5: CompanyFinancialWorkspace (finance input, source status, handoff to accounting/advisory), after CompanyAccessHome user review.
 
-One page at a time: create responsive, interactive synthetic preview → test → provide preview link → user review → then start the next page.
+One page at a time: create responsive, interactive synthetic preview → test → provide preview link → user review → then start the next page. An explicit "next step" instruction allowed preparing UX-CFG-3 while UX-CFG-2 remains open for review; do **not** infer approval for UX-CFG-2 or UX-CFG-3.
+
+UX-CFG-3 preview source:
+- `https://github.com/evoluagency/evolu-genesis/blob/main/preview/company-configuration/index.html`
+- Intended static Pages location: `https://evoluagency.github.io/evolu-genesis/preview/company-configuration/` (actual public deployment availability must be verified independently; repository publication does not by itself prove Pages propagation).
+
+UX-CFG-3 simulated interactions:
+- switch between two synthetic Company records, each with separate Company/CnpjEntity context;
+- review/edit identity and 1..N CNPJ records; CNPJ additions remain visibly fictitious;
+- configure Fiscal, Accounting and Company Financeiro within the example Tenant's enabled scope; Payroll, Sales/Invoicing and Inventory remain unavailable;
+- simulate manual, file, ERP, fiscal-document-provider and bank data sources without real connectors;
+- enable/disable CompanyAccess and prepare local-only user invitations and roles;
+- preview the Tenant-only branded external navigation; simulate configuration review/save and reset;
+- PT-BR/EN; light/dark; responsive viewport.
+
+Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not the grant of an undeclared paid Financial module. Provider status, invitation preparation and simulated save never imply live operations.
 
 ### UX configuration acceptance register
 
@@ -781,7 +796,7 @@ One page at a time: create responsive, interactive synthetic preview → test �
 |---|---|---|
 | UX-CFG-1 TenantConfiguration | Approved by user after reviewing preview | retain approved experience; no Backend |
 | UX-CFG-2 CompanyOnboarding | Interactive preview ready for user review | `preview/company-onboarding/index.html`; eight stages, synthetic activation; awaiting explicit UX review |
-| UX-CFG-3 CompanyConfiguration | Not started | start only after UX-CFG-2 review |
+| UX-CFG-3 CompanyConfiguration | Interactive preview created; pending user review | `preview/company-configuration/index.html` published as a static source on `main`; synthetic configuration only, do not consider approved |
 | UX-CFG-4 CompanyAccessHome | Not started | start after UX-CFG-3 review |
 | UX-CFG-5 CompanyFinancialWorkspace | Not started | financial team → authorized accounting/fiscal → advisory experience; review after UX-CFG-4 |
 
@@ -1747,6 +1762,13 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.14
+
+- created UX-CFG-3 CompanyConfiguration interactive static prototype: Company identity, CNPJ, enabled Fiscal/Accounting/Company Financeiro, synthetic sources, CompanyAccess and review;
+- maintained Tenant-only branding for Company users and explicit Financeiro-first scope, while sales/invoicing/stock stay out of V1;
+- recorded that UX-CFG-2 CompanyOnboarding remains pending review; UX-CFG-3 is also pending, not approved;
+- preserved the final UX completion and user-review gate before any Backend.
 
 ### 0.13
 
