@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.8  
+**Version:** 0.9  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -743,7 +743,7 @@ No downstream user automatically inherits Company, Tenant or cross-Company permi
 
 ## 6.6 Tenant distribution and Company value proposition
 
-**Status:** strategic direction frozen; commercial pricing and legal/operational details are open.
+**Status:** white-label distribution direction frozen; resale, billing, pricing and commercial terms explicitly deferred until product and cost/market evidence are ready.
 
 EVOLU continues to offer the two products `Platform` and `Intelligence` through a configurable white-label architecture. A `Tenant` may use them internally and make selected capabilities available to its own `Company` clients as part of the services it delivers.
 
@@ -799,16 +799,25 @@ EVOLU configures Tenant
 
 The Tenant may offer different compositions to Companies from different sectors without creating copies of Platform or duplicating the canonical Company/CnpjEntity data model.
 
-### Commercial packaging hypotheses
+### Commercialization decision gate — deferred
 
-Allow the UX architecture to accommodate alternative contractual/commercial packaging, but **do not freeze billing or resale mechanics yet**:
+Commercialization mechanics are **out of scope for the current UX design cycle**. Platform and Intelligence remain a configurable white-label ecosystem with `TenantAccess`, `CompanyOnboarding` and optional `CompanyAccess`; these experiences do not require a pricing, resale or billing policy to be designed.
 
-- technology included in the Tenant's professional service price;
-- separately itemized Company access/modules;
-- different Company service bundles per industry or need;
-- future distribution/revenue-sharing arrangements only if contractually approved.
+**Do not decide or implement at this stage:**
 
-These are commercial options, not existing product promises. Whether EVOLU bills only the Tenant, permits sublicensing/resale, charges per Company/module/usage or participates in revenue requires explicit decision.
+- prices, markup, revenue-sharing or commissions;
+- whether EVOLU bills the Tenant or the Company;
+- paid plans, per-module/per-Company/per-user/usage charging;
+- sublicensing, resale permissions, revenue guarantees or commercial packaging.
+
+**Reopen commercial decisions only after:**
+
+1. the planned UX is completed and explicitly reviewed/approved by the user;
+2. the product has a functional version with validated workflows (Backend only after the UX gate);
+3. operating costs are quantified by meaningful drivers such as Tenant, Company, documents, storage, processing, Intelligence calls and support;
+4. relevant market offerings, positioning and willingness to pay have been assessed.
+
+Do not let deferred commercial questions block `TenantEntitlements`, `UserPermissions`, `Capabilities`, modules, scopes or access surfaces: these are product/UX constructs, not billing promises.
 
 ### Remote customer acquisition and service delivery
 
@@ -845,7 +854,7 @@ The Tenant remains accountable for the professional services it provides; the Pl
 - No new technical entity is created merely to describe resale/distribution.
 - `TenantAccess` and `CompanyAccess` remain distinct; neither implies a Company customer's access.
 - White-label branding is configurable; levels of brand visibility and right to sublicense remain open.
-- Customer ownership, consent/data governance, support responsibility, billing and multi-region professional requirements remain open contractual/operational decisions.
+- Customer ownership, consent/data governance, support responsibility and multi-region professional requirements remain open contractual/operational decisions. Billing/pricing/resale are deferred by the commercial decision gate above.
 - Do not treat planned partner resale or additional Company capabilities as delivered features.
 - Preserve the UX completion review gate before any Backend implementation.
 
@@ -1335,7 +1344,9 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 
 ## 15. Open decisions
 
-These are not yet frozen:
+**Active — UX / product architecture:**
+
+These items can be resolved while designing UX. Commercial pricing or resale terms must not be inferred:
 
 1. Financial as a standalone module?
 2. Payroll / HR as a standalone module?
@@ -1344,23 +1355,32 @@ These are not yet frozen:
 5. Tax Benefits as its own Fiscal submenu or inside Tax Classifications?
 6. Statements as its own Accounting submenu or inside Closing?
 7. Define the first-release scope of CompanyAccess (which capabilities are exposed to Company users)?
-8. Which modules can be sold without Intelligence?
-9. White-label depth: full brand replacement or “powered by EVOLU”?
-10. Minimum commercial composition of Platform?
-11. Which BusinessModel values beyond Contabilidade and Assessoria should be supported in the first commercial version?
-12. What default module/capability composition should EVOLU recommend for each BusinessModel/OperatingModel combination?
+8. Which modules can operate without Intelligence, independently of commercial packaging?
+9. What white-label branding variants must UX technically support (without deciding commercial tiers)?
+10. What minimal functional Platform composition is needed for a coherent UX?
+11. Which BusinessModel values beyond Contabilidade and Assessoria should be represented in V1 UX?
+12. What default UX module/capability composition should EVOLU recommend for each BusinessModel/OperatingModel combination?
 13. What canonical contract name should represent Company-level service scope beneath TenantEntitlements?
 14. Which CompanyAccess capabilities are enabled by default, if any?
 15. Can one CompanyUser belong to more than one Company, or should multi-Company access require an explicit future model?
 16. Which industry-specific Company workflows should be piloted first without expanding mandatory V1 scope?
 17. Will the Company be able to offer tools to its own customers/users? If so, what distinct identity/access boundary and commercial responsibility apply?
 18. Which Company industry/operating attributes are needed for UX configuration without inventing parallel identities?
-19. What commercial rights and support obligations govern Tenant packaging, sublicensing/resale and CompanyAccess?
-20. Who bills the Company and how will modules, Company count, users or usage affect the commercial plan?
-21. Which Company-facing services are included by default versus selectively enabled by the Tenant?
-22. What is the CompanyAccess branding policy (Tenant brand, Company brand or an approved combination)?
-23. Which remote customer onboarding, communication and professional/jurisdictional compliance conditions must be evidenced in UX?
-24. What support, data-governance and operational boundaries apply if a Company later serves its own customers through additional tools?
+19. Which Company-facing services are included by default versus selectively enabled by the Tenant?
+20. What is the CompanyAccess branding policy (Tenant brand, Company brand or an approved combination)?
+21. Which remote customer onboarding, communication and professional/jurisdictional compliance conditions must be evidenced in UX?
+22. What support, data-governance and operational boundaries apply if a Company later serves its own customers through additional tools?
+
+---
+
+**Deferred — commercial research after functional product and measured operating costs:**
+
+- Whether Tenant resale/sublicensing is permitted and under which contractual terms.
+- Who pays EVOLU; whether the Tenant passes through or marks up access for a Company.
+- Pricing methodology, commercial bundles, margins and market positioning.
+- Support/cost-sharing arrangements associated with resale.
+
+These items do **not** block UX approval or product development.
 
 ---
 
@@ -1404,6 +1424,13 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.9
+
+- deferred resale, billing, pricing, margins and commercial packaging until the product is functional and operating costs and market price references are measured;
+- preserved white-label, Tenant entitlements, module configuration and Company access as active UX requirements;
+- separated active UX decisions from deferred commercial decisions;
+- preserved explicit user review before starting Backend.
 
 ### 0.8
 
