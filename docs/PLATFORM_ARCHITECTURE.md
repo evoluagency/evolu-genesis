@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.6  
+**Version:** 0.7  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -692,6 +692,55 @@ Do not create parallel names such as `DepartmentPackage`, `BusinessFeature` or `
 
 ---
 
+## 6.5 Cross-industry ecosystem strategy
+
+**Status: strategic direction frozen; implementation scope remains open.**
+
+Platform and Intelligence remain the two EVOLU products. The business model remains a configurable white-label offering. Product evolution must not be reduced to a single reconciliation tool or a replacement for one accounting-system provider.
+
+The same Platform architecture must support Companies from different sectors without changing canonical identity and context contracts:
+
+```text
+EVOLU
+├── Platform
+└── Intelligence
+       ↓
+Tenant (Organização cliente da EVOLU)
+       ├── BusinessModel / OperatingModel
+       ├── TenantEntitlements / UserPermissions / Capabilities
+       └── Company (Cliente atendido pelo Tenant)
+            ├── 1..N CnpjEntity
+            ├── CompanyContext / AccountingPeriod
+            ├── shared enabled services
+            └── sector-specific experiences [optional]
+```
+
+### Shared vs. sector-specific
+
+**Shared:** Company identity, CNPJ, competencies, fiscal documents, accounting, information requests, approvals, evidence, audit, data sources and contextual Intelligence.
+
+**Sector-specific (candidate, not V1 commitment):** manufacturing/production, retail/inventory, pet services/appointments, and future vertical workflows.
+
+Sector-specific screens may use canonical Company context and compatible UX Contracts, but must not contaminate shared domain naming or cause all sectors to receive irrelevant modules.
+
+A Company industry/operating profile influences recommended workflows; effective feature access still depends on TenantEntitlements, UserPermissions and Capabilities, including Company-level service scope when approved. A `BusinessModel` describes the Tenant, not the industry of every Company in its portfolio.
+
+### Additional downstream experiences
+
+A Company may later offer selected tools to its own customers/users. This is an **optional additional access surface**, not automatic reuse of `TenantAccess` or `CompanyAccess` and not a new mandatory domain hierarchy.
+
+No downstream user automatically inherits Company, Tenant or cross-Company permissions. Identity, access boundary, contractual responsibility, data ownership and the canonical name of that user/context remain **Open** until explicitly decided.
+
+### Ecosystem scope guardrails
+
+- Preserve the white-label Tenant → Company relationship and contextual Intelligence.
+- Keep core workflows provider-agnostic; Domínio/ONVIO/SIEG are third-party integrations or competitors, not canonical module names.
+- Support industries through configuration and deliberate extensions, not a promise to implement every sector in V1.
+- Share authorized context across enabled modules without duplicating Company/CnpjEntity facts.
+- Do not begin Backend until the UX completion and user-review gate in section 16 is met.
+
+---
+
 ## 7. Reconciliation
 
 **Reconciliation is a canonical business capability. External brands must not define reconciliation types.**
@@ -1168,6 +1217,7 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 - Platform owns operational state and execution.
 - Intelligence owns analysis and recommendation.
 - The product architecture must support modular commercial packaging.
+- The white-label Platform/Intelligence ecosystem supports Company contexts across different industries through shared contracts and optional sector-specific capabilities; no industry-specific module is automatically part of V1.
 
 ---
 
@@ -1190,6 +1240,9 @@ These are not yet frozen:
 13. What canonical contract name should represent Company-level service scope beneath TenantEntitlements?
 14. Which CompanyAccess capabilities are enabled by default, if any?
 15. Can one CompanyUser belong to more than one Company, or should multi-Company access require an explicit future model?
+16. Which industry-specific Company workflows should be piloted first without expanding mandatory V1 scope?
+17. Will the Company be able to offer tools to its own customers/users? If so, what distinct identity/access boundary and commercial responsibility apply?
+18. Which Company industry/operating attributes are needed for UX configuration without inventing parallel identities?
 
 ---
 
@@ -1233,6 +1286,14 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.7
+
+- preserved the white-label ecosystem business model for Platform and Intelligence;
+- recorded a cross-industry architecture: shared Company context plus optional sector-specific experiences;
+- differentiated Tenant BusinessModel from the industry of each Company;
+- captured optional downstream tools for customers/users of a Company without prematurely freezing a new domain entity;
+- added scope guardrails so multi-industry potential does not imply implementing every vertical in V1.
 
 ### 0.6
 
