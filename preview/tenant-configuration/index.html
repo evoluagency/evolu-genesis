@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Platform — protótipo de configuração do Tenant com dados sintéticos.">
+<title>Platform · Configurações da organização</title>
+<link rel="icon" href="../fiscal-document-70031/evolu-symbol.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0b0e14;--sidebar:#0e131b;--card:#121923;--card2:#171f2b;--border:#273141;--border2:#39475c;--text:#eef2f9;--sub:#a0acbf;--soft:#77859c;--accent:#947eff;--acBg:rgba(148,126,255,.12);--shadow:rgba(0,0,0,.2);--good:#6bd5af;--warn:#f1bf75}
+html[data-theme=light]{color-scheme:light;--bg:#f6f7fa;--sidebar:#fff;--card:#fff;--card2:#f0f2f8;--border:#dde2eb;--border2:#c7d0df;--text:#182033;--sub:#556277;--soft:#748098;--accent:#6953d8;--acBg:rgba(105,83,216,.08);--shadow:rgba(24,32,51,.04);--good:#157b61;--warn:#9e6a1c}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}body{font:13px/1.55 Inter,system-ui,sans-serif}
+button,select,input{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+[hidden]{display:none!important}.app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+aside{border-right:1px solid var(--border);background:var(--sidebar);padding:22px 14px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;gap:10px;align-items:center;padding:0 8px}.brand img{width:36px;height:36px}.brand div{display:grid}.brand strong{font:500 15px Montserrat,sans-serif;letter-spacing:.12em}.brand small{font-size:9px;letter-spacing:.15em;color:var(--sub)}
+.tenant{border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center;background:var(--card)}
+.avatar{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--acBg);color:var(--accent);font-weight:700}
+.tenant div:last-child{min-width:0}.tenant b{display:block;font-size:11px}.tenant small{display:block;color:var(--sub);font-size:10px}
+.nav-head{font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--soft);padding:6px 11px}
+.nav{display:grid;gap:3px}.nav button{border:0;background:transparent;color:var(--sub);display:flex;align-items:center;gap:10px;text-align:left;padding:11px;border-radius:9px}
+.nav button:hover{background:var(--card2);color:var(--text)}.nav button.active{color:var(--text);background:var(--acBg)}.nav i{width:20px;font-style:normal;text-align:center;font-size:15px;color:var(--soft)}.nav button.active i{color:var(--accent)}
+.sidebar-foot{margin-top:auto;padding:15px 8px;border-top:1px solid var(--border);font-size:10px;color:var(--sub)}
+main{min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 29px;min-height:69px;border-bottom:1px solid var(--border);background:var(--sidebar)}
+.crumb{font-size:10px;color:var(--sub)}.top h1{font-size:16px;line-height:1.1;margin:3px 0 0;font-weight:600}.toolbar{display:flex;gap:7px;align-items:center}
+.pill,.ghostbtn{border:1px solid var(--border);border-radius:9px;background:var(--card);min-height:32px;padding:0 10px;color:var(--text);font-size:10px}
+.pill{display:flex;align-items:center;color:var(--sub)}.synth{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 34%,var(--border))}.ghostbtn:hover{border-color:var(--accent)}
+.workspace{max-width:1430px;margin:0 auto;padding:27px 30px 52px}.head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:18px}
+.head .eyebrow{font-size:10px;letter-spacing:.12em;color:var(--soft);text-transform:uppercase}.head h2{font:400 29px Montserrat,sans-serif;letter-spacing:-.03em;margin:6px 0}.head p{max-width:740px;margin:0;color:var(--sub);font-size:12px}
+.cta{border:1px solid var(--accent);background:var(--accent);color:white;border-radius:9px;padding:10px 14px;font-weight:600;font-size:11px;white-space:nowrap}.cta:hover{filter:brightness(.93)}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}.metric{border:1px solid var(--border);border-radius:12px;background:var(--card);padding:13px}.metric small{display:block;color:var(--sub);font-size:9px;text-transform:uppercase;letter-spacing:.10em}.metric b{display:block;margin-top:5px;font-size:15px;font-weight:600}
+.split{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.75fr);align-items:start;gap:16px}.stack{display:grid;gap:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 8px 35px var(--shadow)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}.card-head h3{margin:0;font-size:13px;font-weight:650}.card-head p{margin:4px 0 0;color:var(--sub);font-size:10px}.tag{font-size:9px;padding:5px 8px;border-radius:7px;background:var(--card2);color:var(--sub)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);overflow-x:auto;margin:-4px 0 18px}.tabs button{border:0;background:transparent;color:var(--sub);padding:10px 12px;border-bottom:2px solid transparent;white-space:nowrap;font-size:11px}.tabs button.selected{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field label{font-weight:600;font-size:10px;display:block;margin-bottom:6px}.field small{font-size:9px;color:var(--sub);display:block;margin-top:5px}
+.field select,.field input{width:100%;height:39px;background:var(--card2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:0 10px}.field select:disabled,.field input:disabled{opacity:.6;cursor:not-allowed}
+.callout{padding:11px 13px;border-left:3px solid var(--accent);border-radius:7px;background:var(--acBg);margin-top:15px;font-size:10px;color:var(--sub)}.callout b{color:var(--text)}
+.module{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}.module:last-child{border-bottom:0}.module strong{display:block;font-size:11px}.module span{font-size:10px;color:var(--sub);display:block;margin-top:2px}
+.check{display:flex;gap:8px;align-items:center;color:var(--sub);font-size:10px}.check input{accent-color:var(--accent);width:17px;height:17px}.check input:disabled{cursor:not-allowed}
+.lock{font-size:9px;color:var(--soft);background:var(--card2);padding:5px 8px;border-radius:6px;white-space:nowrap}
+.preview-nav{display:grid;gap:7px}.preview-nav h4{color:var(--soft);letter-spacing:.12em;font-size:9px;margin:13px 0 1px;text-transform:uppercase}
+.preview-nav p{margin:0;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card2);font-size:11px}
+.preview-nav p.indent{margin-left:10px;background:transparent}.preview-nav .no{color:var(--soft);font-style:italic}
+.right-note{font-size:10px;color:var(--sub);margin-top:13px;padding-top:12px;border-top:1px solid var(--border)}
+.role{display:flex;flex-direction:column;gap:7px}.role label{font-size:10px;color:var(--sub)}.role select{padding:8px 10px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:9px}
+.swatches{display:flex;gap:9px}.swatches button{width:32px;height:32px;border-radius:8px;border:2px solid transparent}.swatches button.active{outline:2px solid var(--text);outline-offset:2px}
+.company-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.company-controls select{background:var(--card2);color:var(--text);border:1px solid var(--border);padding:8px;border-radius:9px;font-size:11px}
+.foot-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}.btn{padding:9px 12px;background:var(--card2);border:1px solid var(--border);color:var(--text);border-radius:9px;font-size:10px}
+.form-note{font-size:10px;color:var(--sub)}.empty{padding:16px;background:var(--card2);border:1px dashed var(--border2);border-radius:9px;color:var(--sub);font-size:11px}
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 15px;background:var(--card2);border:1px solid var(--border2);color:var(--text);border-radius:10px;box-shadow:0 12px 40px var(--shadow);z-index:50;font-size:11px;max-width:min(380px,90vw)}
+#mobileMenu{display:none}
+@media(max-width:1150px){.split{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){.app{display:block}aside{position:fixed;inset:0 auto 0 0;width:min(300px,90vw);z-index:45;transform:translateX(-110%);transition:transform .18s;box-shadow:0 0 0 100vw transparent}aside.open{transform:none;box-shadow:0 0 0 100vw rgba(0,0,0,.56)}#mobileMenu{display:inline-flex}.top{padding:12px 14px;min-height:62px}.workspace{padding:18px 14px 55px}.head{flex-wrap:wrap}.head h2{font-size:23px}.pill.synth{display:none}}
+@media(max-width:550px){.summary{grid-template-columns:1fr 1fr}.metric b{font-size:12px}.fields{grid-template-columns:1fr}.card{padding:14px}.top h1{font-size:13px}.top .crumb{font-size:9px}.toolbar{gap:4px}.ghostbtn{padding:0 7px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside id="sidebar">
+  <div class="brand"><img src="../fiscal-document-70031/evolu-symbol.svg" alt=""><div><strong>EVOLU</strong><small>PLATFORM</small></div></div>
+  <div class="tenant"><div class="avatar">M</div><div><b id="tenantNameSide">Contabilidade Modelo</b><small data-i18n="syntheticTenant">Organização sintética</small></div></div>
+  <nav class="nav" aria-label="Navegação da Platform">
+   <div class="nav-head" data-i18n="work">OPERAÇÃO</div>
+   <button type="button" class="other"><i>⌂</i><span data-i18n="overview">Visão geral</span></button>
+   <button type="button" class="other"><i>▦</i><span data-i18n="clients">Clientes</span></button>
+   <div class="nav-head" data-i18n="modules">MÓDULOS</div>
+   <div id="sidebarModules"></div>
+   <div class="nav-head" data-i18n="management">GESTÃO</div>
+   <button type="button" class="other"><i>☷</i><span data-i18n="pending">Pendências</span></button>
+   <button type="button" class="other"><i>✓</i><span data-i18n="approvals">Aprovações</span></button>
+   <button type="button" class="other"><i>⌁</i><span data-i18n="audit">Auditoria</span></button>
+   <div class="nav-head" data-i18n="administration">ADMINISTRAÇÃO</div>
+   <button type="button" class="active"><i>⚙</i><span data-i18n="orgSettings">Configurações da organização</span></button>
+  </nav>
+  <div class="sidebar-foot" data-i18n="demoNote">Protótipo de UX · sem conexão com dados reais</div>
+</aside>
+<main>
+<header class="top">
+ <div style="display:flex;align-items:center;gap:10px"><button class="ghostbtn" id="mobileMenu" aria-label="Abrir menu">☰</button><div><div class="crumb" data-i18n="breadcrumb">Administração / Organização</div><h1 data-i18n="pageTitle">Configurações da organização</h1></div></div>
+ <div class="toolbar">
+  <span class="pill synth" data-i18n="synthetic">DADOS SINTÉTICOS</span>
+  <button class="ghostbtn" id="langBtn" aria-label="Mudar idioma">EN</button>
+  <button class="ghostbtn" id="themeBtn" aria-label="Alternar tema">☀</button>
+ </div>
+</header>
+<div class="workspace">
+ <section class="head">
+  <div><div class="eyebrow" data-i18n="config">PLATFORM / CONFIGURAÇÃO</div><h2 data-i18n="heading">Estrutura da organização</h2><p data-i18n="intro">Defina como a organização opera e visualize a estrutura resultante. Módulos habilitados, permissões e acesso dos clientes são tratados separadamente.</p></div>
+  <button type="button" class="cta" id="applyBtn" data-i18n="apply">Aplicar simulação</button>
+ </section>
+ <div class="summary">
+  <div class="metric"><small data-i18n="business">Modelo de negócio</small><b id="summaryBusiness">Contabilidade</b></div>
+  <div class="metric"><small data-i18n="operating">Modelo operacional</small><b id="summaryOperating">Departamental</b></div>
+  <div class="metric"><small data-i18n="enabled">Módulos habilitados</small><b id="summaryModules">2 de 5</b></div>
+  <div class="metric"><small data-i18n="companies">Empresas atendidas</small><b>2</b></div>
+ </div>
+ <div class="split">
+  <div class="stack">
+   <section class="card">
+    <div class="card-head"><div><h3 data-i18n="configTitle">Configuração funcional</h3><p data-i18n="configSubtitle">A visualização de administração do Tenant é diferente do provisionamento pela EVOLU.</p></div><span class="tag" data-i18n="prototype">Protótipo</span></div>
+    <div class="role"><label for="roleSelect" data-i18n="perspective">Perspectiva simulada</label><select id="roleSelect"><option value="evolu" data-i18n="roleEvolu">Administração EVOLU</option><option value="tenant" data-i18n="roleTenant">Administrador do Tenant</option></select></div>
+    <div class="tabs" role="tablist" aria-label="Seções de configuração">
+     <button class="selected" data-tab="model" role="tab" aria-selected="true" data-i18n="tabModel">Modelo operacional</button>
+     <button data-tab="modules" role="tab" aria-selected="false" data-i18n="tabModules">Módulos</button>
+     <button data-tab="brand" role="tab" aria-selected="false" data-i18n="tabBrand">Identidade visual</button>
+     <button data-tab="sources" role="tab" aria-selected="false" data-i18n="tabSources">Integrações</button>
+     <button data-tab="access" role="tab" aria-selected="false" data-i18n="tabAccess">Acesso do cliente</button>
+    </div>
+    <div id="tab-model" role="tabpanel">
+      <div class="fields">
+       <div class="field"><label for="businessSelect" data-i18n="business">Modelo de negócio</label><select id="businessSelect"><option value="Contabilidade">Contabilidade</option><option value="Assessoria">Assessoria</option></select><small data-i18n="businessHelp">Define o perfil comercial do Tenant; não altera automaticamente as permissões.</small></div>
+       <div class="field"><label for="operatingSelect" data-i18n="operating">Modelo operacional</label><select id="operatingSelect"><option value="Departamental">Departamental</option><option value="Global">Global</option><option value="Híbrido">Híbrido</option></select><small data-i18n="operatingHelp">Define como módulos e capacidades são organizados na navegação.</small></div>
+      </div>
+      <div class="callout" id="modelHelp"><b data-i18n="authority">Autoridade de configuração:</b> <span data-i18n="evoluAuthority">A EVOLU define o BusinessModel e os limites contratados. O Tenant gerencia apenas as opções autorizadas.</span></div>
+    </div>
+    <div id="tab-modules" role="tabpanel" hidden>
+     <p class="form-note" data-i18n="moduleHelp">Uma configuração de UX não concede direitos de uso. Entitlements e permissões são controles diferentes.</p>
+     <div id="moduleRows"></div>
+    </div>
+    <div id="tab-brand" role="tabpanel" hidden>
+     <div class="field"><label for="displayName" data-i18n="displayName">Nome exibido ao cliente</label><input id="displayName" type="text" maxlength="44" value="Contabilidade Modelo"></div>
+     <p class="form-note" data-i18n="brandHelp">A marca própria pode ser configurada; as regras comerciais de white-label permanecem em aberto.</p>
+     <div class="field" style="margin-top:17px"><label data-i18n="accentColor">Cor de destaque</label><div class="swatches">
+       <button type="button" class="active" data-color="purple" style="background:#8e7dff" aria-label="Roxo"></button>
+       <button type="button" data-color="blue" style="background:#4d94d5" aria-label="Azul"></button>
+       <button type="button" data-color="teal" style="background:#33a997" aria-label="Verde água"></button>
+      </div></div>
+    </div>
+    <div id="tab-sources" role="tabpanel" hidden>
+     <div class="module"><div><strong data-i18n="fiscalSources">Documentos fiscais</strong><span data-i18n="sourceProvider">Categoria canônica · provider configurável</span></div><span class="lock" data-i18n="notConnected">Não conectado</span></div>
+     <div class="module"><div><strong data-i18n="accountingSources">Sistema contábil</strong><span data-i18n="sourceProvider">Categoria canônica · provider configurável</span></div><span class="lock" data-i18n="notConnected">Não conectado</span></div>
+     <div class="module"><div><strong data-i18n="financialSources">Dados financeiros</strong><span data-i18n="sourceProvider">Categoria canônica · provider configurável</span></div><span class="lock" data-i18n="notConnected">Não conectado</span></div>
+     <div class="callout" data-i18n="sourcesHelp">SIEG, ONVIO e bancos são provedores possíveis, não nomes de menus ou entidades. Nenhuma conexão é realizada nesta prévia.</div>
+    </div>
+    <div id="tab-access" role="tabpanel" hidden>
+     <div class="company-controls"><div><strong data-i18n="companySelected">Empresa selecionada</strong><p class="form-note" data-i18n="companyHelp">O acesso deve ser configurado individualmente por Company.</p></div><select id="companySelect"><option value="industry" data-i18n="companyA">Indústria Exemplo</option><option value="pet" data-i18n="companyB">Pet Shop Exemplo</option></select></div>
+     <div class="module"><div><strong data-i18n="externalAccess">CompanyAccess</strong><span data-i18n="externalHelp">Superfície externa opcional, não é o login interno do Tenant.</span></div><label class="check"><input id="companyAccess" type="checkbox"><span data-i18n="enabledSimple">Habilitado</span></label></div>
+     <div class="module"><div><strong data-i18n="documents">Documentos</strong><span data-i18n="documentsHelp">Apenas os documentos autorizados para esta empresa.</span></div><label class="check"><input class="companyCap" data-cap="documents" type="checkbox"><span data-i18n="expose">Exibir</span></label></div>
+     <div class="module"><div><strong data-i18n="requests">Solicitações</strong><span data-i18n="requestsHelp">Pendências atribuídas à Company.</span></div><label class="check"><input class="companyCap" data-cap="requests" type="checkbox"><span data-i18n="expose">Exibir</span></label></div>
+     <div class="module"><div><strong data-i18n="approvals">Aprovações</strong><span data-i18n="approvalsHelp">Somente itens explicitamente publicados à Company.</span></div><label class="check"><input class="companyCap" data-cap="approvals" type="checkbox"><span data-i18n="expose">Exibir</span></label></div>
+     <div class="callout" data-i18n="noLogin">Ativar a superfície não cria credenciais nem uma sessão. O convite e as autorizações serão definidos na etapa própria de UX.</div>
+    </div>
+   </section>
+   <div class="foot-actions"><button type="button" class="btn" id="resetBtn" data-i18n="reset">Restaurar cenário</button></div>
+  </div>
+  <div class="stack">
+   <section class="card">
+    <div class="card-head"><div><h3 data-i18n="menuPreview">Prévia do menu</h3><p data-i18n="menuPreviewHelp">Navegação resultante do OperatingModel e dos módulos disponíveis.</p></div><span class="tag" data-i18n="syntheticPreview">Simulação</span></div>
+    <div class="preview-nav" id="menuPreview"></div>
+    <div class="right-note" data-i18n="menusNoSecurity">O menu reflete disponibilidade; não substitui autorização técnica de acesso.</div>
+   </section>
+   <section class="card">
+    <div class="card-head"><div><h3 data-i18n="companyPortalTitle">Acesso da empresa cliente</h3><p data-i18n="companyPortalHelp">A empresa vê apenas o que foi explicitamente liberado.</p></div></div>
+    <div class="preview-nav" id="companyPreview"></div>
+   </section>
+  </div>
+ </div>
+</div>
+</main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<script>
+(() => {
+const text={
+pt:{work:"OPERAÇÃO",overview:"Visão geral",clients:"Clientes",modules:"MÓDULOS",management:"GESTÃO",pending:"Pendências",approvals:"Aprovações",audit:"Auditoria",administration:"ADMINISTRAÇÃO",orgSettings:"Configurações da organização",demoNote:"Protótipo de UX · sem conexão com dados reais",syntheticTenant:"Organização sintética",breadcrumb:"Administração / Organização",pageTitle:"Configurações da organização",synthetic:"DADOS SINTÉTICOS",config:"PLATFORM / CONFIGURAÇÃO",heading:"Estrutura da organização",intro:"Defina como a organização opera e visualize a estrutura resultante. Módulos habilitados, permissões e acesso dos clientes são tratados separadamente.",apply:"Aplicar simulação",business:"Modelo de negócio",operating:"Modelo operacional",enabled:"Módulos habilitados",companies:"Empresas atendidas",configTitle:"Configuração funcional",configSubtitle:"A visualização de administração do Tenant é diferente do provisionamento pela EVOLU.",prototype:"Protótipo",perspective:"Perspectiva simulada",roleEvolu:"Administração EVOLU",roleTenant:"Administrador do Tenant",tabModel:"Modelo operacional",tabModules:"Módulos",tabBrand:"Identidade visual",tabSources:"Integrações",tabAccess:"Acesso do cliente",businessHelp:"Define o perfil comercial do Tenant; não altera automaticamente as permissões.",operatingHelp:"Define como módulos e capacidades são organizados na navegação.",authority:"Autoridade de configuração:",evoluAuthority:"A EVOLU define o BusinessModel e os limites habilitados. O Tenant gerencia apenas as opções autorizadas.",tenantAuthority:"O BusinessModel é somente leitura. A organização pode adaptar a apresentação dentro dos limites autorizados.",moduleHelp:"Uma configuração de UX não concede direitos de uso. Entitlements e permissões são controles diferentes.",displayName:"Nome exibido ao cliente",brandHelp:"A marca própria pode ser configurada; as regras comerciais de white-label permanecem em aberto.",accentColor:"Cor de destaque",fiscalSources:"Documentos fiscais",accountingSources:"Sistema contábil",financialSources:"Dados financeiros",sourceProvider:"Categoria canônica · provider configurável",notConnected:"Não conectado",sourcesHelp:"SIEG, ONVIO e bancos são provedores possíveis, não nomes de menus ou entidades. Nenhuma conexão é realizada nesta prévia.",companySelected:"Empresa selecionada",companyHelp:"O acesso deve ser configurado individualmente por Company.",companyA:"Indústria Exemplo",companyB:"Pet Shop Exemplo",externalAccess:"CompanyAccess",externalHelp:"Superfície externa opcional, não é o login interno do Tenant.",enabledSimple:"Habilitado",documents:"Documentos",documentsHelp:"Apenas os documentos autorizados para esta empresa.",requests:"Solicitações",requestsHelp:"Pendências atribuídas à Company.",approvalsHelp:"Somente itens explicitamente publicados à Company.",expose:"Exibir",noLogin:"Ativar a superfície não cria credenciais nem uma sessão. O convite e as autorizações serão definidos na etapa própria de UX.",reset:"Restaurar cenário",menuPreview:"Prévia do menu",menuPreviewHelp:"Navegação resultante do OperatingModel e dos módulos disponíveis.",syntheticPreview:"Simulação",menusNoSecurity:"O menu reflete disponibilidade; não substitui autorização técnica de acesso.",companyPortalTitle:"Acesso da empresa cliente",companyPortalHelp:"A empresa vê apenas o que foi explicitamente liberado.",fiscal:"Fiscal",accounting:"Contábil",financial:"Financeiro",payroll:"Folha / DP",legal:"Legalização",active:"Habilitado",unavailable:"Candidato — indisponível nesta versão",off:"Desabilitado nesta simulação",configure:"Habilitação EVOLU",view:"Somente leitura",groupModules:"MÓDULOS",groupOperation:"OPERAÇÕES",workAreas:"Áreas de trabalho",reconciliation:"Conciliação",companyHome:"Início da empresa",noCompanyAccess:"CompanyAccess não habilitado para a empresa selecionada.",notExposed:"Nenhuma área publicada para a empresa.",success:"Simulação aplicada em memória. Nenhum dado foi enviado.",restored:"Cenário sintético restaurado.",notReady:"Esta página terá uma prévia própria em outra etapa.",moduleLocked:"Módulo indisponível nesta versão da experiência.",roleRestricted:"Disponível apenas na perspectiva EVOLU.",emptyName:"Informe um nome de exibição válido.",changed:"Alteração simulada — não persistida."},
+en:{work:"OPERATIONS",overview:"Overview",clients:"Clients",modules:"MODULES",management:"MANAGEMENT",pending:"Pending items",approvals:"Approvals",audit:"Audit",administration:"ADMINISTRATION",orgSettings:"Organization settings",demoNote:"UX prototype · no real data connected",syntheticTenant:"Synthetic organization",breadcrumb:"Administration / Organization",pageTitle:"Organization settings",synthetic:"SYNTHETIC DATA",config:"PLATFORM / CONFIGURATION",heading:"Organization structure",intro:"Configure how the organization operates and preview its resulting structure. Enabled modules, permissions and client access are managed separately.",apply:"Apply simulation",business:"Business model",operating:"Operating model",enabled:"Enabled modules",companies:"Client companies",configTitle:"Functional configuration",configSubtitle:"Tenant management differs from provisioning controlled by EVOLU.",prototype:"Prototype",perspective:"Simulated perspective",roleEvolu:"EVOLU administration",roleTenant:"Tenant administrator",tabModel:"Operating model",tabModules:"Modules",tabBrand:"Brand identity",tabSources:"Integrations",tabAccess:"Company access",businessHelp:"Defines the Tenant's business profile; does not automatically change permissions.",operatingHelp:"Controls how enabled modules and shared capabilities appear in navigation.",authority:"Configuration authority:",evoluAuthority:"EVOLU defines the BusinessModel and module boundaries. The Tenant can manage authorized options.",tenantAuthority:"BusinessModel is read-only. Organization presentation can be adjusted within granted permissions.",moduleHelp:"UX configuration never grants usage rights. Entitlements and permissions are separate controls.",displayName:"Client-facing name",brandHelp:"White-label identity is configurable; commercial terms remain undecided.",accentColor:"Accent color",fiscalSources:"Fiscal documents",accountingSources:"Accounting system",financialSources:"Financial data",sourceProvider:"Canonical category · configurable provider",notConnected:"Not connected",sourcesHelp:"SIEG, ONVIO and banks are possible providers, never menu names or domain entities. No connection is made in this preview.",companySelected:"Selected company",companyHelp:"Access is configured independently for each Company.",companyA:"Sample Manufacturer",companyB:"Sample Pet Shop",externalAccess:"CompanyAccess",externalHelp:"Optional external surface, separate from the Tenant's internal login.",enabledSimple:"Enabled",documents:"Documents",documentsHelp:"Only documents explicitly exposed to this company.",requests:"Requests",requestsHelp:"Pending items assigned to the Company.",approvalsHelp:"Only approvals explicitly exposed to this Company.",expose:"Show",noLogin:"Enabling a surface does not create credentials or a session. Invitations and permissions have a separate UX stage.",reset:"Restore scenario",menuPreview:"Menu preview",menuPreviewHelp:"Navigation resulting from OperatingModel and enabled modules.",syntheticPreview:"Simulation",menusNoSecurity:"Menu visibility never replaces technical authorization.",companyPortalTitle:"Company access preview",companyPortalHelp:"The Company sees only explicitly enabled areas.",fiscal:"Fiscal",accounting:"Accounting",financial:"Financial",payroll:"Payroll",legal:"Legalization",active:"Enabled",unavailable:"Candidate — unavailable in this version",off:"Disabled in simulation",configure:"EVOLU provisioning",view:"Read-only",groupModules:"MODULES",groupOperation:"OPERATIONS",workAreas:"Work areas",reconciliation:"Reconciliation",companyHome:"Company home",noCompanyAccess:"CompanyAccess is not enabled for the selected company.",notExposed:"No area has been published for this company.",success:"Simulation applied in memory. No data was sent.",restored:"Synthetic scenario restored.",notReady:"This page will have its own preview at a later stage.",moduleLocked:"Module unavailable in this experience version.",roleRestricted:"Available only in EVOLU perspective.",emptyName:"Enter a valid display name.",changed:"Simulated change — not persisted."}
+};
+const defaults={business:"Contabilidade",operating:"Departamental",role:"evolu",modules:{fiscal:true,accounting:true},name:"Contabilidade Modelo",color:"purple",companies:{industry:{access:true,caps:{documents:true,requests:true,approvals:false}},pet:{access:false,caps:{documents:false,requests:false,approvals:false}}}};
+let state=JSON.parse(JSON.stringify(defaults));let lang="pt",tab="model",company="industry",dirty=false;
+const $=id=>document.getElementById(id);const t=key=>(text[lang][key]||key);
+const liveModules=["fiscal","accounting"];const futureModules=["financial","payroll","legal"];
+const clone=o=>JSON.parse(JSON.stringify(o));
+const notify=key=>{const toast=$("toast");toast.textContent=t(key);toast.hidden=false;clearTimeout(notify.timer);notify.timer=setTimeout(()=>toast.hidden=true,2900)};
+function mark(){dirty=true;$("applyBtn").textContent=t("apply")+" •"}
+function navLine(label,indent=false){const p=document.createElement("p");p.textContent=label;if(indent)p.className="indent";return p}
+function navGroup(container,label){const h=document.createElement("h4");h.textContent=label;container.appendChild(h)}
+function updateMenu(){
+ const view=$("menuPreview");view.replaceChildren();
+ navGroup(view,t("work"));view.append(navLine(t("overview")),navLine(t("clients")));
+ if(state.operating==="Global"){
+   navGroup(view,t("workAreas"));
+   liveModules.filter(k=>state.modules[k]).forEach(k=>view.append(navLine(t(k),true)));
+   navGroup(view,t("groupOperation"));
+   view.append(navLine(t("reconciliation")),navLine(t("pending")),navLine(t("approvals")),navLine(t("audit")));
+ }else{
+  navGroup(view,t("groupModules"));
+  liveModules.filter(k=>state.modules[k]).forEach(k=>view.append(navLine(t(k))));
+  if(state.operating==="Híbrido"){navGroup(view,t("groupOperation"));view.append(navLine(t("reconciliation")))}
+  navGroup(view,t("management"));view.append(navLine(t("pending")),navLine(t("approvals")),navLine(t("audit")));
+ }
+ navGroup(view,t("administration"));view.append(navLine(t("orgSettings")));
+ const side=$("sidebarModules");side.replaceChildren();
+ for(const key of liveModules.filter(k=>state.modules[k])){const b=document.createElement("button");b.className="other";b.type="button";b.textContent=t(key);b.addEventListener("click",()=>notify("notReady"));side.appendChild(b)}
+ if(!side.children.length){const n=document.createElement("div");n.className="nav-head";n.textContent="—";side.appendChild(n)}
+}
+function updatePortal(){
+ const v=$("companyPreview");v.replaceChildren();
+ const cfg=state.companies[company];
+ if(!cfg.access){const p=document.createElement("div");p.className="empty";p.textContent=t("noCompanyAccess");v.appendChild(p);return}
+ navGroup(v,t("companyHome"));v.append(navLine(t("companyHome")));
+ const selected=Object.keys(cfg.caps).filter(k=>cfg.caps[k]);if(!selected.length){const p=document.createElement("div");p.className="empty";p.textContent=t("notExposed");v.appendChild(p)}
+ else selected.forEach(k=>v.append(navLine(t(k),true)));
+}
+function updateModules(){
+ const rows=$("moduleRows");rows.replaceChildren();
+ for(const k of [...liveModules,...futureModules]){
+  const row=document.createElement("div");row.className="module";
+  const left=document.createElement("div"),title=document.createElement("strong"),caption=document.createElement("span");
+  title.textContent=t(k);caption.textContent=futureModules.includes(k)?t("unavailable"):(state.modules[k]?t("active"):t("off"));left.append(title,caption);row.appendChild(left);
+  if(futureModules.includes(k)){const badge=document.createElement("span");badge.className="lock";badge.textContent=t("unavailable");row.appendChild(badge)}
+  else{
+   const lab=document.createElement("label");lab.className="check";const cb=document.createElement("input");cb.type="checkbox";cb.checked=state.modules[k];cb.disabled=state.role!=="evolu";cb.setAttribute("aria-label",t(k));cb.addEventListener("change",()=>{state.modules[k]=cb.checked;mark();update()});const txt=document.createElement("span");txt.textContent=state.role==="evolu"?t("configure"):t("view");lab.append(cb,txt);row.appendChild(lab)
+  }
+  rows.appendChild(row)
+ }
+}
+function update(){
+ document.documentElement.lang=lang==="pt"?"pt-BR":"en";
+ document.querySelectorAll("[data-i18n]").forEach(el=>{const val=t(el.dataset.i18n);if(el.tagName==="OPTION"){el.textContent=val}else{el.textContent=val}});
+ $("tenantNameSide").textContent=state.name;
+ $("businessSelect").value=state.business;
+ $("businessSelect").disabled=state.role!=="evolu";
+ $("operatingSelect").value=state.operating;
+ $("roleSelect").value=state.role;
+ $("displayName").value=state.name;
+ $("companySelect").value=company;
+ $("companyAccess").checked=state.companies[company].access;
+ document.querySelectorAll(".companyCap").forEach(cb=>{cb.checked=state.companies[company].caps[cb.dataset.cap];cb.disabled=!state.companies[company].access});
+ $("modelHelp").querySelector("span").textContent=t(state.role==="evolu"?"evoluAuthority":"tenantAuthority");
+ $("summaryBusiness").textContent=state.business;
+ $("summaryOperating").textContent=state.operating;
+ $("summaryModules").textContent=liveModules.filter(k=>state.modules[k]).length+" / 5";
+ document.querySelectorAll(".tabs button").forEach(b=>{b.classList.toggle("selected",b.dataset.tab===tab);b.setAttribute("aria-selected",b.dataset.tab===tab?"true":"false")});
+ ["model","modules","brand","sources","access"].forEach(k=>$("tab-"+k).hidden=k!==tab);
+ document.querySelectorAll(".swatches button").forEach(b=>b.classList.toggle("active",b.dataset.color===state.color));
+ const colors={purple:"#947eff",blue:"#4d94d5",teal:"#33a997"};document.documentElement.style.setProperty("--accent",colors[state.color]);document.documentElement.style.setProperty("--acBg",state.color==="purple"?"rgba(148,126,255,.10)":state.color==="blue"?"rgba(77,148,213,.10)":"rgba(51,169,151,.10)");
+ $("langBtn").textContent=lang==="pt"?"EN":"PT";
+ $("themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀":"☾";
+ $("applyBtn").textContent=t("apply")+(dirty?" •":"");
+ updateModules();updateMenu();updatePortal();
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{tab=b.dataset.tab;update()}));
+$("roleSelect").addEventListener("change",e=>{state.role=e.target.value;update()});
+$("businessSelect").addEventListener("change",e=>{if(state.role!=="evolu"){notify("roleRestricted");return}state.business=e.target.value;mark();update()});
+$("operatingSelect").addEventListener("change",e=>{state.operating=e.target.value;mark();update()});
+$("displayName").addEventListener("change",e=>{const v=e.target.value.trim();if(!v){notify("emptyName");update();return}state.name=v;mark();update()});
+$("companySelect").addEventListener("change",e=>{company=e.target.value;update()});
+$("companyAccess").addEventListener("change",e=>{state.companies[company].access=e.target.checked;mark();update()});
+document.querySelectorAll(".companyCap").forEach(cb=>cb.addEventListener("change",e=>{state.companies[company].caps[e.target.dataset.cap]=e.target.checked;mark();update()}));
+document.querySelectorAll(".swatches button").forEach(b=>b.addEventListener("click",()=>{state.color=b.dataset.color;mark();update()}));
+$("applyBtn").addEventListener("click",()=>{dirty=false;update();notify("success")});
+$("resetBtn").addEventListener("click",()=>{state=clone(defaults);company="industry";tab="model";dirty=false;update();notify("restored")});
+$("langBtn").addEventListener("click",()=>{lang=lang==="pt"?"en":"pt";update()});
+$("themeBtn").addEventListener("click",()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==="dark"?"light":"dark";update()});
+$("mobileMenu").addEventListener("click",()=>{$("sidebar").classList.toggle("open")});
+document.querySelectorAll(".nav button.other").forEach(b=>b.addEventListener("click",()=>notify("notReady")));
+update();
+})();
+</script>
+</body>
+</html>
