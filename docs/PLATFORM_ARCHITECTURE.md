@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.9  
+**Version:** 0.10  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -321,6 +321,75 @@ Authentication implementation is a Backend concern. UX defines the access surfac
 
 ---
 
+## 4.5 Tenant configuration UX (Platform)
+
+**Status:** proposed screen contracts and experience; canonical identity/access boundaries remain frozen.
+
+A Tenant is the **Organização cliente da EVOLU**. The administrative experience has two distinct authorities:
+
+1. **EVOLU configuration surface:** create/configure Tenant identity, `BusinessModel`, `OperatingModel`, `TenantEntitlements` and permitted white-label options. This is not exposed to a Tenant user.
+2. **TenantAccess / Administration:** manage its own users, granted modules, operational organization, integration configuration and Company portfolio, always limited by `TenantEntitlements`, `UserPermissions` and `Capabilities`.
+
+Neither surface determines commercial price, resale rights or billing; those decisions remain deferred.
+
+### Tenant configuration matrix
+
+| UX section | Canonical source/contract | EVOLU administration | Tenant administrator | Company user |
+|---|---|---|---|---|
+| Identity and BusinessModel | Tenant / BusinessModel | set during provisioning | view / request revision | no access |
+| OperatingModel | OperatingModel | define allowed model | adjust only with explicit capability | no access |
+| Modules | TenantEntitlements | enable/disable in prototype | view enabled/disabled and availability reason | no access |
+| Functional controls | Capabilities | configure supported scope | operate only within entitlements and own permissions | only when exposed |
+| White-label | Tenant identity/presentation | select available branding options | configure allowed assets/preferences | see published brand |
+| Integrations | Source Category → Provider → Connector → Format | define available connector types | connect permitted sources; no secrets in UX | no Tenant connector management |
+| Users and access | UserPermissions | administer owner/provisioning access | manage authorized Tenant users | no Tenant management |
+| Clients | Company, CnpjEntity | inspect only when authorized | CompanyOnboarding and Company configuration | only own CompanyAccess |
+| CompanyAccess | CompanyAccess | define supported surface | explicitly enable/assign per Company | access only published subset |
+
+### Screen intent and navigation
+
+```text
+EVOLU administration
+→ Tenant configuration
+   → Identity / BusinessModel / OperatingModel
+   → TenantEntitlements
+   → Available branding options
+
+TenantAccess
+→ Administration
+   → Organization preferences
+   → Enabled modules
+   → Users and access
+   → Integrations
+
+TenantAccess
+→ Clients
+   → CompanyOnboarding / Company configuration
+```
+
+Selecting `BusinessModel` or `OperatingModel` changes the recommended layout/presentation; it must never silently alter `TenantEntitlements`, `UserPermissions` or actual authorization.
+
+### First UX preview: TenantConfiguration
+
+- Default synthetic context: Tenant with `BusinessModel=Contabilidade`, `OperatingModel=Departamental`.
+- Controls: change the simulated `OperatingModel`, inspect module availability and preview the resulting menu.
+- Simulated enabled modules: Fiscal, Contábil. Other modules appear clearly unavailable rather than pretending to be purchased or operational.
+- View the Company-level access path without allowing Tenant users to grant unknown privileges.
+- Responsive mobile/desktop; light and dark presentation; PT-BR as primary language.
+- Explicit synthetic/demo indication; no real configuration persistence.
+- Every visible enabled control must perform a meaningful simulated interaction or explain unavailability.
+
+### UX behavior and state requirements
+
+- `ResourceState`: idle, loading, ready, empty, error, forbidden.
+- Disabled by entitlement and forbidden by permission must be distinct.
+- Any unsaved simulated modification must be visible and reversible.
+- Switching OperatingModel affects the navigation preview, not the underlying Company/CNPJ identities.
+- Configured provider/brand names are data labels; they never become modules or canonical domain entities.
+- The Interface may show available modules, but the Backend must eventually enforce authorization; hiding a menu is not a security control.
+
+---
+
 ## 5. Client operational context
 
 ## 5.1 CompanyOnboarding flow
@@ -615,6 +684,74 @@ Preferred UX:
 ```
 
 They act primarily as persistent context selectors.
+
+---
+
+## 5.3 Company configuration UX (Platform)
+
+**Status:** proposed UX configuration flow; not a new product nor a replacement for `CompanyOnboarding`.
+
+`CompanyOnboarding` creates/configures the Company for initial operation. `CompanyConfiguration` (screen concept only) allows authorized Tenant users to review/edit its configuration later.
+
+### Company configuration matrix
+
+| Section | Purpose | Source/constraint | CompanyAccess exposure |
+|---|---|---|---|
+| Identity | Company legal/trade names, industry and responsible contacts | Company / CompanyContext | only authorized information |
+| CNPJs | show and manage 1..N fiscal establishments | CnpjEntity; no CompanyId/CnpjId interchangeability | only authorized CNPJs |
+| Tax context | effective tax regime and relevant characteristics | TaxProfile with dates and provenance | selected read/request information |
+| Service scope | enable Company workflows from a subset of Tenant-authorized modules | bounded by TenantEntitlements | published services only |
+| Sources | inherit Tenant integrations or use specific approved Company override | Source Category → Provider → Connector | document submission where allowed; not connector secrets |
+| External access | invite/revoke Company users, restrict visible pages | CompanyAccess, UserPermissions, Capabilities | only explicitly allowed actions |
+| Pendências | surface unresolved data needed to proceed | PendingItem | assigned/exposed items only |
+| History | review changes and approvals | AuditEvent / ApprovalRecord | restricted items, not Tenant-wide audit |
+
+### Company-level scope is not a second entitlement system
+
+```text
+TenantEntitlements
+→ maximum modules/capabilities available
+→ authorized Company service scope [canonical contract name still Open]
+→ UserPermissions
+→ active Capabilities
+→ visible CompanyAccess
+```
+
+The screen must not invent a new paid plan, confer privileges by changing a toggle, or grant access to other Companies. `CompanyAccess` is optional and cannot be created merely by recording a contact.
+
+### Journey and click budget
+
+```text
+TenantAccess / Clients
+→ Company
+→ Company configuration
+   ├── Identity & CNPJs
+   ├── Service scope
+   ├── Data sources
+   └── CompanyAccess
+```
+
+From the Tenant Overview, opening Company configuration should require no more than 3 meaningful interactions through a normal path, with direct access from Client search and CompanyWorkspace. Changing tabs does not create deeper navigation hierarchy.
+
+### UX validation cases
+
+1. Tenant with only Fiscal and Contábil cannot expose Financial, Payroll or Legalization to a Company.
+2. A Company with two CNPJs remains one Company and can change selected CNPJ without leaving its workspace.
+3. Company A user never sees Company B data, portfolio search or Tenant administration.
+4. A pending CompanyAccess invitation does not imply an active authorized session.
+5. Company user submits missing economic purpose: it becomes information/evidence for review, not a silently executed tax classification.
+6. Changing the Company industry alters suggested context, not the Tenant BusinessModel or all other Companies.
+7. Integrations can be displayed by generic source category with concrete provider shown as provenance/configuration.
+8. No Company configurations are stored or sent to a production system during synthetic UX previews.
+
+### Prototype order
+
+- UX-CFG-1: TenantConfiguration (EVOLU/Tenant authority distinction, modules and OperatingModel preview).
+- UX-CFG-2: CompanyOnboarding (guided configuration).
+- UX-CFG-3: CompanyConfiguration (CNPJ, scope, sources and CompanyAccess).
+- UX-CFG-4: CompanyAccessHome (external user perspective).
+
+One page at a time: create responsive, interactive synthetic preview → test → provide preview link → user review → then start the next page.
 
 ---
 
@@ -1288,6 +1425,8 @@ Initial matrix:
 
 | Screen | Area | Primary entity | Primary entry | Alternative entries | Max clicks |
 |---|---|---|---|---|---:|
+| TenantConfiguration | EVOLU administration / TenantAccess | Tenant | Administration | Organization overview | 2 |
+| CompanyConfiguration | TenantAccess | Company | CompanyWorkspace | Clients, Search | 3 |
 | CompanyPortfolio | Core | Company | Overview | Search | 1 |
 | CompanyOnboarding | Core | Company | Clients | Overview | 2 |
 | CompanyWorkspace | Core | Company | Clients | Search, Pending Items | 2 |
@@ -1424,6 +1563,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.10
+
+- specified Tenant configuration authority boundaries for EVOLU administrators and Tenant users;
+- added detailed Tenant configuration UX matrix (identity, OperatingModel, modules, integrations, users, Company access);
+- modeled CompanyConfiguration as a screen after CompanyOnboarding, using existing canonical identity/context contracts;
+- established inherited TenantEntitlements → constrained Company service scope → UserPermissions → Capabilities;
+- defined four UX configuration previews to validate one page at a time before Backend;
+- kept commercial pricing/resale deferred and the final user approval gate intact.
 
 ### 0.9
 
