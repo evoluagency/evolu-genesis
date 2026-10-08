@@ -19,12 +19,44 @@ main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between
 .cards{display:grid;gap:9px}.screen{background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.screen b{font-size:11px}.screen small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.screen .btn{white-space:nowrap;font-size:10px;padding:8px 10px}.screen.denied{opacity:.75}.screen.denied .pill{color:var(--warn)}.cap{display:grid;gap:8px}.capline{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:11px}.capline:last-child{border-bottom:0}.capline span{color:var(--muted)}.explain{border:1px solid var(--line);background:var(--soft);border-radius:11px;padding:12px;font-size:11px;color:var(--muted)}.explain strong{color:var(--text)}.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px;color:var(--quiet);font-size:10px;flex-wrap:wrap}.foot a{color:var(--accent)}.tabs{display:flex;gap:5px;border-bottom:1px solid var(--line);padding-bottom:8px;flex-wrap:wrap}.tabs button{border:1px solid var(--line);background:var(--soft);border-radius:8px;color:var(--muted);padding:8px 10px;font-size:10px}.tabs button.active{background:var(--shade);border-color:var(--accent);color:var(--text)}
 @media(max-width:1100px){.grid{grid-template-columns:minmax(0,1fr)}.header{grid-template-columns:minmax(0,1fr)}.controls{width:100%}}
 @media(max-width:750px){.shell{display:block}aside{display:none}aside.open{position:fixed;inset:65px auto 0 0;width:245px;min-height:calc(100vh - 65px);display:flex;z-index:20;box-shadow:0 15px 45px #0008}.top{padding:12px 14px}.wrap{padding:18px 14px 45px}.header h2{font-size:23px}.controls{display:grid;grid-template-columns:1fr 1fr}.field select{min-width:0}.tag{display:none}}
+
+/* Desktop: icon-only navigation rail, never overlay the content. */
+.desktop-sidebar-toggle{display:none}
+@media (min-width:801px){
+  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
+  .shell{transition:grid-template-columns .18s ease}
+  body.sidebar-collapsed .shell{grid-template-columns:76px minmax(0,1fr)}
+  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
+  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
+  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
+  body.sidebar-collapsed aside .identity>div,
+  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
+  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
+  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
+  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
+  body.sidebar-collapsed aside .unit,
+  body.sidebar-collapsed aside .tenant,
+  body.sidebar-collapsed aside .org-chip,
+  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
+  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
+  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
+  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
+  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
+  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
+  body.sidebar-collapsed aside .sidebar-foot{display:none}
+  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
+  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
+  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
+  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
+  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
+  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
+}
 </style></head><body>
 <div class="shell"><aside id="sidebar"><div class="brand"><span class="mark">N</span><div><b>NEXUS</b><small>Contabilidade & Assessoria</small></div></div>
 <div class="unit"><div class="unit-icon" id="unitIcon">A</div><div><b id="unitName">ACME Industrial</b><small id="unitDetail">Empresa cliente</small></div></div>
 <div><div class="navtitle">JORNADA DE EXPERIÊNCIA</div><nav class="nav" id="nav"></nav></div>
 <div class="endnote">Somente dados sintéticos. A escolha de perfil nesta página não concede acesso real.</div></aside>
-<main><header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / Revisão da UX</div><h1>Mapa de navegação e acesso</h1></div><div class="tools"><button class="btn" id="menuBtn" aria-label="Abrir menu" hidden>☰</button><span class="tag">PROTÓTIPO · SEM BACKEND</span><button class="btn" id="themeBtn" aria-label="Alternar tema">☀</button></div></header>
+<main><header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / Revisão da UX</div><h1>Mapa de navegação e acesso</h1></div><div class="tools"><button type="button" class="btn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button><button class="btn" id="menuBtn" aria-label="Abrir menu" hidden>☰</button><span class="tag">PROTÓTIPO · SEM BACKEND</span><button class="btn" id="themeBtn" aria-label="Alternar tema">☀</button></div></header>
 <div class="wrap"><div class="header"><div><div class="eyebrow">UX-NAV-1 · REVISÃO TRANSVERSAL</div><h2 id="headline">Da empresa à assessoria</h2><p id="summary">Explore o fluxo de informações entre a empresa cliente e os profissionais da contabilidade, com controle de escopo e permissões.</p></div>
 <div class="controls"><div class="field"><label for="role">Perfil para avaliação</label><select id="role"><option value="company-fin">Financeiro da empresa</option><option value="company-read">Consulta da empresa</option><option value="tenant-accounting">Contábil/Fiscal da NEXUS</option><option value="tenant-advisory">Assessoria da NEXUS</option><option value="tenant-admin">Administrador da NEXUS</option></select></div>
 <div class="field" id="companyChooser"><label for="company">Empresa de trabalho</label><select id="company"><option value="acme">ACME Industrial</option></select></div></div></div>
@@ -111,4 +143,28 @@ themeBtn.addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';docum
 $('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
 function responsive(){$('menuBtn').hidden=window.innerWidth>750}window.addEventListener('resize',responsive);responsive();render();
 })();
-</script></body></html>
+</script>
+<script>
+(function(){
+ const control=document.getElementById('desktopSidebarToggle');
+ const aside=document.getElementById('sidebar');
+ if(!control||!aside)return;
+ const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
+   const label=item.textContent.trim().replace(/\s+/g,' ');
+   if(label){item.title=label;item.setAttribute('aria-label',label);}
+ });
+ function sync(){
+  const collapsed=document.body.classList.contains('sidebar-collapsed');
+  const en=document.documentElement.lang.toLowerCase().startsWith('en');
+  const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
+  control.textContent=collapsed?'»':'«';
+  control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
+ }
+ control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
+ const nav=aside.querySelector('.nav');
+ if(nav)new MutationObserver(annotate).observe(nav,{subtree:true,childList:true});
+ new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+ annotate();sync();
+})();
+</script>
+</body></html>
