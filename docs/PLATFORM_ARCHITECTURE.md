@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.12  
+**Version:** 0.13  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -563,33 +563,35 @@ Authentication mechanics remain Backend scope; UX defines the experience and aut
 
 ### Initial navigation proposal
 
-CompanyAccess supports a lightweight managed-service workspace or a larger business-operation workspace, depending on TenantEntitlements, Company service scope, UserPermissions and Capabilities.
+CompanyAccess must prioritize the **Company's Financial area** in the first visual release. The Company may keep its existing point-of-sale, commercial system, invoicing software or ERP. A sales system is **not required** to be built into Platform and direct sales entry is **not a prerequisite** for financial/accounting collaboration.
 
 ```text
 CompanyAccess [Tenant-branded]
-├── Home / Business Overview
-├── Sales [when enabled]
-├── Purchases [when enabled]
-├── Expenses [when enabled]
-├── Financial Overview [when enabled]
-├── Inventory [future optional capability]
-├── Requests
-├── Documents
+├── Home / Financial Overview
+├── Financeiro
+│   ├── Movimentações e extratos
+│   ├── Contas a pagar e receber [when enabled]
+│   ├── Despesas e custos
+│   ├── Entradas / recebimentos
+│   ├── Documentos e comprovantes
+│   └── Importação / integrações
+├── Requests / Pending Items
 ├── Company Information
+├── Reports / Status [when exposed]
 ├── Approvals [when exposed]
-└── Reports / Status [when exposed]
+└── Sales / Invoice issuance / POS / Inventory [future optional extensions]
 ```
 
-Sales, Purchases, Expenses and Financial Overview are Company-facing **UX capability candidates** and are not production modules already implemented. An authorized Company user may input operational information directly; an authorized Tenant professional may use these records for accounting/fiscal processing. Existing ERP integration remains optional rather than mandatory. Full ERP substitution, fiscal-document issuance, payments and inventory control cannot be assumed until explicitly designed and validated.
+Company-facing Financeiro is a **V1 UX priority** but does not imply a complete financial ERP or a separately licensed production Financial module. Sales, fiscal document issuance, POS and Inventory remain optional future capabilities; prototypes must not display them as V1 deliverables by default. Financial incoming sales/receipts information may originate from an external ERP, fiscal documents, bank source or authorized manual entry, with provenance and accounting differences preserved.
 
 ### CompanyAccessHome
 
-The home surface should prioritize the Company's own operational activity and actionable items, adjusted to enabled capabilities.
+The home surface should prioritize authorized financial data and actionable items, adjusted to enabled capabilities.
 
 Candidate blocks:
 
-- business summary (sales, purchases, expenses, performance) when available;
-- shortcuts to authorized operational entry;
+- financial summary: receipts, payments, expenses, pending items and the reference period;
+- shortcuts to imports, uploads and authorized financial entry;
 - requests awaiting response;
 - documents requested or received;
 - approvals awaiting the Company;
@@ -769,6 +771,7 @@ From the Tenant Overview, opening Company configuration should require no more t
 - UX-CFG-2: CompanyOnboarding (guided configuration).
 - UX-CFG-3: CompanyConfiguration (CNPJ, scope, sources and CompanyAccess).
 - UX-CFG-4: CompanyAccessHome (external user perspective).
+- UX-CFG-5: CompanyFinancialWorkspace (finance input, source status, handoff to accounting/advisory), after CompanyAccessHome user review.
 
 One page at a time: create responsive, interactive synthetic preview → test → provide preview link → user review → then start the next page.
 
@@ -780,6 +783,7 @@ One page at a time: create responsive, interactive synthetic preview → test �
 | UX-CFG-2 CompanyOnboarding | Interactive preview ready for user review | `preview/company-onboarding/index.html`; eight stages, synthetic activation; awaiting explicit UX review |
 | UX-CFG-3 CompanyConfiguration | Not started | start only after UX-CFG-2 review |
 | UX-CFG-4 CompanyAccessHome | Not started | start after UX-CFG-3 review |
+| UX-CFG-5 CompanyFinancialWorkspace | Not started | financial team → authorized accounting/fiscal → advisory experience; review after UX-CFG-4 |
 
 Acceptance checks for UX-CFG-2:
 
@@ -838,15 +842,15 @@ Canonical entities include:
 
 DRE, result views, CMV and comparisons should preferably be internal views/tabs unless a future workflow justifies separate navigation.
 
-### 6.3 Candidate modules
+### 6.3 Financial UX priority and candidate professional modules
 
-Not frozen:
+**Confirmed V1 UX surface:** CompanyAccess Financeiro, its source intake and the handoff to the Tenant's Fiscal/Accounting/Advisory workflows. This is an approved **visual UX scope**, not a commitment to a full ERP or to production implementation.
 
-- Financial
-- Payroll / HR
-- Legalization / Corporate
+**Still open:** whether Financial later becomes a standalone professional module with its own TenantEntitlements or remains a Company-facing workflow plus shared capabilities.
 
-Their existence as architectural slots does not mean V1 implementation is approved.
+**Other candidate modules, not approved for V1:** Payroll / HR, Legalization / Corporate.
+
+The financial screen must not silently enable a module that the Tenant has not contracted; a synthetic V1 prototype explicitly simulates the Company finance intake capability within the authorized Company service scope.
 
 ### 6.4 Module configuration rule
 
@@ -1059,27 +1063,100 @@ The Tenant contracts the EVOLU license and may accommodate one, several or many 
 
 **Company operating modes:**
 
-1. **Managed service:** the Tenant provides accounting/advisory services and gives the Company access to record day-to-day operations (e.g. sales, purchases, expenses) and submit evidence. Authorized Tenant professionals use those records to execute their professional workflows.
-2. **Extended business workspace:** selected Companies receive fuller business-management capabilities that may replace spreadsheets and selected ERP functions. Existing ERPs may also be connected, but are not obligatory.
+1. **Financial collaboration (first UX priority):** the Company's financial team submits/imports receipts, payments, expenses, supporting documents and period information; the Tenant's accounting/tax/advisory team consumes these authorized records. The Company does not need to use the Platform for sales or invoice issuance.
+2. **Integrated operation:** the Company keeps its existing ERP, sales/invoicing software, fiscal-document provider and/or financial system, connected or imported through supported source mechanisms. The financial workspace remains the collaboration point.
+3. **Extended business workspace (optional expansion):** the Company may later enable own sales capture, POS, invoice issuance, inventory or other business capabilities if separately designed, authorized and viable.
 
-These are variations of CompanyAccess enabled by the Tenant's license and Company-level scope, not separate mandatory products or identities.
+These are optional capability compositions within CompanyAccess, not new mandatory product names or new identity tiers.
 
 **UX contract priorities:**
 
 | Company-facing area | Proposed actions | Important boundary |
 |---|---|---|
-| Home | summarize sales, purchases, expenses, results and pending actions | only available/authorized data |
-| Sales | create/list commercial sales records | fiscal invoice issuance is a different capability |
-| Purchases | record acquisition and attach fiscal evidence | professional tax classification remains reviewable |
-| Expenses | record costs and recurring expenses | no automatic tax-credit assertion |
-| Financial overview | view available revenue, costs, margin and cash information | calculated vs. missing data must be explicit |
-| Requests & documents | communicate with Tenant and submit supporting material | scoped by Company and CnpjEntity |
-| Inventory | optional future business capability | not a mandatory CompanyAccess module |
+| Home | show financial position, period, missing information, and pending actions | show completeness/source and avoid implying tax result |
+| Financial intake | manual entry, file upload, connected-system import | each item retains source, competence and deduplication/review status |
+| Receipts and payments | inspect inflows/outflows, due dates and settlements | cash movement is not automatically fiscal revenue/expense |
+| Accounts payable/receivable | optional V1 financial management view | reporting scope may be partial, not invoice issuance |
+| Expenses and costs | enter/import expenditures and attach supporting evidence | no automatic deduction or tax-credit entitlement |
+| Documents | send/review invoices, receipts, statements and proof of payment | scoped by Company/CnpjEntity, permissions and provenance |
+| Tenant accounting handoff | view provided financial records, reconcile with fiscal/accounting data | professional classification and validation remain with Tenant |
+| Advisory handoff | access reconciled projections/opportunities and relevant underlying context | recommendation never authorizes execution |
+| Sales / NF issuance / POS / Inventory | future optional extension, not default first release | requires additional contracts and technical/legal feasibility |
 | Intelligence | contextual explanation and recommendations | no autonomous execution permission |
 
 Genesis is the **front-end visual UX prototype**, with synthetic interactions and no production write access. Platform is the **separate future operational Backend**; Intelligence is the **separate analysis/recommendation service**. They must eventually share contracts, but none should be interconnected with real data/credentials before the final UX review and explicit user approval.
 
-**UX acceptance:** one Tenant may visualize many Companies/CNPJs; CompanyAccess uses solely Tenant brand by default; authorized Company operations may be simulated and seen by authorized Tenant staff; nonenabled Company modules stay hidden/unavailable; optional ERP provenance does not define the navigation; user review is required before Backend.
+**UX acceptance:** one Tenant may visualize many Companies/CNPJs; CompanyAccess uses only Tenant branding by default; finance users may simulate manual/file/integration intake and authorized Tenant staff may inspect the same information in Fiscal/Accounting/Advisory context; direct sales and invoice issuance stay outside the V1 default; source and accounting/fiscal differences remain visible; no Backend connection before review.
+
+---
+
+## 6.8 Company Financeiro → Fiscal/Contábil → Assessoria (V1 UX)
+
+**Status:** user-approved V1 UX boundary: reach the Company's finance department; do not require its sales team, POS, invoicing or complete ERP replacement.
+
+### Role and data flow
+
+```text
+Company user — Financeiro (CompanyAccess, Tenant white-label)
+  ├── Manual financial information
+  ├── File uploads / spreadsheets / statements
+  └── External sources (ERP, fiscal document providers such as SIEG, banks)
+                 ↓ authorized financial context, provenance and PendingItems
+Tenant professional — Fiscal / Contábil (TenantAccess)
+  ├── Financial × Fiscal / Accounting Reconciliation
+  ├── review, classify and resolve differences
+  └── pre-closing / statements / controlled approvals
+                 ↓ validated/reconciled context, decisions and issues
+Tenant professional — Assessoria (TenantAccess, role permission)
+  ├── analysis, projected taxes, scenarios and advisory work
+  └── recommendations supported by evidence
+                 ↕
+Intelligence — contextual at each authorized surface;
+               can analyze/recommend; cannot approve/execute itself
+```
+
+Fiscal and accounting may be departments or authorized work areas of the same Tenant. They are not additional Tenants. Advisory is an operational role/workflow and may have a dedicated view, not necessarily a new production module.
+
+### Three input modes (UX)
+
+1. **Manual:** finance staff adds authorized financial information and supporting evidence. Entry is not tax invoice issuance and is not an accounting journal entry until validated.
+2. **Files:** staff uploads statements, financial spreadsheets, fiscal documents and supporting records. UX simulates matching, imported items, duplicates, rejected lines and incomplete fields.
+3. **Connected provider (synthetic):** finance uses existing ERP/sales/invoicing software, fiscal document sources or banks. UX shows the source's state, last simulated synchronization, provenance and missing permissions, without calling real APIs.
+
+Each flow must preserve `tenantId → companyId → cnpjId → accountingPeriod`, origin/provenance, document references and review status, avoiding duplicate representation of the same business operation across sources.
+
+### Important semantic distinctions
+
+- Financial receipt **is not automatically** fiscal revenue; bank inflow can include loans, owner contributions, transfers, reversals or other non-sale transactions.
+- Payment **is not automatically** an allowable tax expense or credit.
+- A sale in the source system **is not automatically** an issued or valid fiscal document in Platform.
+- An imported document, declared amount, recognized accounting entry and reconciled figure are distinct stages; disagreement is represented as a Finding/PendingItem.
+- Figures must show source, competence, completeness, estimated vs. confirmed status and missing context. The UI must not promise real-time or accurate tax projections without sufficient integrated data.
+- Authorizations are role-based: Company Financeiro can provide/correct information; authorized Tenant Fiscal/Contábil staff performs review and accounting/tax processing; advisory staff uses allowed context. Intelligence proposes rather than executes.
+
+### First Financeiro screen contract (prototype)
+
+`CompanyFinancialWorkspace`:
+
+- scope: current Company + authorized CnpjEntity + AccountingPeriod;
+- primary reads: financial summary, source statuses, recent movements, expenses, missing documents, PendingItems, reconciliation handoff status;
+- actions: register a movement/expense [simulated], import file [synthetic], inspect connected provider [synthetic], attach supporting document [synthetic], answer request, open financial detail;
+- states: loading / ready / empty / error / forbidden / partially_available / awaiting_information (UX distinctions; not new generalized domain states);
+- navigation goal: Home → Financeiro in one meaningful interaction; source/entry in <= 2 more;
+- no Backend requests, real external provider calls or secrets.
+
+The authorized Tenant-side `TenantFinancialReview` is a contextual CompanyWorkspace view that shows the same synthetic records, reconciliation state, required classification and handoff to Fiscal/Accounting/Advisory. It is not a second source of truth.
+
+### Explicitly deferred UX extensions
+
+- native POS or full sales management;
+- fiscal-document issuance;
+- inventory and logistics workflows;
+- marketplace integrations;
+- native payment/banking initiation;
+- a complete replacement for every enterprise ERP.
+
+These may be added only after value, complexity, operating model and permissions are separately assessed; they must not block completion of the Financeiro → Contábil → Assessoria UX.
 
 ---
 
@@ -1481,12 +1558,19 @@ Use context selectors, filters, tabs or metadata instead.
 ### Company external access
 
 - Company Login / Access Entry
-- Company Home
+- Company Home / Financial Overview
+- Company Financeiro
+- Financial Movements / Statements
+- Expenses / Costs
+- Accounts Payable / Receivable [when enabled]
+- Financial Intake / Imports / Source Status
 - Company Requests / Pending Items
 - Company Documents
 - Company Information
 - Company Approvals [when exposed]
 - Company Reports / Status [when exposed]
+
+Sales / POS / invoice issuance / inventory are future optional extensions, not first-release defaults.
 
 ---
 
@@ -1517,6 +1601,10 @@ Initial matrix:
 | CompanyOnboarding | Core | Company | Clients | Overview | 2 |
 | CompanyWorkspace | Core | Company | Clients | Search, Pending Items | 2 |
 | CompanyAccessHome | CompanyAccess | Company | Company Login | direct link | 1 |
+| CompanyFinancialWorkspace | CompanyAccess | Company / CnpjEntity / AccountingPeriod | CompanyAccessHome | notification, quick access | 2 |
+| CompanyFinancialIntake | CompanyAccess | financial input / source reference | CompanyFinancialWorkspace | Documents, request | 3 |
+| CompanyFinancialMovements | CompanyAccess | financial movements (UX projection) | CompanyFinancialWorkspace | Documents, search | 3 |
+| TenantFinancialReview | TenantAccess / CompanyWorkspace | Company / CnpjEntity / AccountingPeriod | CompanyWorkspace | Reconciliation, pending items | 3 |
 | CompanyAccessRequests | CompanyAccess | PendingItem | CompanyAccessHome | direct notification | 2 |
 | CompanyAccessDocuments | CompanyAccess | exposed documents | CompanyAccessHome | Request, notification | 2 |
 | CompanyAccessInformation | CompanyAccess | Company | CompanyAccessHome | Request | 2 |
@@ -1562,6 +1650,9 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 - Intelligence owns analysis and recommendation.
 - EVOLU licenses its white-label Platform/Intelligence solution to the Tenant (Contabilidade or Assessoria).
 - The Tenant may serve multiple Companies and a portfolio of many CNPJs inside its licensed environment; the exact quantitative/license terms are deferred.
+- The Company-facing V1 business area is Financeiro, supporting manual entry/file intake/integration previews and financial-to-accounting/advisory handoff.
+- Commercial sales capture, POS, stock and tax-invoice issuance are not mandatory in the first UX version.
+- The Company may continue using its existing ERP or sales/invoice system; an external data source is not required if it can provide information manually.
 - CompanyAccess can be a directly usable Company business workspace, not merely a collaboration portal.
 - The default Company-facing brand is the Tenant's, with no mandatory EVOLU vendor attribution.
 - The product architecture must support modular commercial packaging.
@@ -1577,7 +1668,7 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 
 These items can be resolved while designing UX. Commercial pricing or resale terms must not be inferred:
 
-1. Financial as a standalone module?
+1. Should Financial become a standalone professional module, beyond the confirmed Company-facing Financeiro V1 UX?
 2. Payroll / HR as a standalone module?
 3. Final public name: Legalization, Corporate, or another term?
 4. Validate the proposed Reconciliation presentation rule by OperatingModel (Departamental=contextual, Global=global, Híbrido=both)?
@@ -1599,9 +1690,9 @@ These items can be resolved while designing UX. Commercial pricing or resale ter
 20. Default is Tenant-branded CompanyAccess with no mandatory EVOLU attribution; should Company-specific branding be supported optionally?
 21. Which remote customer onboarding, communication and professional/jurisdictional compliance conditions must be evidenced in UX?
 22. What support, data-governance and operational boundaries apply if a Company later serves its own customers through additional tools?
-23. What are the minimum Company-facing UX contracts for sales, purchases, expenses and management indicators?
-24. Which Company operational capabilities need to be simulated in Genesis before the UX-completion gate?
-25. Which ERP-equivalent capabilities (invoicing, stock, accounts receivable/payable) should be optional UX extensions?
+23. What are the minimum Company-facing Financeiro UX contracts for receipts/payments, expenses, financial sources and period context?
+24. Which of the Financeiro V1 capabilities (manual entry, upload, simulated integration, payable/receivable) must be prototype-complete before the UX gate?
+25. Which sales/invoicing/POS/inventory capabilities should remain deferred optional extensions after Financeiro and its Tenant handoff are reviewed?
 
 ---
 
@@ -1656,6 +1747,14 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.13
+
+- confirmed Company Financeiro as the first Company-facing operational UX, with sales/POS/invoice issuance/inventory deferred as optional extensions;
+- identified three finance intake routes: manual, file import and simulated external integrations (ERP, fiscal-document and banking providers);
+- defined Financeiro → Fiscal/Accounting → Assessoria as a role-scoped cross-surface experience, with Intelligence transversal;
+- added financial-source quality, provenance, reconciliation, classification and approval safeguards;
+- added UX-CFG-5 CompanyFinancialWorkspace to the prototype review register, preserving all earlier UX review and Backend gates.
 
 ### 0.12
 
