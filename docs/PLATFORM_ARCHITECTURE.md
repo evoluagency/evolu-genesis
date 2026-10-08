@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.7  
+**Version:** 0.8  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -741,6 +741,116 @@ No downstream user automatically inherits Company, Tenant or cross-Company permi
 
 ---
 
+## 6.6 Tenant distribution and Company value proposition
+
+**Status:** strategic direction frozen; commercial pricing and legal/operational details are open.
+
+EVOLU continues to offer the two products `Platform` and `Intelligence` through a configurable white-label architecture. A `Tenant` may use them internally and make selected capabilities available to its own `Company` clients as part of the services it delivers.
+
+This is a distribution relationship, not a new identity hierarchy or a mandatory separate product:
+
+```text
+EVOLU
+├── Platform
+└── Intelligence
+       ↓ technology and contractual relationship
+Tenant = Organização cliente da EVOLU
+       ├── TenantAccess: own operation
+       ├── enabled modules and capabilities
+       └── Company portfolio and service delivery
+              ↓ configured services and authorized access
+          Company = Cliente atendido pelo Tenant
+              ├── CompanyAccess (optional)
+              ├── 1..N CnpjEntity
+              ├── Company-specific service scope
+              └── selected experiences and workflows
+                    ↓ optional future extension, NOT automatic
+                 Customers/users of the Company
+```
+
+### Commercial roles (not domain renames)
+
+| Participant | Role | Potential value |
+|---|---|---|
+| EVOLU | supplies and maintains products; provisions Tenant configurations | recurring software revenue |
+| Tenant | contracts EVOLU; operates its work; may package authorized technology with professional services | operational efficiency, service differentiation and possible additional revenue |
+| Company | receives professional service and may access configured digital capabilities | better visibility, structured requests, documents and collaboration |
+| Customers/users of Company | possible future audience for additional sector-specific applications | only with separately designed access and commercial terms |
+
+`BusinessModel` continues to describe the Tenant (e.g. Contabilidade, Assessoria); the activity/industry of each `Company` may differ (industry, retail, pet services, etc.). These are not interchangeable concepts.
+
+### Tenant product configuration and Company provisioning
+
+The UX must support the following conceptual flow, without prescribing Backend implementation:
+
+```text
+EVOLU configures Tenant
+→ BusinessModel + OperatingModel
+→ TenantEntitlements
+→ white-label identity and enabled integrations
+→ Tenant configures offered services
+→ CompanyOnboarding
+→ select Company-level service scope (subset of Tenant entitlements)
+→ authorize CompanyAccess and related users only if offered
+→ Company receives a coherent set of digital workflows
+```
+
+`TenantEntitlements` determines what is contracted and enabled for the Tenant. Company-level service scope cannot grant a module/capability that the Tenant does not have. `UserPermissions` and `Capabilities` continue to control individual access/actions. The canonical **contract name** for Company-level service scope remains open.
+
+The Tenant may offer different compositions to Companies from different sectors without creating copies of Platform or duplicating the canonical Company/CnpjEntity data model.
+
+### Commercial packaging hypotheses
+
+Allow the UX architecture to accommodate alternative contractual/commercial packaging, but **do not freeze billing or resale mechanics yet**:
+
+- technology included in the Tenant's professional service price;
+- separately itemized Company access/modules;
+- different Company service bundles per industry or need;
+- future distribution/revenue-sharing arrangements only if contractually approved.
+
+These are commercial options, not existing product promises. Whether EVOLU bills only the Tenant, permits sublicensing/resale, charges per Company/module/usage or participates in revenue requires explicit decision.
+
+### Remote customer acquisition and service delivery
+
+Digital expansion beyond the Tenant's immediate geographic market is an **opportunity**, not a guaranteed competitive advantage.
+
+To support an effective remote model, the UX should account for:
+
+- remote Company onboarding and invitation;
+- requests for documents and missing economic context;
+- PendingItems, document exchange, statuses and notifications;
+- asynchronous clarifications, decisions and approvals;
+- operational progress visibility for the Tenant and Company;
+- coherent mobile and desktop experiences;
+- authorizations, data protection and applicable professional/jurisdictional requirements.
+
+The Tenant remains accountable for the professional services it provides; the Platform interface must not imply that EVOLU automatically becomes the Company's accounting service provider.
+
+### UX implications to map before Backend
+
+| Surface | Required UX decision |
+|---|---|
+| EVOLU administrative configuration | configure Tenant, branding, modules and entitlements |
+| TenantAccess — Administration | view enabled modules and configure offered services per Company |
+| TenantAccess — CompanyOnboarding | provision Company, CNPJ, service scope, responsible contacts, sources and optional CompanyAccess |
+| TenantAccess — CompanyWorkspace | see contracted/available services, requests, operational progress and client access status |
+| CompanyAccess — Home | show only services, requests, documents, statuses and actions explicitly exposed |
+| CompanyAccess — Requests / Documents | support asynchronous information exchange without exposing other Companies |
+| Intelligence | respect TenantEntitlements, Company service scope, UserPermissions and Capabilities |
+| Optional downstream experiences | require separate UX, contracts and permission boundary before inclusion |
+
+### Scope and risk controls
+
+- Platform and Intelligence remain the only named EVOLU products in this architecture.
+- No new technical entity is created merely to describe resale/distribution.
+- `TenantAccess` and `CompanyAccess` remain distinct; neither implies a Company customer's access.
+- White-label branding is configurable; levels of brand visibility and right to sublicense remain open.
+- Customer ownership, consent/data governance, support responsibility, billing and multi-region professional requirements remain open contractual/operational decisions.
+- Do not treat planned partner resale or additional Company capabilities as delivered features.
+- Preserve the UX completion review gate before any Backend implementation.
+
+---
+
 ## 7. Reconciliation
 
 **Reconciliation is a canonical business capability. External brands must not define reconciliation types.**
@@ -1218,6 +1328,8 @@ This table is a working draft. Rows become frozen only after explicit agreement.
 - Intelligence owns analysis and recommendation.
 - The product architecture must support modular commercial packaging.
 - The white-label Platform/Intelligence ecosystem supports Company contexts across different industries through shared contracts and optional sector-specific capabilities; no industry-specific module is automatically part of V1.
+- A Tenant may distribute configured CompanyAccess and enabled services to its Company clients as part of its service offering; this does not automatically authorize sublicensing or define billing terms.
+- Digital delivery may support Companies beyond the Tenant's local market, subject to operational capacity and applicable professional requirements.
 
 ---
 
@@ -1243,6 +1355,12 @@ These are not yet frozen:
 16. Which industry-specific Company workflows should be piloted first without expanding mandatory V1 scope?
 17. Will the Company be able to offer tools to its own customers/users? If so, what distinct identity/access boundary and commercial responsibility apply?
 18. Which Company industry/operating attributes are needed for UX configuration without inventing parallel identities?
+19. What commercial rights and support obligations govern Tenant packaging, sublicensing/resale and CompanyAccess?
+20. Who bills the Company and how will modules, Company count, users or usage affect the commercial plan?
+21. Which Company-facing services are included by default versus selectively enabled by the Tenant?
+22. What is the CompanyAccess branding policy (Tenant brand, Company brand or an approved combination)?
+23. Which remote customer onboarding, communication and professional/jurisdictional compliance conditions must be evidenced in UX?
+24. What support, data-governance and operational boundaries apply if a Company later serves its own customers through additional tools?
 
 ---
 
@@ -1286,6 +1404,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.8
+
+- recorded Tenant as both operational consumer and potential distribution channel for configured Company services;
+- clarified that CompanyAccess can support a white-label service offering without introducing new core identities;
+- documented commercial packaging options as hypotheses, not approved billing/sublicensing rules;
+- mapped UX requirements for remote Company acquisition and asynchronous service delivery;
+- preserved cross-industry Company context, access separation and the user review gate before Backend;
+- added open decisions for channel contracts, billing, branding, compliance and downstream support.
 
 ### 0.7
 
