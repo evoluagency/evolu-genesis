@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NEXUS · Jornada de experiência</title><meta name="description" content="Jornada sintética de UX da contabilidade e empresa cliente, com revisão de telas e limites de acesso.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0b0e15;--side:#0e141d;--card:#141d2a;--soft:#1b2534;--line:#2b3747;--text:#edf1f9;--muted:#a5b2c4;--quiet:#7d8ca0;--accent:#a18aff;--shade:rgba(161,138,255,.12);--good:#71dbb2;--warn:#f2c47b;--bad:#ec919e}
+html[data-theme=light]{color-scheme:light;--bg:#f5f7fb;--side:#fff;--card:#fff;--soft:#f1f4f9;--line:#dfe5ed;--text:#1b293b;--muted:#57687d;--quiet:#8190a2;--accent:#7057d3;--shade:rgba(112,87,211,.1);--good:#157f61;--warn:#9e681c;--bad:#bc505c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:13px/1.52 Inter,system-ui,sans-serif}button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}a{color:inherit;text-decoration:none}
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}aside{background:var(--side);border-right:1px solid var(--line);padding:22px 13px;display:flex;flex-direction:column;gap:19px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px}.mark{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:var(--shade);color:var(--accent);font:600 21px Montserrat,sans-serif}.brand b{display:block;font:500 15px Montserrat,sans-serif;letter-spacing:.1em}.brand small{display:block;color:var(--muted);font-size:10px}
+.unit{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--line);border-radius:11px;background:var(--card)}.unit-icon{width:30px;height:30px;border-radius:8px;background:var(--soft);display:grid;place-items:center;color:var(--accent);font-weight:700}.unit b{font-size:11px}.unit small{display:block;color:var(--muted);font-size:10px}
+.navtitle{font-size:10px;font-weight:700;color:var(--quiet);letter-spacing:.12em;padding:3px 10px;text-transform:uppercase}.nav{display:grid;gap:3px}.nav button,.nav a{width:100%;border:0;border-radius:9px;background:none;color:var(--muted);padding:10px;display:flex;gap:11px;align-items:center;text-align:left;font-size:12px}.nav .sym{font-size:17px;width:20px;text-align:center;color:var(--accent)}.nav button:hover,.nav a:hover{background:var(--soft);color:var(--text)}.nav .current{background:var(--shade);color:var(--text)}.endnote{margin-top:auto;border-top:1px solid var(--line);padding:16px 8px;color:var(--quiet);font-size:10px}
+main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between;align-items:center;gap:14px;background:var(--side);border-bottom:1px solid var(--line);padding:13px 27px}.crumb{color:var(--muted);font-size:10px}.top h1{margin:3px 0 0;font-size:16px;font-weight:650}.tools{display:flex;align-items:center;gap:7px}.btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:9px;padding:9px 12px;font-size:11px;font-weight:600}.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);color:white;border-color:var(--accent)}.tag{display:inline-block;background:var(--shade);color:var(--accent);border:1px solid var(--line);padding:8px 9px;border-radius:8px;font-size:9px;white-space:nowrap;letter-spacing:.08em}
+.wrap{max-width:1450px;margin:auto;padding:27px 30px 60px}.header{display:flex;justify-content:space-between;align-items:start;gap:18px;margin-bottom:17px}.eyebrow{color:var(--quiet);font-size:10px;letter-spacing:.13em;font-weight:700;text-transform:uppercase}.header h2{font:500 27px Montserrat,sans-serif;margin:5px 0 7px;letter-spacing:-.03em}.header p{max-width:700px;font-size:12px;color:var(--muted);margin:0}.controls{display:flex;gap:10px;flex-wrap:wrap}.field label{display:block;color:var(--muted);font-size:10px;font-weight:700;margin-bottom:6px}.field select{width:100%;min-width:150px;color:var(--text);border:1px solid var(--line);background:var(--card);padding:10px 11px;border-radius:9px}
+.notice{border:1px solid var(--line);background:var(--shade);padding:13px 15px;border-radius:11px;color:var(--muted);font-size:11px;margin-bottom:16px}.notice strong{color:var(--text)}.grid{display:grid;grid-template-columns:minmax(0,1.58fr) minmax(270px,.82fr);gap:16px;align-items:start}.stack{display:grid;gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.cardtitle{display:flex;justify-content:space-between;align-items:start;gap:10px;margin-bottom:15px}.cardtitle h3{margin:0;font-size:14px}.cardtitle p{color:var(--muted);font-size:11px;margin:4px 0 0}.small{font-size:10px;color:var(--quiet)}.pills{display:flex;flex-wrap:wrap;gap:7px}.pill{font-size:10px;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:5px 9px;color:var(--muted)}.pill.good{color:var(--good)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.stage{display:grid;grid-template-columns:29px minmax(0,1fr);gap:12px;position:relative;padding:8px 0 20px}.stage:not(:last-child):before{content:"";position:absolute;left:14px;top:37px;bottom:0;border-left:1px solid var(--line)}.stage .num{display:grid;place-items:center;border:1px solid var(--accent);border-radius:50%;color:var(--accent);height:29px;background:var(--card);font-weight:700;font-size:11px;z-index:1}.stage h4{margin:1px 0 4px;font-size:12px}.stage p{margin:0 0 10px;color:var(--muted);font-size:11px}.stage .role{font-size:10px;color:var(--quiet)}.stage .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.stage a,.stage button{border:1px solid var(--line);background:var(--soft);border-radius:8px;color:var(--text);padding:8px 10px;font-size:11px}.stage a:hover,.stage button:hover{border-color:var(--accent)}.stage button:disabled{cursor:not-allowed;opacity:.48}.stage .why{font-size:10px;color:var(--warn);margin-top:6px}
+.cards{display:grid;gap:9px}.screen{background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}.screen b{font-size:11px}.screen small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.screen .btn{white-space:nowrap;font-size:10px;padding:8px 10px}.screen.denied{opacity:.75}.screen.denied .pill{color:var(--warn)}.cap{display:grid;gap:8px}.capline{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:11px}.capline:last-child{border-bottom:0}.capline span{color:var(--muted)}.explain{border:1px solid var(--line);background:var(--soft);border-radius:11px;padding:12px;font-size:11px;color:var(--muted)}.explain strong{color:var(--text)}.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px;color:var(--quiet);font-size:10px;flex-wrap:wrap}.foot a{color:var(--accent)}.tabs{display:flex;gap:5px;border-bottom:1px solid var(--line);padding-bottom:8px;flex-wrap:wrap}.tabs button{border:1px solid var(--line);background:var(--soft);border-radius:8px;color:var(--muted);padding:8px 10px;font-size:10px}.tabs button.active{background:var(--shade);border-color:var(--accent);color:var(--text)}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}.header{flex-direction:column}.controls{width:100%}}
+@media(max-width:750px){.shell{display:block}aside{display:none}aside.open{position:fixed;inset:65px auto 0 0;width:245px;min-height:calc(100vh - 65px);display:flex;z-index:20;box-shadow:0 15px 45px #0008}.top{padding:12px 14px}.wrap{padding:18px 14px 45px}.header h2{font-size:23px}.controls{display:grid;grid-template-columns:1fr 1fr}.field select{min-width:0}.tag{display:none}}
+</style></head><body>
+<div class="shell"><aside id="sidebar"><div class="brand"><span class="mark">N</span><div><b>NEXUS</b><small>Contabilidade & Assessoria</small></div></div>
+<div class="unit"><div class="unit-icon" id="unitIcon">A</div><div><b id="unitName">ACME Industrial</b><small id="unitDetail">Empresa cliente</small></div></div>
+<div><div class="navtitle">JORNADA DE EXPERIÊNCIA</div><nav class="nav" id="nav"></nav></div>
+<div class="endnote">Somente dados sintéticos. A escolha de perfil nesta página não concede acesso real.</div></aside>
+<main><header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / Revisão da UX</div><h1>Mapa de navegação e acesso</h1></div><div class="tools"><button class="btn" id="menuBtn" aria-label="Abrir menu" hidden>☰</button><span class="tag">PROTÓTIPO · SEM BACKEND</span><button class="btn" id="themeBtn" aria-label="Alternar tema">☀</button></div></header>
+<div class="wrap"><div class="header"><div><div class="eyebrow">UX-NAV-1 · REVISÃO TRANSVERSAL</div><h2 id="headline">Da empresa à assessoria</h2><p id="summary">Explore o fluxo de informações entre a empresa cliente e os profissionais da contabilidade, com controle de escopo e permissões.</p></div>
+<div class="controls"><div class="field"><label for="role">Perfil para avaliação</label><select id="role"><option value="company-fin">Financeiro da empresa</option><option value="company-read">Consulta da empresa</option><option value="tenant-accounting">Contábil/Fiscal da NEXUS</option><option value="tenant-advisory">Assessoria da NEXUS</option><option value="tenant-admin">Administrador da NEXUS</option></select></div>
+<div class="field" id="companyChooser"><label for="company">Empresa de trabalho</label><select id="company"><option value="acme">ACME Industrial</option></select></div></div></div>
+<div class="notice"><strong>Controle apenas demonstrativo.</strong> Alternar perfis aqui serve para revisar a navegação; não autentica ninguém. Na operação real, <code>CompanyAccess</code> e <code>TenantAccess</code> terão sessões distintas, com autorização conferida no Backend após aprovação da UX. Os protótipos vinculados são páginas independentes e não compartilham registros simulados.</div>
+<div class="grid"><div class="stack">
+<section class="card"><div class="cardtitle"><div><h3>Fluxo da informação</h3><p>Quatro etapas operacionais, um contexto de empresa e competência.</p></div><span class="pill">09/2026 · Matriz</span></div>
+<div id="journey"></div></section>
+<section class="card"><div class="cardtitle"><div><h3>Telas disponíveis para este perfil</h3><p>Abrir cada protótipo na etapa apropriada; recursos bloqueados não aparecem como disponíveis.</p></div><span class="pill" id="screenCount">0 telas</span></div><div class="cards" id="screens"></div></section>
+</div>
+<div class="stack">
+<section class="card"><div class="cardtitle"><div><h3>Limites de acesso</h3><p>Permissões previstas para o cenário selecionado.</p></div></div><div id="capabilities" class="cap"></div></section>
+<section class="card"><div class="cardtitle"><div><h3>O que muda entre os perfis</h3></div></div><div id="boundary" class="explain"></div></section>
+<section class="card"><div class="cardtitle"><div><h3>Registro de revisão da UX</h3><p>Disponibilizado não significa aprovado.</p></div></div><div class="cards" id="reviews"></div></section>
+</div></div>
+<div class="foot"><span>Protótipos com dados artificiais. Sem autenticação, persistência, integração, sincronização nem alterações fiscais.</span><a href="../../demo/">Demonstração fiscal/contábil existente ↗</a></div>
+</div></main></div>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const themeBtn=$('themeBtn');
+const allScreens=[
+{id:'tenantConfiguration',label:'Configuração da organização',description:'Modelo operacional, módulos e marca do Tenant',area:'tenant-admin',href:'../tenant-configuration/'},
+{id:'companyOnboarding',label:'Cadastro da empresa',description:'Vincular 1..N CNPJs ao Tenant',area:'tenant-admin',href:'../company-onboarding/'},
+{id:'companyConfiguration',label:'Configuração do cliente',description:'Serviços, origens de dados e acessos',area:'tenant-admin',href:'../company-configuration/'},
+{id:'companyHome',label:'Início da empresa',description:'Financeiro resumido e solicitações',area:'company',href:'../company-access-home/'},
+{id:'companyFinance',label:'Financeiro da empresa',description:'Registros, contas, importação e envio à contabilidade',area:'company',href:'../company-financial-workspace/?role=company'},
+{id:'tenantFinance',label:'Conferência contábil/fiscal',description:'Dados enviados, pendências e pré-fechamento',area:'tenant-accounting',href:'../company-financial-workspace/?role=accounting'},
+{id:'tenantAdvisory',label:'Análise da assessoria',description:'Contexto e oportunidades sob revisão',area:'tenant-advisory',href:'../company-financial-workspace/?role=advisory'},
+{id:'fiscalCase',label:'Documento fiscal — caso 70031',description:'Evidência → análise → decisão → aprovação simulada',area:'tenant-accounting',href:'../fiscal-document-70031/'}
+];
+const roles={
+'company-fin':{label:'Financeiro da empresa',area:'company',unit:'ACME Industrial',home:'companyHome',cap:{portfolio:false,financeRead:true,financeWrite:true,documents:true,requests:true,fiscalRead:false,accounting:false,advisory:false,admin:false},description:'A equipe financeira registra e fornece informações sem acessar a carteira do escritório.',screenIds:['companyHome','companyFinance']},
+'company-read':{label:'Consulta da empresa',area:'company',unit:'ACME Industrial',home:'companyHome',cap:{portfolio:false,financeRead:true,financeWrite:false,documents:true,requests:false,fiscalRead:false,accounting:false,advisory:false,admin:false},description:'Perfil ilustrativo de consulta. A demonstração de CompanyAccessHome contém ações de lançamento; esta composição é de autorização pretendida, ainda não implementada individualmente naquela tela.',screenIds:['companyHome']},
+'tenant-accounting':{label:'Contábil/Fiscal da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantFinance',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:false},description:'Confere documentos e movimentações das empresas do Tenant autorizadas para o profissional. Não herda permissão de administração nem execução automática da Intelligence.',screenIds:['tenantFinance','fiscalCase']},
+'tenant-advisory':{label:'Assessoria da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantAdvisory',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:true,admin:false},description:'A assessoria analisa o contexto autorizado e recomenda; nem recomendação nem confiança elevada executam mudanças automaticamente.',screenIds:['tenantAdvisory']},
+'tenant-admin':{label:'Administrador da NEXUS',area:'tenant',unit:'NEXUS',home:'companyConfiguration',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:true},description:'Configura Companies, CNPJs, escopo e usuários dentro dos direitos do Tenant. A página de configuração da organização distingue poderes reservados à EVOLU, que não passam ao administrador do Tenant.',screenIds:['companyConfiguration','companyOnboarding','tenantConfiguration']}
+};
+const caps=[['portfolio','Carteira de empresas'],['financeRead','Consultar informações financeiras'],['financeWrite','Registrar movimentações financeiras'],['documents','Documentos autorizados'],['requests','Responder/criar solicitações'],['fiscalRead','Evidências fiscais'],['accounting','Conciliação e contábil'],['advisory','Análise de assessoria'],['admin','Configurar acesso dos clientes']];
+const steps=[
+{title:'1. A empresa fornece informações',who:'CompanyAccess · Financeiro',desc:'Entrada manual, comprovantes ou conexão futura com ERP, banco e documentos fiscais. Emissão de NF-e não é obrigatória.',screen:'companyFinance'},
+{title:'2. A contabilidade confere',who:'TenantAccess · Fiscal e Contábil',desc:'Confronta fontes, classifica após evidências, solicita contexto e organiza o pré-fechamento. Movimentação financeira não equivale à receita tributável.',screen:'tenantFinance'},
+{title:'3. A assessoria interpreta',who:'TenantAccess · Assessoria',desc:'Analisa dados autorizados e oportunidades. Com contexto insuficiente, a Intelligence deve sinalizar limitações; não executa nem aprova.',screen:'tenantAdvisory'},
+{title:'4. O cliente acompanha',who:'CompanyAccess · Cliente',desc:'Visualiza seu contexto autorizado, recebe pendências, presta esclarecimentos e consulta os serviços publicados pela contabilidade.',screen:'companyHome'}
+];
+const reviewItems=[
+['UX-CFG-1 · TenantConfiguration','Aprovado em revisão anterior',true],
+['UX-CFG-2 · CompanyOnboarding','Aguardando revisão explícita',false],
+['UX-CFG-3 · CompanyConfiguration','Aguardando revisão explícita',false],
+['UX-CFG-4 · CompanyAccessHome','Aguardando revisão explícita',false],
+['UX-CFG-5 · CompanyFinancialWorkspace','Aguardando revisão explícita',false],
+['UX-NAV-1 · Navegação e permissões','Aguardando revisão explícita',false]
+];
+let role='company-fin',company='acme',theme='dark',tab='journey';
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const getScreen=id=>allScreens.find(s=>s.id===id);
+function canOpen(screen){
+const r=roles[role];
+return r.screenIds.includes(screen.id);
+}
+function render(){
+const r=roles[role],isCompany=r.area==='company';
+$('role').value=role;
+$('companyChooser').querySelector('label').textContent=isCompany?'Empresa autorizada':'Empresa em análise';
+const select=$('company');select.innerHTML=isCompany?'<option value="acme">ACME Industrial</option>':'<option value="acme">ACME Industrial</option><option value="orbita">Órbita Comércio</option>';if(isCompany)company='acme';select.value=company;
+$('unitName').textContent=r.unit;$('unitDetail').textContent=r.label;$('unitIcon').textContent=isCompany?'A':'N';
+$('headline').textContent=isCompany?'Ambiente da empresa':'Operação da contabilidade';
+$('summary').textContent=r.description;
+$('breadcrumb').textContent='NEXUS / '+(isCompany?'Empresa cliente':'Equipe interna')+' / '+r.label;
+$('nav').innerHTML=allScreens.filter(canOpen).map(s=>'<a class="'+(s.id===r.home?'current':'')+'" href="'+s.href+'"><span class="sym">↗</span>'+safe(s.label)+'</a>').join('')+'<button class="current" id="returnReview"><span class="sym">◷</span>Revisar jornada</button>';
+$('journey').innerHTML=steps.map((step,i)=>{
+const screen=getScreen(step.screen),allowed=canOpen(screen);
+return '<div class="stage"><div class="num">'+(i+1)+'</div><div><h4>'+step.title+'</h4><div class="role">'+step.who+'</div><p>'+step.desc+'</p><div class="actions">'+(allowed?'<a href="'+screen.href+'">Abrir '+safe(screen.label)+' ↗</a>':'<button disabled aria-disabled="true">Acesso não autorizado neste perfil</button>')+'</div>'+(allowed?'':'<div class="why">Esta área pertence a outro perfil. A alternância de perfil acima é somente para avaliação.</div>')+'</div></div>';
+}).join('');
+$('screens').innerHTML=allScreens.filter(canOpen).map(s=>'<div class="screen"><div><b>'+safe(s.label)+'</b><small>'+safe(s.description)+'</small></div><a class="btn" href="'+s.href+'">Abrir ↗</a></div>').join('');
+$('screenCount').textContent=r.screenIds.length+' telas';
+$('capabilities').innerHTML=caps.map(([key,label])=>'<div class="capline"><span>'+label+'</span><span class="pill '+(r.cap[key]?'good':'bad')+'">'+(r.cap[key]?'Previsto':'Restrito')+'</span></div>').join('');
+$('boundary').innerHTML='<strong>'+r.label+'</strong><p>'+r.description+'</p><p><strong>Escopo:</strong> '+(isCompany?'ACME Industrial e seus CNPJs autorizados. Não há escolha nem listagem de outros clientes da NEXUS.':'Carteira de Companies do Tenant, limitada às permissões de cada profissional.')+'</p><p><strong>Dados:</strong> cada página estática mantém seu cenário fictício independente; a navegação não sincroniza lançamentos entre arquivos.</p>';
+$('reviews').innerHTML=reviewItems.map(x=>'<div class="screen"><div><b>'+x[0]+'</b><small>'+x[1]+'</small></div><span class="pill '+(x[2]?'good':'warn')+'">'+(x[2]?'Aprovado':'Pendente')+'</span></div>').join('');
+}
+$('role').addEventListener('change',e=>{role=e.target.value;company='acme';render()});
+$('company').addEventListener('change',e=>{company=e.target.value;render()});
+themeBtn.addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;themeBtn.textContent=theme==='dark'?'☀':'☾'});
+$('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
+function responsive(){$('menuBtn').hidden=window.innerWidth>750}window.addEventListener('resize',responsive);responsive();render();
+})();
+</script></body></html>
