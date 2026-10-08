@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.15  
+**Version:** 0.16  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -798,7 +798,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-CFG-2 CompanyOnboarding | Interactive preview ready for user review | `preview/company-onboarding/index.html`; eight stages, synthetic activation; awaiting explicit UX review |
 | UX-CFG-3 CompanyConfiguration | Interactive preview created; pending user review | `preview/company-configuration/index.html` published as a static source on `main`; synthetic configuration only, do not consider approved |
 | UX-CFG-4 CompanyAccessHome | Interactive static prototype ready for user review; not approved | `preview/company-access-home/index.html` on `main`; links to mock Home / Finance / Documents / Requests / Information, no live services |
-| UX-CFG-5 CompanyFinancialWorkspace | Not started | financial team → authorized accounting/fiscal → advisory experience; review after UX-CFG-4 |
+| UX-CFG-5 CompanyFinancialWorkspace | Interactive static prototype ready; user review pending | `preview/company-financial-workspace/index.html` on main; Company finance → authorized Tenant accounting/fiscal → advisory; no live API, Backend or tax calculations |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -811,6 +811,22 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 - The Finance tab is a **preview**, not the complete CompanyFinancialWorkspace; full financial input, payable/receivable, integration configuration, source reconciliation and Tenant handoff remain UX-CFG-5.
 - Acceptance cases: 1) different selected CNPJ/period alters scoped records, 2) external user sees no Tenant portfolio or administration, 3) no mandatory EVOLU branding, 4) simulated record adds no tax conclusion, 5) answered requests are removed from pending counts, 6) no production persistence or API.
 - User review of UX-CFG-4 remains pending; do not mark it approved automatically.
+
+### UX-CFG-5 CompanyFinancialWorkspace interactive prototype
+
+- Source: `https://github.com/evoluagency/evolu-genesis/blob/main/preview/company-financial-workspace/index.html`.
+- Intended Pages URL: `https://evoluagency.github.io/evolu-genesis/preview/company-financial-workspace/` (web availability is not guaranteed solely by committing to main; inspect hosting separately).
+- Tenant white-label presentation uses fictitious **NEXUS**, without obligatory EVOLU attribution to the Company.
+- **Company Financeiro**: scoped finance dashboard with recorded inflows/outflows, open payables/receivables, ledger movements, simulated manual movements, commitments, imported sample batches and handoff to the accounting firm.
+- **Source intake**: sample bank and ERP batches create financial movements with origin references; sample fiscal documents remain **separate evidence/document records**, never silently booked as cash inflows, sales or taxable revenue. Duplicate source references within Company/CNPJ/competence are skipped.
+- **Tenant Contábil/Fiscal**: synthetic view of the same Company-scoped information, unresolved information requests, review status, imported fiscal evidence, provenance and pending pre-closing; user-initiated review does not mean tax treatment has been proven.
+- **Tenant Assessoria**: evidence/context summary displays `insufficient_context` until professional data validation; no calculated tax credits or automatic projections are invented.
+- **Interactive sample flows**: CNPJ and competence selectors, navigation per active simulated role, manual movement entry, payables/receivables registration, synthetic source batches, finance-to-accounting handoff, requests for clarification, Company responses, review marking, activity history and PT-BR/EN + light/dark display.
+- **Role preview control is a DEMO-ONLY inspection function**. It is explicitly not production role switching or permission escalation: in production `CompanyAccess` and `TenantAccess` must be separate authenticated/authorized sessions.
+- The prototype contains no real ERP/SIEG/bank integration, file upload, credentials, persistence, fiscal document issuance, Backend connection or executed tax classification.
+- Script compilation was checked after publication; a public GitHub Pages load could not be verified in the current inspection. Runtime/visual acceptance by the user is still pending.
+- UX-CFG-2, -3 and -4 also remain pending explicit acceptance; creating UX-CFG-5 on a user continuation instruction does not imply any previous approval.
+- **Next boundary:** after this review, close the remaining navigation, roles/permissions and financial data-state UX gaps before the final UX gate. Backend remains prohibited until explicit user approval.
 
 Acceptance checks for UX-CFG-2:
 
@@ -1774,6 +1790,14 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.16
+
+- added UX-CFG-5 CompanyFinancialWorkspace as an interactive synthetic static prototype on Genesis main;
+- demonstrated scoped Company finance, file/provider-source simulations, commitments, accounting handoff and advisory inspection without opening Tenant access to Company users;
+- kept imported fiscal document evidence distinct from financial cash movements and avoided automatic tax consequences;
+- tested embedded JavaScript syntax and documented pending visual/public hosting verification;
+- preserved previous UX review statuses and the explicit final UX gate before Backend.
 
 ### 0.15
 
