@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.16  
+**Version:** 0.17  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -799,6 +799,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-CFG-3 CompanyConfiguration | Interactive preview created; pending user review | `preview/company-configuration/index.html` published as a static source on `main`; synthetic configuration only, do not consider approved |
 | UX-CFG-4 CompanyAccessHome | Interactive static prototype ready for user review; not approved | `preview/company-access-home/index.html` on `main`; links to mock Home / Finance / Documents / Requests / Information, no live services |
 | UX-CFG-5 CompanyFinancialWorkspace | Interactive static prototype ready; user review pending | `preview/company-financial-workspace/index.html` on main; Company finance → authorized Tenant accounting/fiscal → advisory; no live API, Backend or tax calculations |
+| UX-NAV-1 Journey and access review | Interactive static navigation and access-preview published; user review pending | `preview/ux-journey/index.html` on main, five synthetic roles, access boundaries and links to existing pages |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1554,6 +1555,71 @@ Use context selectors, filters, tabs or metadata instead.
 
 ---
 
+
+## 11.1 UX-NAV-1 — Navigation and access-boundary review
+
+**Status:** interactive review prototype created; individual and final UX approvals remain open.
+
+Source: https://github.com/evoluagency/evolu-genesis/blob/main/preview/ux-journey/index.html
+
+Intended Pages route: https://evoluagency.github.io/evolu-genesis/preview/ux-journey/ — availability requires independent verification. This page is a **review-only navigation wrapper**, not production authentication or a new product.
+
+### Scope and page mapping
+
+| Role for UX inspection | Permitted navigation in preview | Scope |
+|---|---|---|
+| Company Financeiro | CompanyAccessHome; CompanyFinancialWorkspace with role=company | own Company and authorized CNPJ only |
+| Company consultation/read-only (proposed) | CompanyAccessHome | own Company; edits excluded in actual authorization |
+| Tenant Contábil/Fiscal | CompanyFinancialWorkspace with role=accounting; FiscalDocument example | assigned Companies, CNPJs and competencies |
+| Tenant Assessoria | CompanyFinancialWorkspace with role=advisory | authorized analytical contexts |
+| Tenant administrator | CompanyConfiguration; CompanyOnboarding; TenantConfiguration preview | bounded by Tenant entitlements, no EVOLU-only powers |
+
+### Proposed capability matrix for visual review
+
+| Capability | Company Financeiro | Company read-only | Tenant Contábil/Fiscal | Tenant Assessoria | Tenant admin |
+|---|---|---|---|---|---|
+| View financial data | own Company | own Company | assigned portfolio | authorized context | permitted Tenant context |
+| Create financial movements | own Company | no | no by default | no | no by default |
+| Provide documents / information | yes | read-only unless granted | request/review | request/review | as authorized |
+| Review fiscal/accounting evidence | no unrestricted professional records | no | yes, assigned | yes, authorized | separate permission required |
+| Analyze tax opportunities | no | no | professional scope | professional scope | separate permission required |
+| Manage Company identities/services/users | no | no | no by default | no | yes, within entitlements |
+| View other Companies | never | never | only assigned | only assigned | as specifically authorized |
+| Execute Intelligence recommendation autonomously | no | no | no | no | no |
+
+**Status:** this matrix expresses intended UX and is not live authorization. Final roles, approval rights and admin-to-professional permission inheritance require explicit review.
+
+### Static preview security and navigation contract
+
+- Role selector on UX-NAV-1 and the role query parameter in Financeiro are **demonstration controls**, not login, permission checking or privilege elevation.
+- Static pages are publicly addressable via direct URL. A disabled navigation link does not secure their contents. Real backend authorization and tenant isolation will be required after the UX approval gate.
+- Company-facing application navigation shows the fictitious Tenant brand NEXUS, without mandatory vendor branding.
+- CompanyAccess and TenantAccess are different access surfaces; switching perspectives in the UX review page does not merge them in the future product.
+- The linked standalone preview pages do not share simulated state. Navigation works, but edits entered in one HTML page are not reflected in another.
+- CompanyAccessHome now links to the detailed Company Financeiro preview, and Financeiro supports role=company, role=accounting or role=advisory query parameter **only** for synthetic review.
+- No Backend, secrets, real provider API requests, real customer information or GitHub Actions were introduced.
+
+### UX review test cases
+
+1. Company Financeiro sees its own Company, not Tenant portfolio or administration.
+2. Company read-only has no finance-write option in the navigation review, but read-only enforcement inside the existing CompanyAccessHome is **not yet implemented**.
+3. Authorized Tenant Fiscal/Accounting staff may inspect accounting reconciliation and the synthetic fiscal case.
+4. Tenant Assessoria may inspect contextual financial evidence but cannot approve or execute automated tax treatments.
+5. Tenant administrators configure permitted Company scopes without inheriting EVOLU-only provisioning authority.
+6. CNPJ/period selection remains scoped per surface, and no data synchronization between independently hosted preview pages is claimed.
+7. UX-CFG-2, UX-CFG-3, UX-CFG-4, UX-CFG-5 and UX-NAV-1 remain pending user acceptance.
+
+### Open gaps before UX sign-off
+
+- Final route contracts for CompanyAccess and TenantAccess, not equal to demo URLs.
+- Read-only and write permissions implemented consistently across page-level mock interactions.
+- Tenant professional assignment to specific Companies and CNPJ entities.
+- End-to-end module routing and context preservation in a unified front end.
+- Review of handoff and history contracts: what Finance sends; what Fiscal/Accounting accepts; what Assessoria may read.
+- User review of outstanding screens and final UX gate before Backend.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -1790,6 +1856,14 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.17
+
+- published UX-NAV-1 interactive navigation review page, connecting existing Genesis UX previews;
+- mapped five synthetic access perspectives and their scoped capabilities, without real authentication;
+- linked CompanyAccessHome to the full Financeiro preview, and enabled role-specific Financeiro inspection deep links;
+- documented public static preview access, lack of cross-page state synchronization and remaining UX permission gaps;
+- preserved per-screen approvals and the mandatory final user approval gate before Backend.
 
 ### 0.16
 
