@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.10  
+**Version:** 0.11  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -752,6 +752,28 @@ From the Tenant Overview, opening Company configuration should require no more t
 - UX-CFG-4: CompanyAccessHome (external user perspective).
 
 One page at a time: create responsive, interactive synthetic preview → test → provide preview link → user review → then start the next page.
+
+### UX configuration acceptance register
+
+| UX stage | State | Evidence / next gate |
+|---|---|---|
+| UX-CFG-1 TenantConfiguration | Approved by user after reviewing preview | retain approved experience; no Backend |
+| UX-CFG-2 CompanyOnboarding | Interactive preview ready for user review | `preview/company-onboarding/index.html`; eight stages, synthetic activation; awaiting explicit UX review |
+| UX-CFG-3 CompanyConfiguration | Not started | start only after UX-CFG-2 review |
+| UX-CFG-4 CompanyAccessHome | Not started | start after UX-CFG-3 review |
+
+Acceptance checks for UX-CFG-2:
+
+- Company identity, multiple CNPJ records, TaxProfile with `insufficient_context` / pending fields when unknown;
+- service scope limited to enabled TenantEntitlements (Fiscal and Contábil in synthetic preview);
+- data-source categories separated from providers;
+- contacts never create CompanyAccess automatically;
+- review before simulated activation, with explicit outstanding information;
+- all writes remain in browser memory, no Backend/API; no real company creation;
+- PT-BR/EN, dark/light, responsive, and clear step navigation.
+
+This register tracks page-level UX reviews only. The final cross-UX user review gate in section 16 still applies before any Backend work.
+
 
 ---
 
@@ -1563,6 +1585,13 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.11
+
+- registered user approval of UX-CFG-1 TenantConfiguration;
+- implemented UX-CFG-2 CompanyOnboarding as a synthetic, interactive guided experience pending user review;
+- added an acceptance register with per-page status and checks;
+- preserved the final UX review before Backend and the deferred commercialization gate.
 
 ### 0.10
 
