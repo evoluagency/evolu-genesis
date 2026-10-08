@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.5  
+**Version:** 0.6  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -322,6 +322,277 @@ Authentication implementation is a Backend concern. UX defines the access surfac
 ---
 
 ## 5. Client operational context
+
+## 5.1 CompanyOnboarding flow
+
+`CompanyOnboarding` is a guided configuration flow initiated from `Clients`.
+
+Primary navigation:
+
+```text
+Overview
+→ Clients
+→ New Company
+→ CompanyOnboarding
+```
+
+Target navigation budget:
+
+- access onboarding: <= 2 clicks from Overview;
+- create a minimal operational Company: one guided flow;
+- avoid forcing users to navigate across multiple modules during setup.
+
+### Onboarding stages
+
+```text
+1. Company Identity
+2. CnpjEntity
+3. Business / Tax Context
+4. Service Scope
+5. Data Sources
+6. Responsible Contacts
+7. Review
+8. Activate
+```
+
+#### 1. Company Identity
+
+Purpose:
+
+- identify the client business;
+- create the canonical `Company`.
+
+Candidate fields:
+
+- legal name;
+- trade name;
+- internal reference/code;
+- business segment;
+- responsible contact.
+
+#### 2. CnpjEntity
+
+Purpose:
+
+- associate one or more tax/legal establishments.
+
+Canonical rule:
+
+```text
+Company
+└── 1..N CnpjEntity
+```
+
+The onboarding flow must support adding the first CNPJ and later adding additional `CnpjEntity` records without creating a new Company.
+
+#### 3. Business / Tax Context
+
+Purpose:
+
+- create the initial business context required by enabled modules.
+
+Candidate inputs:
+
+- tax regime;
+- state/municipal registration when relevant;
+- activity context;
+- initial `TaxProfile`;
+- reference/effective date.
+
+Unknown information must be allowed when the workflow can continue safely; missing information should become explicit `PendingItem` or `missingContext`, not fabricated data.
+
+#### 4. Service Scope
+
+Purpose:
+
+- define which Tenant-enabled modules/capabilities apply to the Company.
+
+Canonical distinction:
+
+```text
+TenantEntitlements
+= what the Tenant has contracted
+
+Company service scope
+= what the Tenant chooses to deliver to this Company
+```
+
+The Company service scope cannot enable a module that is disabled in `TenantEntitlements`.
+
+**Status:** the exact canonical contract name for Company-level service scope is still open and must not be invented until approved.
+
+#### 5. Data Sources
+
+Purpose:
+
+- select inherited Tenant integrations;
+- configure Company-specific overrides when required.
+
+```text
+TenantIntegration
+↓ inherited by default
+CompanyIntegrationOverride
+↓ only when necessary
+```
+
+Providers remain provenance/configuration details and do not define domain navigation.
+
+#### 6. Responsible Contacts
+
+Purpose:
+
+- identify contacts who may receive information requests, PendingItems or future `CompanyAccess`.
+
+This does not automatically create CompanyAccess credentials.
+
+#### 7. Review
+
+The user reviews:
+
+- Company identity;
+- CNPJ structure;
+- tax/business context;
+- service scope;
+- data sources;
+- contacts;
+- missing information.
+
+#### 8. Activate
+
+Activation creates the operational Company context.
+
+Activation must not silently infer missing tax/business facts.
+
+After activation:
+
+```text
+CompanyOnboarding
+→ CompanyWorkspace
+```
+
+---
+
+## 5.2 CompanyAccess architecture
+
+`CompanyAccess` is a separate UX surface from `TenantAccess`.
+
+Primary purpose:
+
+- expose only the actions/information the Tenant intentionally makes available to users of one Company.
+
+### Entry surface
+
+```text
+CompanyAccess Entry
+→ authentication
+→ CompanyAccessHome
+```
+
+Authentication mechanics remain Backend scope; UX defines the experience and authorization expectations.
+
+### Initial navigation proposal
+
+```text
+CompanyAccess
+├── Home
+├── Requests
+├── Documents
+├── Company Information
+├── Approvals [when exposed]
+└── Reports / Status [when exposed]
+```
+
+### CompanyAccessHome
+
+The home surface should prioritize actionable items rather than internal accounting complexity.
+
+Candidate blocks:
+
+- requests awaiting response;
+- documents requested or received;
+- approvals awaiting the Company;
+- service/processing status;
+- recent communications or relevant events.
+
+### Requests
+
+Maps external-user work to canonical `PendingItem` records when applicable.
+
+Examples:
+
+- provide missing information;
+- upload/request a document;
+- confirm economic purpose;
+- respond to a clarification;
+- validate company-provided information.
+
+### Documents
+
+External users may:
+
+- view documents intentionally exposed by the Tenant;
+- provide requested documents;
+- follow document-request status.
+
+They do not automatically receive access to all `FiscalDocument` or accounting records.
+
+### Company Information
+
+Allows the Company user to:
+
+- view selected Company/CNPJ information;
+- propose or submit updates when allowed;
+- provide missing context.
+
+A Company user submission is not automatically trusted as an executed domain change. It may create a request, evidence item, pending review or approval according to workflow.
+
+### Approvals
+
+Optional capability.
+
+Only explicitly exposed approval subjects may appear.
+
+`CompanyAccess` must never expose Tenant-level approvals unrelated to that Company.
+
+### Reports / Status
+
+Optional capability.
+
+This surface may present:
+
+- service progress;
+- selected reports;
+- closing status;
+- selected fiscal/accounting outputs.
+
+The exact report catalog remains module/entitlement dependent.
+
+### External-user isolation
+
+Canonical access boundary:
+
+```text
+CompanyUser
+→ exactly one authorized Company scope by default
+→ authorized CnpjEntity scope
+→ explicitly exposed capabilities
+```
+
+No implicit access to:
+
+- Tenant portfolio;
+- other Companies;
+- Tenant administration;
+- global integrations;
+- global audit;
+- unrestricted Intelligence;
+- modules not exposed to the Company.
+
+**Status:** navigation structure is proposed; capability exposure remains configurable and requires further validation.
+
+---
+
+
 
 The persistent operational context is:
 
@@ -853,6 +1124,9 @@ Initial matrix:
 | CompanyOnboarding | Core | Company | Clients | Overview | 2 |
 | CompanyWorkspace | Core | Company | Clients | Search, Pending Items | 2 |
 | CompanyAccessHome | CompanyAccess | Company | Company Login | direct link | 1 |
+| CompanyAccessRequests | CompanyAccess | PendingItem | CompanyAccessHome | direct notification | 2 |
+| CompanyAccessDocuments | CompanyAccess | exposed documents | CompanyAccessHome | Request, notification | 2 |
+| CompanyAccessInformation | CompanyAccess | Company | CompanyAccessHome | Request | 2 |
 | FiscalDocuments | Fiscal | FiscalDocument | Fiscal | Search, CompanyWorkspace | 2 |
 | FiscalDocumentDetail | Fiscal | FiscalDocument | FiscalDocuments | Search, Pending Items, Reconciliation, Intelligence, Audit | 3 |
 | TaxAssessment | Fiscal | AccountingPeriod | Fiscal | CompanyWorkspace | 2 |
@@ -913,6 +1187,9 @@ These are not yet frozen:
 10. Minimum commercial composition of Platform?
 11. Which BusinessModel values beyond Contabilidade and Assessoria should be supported in the first commercial version?
 12. What default module/capability composition should EVOLU recommend for each BusinessModel/OperatingModel combination?
+13. What canonical contract name should represent Company-level service scope beneath TenantEntitlements?
+14. Which CompanyAccess capabilities are enabled by default, if any?
+15. Can one CompanyUser belong to more than one Company, or should multi-Company access require an explicit future model?
 
 ---
 
@@ -956,6 +1233,16 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.6
+
+- detailed the canonical `CompanyOnboarding` flow;
+- defined onboarding stages from Company identity through activation;
+- separated TenantEntitlements from Company-level service scope;
+- defined inheritance from TenantIntegration with optional CompanyIntegrationOverride;
+- detailed the proposed `CompanyAccess` navigation and isolation boundaries;
+- added CompanyAccess screens to the Navigation Matrix;
+- preserved authentication mechanics as Backend scope while defining UX access boundaries.
 
 ### 0.5
 
