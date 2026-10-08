@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.17  
+**Version:** 0.18  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -1856,6 +1856,13 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.18 — UX visual alignment correction
+
+- corrected mismatched header-versus-content grid widths in UX-NAV-1, CompanyConfiguration and CompanyAccessHome; header controls now follow the same responsive columns as their associated lower cards;
+- constrained nested grid stacks to one shrinkable minmax(0,1fr) track and card widths to their parent, preventing variable-width/overflow artifacts in those screens and CompanyFinancialWorkspace;
+- changed no interface content, branding, workflows, access definitions, JS logic, integration behavior or Backend;
+- static CSS/HTML checks passed; live GitHub Pages visual rendering and viewport testing remain unverified and subject to user review.
 
 ### 0.17
 
