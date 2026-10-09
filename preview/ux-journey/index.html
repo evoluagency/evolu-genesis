@@ -127,6 +127,7 @@ main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between
 const $=id=>document.getElementById(id);
 const themeBtn=$('themeBtn');
 const allScreens=[
+{id:'officeDashboard',label:'Painel do Escritório · novo Shell',description:'Início interno, fila de trabalho e empresas com contexto',area:'tenant',href:'../office-workspace/'},
 {id:'tenantConfiguration',label:'Configuração da organização',description:'Modelo operacional, módulos e marca do Tenant',area:'tenant-admin',href:'../tenant-configuration/'},
 {id:'companyOnboarding',label:'Cadastro da empresa',description:'Vincular 1..N CNPJs ao Tenant',area:'tenant-admin',href:'../company-onboarding/'},
 {id:'companyConfiguration',label:'Configuração do cliente',description:'Serviços, origens de dados e acessos',area:'tenant-admin',href:'../company-configuration/'},
@@ -139,9 +140,9 @@ const allScreens=[
 const roles={
 'company-fin':{label:'Financeiro da empresa',area:'company',unit:'ACME Industrial',home:'companyHome',cap:{portfolio:false,financeRead:true,financeWrite:true,documents:true,requests:true,fiscalRead:false,accounting:false,advisory:false,admin:false},description:'A equipe financeira registra e fornece informações sem acessar a carteira do escritório.',screenIds:['companyHome','companyFinance']},
 'company-read':{label:'Consulta da empresa',area:'company',unit:'ACME Industrial',home:'companyHome',cap:{portfolio:false,financeRead:true,financeWrite:false,documents:true,requests:false,fiscalRead:false,accounting:false,advisory:false,admin:false},description:'Consulta demonstrativa somente leitura: Home e Financeiro ocultam ações de escrita. Não substitui autenticação ou autorização no Backend.',screenIds:['companyHome','companyFinance']},
-'tenant-accounting':{label:'Contábil/Fiscal da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantFinance',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:false},description:'Confere documentos e movimentações das empresas do Tenant autorizadas para o profissional. Não herda permissão de administração nem execução automática da Intelligence.',screenIds:['tenantFinance','fiscalCase']},
-'tenant-advisory':{label:'Assessoria da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantAdvisory',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:true,admin:false},description:'A assessoria analisa o contexto autorizado e recomenda; nem recomendação nem confiança elevada executam mudanças automaticamente.',screenIds:['tenantAdvisory']},
-'tenant-admin':{label:'Administrador da NEXUS',area:'tenant',unit:'NEXUS',home:'companyConfiguration',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:true},description:'Configura Companies, CNPJs, escopo e usuários dentro dos direitos do Tenant. A página de configuração da organização distingue poderes reservados à EVOLU, que não passam ao administrador do Tenant.',screenIds:['companyConfiguration','companyOnboarding','tenantConfiguration']}
+'tenant-accounting':{label:'Contábil/Fiscal da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantFinance',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:false},description:'Confere documentos e movimentações das empresas do Tenant autorizadas para o profissional. Não herda permissão de administração nem execução automática da Intelligence.',screenIds:['officeDashboard','tenantFinance','fiscalCase']},
+'tenant-advisory':{label:'Assessoria da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantAdvisory',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:true,admin:false},description:'A assessoria analisa o contexto autorizado e recomenda; nem recomendação nem confiança elevada executam mudanças automaticamente.',screenIds:['officeDashboard','tenantAdvisory']},
+'tenant-admin':{label:'Administrador da NEXUS',area:'tenant',unit:'NEXUS',home:'companyConfiguration',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:true},description:'Configura Companies, CNPJs, escopo e usuários dentro dos direitos do Tenant. A página de configuração da organização distingue poderes reservados à EVOLU, que não passam ao administrador do Tenant.',screenIds:['officeDashboard','companyConfiguration','companyOnboarding','tenantConfiguration']}
 };
 const caps=[['portfolio','Carteira de empresas'],['financeRead','Consultar informações financeiras'],['financeWrite','Registrar movimentações financeiras'],['documents','Documentos autorizados'],['requests','Responder/criar solicitações'],['fiscalRead','Evidências fiscais'],['accounting','Conciliação e contábil'],['advisory','Análise de assessoria'],['admin','Configurar acesso dos clientes']];
 const steps=[
@@ -159,7 +160,8 @@ const reviewItems=[
 ['UX-NAV-1 · Navegação e permissões','Aguardando revisão explícita',false],
 ['UX-ACCESS-1 · Consulta e contexto','Pronto para revisão: Home/Financeiro, empresa/CNPJ/período, sem autenticação',false],
 ['UX-FLOW-1 · Entrega e conferência','Envio versionado e liberação profissional; revisão pendente',false],
-['UX-VIEW-1 · Quadro de trabalho','Fluxo, telas e revisão paginados; revisão visual pendente',false]
+['UX-VIEW-1 · Quadro de trabalho','Fluxo, telas e revisão paginados; revisão visual pendente',false],
+['UX-SHELL-1 / UX-OFFICE-1 · Painel do Escritório','Novo Shell compartilhado e painel interno publicados; validação visual pendente',false]
 ];
 let role='company-fin',company='acme',theme='dark',tab='journey';
 let reviewPanel='journey',flowPage=0,reviewPage=0;
