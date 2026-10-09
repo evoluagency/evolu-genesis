@@ -50,9 +50,22 @@ main{min-width:0}.top{min-height:72px;background:var(--side);border-bottom:1px s
   body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
   body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
 }
+
+.sidebar-toggle-wrap{display:none}
+@media(min-width:801px){
+ .sidebar-toggle-wrap{display:block;padding:0 3px;min-width:0}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:39px;padding:8px 11px;border-radius:9px;background:var(--soft);border:1px solid var(--border);color:var(--fg);font-size:11px;font-weight:600;white-space:nowrap}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle:hover{border-color:var(--accent);background:var(--panel2)}
+ aside .sidebar-toggle-wrap .toggle-icon{font-size:23px;line-height:1;width:19px;text-align:center;flex-shrink:0;color:var(--accent)}
+ aside .sidebar-toggle-wrap .toggle-label{display:inline;overflow:hidden;text-overflow:ellipsis}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap{padding:0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .desktop-sidebar-toggle{justify-content:center;padding:8px 0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .toggle-label{display:none}
+}
 </style></head><body>
 <div class="shell"><aside id="side">
 <div class="identity"><span class="symbol">N</span><div><b>NEXUS</b><small data-t="brandSub">Contabilidade & Assessoria</small></div></div>
+<div class="sidebar-toggle-wrap"><button type="button" class="b desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="side" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="toggle-icon" aria-hidden="true">‹</span><span class="toggle-label">Recolher menu</span></button></div>
 <div class="org-chip"><div class="avatar">A</div><div><b>ACME Industrial</b><small data-t="clientSpace">Área da empresa</small></div></div>
 <div><div class="navlabel" data-t="navGroup">SEU ESPAÇO</div><nav class="nav" id="nav">
 <button class="active" data-page="home"><span class="ico">⌂</span><span data-t="navHome">Início</span></button>
@@ -63,7 +76,7 @@ main{min-width:0}.top{min-height:72px;background:var(--side);border-bottom:1px s
 </nav></div>
 <div class="asideend" data-t="sideBottom">Ambiente fictício · Dados não enviados a ninguém</div></aside>
 <main>
-<header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / ACME Industrial</div><h1 id="pageTitle">Início</h1></div><div class="topright"><button type="button" class="b desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="side" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button>
+<header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / ACME Industrial</div><h1 id="pageTitle">Início</h1></div><div class="topright">
 <button class="b mobilemenu" id="mobileBtn" aria-label="Abrir menu">☰</button>
 <span class="tag" data-t="synthetic">DEMONSTRAÇÃO</span>
 <button class="b" id="langBtn" aria-label="Idioma">EN</button><button class="b" id="themeBtn" aria-label="Tema">☀</button>
@@ -191,7 +204,8 @@ content();
   const collapsed=document.body.classList.contains('sidebar-collapsed');
   const en=document.documentElement.lang.toLowerCase().startsWith('en');
   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-  control.textContent=collapsed?'»':'«';
+  control.querySelector('.toggle-icon').textContent=collapsed?'›':'‹';
+  control.querySelector('.toggle-label').textContent=label;
   control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
  }
  control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
