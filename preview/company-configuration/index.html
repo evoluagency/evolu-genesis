@@ -63,16 +63,29 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--line)
   body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
   body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
 }
+
+.sidebar-toggle-wrap{display:none}
+@media(min-width:801px){
+ .sidebar-toggle-wrap{display:block;padding:0 3px;min-width:0}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:39px;padding:8px 11px;border-radius:9px;background:var(--softacc);border:1px solid var(--line);color:var(--text);font-size:11px;font-weight:600;white-space:nowrap}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle:hover{border-color:var(--accent);background:var(--card2)}
+ aside .sidebar-toggle-wrap .toggle-icon{font-size:23px;line-height:1;width:19px;text-align:center;flex-shrink:0;color:var(--accent)}
+ aside .sidebar-toggle-wrap .toggle-label{display:inline;overflow:hidden;text-overflow:ellipsis}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap{padding:0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .desktop-sidebar-toggle{justify-content:center;padding:8px 0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .toggle-label{display:none}
+}
 </style></head><body>
 <div class="app">
 <aside id="sidebar">
 <div class="brand"><div class="logo">N</div><div><strong>NEXUS</strong><small data-t="tenantTag">CONTABILIDADE & ASSESSORIA</small></div></div>
+<div class="sidebar-toggle-wrap"><button type="button" class="tool desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="toggle-icon" aria-hidden="true">‹</span><span class="toggle-label">Recolher menu</span></button></div>
 <div class="tenant"><span class="logo" style="width:32px;height:32px;font-size:15px">N</span><div><b>NEXUS</b><small data-t="license">Organização licenciada</small></div></div>
 <div><div class="nav-label" data-t="oper">OPERAÇÃO</div><div class="nav"><button type="button" id="navOverview"><em>⌂</em><span data-t="overview">Visão geral</span></button><button type="button" id="navClients" class="active"><em>▣</em><span data-t="clients">Clientes</span></button><button type="button" id="navFiscal"><em>▤</em>Fiscal</button><button type="button" id="navAccounting"><em>≣</em><span data-t="accounting">Contábil</span></button><button type="button" id="navPending"><em>◷</em><span data-t="pending">Pendências</span></button></div></div>
 <div class="aside-foot" data-t="asideFoot">Ambiente demonstrativo • Sem conexão real</div>
 </aside>
 <main>
-<header class="top"><div><div class="crumb" data-t="crumb">Clientes / Configuração da empresa</div><h1 data-t="h1">Configuração do cliente</h1></div><div class="tools"><button type="button" class="tool desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button><button type="button" class="tool" id="menuBtn" hidden>☰</button><span class="synth" data-t="simulated">DADOS SINTÉTICOS</span><button type="button" class="tool" id="langBtn">EN</button><button type="button" class="tool" id="themeBtn">☀</button></div></header>
+<header class="top"><div><div class="crumb" data-t="crumb">Clientes / Configuração da empresa</div><h1 data-t="h1">Configuração do cliente</h1></div><div class="tools"><button type="button" class="tool" id="menuBtn" hidden>☰</button><span class="synth" data-t="simulated">DADOS SINTÉTICOS</span><button type="button" class="tool" id="langBtn">EN</button><button type="button" class="tool" id="themeBtn">☀</button></div></header>
 <div class="container">
 <div class="head"><div><div class="eyebrow" data-t="eyebrow">ADMINISTRAÇÃO DO TENANT • COMPANYCONFIGURATION</div><h2 data-t="title">Serviços, acessos e integrações</h2><p data-t="description">Configure o que a contabilidade disponibiliza para cada empresa, sem exceder os módulos habilitados na licença. As alterações são apenas simuladas.</p></div><div class="company-pick"><label class="label" for="companySelect" data-t="selectCompany">Empresa cliente</label><select id="companySelect" class="select"><option value="acme">ACME Industrial</option><option value="orbita">Órbita Comércio</option></select></div></div>
 <div class="stats"><div class="stat"><small data-t="cnpjs">CNPJs</small><b id="countCnpj">—</b><div class="sub" data-t="estabs">Estabelecimentos cadastrados</div></div><div class="stat"><small data-t="enabled">Serviços ativos</small><b id="countServices">—</b><div class="sub" data-t="scope">Limitados pela licença</div></div><div class="stat"><small data-t="sources">Fontes configuradas</small><b id="countSources">—</b><div class="sub" data-t="manualAndExternal">Manual e externas</div></div><div class="stat"><small data-t="users">Usuários externos</small><b id="countUsers">—</b><div class="sub" data-t="noAutoAccess">Sem acesso automático</div></div></div>
@@ -166,7 +179,8 @@ function responsive(){el("menuBtn").hidden=window.innerWidth>730}window.addEvent
   const collapsed=document.body.classList.contains('sidebar-collapsed');
   const en=document.documentElement.lang.toLowerCase().startsWith('en');
   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-  control.textContent=collapsed?'»':'«';
+  control.querySelector('.toggle-icon').textContent=collapsed?'›':'‹';
+  control.querySelector('.toggle-label').textContent=label;
   control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
  }
  control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
