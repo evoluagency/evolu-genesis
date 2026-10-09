@@ -50,17 +50,30 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
   body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
   body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
 }
+
+.sidebar-toggle-wrap{display:none}
+@media(min-width:801px){
+ .sidebar-toggle-wrap{display:block;padding:0 3px;min-width:0}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:39px;padding:8px 11px;border-radius:9px;background:var(--tint);border:1px solid var(--stroke);color:var(--fg);font-size:11px;font-weight:600;white-space:nowrap}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle:hover{border-color:var(--violet);background:var(--panel)}
+ aside .sidebar-toggle-wrap .toggle-icon{font-size:23px;line-height:1;width:19px;text-align:center;flex-shrink:0;color:var(--violet)}
+ aside .sidebar-toggle-wrap .toggle-label{display:inline;overflow:hidden;text-overflow:ellipsis}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap{padding:0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .desktop-sidebar-toggle{justify-content:center;padding:8px 0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .toggle-label{display:none}
+}
 </style></head><body>
 <div class="app">
 <aside id="sidebar">
 <div class="brand"><span class="mark">N</span><div><b>NEXUS</b><small data-i="brandSub">Contabilidade & Assessoria</small></div></div>
+<div class="sidebar-toggle-wrap"><button type="button" class="btn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="toggle-icon" aria-hidden="true">‹</span><span class="toggle-label">Recolher menu</span></button></div>
 <div class="client"><span class="client-icon">A</span><div><b>ACME Industrial</b><small data-i="clientSpace">Área financeira da empresa</small></div></div>
 <div><div class="nav-label" id="navCaption">FINANCEIRO</div><nav class="nav" id="nav"></nav></div>
 <div class="asidefoot" data-i="syntheticNote">Cenário fictício. Sem conexão ou registros reais.</div>
 </aside>
 <main><header class="top">
 <div><div id="bread" class="crumb">NEXUS / ACME Industrial / Financeiro</div><h1 id="topTitle">Financeiro</h1></div>
-<div class="right"><button type="button" class="btn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button><button class="btn menu" id="mobileMenu" aria-label="Abrir menu">☰</button><span class="demo" data-i="demo">DADOS SINTÉTICOS</span><button class="btn" id="langBtn" aria-label="Idioma">EN</button><button class="btn" id="themeBtn" aria-label="Tema">☀</button></div></header>
+<div class="right"><button class="btn menu" id="mobileMenu" aria-label="Abrir menu">☰</button><span class="demo" data-i="demo">DADOS SINTÉTICOS</span><button class="btn" id="langBtn" aria-label="Idioma">EN</button><button class="btn" id="themeBtn" aria-label="Tema">☀</button></div></header>
 <div class="wrap">
 <div class="notice" data-i="demoBoundary"><strong>Inspeção de UX:</strong> a troca de perfis abaixo existe apenas nesta demonstração. No produto, a empresa não poderá acessar as telas da contabilidade/assessoria sem outra sessão autorizada.</div>
 <div class="head"><div><div class="eyebrow" data-i="eyebrow">OPERAÇÃO FINANCEIRA · COMPANY</div><h2 id="viewTitle">Visão financeira</h2><p id="viewDesc">Informações financeiras fornecidas pela empresa, sem equivalência automática com receitas fiscais ou lançamentos contábeis.</p></div>
@@ -304,7 +317,8 @@ render();
   const collapsed=document.body.classList.contains('sidebar-collapsed');
   const en=document.documentElement.lang.toLowerCase().startsWith('en');
   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-  control.textContent=collapsed?'»':'«';
+  control.querySelector('.toggle-icon').textContent=collapsed?'›':'‹';
+  control.querySelector('.toggle-label').textContent=label;
   control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
  }
  control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
