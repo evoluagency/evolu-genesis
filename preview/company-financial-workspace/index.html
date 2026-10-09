@@ -233,29 +233,64 @@ function requestsList(answerMode){
 }
 function statusFlow(){return '<div class="steps"><span class="'+(role==='company'?'active':'')+'">'+t('financial')+'</span>→<span class="'+(role==='accounting'?'active':'')+'">'+t('fiscal')+'</span>→<span class="'+(role==='advisory'?'active':'')+'">'+t('advisor')+'</span></div>'}
 function renderCompany(){
-if(view==='home'){
-return metrics()+'<div class="grid"><div class="stack">'+card(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>')+card(t('requestTitle'),t('companyOnly'),requestsList(true))+'</div><div class="stack">'+card(t('flowStatus'),'',statusFlow()+'<div class="callout" style="margin-top:13px">'+t(hand[key()]?'handoffAlready':'noHandoff')+'</div><div class="rowfoot"><button class="btn soft" data-nav="send">'+t('handoff')+'</button></div>')+card(t('sourceTitle'),t('sourceDesc'),sourceTiles())+'</div></div>';
-}
-if(view==='moves')return metrics()+'<div class="grid"><div class="stack">'+card(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>')+'</div><div class="stack">'+card(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn" data-nav="sources">'+t('import')+'</button>')+'</div></div>';
-if(view==='debts')return '<div class="grid"><div class="stack">'+card(t('billTitle'),t('billDesc'),billTable(),'<button class="btn primary" data-act="bill">'+t('addBill')+'</button>')+'</div><div class="stack">'+card(t('dataQuality'),'', '<div class="callout">'+t('noTax')+'</div>')+'</div></div>';
-if(view==='sources')return '<div class="grid"><div class="stack">'+card(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn primary" data-act="import">'+t('import')+'</button>')+card(t('fiscalDocs'),t('noRealImport'),fiscalList())+'</div><div class="stack">'+card(t('dataQuality'),'', '<div class="callout">'+t('sourceMissing')+' · '+t('noTax')+'</div>')+'</div></div>';
-return '<div class="grid"><div class="stack">'+card(t('flowStatus'),'',statusFlow()+'<div class="callout" style="margin-top:15px">'+t(hand[key()]?'handoffAlready':'noHandoff')+'</div><div class="rowfoot"><button class="btn primary" data-act="handoff" '+(hand[key()]?'disabled':'')+'>'+t('handoff')+'</button></div>')+card(t('requestTitle'),'',requestsList(true))+'</div><div class="stack">'+card(t('reviewDocs'),'', '<div class="callout">'+currentMoves().length+' '+t('records')+' · '+currentBills().length+' '+t('billTitle')+' · '+pending().length+' '+t('issues')+'</div>')+'</div></div>';
+ const state=flow(),packet=state.packet,needsSend=!packet||state.state==='changed';
+ const handoffButton='<button class="btn primary" data-act="handoff" '+(!needsSend?'disabled':'')+'>'+fl(packet?'reSubmit':'handoff')+'</button>';
+ if(view==='home')return metrics()+'<div class="grid"><div class="stack">'+
+  card(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>')+
+  card(t('requestTitle'),t('companyOnly'),requestsList(true))+'</div><div class="stack">'+
+  card(fl('flowTitle'),'',flowPanel(),'<button class="btn soft" data-nav="send">'+t('handoff')+'</button>')+
+  card(t('sourceTitle'),t('sourceDesc'),sourceTiles())+'</div></div>';
+ if(view==='moves')return metrics()+'<div class="grid"><div class="stack">'+
+  card(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>')+
+  '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+
+  card(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn" data-nav="sources">'+t('import')+'</button>')+'</div></div>';
+ if(view==='debts')return '<div class="grid"><div class="stack">'+card(t('billTitle'),t('billDesc'),billTable(),'<button class="btn primary" data-act="bill">'+t('addBill')+'</button>')+
+ '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+'</div></div>';
+ if(view==='sources')return '<div class="grid"><div class="stack">'+
+ card(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn primary" data-act="import">'+t('import')+'</button>')+
+ card(t('fiscalDocs'),t('noRealImport'),fiscalList())+
+ '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+'</div></div>';
+ return '<div class="grid"><div class="stack">'+
+ card(fl('flowTitle'),t('resultDesc'),statusFlow()+'<div style="margin-top:12px">'+flowPanel()+'</div><div class="rowfoot">'+handoffButton+'</div>')+
+ card(t('requestTitle'),'',requestsList(true))+'</div><div class="stack">'+
+ card(t('reviewDocs'),'', '<div class="callout">'+currentMoves().length+' '+t('records')+' · '+currentBills().length+' '+t('billTitle')+' · '+pending().length+' '+t('issues')+'</div>')+
+ card(t('audit'),'',auditList())+'</div></div>';
 }
 function auditList(){return history.filter(x=>x.scope===company&&x.at===period).length?'<div class="itemlist">'+history.filter(x=>x.scope===company&&x.at===period).map(x=>'<div class="item"><b>'+esc(x.action)+'</b><span class="pill">'+t(x.who)+'</span></div>').join('')+'</div>':'<div class="empty">'+t('auditEmpty')+'</div>'}
 function renderAccounting(){
-const status=hand[key()]?t('receivedForReview'):t('notSubmitted'), notReviewed=currentMoves().filter(x=>!x.reviewed).length;
-const main=card(t('reconcile'),t('differenceExplainer'),statusFlow()+'<div class="callout" style="margin-top:13px"><strong>'+t('status')+': </strong>'+status+'<br><strong>'+t('records')+': </strong>'+currentMoves().length+'<br><strong>'+t('issues')+': </strong>'+pending().length+'</div>')+
-card(t('allMoves'),t('noTax'),movementTable(),'<button class="btn soft" data-act="markReview" '+(!hand[key()]||notReviewed===0?'disabled':'')+'>'+t('markReviewed')+'</button>');
-const side=card(t('requestTitle'),'',requestsList(false),'<button class="btn primary" data-act="ask">'+t('request')+'</button>')+card(t('fiscalDocs'),'',fiscalList())+card(t('audit'),'',auditList());
-if(view==='pending')return '<div class="grid"><div class="stack">'+card(t('checking'),'',requestsList(false),'<button class="btn primary" data-act="ask">'+t('request')+'</button>')+'</div><div class="stack">'+card(t('flowStatus'),'',statusFlow())+'</div></div>';
-if(view==='closing')return metrics()+'<div class="grid"><div class="stack">'+card(t('result'),t('resultDesc'),'<div class="callout"><strong>'+t('reconcileState')+':</strong> '+(notReviewed===0&&hand[key()]?t('readyAdvisor'):t('waitingReview'))+'<br>'+t('waitForData')+'</div>')+card(t('allMoves'),'',movementTable())+'</div><div class="stack">'+card(t('issues'),'',requestsList(false))+'</div></div>';
-return '<div class="grid"><div class="stack">'+main+'</div><div class="stack">'+side+'</div></div>';
+ const status=flow(),allowShare=canShare();
+ const shareButton='<button class="btn primary" data-act="share" '+(allowShare?'':'disabled')+'>'+fl('share')+'</button>';
+ const main=card(fl('flowTitle'),t('differenceExplainer'),statusFlow()+'<div style="margin-top:13px">'+flowPanel()+'</div>',shareButton)+
+ card(t('allMoves'),fl('reviewHint'),movementTable());
+ const side=card(t('requestTitle'),'',requestsList(false),'<button class="btn primary" data-act="ask" '+(!canReview()?'disabled':'')+'>'+t('request')+'</button>')+
+ card(t('fiscalDocs'),fl('reviewHint'),fiscalList())+card(t('audit'),'',auditList());
+ if(view==='pending')return '<div class="grid"><div class="stack">'+
+ card(t('checking'),'',requestsList(false),'<button class="btn primary" data-act="ask" '+(!canReview()?'disabled':'')+'>'+t('request')+'</button>')+
+ '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+'</div></div>';
+ if(view==='closing')return '<div class="grid"><div class="stack">'+
+ card(t('result'),t('resultDesc'),flowPanel(),shareButton)+
+ card(t('allMoves'),fl('reviewHint'),movementTable())+'</div><div class="stack">'+
+ card(t('fiscalDocs'),'',fiscalList())+card(t('issues'),'',requestsList(false))+
+ '</div></div>';
+ return '<div class="grid"><div class="stack">'+main+'</div><div class="stack">'+side+'</div></div>';
 }
 function renderAdvisory(){
-const reviewed=currentMoves().filter(x=>x.reviewed).length, submitted=Boolean(hand[key()]);
-const infobox='<div class="callout"><strong>'+t('insufficient')+'</strong><br>'+t('advisorNote')+'<br><br>'+t('advisorWarning')+'</div>';
-if(view==='opportunities')return '<div class="grid"><div class="stack">'+card(t('opportunities'),t('adviceDesc'),infobox)+'</div><div class="stack">'+card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
-return metrics()+'<div class="grid"><div class="stack">'+card(t('adviceTitle'),t('adviceDesc'),infobox)+card(t('flowStatus'),'',statusFlow()+'<div class="callout" style="margin-top:13px">'+t('receivedForReview')+': '+(submitted?t('receipts'):t('notSubmitted'))+'<br>'+t('approved')+': '+reviewed+' / '+currentMoves().length+'</div>')+'</div><div class="stack">'+card(t('issues'),'',requestsList(false))+card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
+ const status=flow(),released=status.state==='released';
+ const message=released?fl('advisoryReady'):fl('notReady');
+ const body='<div class="callout"><strong>'+message+'</strong><br>'+fl('notTax')+'</div>';
+ if(!released)return '<div class="grid"><div class="stack">'+
+ card(t('adviceTitle'),t('adviceDesc'),body)+
+ card(fl('flowTitle'),'',flowPanel())+'</div><div class="stack">'+
+ card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
+ if(view==='opportunities')return '<div class="grid"><div class="stack">'+
+ card(t('opportunities'),t('adviceDesc'),body)+
+ card(t('allMoves'),t('noTax'),movementTable())+'</div><div class="stack">'+
+ card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
+ return metrics()+'<div class="grid"><div class="stack">'+
+ card(t('adviceTitle'),t('adviceDesc'),body)+
+ card(fl('flowTitle'),'',flowPanel())+'</div><div class="stack">'+
+ card(t('fiscalDocs'),'',fiscalList())+
+ card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
 }
 function render(){
 navUpdate();
@@ -274,8 +309,8 @@ const backlink=$('homeBack');backlink.hidden=role!=='company';backlink.href=home
 function openModal(type,id){
 if(previewReadOnly)return;
 modal=type;answerId=id||null;
-$('modalTitle').textContent=t(({move:'modalMove',bill:'modalBill',import:'modalImport',answer:'modalAnswer',ask:'modalReview'})[type]);
-$('modalDesc').textContent=t(({move:'modalMoveDesc',bill:'modalBillDesc',import:'modalImportDesc',answer:'modalAnswerDesc',ask:'modalReviewDesc'})[type]);
+$('modalTitle').textContent=(type==='reviewMove'||type==='reviewDoc'?fl('reviewItem'):t(({move:'modalMove',bill:'modalBill',import:'modalImport',answer:'modalAnswer',ask:'modalReview'})[type]));
+$('modalDesc').textContent=(type==='reviewMove'||type==='reviewDoc'?fl('reviewHint'):t(({move:'modalMoveDesc',bill:'modalBillDesc',import:'modalImportDesc',answer:'modalAnswerDesc',ask:'modalReviewDesc'})[type]));
 const inp=(id,label,typ,req)=>'<div class="field"><label for="'+id+'">'+t(label)+'</label><input id="'+id+'" '+(req?'required':'')+' type="'+(typ||'text')+'" '+(typ==='number'?'min="0.01" step="0.01"':'maxlength="120"')+'></div>';
 let form='';
 if(type==='move')form='<div class="field"><label for="kind">'+t('type')+'</label><select id="kind"><option value="in">'+t('in')+'</option><option value="out">'+t('out')+'</option></select></div>'+inp('title','description','text',true)+inp('amount','billValue','number',true)+inp('reference','reference','text',false);
@@ -283,23 +318,33 @@ if(type==='bill')form='<div class="field"><label for="kind">'+t('type')+'</label
 if(type==='import')form='<div class="field"><label for="kind">'+t('fileChoice')+'</label><select id="kind"><option value="bank">'+t('bankSample')+'</option><option value="erp">'+t('erpSample')+'</option><option value="fiscal">'+t('fiscalSample')+'</option></select></div><div class="callout">'+t('noRealImport')+'</div>';
 if(type==='answer')form='<div class="callout">'+esc(requests.find(x=>x.id===answerId)?.title||'')+'</div><div class="field"><label for="title">'+t('response')+'</label><textarea id="title" required maxlength="800"></textarea></div>';
 if(type==='ask')form='<div class="field"><label for="title">'+t('requestTarget')+'</label><textarea id="title" required maxlength="800"></textarea></div>';
+if(type==='reviewMove'||type==='reviewDoc')form='<div class="callout">'+esc(answerId||'')+'</div><div class="field"><label for="title">'+fl('reviewWhy')+'</label><textarea id="title" required minlength="12" maxlength="800"></textarea></div>';
 $('modalFields').innerHTML=form;$('modalBack').hidden=false;$('modalForm').reset();$('modalBack').querySelector('input,select,textarea')?.focus();
 }
 function closeModal(){$('modalBack').hidden=true;modal=null;answerId=null;}
 function action(type){
-if(previewReadOnly)return;
-if(type==='handoff'){
-if(role!=='company')return;hand[key()]={at:period,moves:currentMoves().length};addHistory(t('handoff'));notify(t('handoffDone'));render();return;
+ if(previewReadOnly)return;
+ if(type==='handoff'){
+  if(role!=='company')return;
+  const prev=hand[key()],finger=fingerprint();
+  if(prev&&prev.fingerprint===finger){notify(t('handoffAlready'));return;}
+  currentMoves().forEach(x=>{x.reviewed=false;x.reviewNote='';});
+  currentFiscalDocs().forEach(x=>{x.checked=false;x.note='';});
+  hand[key()]={version:prev?prev.version+1:1,fingerprint:finger,released:false};
+  addHistory(fl('newData'));notify(fl('newData'));render();return;
+ }
+ if(type==='share'){
+  if(!canShare()){notify(fl('missingEvidence'));return;}
+  hand[key()].released=true;addHistory(fl('share'));notify(fl('shareOk'));render();return;
+ }
+ if(type==='move'||type==='bill'||type==='import'){if(role!=='company')return;openModal(type);return;}
+ if(type==='ask'){
+  if(role!=='accounting')return;
+  if(!canReview()){notify(fl('requestNotSent'));return;}
+  openModal(type);
+ }
 }
-if(type==='markReview'){
-if(role!=='accounting')return;
-if(!hand[key()]){notify(t('cannotReview'));return;}
-currentMoves().forEach(x=>x.reviewed=true);addHistory(t('markReviewed'));notify(t('reviewed'));render();return;
-}
-if(type==='move'||type==='bill'||type==='import'){if(role!=='company')return;}
-if(type==='ask'&&role!=='accounting')return;
-openModal(type);
-}
+
 function submitModal(e){
 e.preventDefault();if(previewReadOnly||!modal)return;
 let message='',k=key();
@@ -326,13 +371,24 @@ if(existing){duplicated++;return;}
 moves.push({id:'M-IMP-'+moves.length,company,period,date:period+'-25',name:x.name,kind:x.kind,value:x.value,source:'file',ref:x.ref,reviewed:false});added++;
 });
 message=t('imported')+' '+added+'. '+t('duplicates')+': '+duplicated+'.';
-}else if(modal==='answer'){
+ }else if(modal==='reviewMove'||modal==='reviewDoc'){
+ if(role!=='accounting'||!canReview()){notify(fl('stale'));return;}
+ const rationale=$('title').value.trim();
+ if(rationale.length<12){notify(fl('reviewMissing'));return;}
+ const item=modal==='reviewMove'?currentMoves().find(x=>x.id===answerId):currentFiscalDocs().find(x=>x.ref===answerId);
+ if(!item){notify(fl('missingEvidence'));return;}
+ if(modal==='reviewMove'){item.reviewed=true;item.reviewNote=rationale;}
+ else {item.checked=true;item.note=rationale;}
+ message=fl('reviewSaved');
+ }else if(modal==='answer'){
 const answer=$('title').value.trim();if(!answer){notify(t('error'));return}
 const req=requests.find(x=>x.id===answerId&&x.company===company&&x.period===period);
 if(req){req.status='answered';req.response=answer;}message=t('answerSaved');
 }else if(modal==='ask'){
 const desc=$('title').value.trim();if(!desc){notify(t('error'));return}
-requests.push({id:'R-NEW-'+requests.length,company,period,title:desc,status:'open',response:''});message=t('sent');
+requests.push({id:'R-NEW-'+requests.length,company,period,title:desc,status:'open',response:''});
+ if(hand[key()])hand[key()].released=false;
+ message=t('sent');
 }
 addHistory(message);closeModal();notify(message);render();
 }
@@ -340,6 +396,9 @@ document.addEventListener('click',e=>{
 const b=e.target.closest('button');if(!b)return;
 if(b.dataset.nav){view=b.dataset.nav;$('sidebar').classList.remove('open');render();return;}
 if(b.dataset.act){action(b.dataset.act);return;}
+if(b.dataset.reviewmove){if(role==='accounting'&&canReview())openModal('reviewMove',b.dataset.reviewmove);return;}
+if(b.dataset.reviewdoc){if(role==='accounting'&&canReview())openModal('reviewDoc',b.dataset.reviewdoc);return;}
+if(b.dataset.resolve){if(role==='accounting'&&canReview()){const req=currentRequests().find(x=>x.id===b.dataset.resolve&&x.status==='answered');if(req){req.status='resolved';addHistory(fl('resolved'));notify(fl('doneReply'));render();}}return;}
 if(b.dataset.answer){if(role==='company'&&!previewReadOnly)openModal('answer',b.dataset.answer);return;}
 if(b.id==='cancel'){closeModal();return;}
 if(b.id==='mobileMenu'){$('sidebar').classList.toggle('open');return;}
