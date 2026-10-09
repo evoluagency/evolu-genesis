@@ -133,7 +133,7 @@ const allScreens=[
 {id:'companyConfiguration',label:'Configuração do cliente',description:'Serviços, origens de dados e acessos',area:'tenant-admin',href:'../company-configuration/'},
 {id:'companyHome',label:'Início da empresa · novo Shell',description:'Resumo contextual, solicitações e atalhos com visual de uma atividade por tela',area:'company',href:'../company-access-home/'},
 {id:'companyFinance',label:'Financeiro da empresa · novo Shell',description:'Atividades específicas, tabelas paginadas, contas, fontes e envio à contabilidade',area:'company',href:'../company-financial-workspace/?role=company'},
-{id:'tenantFinance',label:'Conferência contábil/fiscal',description:'Dados enviados, pendências e pré-fechamento',area:'tenant-accounting',href:'../company-financial-workspace/?role=accounting'},
+{id:'tenantFinance',label:'Fiscal/Contábil · novo Shell',description:'Recebidos, pendências, conferência e pré-fechamento documental, sem apuração automática',area:'tenant-accounting',href:'../tenant-fiscal-workspace/?tab=received'},
 {id:'tenantAdvisory',label:'Análise da assessoria',description:'Contexto e oportunidades sob revisão',area:'tenant-advisory',href:'../company-financial-workspace/?role=advisory'},
 {id:'fiscalCase',label:'Documento fiscal — caso 70031',description:'Evidência → análise → decisão → aprovação simulada',area:'tenant-accounting',href:'../fiscal-document-70031/'}
 ];
@@ -163,7 +163,8 @@ const reviewItems=[
 ['UX-VIEW-1 · Quadro de trabalho','Fluxo, telas e revisão paginados; revisão visual pendente',false],
 ['UX-SHELL-1 / UX-OFFICE-1 · Painel do Escritório','Novo Shell compartilhado e painel interno publicados; validação visual pendente',false],
 ['UX-COMPANY-1 · Início da Empresa','CompanyAccess com Shell compartilhado, três indicadores e dois painéis; validação visual pendente',false],
-['UX-FINANCE-1 · Financeiro por atividades','Financeiro, Contábil/Fiscal e Assessoria com tarefas, paginação de registros e Shell compartilhado; validação visual pendente',false]
+['UX-FINANCE-1 · Financeiro por atividades','Financeiro, Contábil/Fiscal e Assessoria com tarefas, paginação de registros e Shell compartilhado; validação visual pendente',false],
+['UX-FISCAL-1 · Central Fiscal e Contábil','Área interna com recebidos, pendências, conferência de evidências e preparo documental; validação visual pendente',false]
 ];
 let role='company-fin',company='acme',theme='dark',tab='journey';
 let reviewPanel='journey',flowPage=0,reviewPage=0;
