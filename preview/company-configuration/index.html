@@ -32,6 +32,37 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--line)
 .bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;color:var(--muted);font-size:10px;flex-wrap:wrap}
 @media(max-width:1150px){.layout{grid-template-columns:minmax(0,1fr)}.head{grid-template-columns:minmax(0,1fr)}.right-card{position:static}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:730px){.app{grid-template-columns:1fr}aside{display:none}aside.open{display:flex;position:fixed;inset:62px auto 0 0;width:245px;z-index:20;box-shadow:0 10px 35px #0007}.top{padding:12px 15px}.container{padding:19px 14px 40px}.head{flex-direction:column}.company-pick{width:100%}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}.field.full{grid-column:1}.tools{gap:5px}.synth{font-size:8px}.head h2{font-size:24px}}
+/* Desktop: icon-only navigation rail, never overlay the content. */
+.desktop-sidebar-toggle{display:none}
+@media (min-width:801px){
+  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
+  .app{transition:grid-template-columns .18s ease}
+  body.sidebar-collapsed .app{grid-template-columns:76px minmax(0,1fr)}
+  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
+  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
+  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
+  body.sidebar-collapsed aside .identity>div,
+  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
+  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
+  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
+  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
+  body.sidebar-collapsed aside .unit,
+  body.sidebar-collapsed aside .tenant,
+  body.sidebar-collapsed aside .org-chip,
+  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
+  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
+  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
+  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
+  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
+  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
+  body.sidebar-collapsed aside .sidebar-foot{display:none}
+  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
+  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
+  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
+  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
+  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
+  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
+}
 </style></head><body>
 <div class="app">
 <aside id="sidebar">
@@ -41,7 +72,7 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--line)
 <div class="aside-foot" data-t="asideFoot">Ambiente demonstrativo • Sem conexão real</div>
 </aside>
 <main>
-<header class="top"><div><div class="crumb" data-t="crumb">Clientes / Configuração da empresa</div><h1 data-t="h1">Configuração do cliente</h1></div><div class="tools"><button type="button" class="tool" id="menuBtn" hidden>☰</button><span class="synth" data-t="simulated">DADOS SINTÉTICOS</span><button type="button" class="tool" id="langBtn">EN</button><button type="button" class="tool" id="themeBtn">☀</button></div></header>
+<header class="top"><div><div class="crumb" data-t="crumb">Clientes / Configuração da empresa</div><h1 data-t="h1">Configuração do cliente</h1></div><div class="tools"><button type="button" class="tool desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button><button type="button" class="tool" id="menuBtn" hidden>☰</button><span class="synth" data-t="simulated">DADOS SINTÉTICOS</span><button type="button" class="tool" id="langBtn">EN</button><button type="button" class="tool" id="themeBtn">☀</button></div></header>
 <div class="container">
 <div class="head"><div><div class="eyebrow" data-t="eyebrow">ADMINISTRAÇÃO DO TENANT • COMPANYCONFIGURATION</div><h2 data-t="title">Serviços, acessos e integrações</h2><p data-t="description">Configure o que a contabilidade disponibiliza para cada empresa, sem exceder os módulos habilitados na licença. As alterações são apenas simuladas.</p></div><div class="company-pick"><label class="label" for="companySelect" data-t="selectCompany">Empresa cliente</label><select id="companySelect" class="select"><option value="acme">ACME Industrial</option><option value="orbita">Órbita Comércio</option></select></div></div>
 <div class="stats"><div class="stat"><small data-t="cnpjs">CNPJs</small><b id="countCnpj">—</b><div class="sub" data-t="estabs">Estabelecimentos cadastrados</div></div><div class="stat"><small data-t="enabled">Serviços ativos</small><b id="countServices">—</b><div class="sub" data-t="scope">Limitados pela licença</div></div><div class="stat"><small data-t="sources">Fontes configuradas</small><b id="countSources">—</b><div class="sub" data-t="manualAndExternal">Manual e externas</div></div><div class="stat"><small data-t="users">Usuários externos</small><b id="countUsers">—</b><div class="sub" data-t="noAutoAccess">Sem acesso automático</div></div></div>
@@ -121,5 +152,27 @@ if(b.closest(".nav")){toast(tr("notImplemented"))}
 });
 document.addEventListener("change",function(e){var target=e.target;if(target.id==="companySelect"){active=target.value;tab="identity";lastSaved=false;render();return}if(target.dataset.field){company()[target.dataset.field]=target.value;lastSaved=false;updateTop()}});
 function responsive(){el("menuBtn").hidden=window.innerWidth>730}window.addEventListener("resize",responsive);responsive();render();
+})();
+</script><script>
+(function(){
+ const control=document.getElementById('desktopSidebarToggle');
+ const aside=document.getElementById('sidebar');
+ if(!control||!aside)return;
+ const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
+   const label=item.textContent.trim().replace(/\s+/g,' ');
+   if(label){item.title=label;item.setAttribute('aria-label',label);}
+ });
+ function sync(){
+  const collapsed=document.body.classList.contains('sidebar-collapsed');
+  const en=document.documentElement.lang.toLowerCase().startsWith('en');
+  const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
+  control.textContent=collapsed?'»':'«';
+  control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
+ }
+ control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
+ const nav=aside.querySelector('.nav');
+ if(nav)new MutationObserver(annotate).observe(nav,{subtree:true,childList:true});
+ new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+ annotate();sync();
 })();
 </script></body></html>
