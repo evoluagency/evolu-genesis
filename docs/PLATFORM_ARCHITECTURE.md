@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.24  
+**Version:** 0.25  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -803,6 +803,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-ACCESS-1 Company consultation and scoped navigation | Static previews updated; awaiting user review | Home `?mode=read`, Finance `?role=viewer`; CNPJ/competence links, blocked mock write actions; no secure authorization |
 | UX-FLOW-1 Versioned Finance / Accounting / Advisory handoff | Interactive prototype ready; awaiting user review | `preview/company-financial-workspace/index.html`: submission versions, questions, evidence review, professional advisory release; synthetic only |
 | UX-SHELL-1 / UX-OFFICE-1 Shared shell and Tenant office home | Source published; **awaiting visual user review** | `preview/shared-ux/` + `preview/office-workspace/`, ACME-only synthetic scope; no Backend, no real authorization |
+| UX-COMPANY-1 CompanyAccessHome unified Shell | Static frontend updated; **awaiting visual user review** | `preview/company-access-home/` now consumes shared Shell; 3 scoped metrics and 2 home panels, read-only and other activities preserved |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1787,6 +1788,43 @@ Validation completed: remote file re-read, JavaScript syntax checks, static revi
 
 ---
 
+## 11.6 UX-COMPANY-1 — CompanyAccessHome unified workspace
+
+**Status:** implemented in the **static Genesis frontend**, pending visual and functional user acceptance; this does **not** approve Backend or any other UX screen.
+
+Source: `preview/company-access-home/index.html` on `main`. Intended review URL: `https://evoluagency.github.io/evolu-genesis/preview/company-access-home/` (public browser render not independently verified).
+
+### Migrated interface
+
+- the existing CompanyAccessHome HTML now **consumes** `preview/shared-ux/shell.css` and `preview/shared-ux/shell.js`, instead of having its own independent desktop brand-toggle script;
+- the Tenant-branded Company header, mobile drawer, recolhimento by the NEXUS logo, dark/light theme and PT-BR/EN interactions use the shared shell controls;
+- replaced the previous long home composition (multiple stacked cards, quality/source panels and trace diagram) with exactly **three scoped metric indicators**: current-period financial movement count, submitted-document count, and open Company request count;
+- home work area contains **two task-focused panels**: recent financial movements in the larger region; open Company requests and role-appropriate quick actions in the context region;
+- retained all five existing CompanyAccess secondary activities (Início, Financeiro, Documentos, Solicitações and Informações) including their synthetic registers, document submission, response actions and existing scoped link to detailed Financeiro;
+- the Company read-only mock (`?mode=read`) continues to suppress write actions and handler mutations; the financial role retains synthetic write/demo interactions;
+- selected Company remains ACME only; existing synthetic Matriz (`a`) / Filial (`b`) and 2026-08 / 2026-09 selector values remain, with their translation to detailed Financeiro's `m` / `f` IDs;
+- fiscal documents and financial movement/source evidence remain separate; metric counts are **not** taxable revenue, bank balances, fiscal credits or approved entries;
+- intentionally preserved modal and mock datasets, link semantics, professional authority separation, and legacy detail content; frontend is still separate from the Office preview's independent in-memory state.
+
+### Viewport behavior
+
+- intended one-task-per-desktop-window at widths >=1120px and heights >=700px, with a fixed main workspace and independently scrollable list regions where appropriate;
+- viewport smaller than those thresholds, tablet/mobile and height-restricted zoom allow normal page scrolling. Long records are **not** silently hidden;
+- no automatic permission grants, no storage and no cross-page data synchronization were added.
+
+### Checks already performed
+
+- after the remote write: JavaScript parsed; shared stylesheet and interaction script referenced; obsolete separate sidebar-collapse block removed;
+- mock DOM executed initial home generation: **3 indicators and 2 task panels**; Matriz/Filial and September/August selector changes; Financeiro activity and English translation;
+- read-only fixture showed zero expense, document-upload or request-response controls, plus its explicit consultation notice;
+- UX-NAV-1 maps the existing Company persona to the updated Company home and includes this entry as **pending review**, not accepted.
+
+**Open checks:** real browser viewport inspection (1920×1080, 1440×900, 1366×768, 1280×720), zoom and mobile device accessibility, keyboard and modal focus audits, actual GitHub Pages rendering, and user visual approval. The shared shell is currently consumed by Office and CompanyAccessHome; other screens remain unchanged until their respective phases.
+
+**Next stage after visual assessment:** UX-FINANCE-1 reorganize the detailed Financeiro by **actual tasks** rather than hiding unrelated panels behind numbered artificial pagination. Preserve evidence/review/versioning business semantics and all safeguards from UX-FLOW-1.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -2023,6 +2061,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.25 — CompanyAccessHome shared Shell migration
+
+- updated the existing CompanyAccessHome, without creating a duplicate route or replacing Financeiro, to consume shared Shell CSS/JS;
+- reorganized the Home activity into three scoped counts and two primary content panels, moving detailed work to the existing Company activities;
+- removed duplicate standalone desktop sidebar-collapse CSS/JS after moving to shared brand-triggered navigation;
+- preserved synthetic financial entries, documents, request responses, query-scoped CNPJ/competence links, Company read-only UI restrictions, language/theme and responsive fallback;
+- recorded mock DOM logic checks and structural/script validation; **real browser and user UX review still pending**;
+- no external APIs, real auth, Backend, Supabase, Vercel, GitHub Actions or workflows.
 
 ### 0.24 — First unified workspace implementation
 
