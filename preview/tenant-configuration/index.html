@@ -55,54 +55,14 @@ main{min-width:0}.top{display:flex;justify-content:space-between;align-items:cen
 @media(max-width:1150px){.split{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){.app{display:block}aside{position:fixed;inset:0 auto 0 0;width:min(300px,90vw);z-index:45;transform:translateX(-110%);transition:transform .18s;box-shadow:0 0 0 100vw transparent}aside.open{transform:none;box-shadow:0 0 0 100vw rgba(0,0,0,.56)}#mobileMenu{display:inline-flex}.top{padding:12px 14px;min-height:62px}.workspace{padding:18px 14px 55px}.head{flex-wrap:wrap}.head h2{font-size:23px}.pill.synth{display:none}}
 @media(max-width:550px){.summary{grid-template-columns:1fr 1fr}.metric b{font-size:12px}.fields{grid-template-columns:1fr}.card{padding:14px}.top h1{font-size:13px}.top .crumb{font-size:9px}.toolbar{gap:4px}.ghostbtn{padding:0 7px}}
-/* Desktop: icon-only navigation rail, never overlay the content. */
-.desktop-sidebar-toggle{display:none}
-@media (min-width:801px){
-  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
-  .app{transition:grid-template-columns .18s ease}
-  body.sidebar-collapsed .app{grid-template-columns:76px minmax(0,1fr)}
-  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
-  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
-  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
-  body.sidebar-collapsed aside .identity>div,
-  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
-  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
-  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
-  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
-  body.sidebar-collapsed aside .unit,
-  body.sidebar-collapsed aside .tenant,
-  body.sidebar-collapsed aside .org-chip,
-  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
-  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
-  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
-  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
-  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
-  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
-  body.sidebar-collapsed aside .sidebar-foot{display:none}
-  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
-  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
-  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
-  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
-  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
-  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
-}
-
-
-/* Desktop: click the existing brand area to collapse/expand; no extra toggle. */
-@media (min-width:801px){
- aside .brand-sidebar-toggle{cursor:pointer;border-radius:10px;min-width:0;min-height:42px;user-select:none;transition:background-color .18s ease}
- aside .brand-sidebar-toggle:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
- aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
- body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
-}
-</style>
+</style><link rel="stylesheet" href="../shared-ux/shell.css"><link rel="stylesheet" href="../shared-ux/auxiliary.css"><script src="../shared-ux/shell.js" defer></script>
 </head>
 <body>
-<div class="app">
-<aside id="sidebar">
-  <div class="brand brand-sidebar-toggle" id="brandSidebarToggle" role="button" tabindex="0" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><img src="./evolu-symbol.svg" alt=""><div><strong>EVOLU</strong><small>PLATFORM</small></div></div>
-  <div class="tenant"><div class="avatar">M</div><div><b id="tenantNameSide">Contabilidade Modelo</b><small data-i18n="syntheticTenant">Organização sintética</small></div></div>
-  <nav class="nav" aria-label="Navegação da Platform">
+<div class="app ux-app ux-aux tenant-settings">
+<aside id="sidebar" class="ux-sidebar" data-ux-sidebar aria-label="Administração da organização">
+  <button type="button" class="brand ux-brand" id="brandSidebarToggle" data-ux-brand aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><img src="./evolu-symbol.svg" alt=""><span class="ux-brand-copy"><strong>EVOLU</strong><small>PLATFORM</small></span></button>
+  <div class="tenant ux-tenant"><div class="avatar ux-tenant-icon" aria-hidden="true">M</div><div class="ux-tenant-copy"><b id="tenantNameSide">Contabilidade Modelo</b><small data-i18n="syntheticTenant">Organização sintética</small></div></div>
+  <nav class="nav ux-nav" aria-label="Navegação da Platform">
    <div class="nav-head" data-i18n="work">OPERAÇÃO</div>
    <button type="button" class="other"><i>⌂</i><span data-i18n="overview">Visão geral</span></button>
    <button type="button" class="other"><i>▦</i><span data-i18n="clients">Clientes</span></button>
@@ -115,29 +75,29 @@ main{min-width:0}.top{display:flex;justify-content:space-between;align-items:cen
    <div class="nav-head" data-i18n="administration">ADMINISTRAÇÃO</div>
    <button type="button" class="active"><i>⚙</i><span data-i18n="orgSettings">Configurações da organização</span></button>
   </nav>
-  <div class="sidebar-foot" data-i18n="demoNote">Protótipo de UX · sem conexão com dados reais</div>
+  <div class="sidebar-foot ux-sidebar-footer" data-i18n="demoNote">Protótipo de UX · sem conexão com dados reais</div><button type="button" class="ghostbtn ux-menu-close" data-menu-close>Fechar menu</button>
 </aside>
-<main>
-<header class="top">
- <div style="display:flex;align-items:center;gap:10px"><button class="ghostbtn" id="mobileMenu" aria-label="Abrir menu">☰</button><div><div class="crumb" data-i18n="breadcrumb">Administração / Organização</div><h1 data-i18n="pageTitle">Configurações da organização</h1></div></div>
+<main class="ux-main">
+<header class="top ux-top">
+ <div style="display:flex;align-items:center;gap:10px"><button type="button" class="ghostbtn ux-btn ux-mobile-menu" id="mobileMenu" data-menu-open aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menu">☰</button><div><div class="crumb" data-i18n="breadcrumb">Administração / Organização</div><h1 data-i18n="pageTitle">Configurações da organização</h1></div></div>
  <div class="toolbar">
   <span class="pill synth" data-i18n="synthetic">DADOS SINTÉTICOS</span>
-  <button class="ghostbtn" id="langBtn" aria-label="Mudar idioma">EN</button>
-  <button class="ghostbtn" id="themeBtn" aria-label="Alternar tema">☀</button>
+  <button class="ghostbtn ux-btn" id="langBtn" data-locale-toggle aria-label="Mudar idioma">EN</button>
+  <button class="ghostbtn ux-btn" id="themeBtn" data-theme-toggle aria-label="Alternar tema">☀</button>
  </div>
 </header>
-<div class="workspace">
- <section class="head">
+<div class="workspace ux-wrap">
+ <section class="head ux-head">
   <div><div class="eyebrow" data-i18n="config">PLATFORM / CONFIGURAÇÃO</div><h2 data-i18n="heading">Estrutura da organização</h2><p data-i18n="intro">Defina como a organização opera e visualize a estrutura resultante. Módulos habilitados, permissões e acesso dos clientes são tratados separadamente.</p></div>
   <button type="button" class="cta" id="applyBtn" data-i18n="apply">Aplicar simulação</button>
  </section>
- <div class="summary">
+ <div class="summary ux-metrics">
   <div class="metric"><small data-i18n="business">Modelo de negócio</small><b id="summaryBusiness">Contabilidade</b></div>
   <div class="metric"><small data-i18n="operating">Modelo operacional</small><b id="summaryOperating">Departamental</b></div>
   <div class="metric"><small data-i18n="enabled">Módulos habilitados</small><b id="summaryModules">2 de 5</b></div>
   <div class="metric"><small data-i18n="companies">Empresas atendidas</small><b>2</b></div>
  </div>
- <div class="split">
+ <div class="split ux-grid">
   <div class="stack">
    <section class="card">
     <div class="card-head"><div><h3 data-i18n="configTitle">Configuração funcional</h3><p data-i18n="configSubtitle">A visualização de administração do Tenant é diferente do provisionamento pela EVOLU.</p></div><span class="tag" data-i18n="prototype">Protótipo</span></div>
@@ -293,41 +253,13 @@ document.querySelectorAll(".companyCap").forEach(cb=>cb.addEventListener("change
 document.querySelectorAll(".swatches button").forEach(b=>b.addEventListener("click",()=>{state.color=b.dataset.color;mark();update()}));
 $("applyBtn").addEventListener("click",()=>{dirty=false;update();notify("success")});
 $("resetBtn").addEventListener("click",()=>{state=clone(defaults);company="industry";tab="model";dirty=false;update();notify("restored")});
-$("langBtn").addEventListener("click",()=>{lang=lang==="pt"?"en":"pt";update()});
-$("themeBtn").addEventListener("click",()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==="dark"?"light":"dark";update()});
-$("mobileMenu").addEventListener("click",()=>{$("sidebar").classList.toggle("open")});
+document.addEventListener("ux:locale",()=>{lang=document.documentElement.lang.startsWith("en")?"en":"pt";update()});
+document.addEventListener("ux:theme",()=>update());
 document.querySelectorAll(".nav button.other").forEach(b=>b.addEventListener("click",()=>notify("notReady")));
 update();
 })();
 </script>
 
-<script>
-(function(){
- const brand=document.getElementById('brandSidebarToggle');
- const aside=document.getElementById('sidebar');
- if(!brand||!aside)return;
- const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
-  const label=item.textContent.trim().replace(/\s+/g,' ');
-  if(label){item.title=label;item.setAttribute('aria-label',label);}
- });
- function sync(){
-   const collapsed=document.body.classList.contains('sidebar-collapsed');
-   const en=document.documentElement.lang.toLowerCase().startsWith('en');
-   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-   brand.title=label;brand.setAttribute('aria-label',label);
-   brand.setAttribute('aria-expanded',String(!collapsed));
- }
- function toggle(){
-   if(window.innerWidth<=800){aside.classList.remove('open');return;}
-   document.body.classList.toggle('sidebar-collapsed');sync();
- }
- brand.addEventListener('click',toggle);
- brand.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
- const nav=aside.querySelector('.nav');
- if(nav)new MutationObserver(annotate).observe(nav,{childList:true,subtree:true});
- new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
- annotate();sync();
-})();
-</script>
+
 </body>
 </html>
