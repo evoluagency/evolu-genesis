@@ -234,7 +234,7 @@ function requestsList(answerMode){
 function statusFlow(){return '<div class="steps"><span class="'+(role==='company'?'active':'')+'">'+t('financial')+'</span>→<span class="'+(role==='accounting'?'active':'')+'">'+t('fiscal')+'</span>→<span class="'+(role==='advisory'?'active':'')+'">'+t('advisor')+'</span></div>'}
 function renderCompany(){
  const state=flow(),packet=state.packet,needsSend=!packet||state.state==='changed';
- const handoffButton='<button class="btn primary" data-act="handoff" '+(!needsSend?'disabled':'')+'>'+fl(packet?'reSubmit':'handoff')+'</button>';
+ const handoffButton='<button class="btn primary" data-act="handoff" '+(!needsSend?'disabled':'')+'>'+(packet?fl('reSubmit'):t('handoff'))+'</button>';
  if(view==='home')return metrics()+'<div class="grid"><div class="stack">'+
   card(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>')+
   card(t('requestTitle'),t('companyOnly'),requestsList(true))+'</div><div class="stack">'+
@@ -358,6 +358,7 @@ const due=$('due').value;if(!due){notify(t('error'));return;}bills.push({id:'B-N
 }
 }else if(modal==='import'){
 const batch=$('kind').value;
+if(period!=='2026-09'){notify(lang==='pt'?'Os arquivos fictícios disponíveis representam setembro/2026. Selecione 09/2026 ou utilize lançamento manual.':'Synthetic sample files only represent September 2026. Choose 09/2026 or use manual entry.');return;}
 let added=0,duplicated=0;
 seedFiles[batch].forEach(x=>{
 if(batch==='fiscal'){
