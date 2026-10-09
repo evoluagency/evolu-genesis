@@ -192,65 +192,66 @@ function requestsList(answerMode){
  }).join('')+'</div>';
 }
 function statusFlow(){return '<div class="steps"><span class="'+(role==='company'?'active':'')+'">'+t('financial')+'</span>→<span class="'+(role==='accounting'?'active':'')+'">'+t('fiscal')+'</span>→<span class="'+(role==='advisory'?'active':'')+'">'+t('advisor')+'</span></div>'}
+
+function taskPanel(name,desc,body,action){
+ return '<section class="card ux-card finance-task-card"><div class="cardhead"><div><h3>'+name+'</h3>'+(desc?'<p>'+desc+'</p>':'')+'</div>'+(action||'')+'</div><div class="finance-panel-scroll">'+body+'</div></section>';
+}
+function taskGrid(primary,secondary,withMetrics){
+ return (withMetrics?metrics():'')+'<div class="grid ux-grid finance-grid"><div class="stack">'+primary+'</div><div class="stack">'+secondary+'</div></div>';
+}
+function infoBreak(label,body){
+ return '<div class="finance-subsection"><h4>'+label+'</h4>'+body+'</div>';
+}
 function renderCompany(){
- const state=flow(),packet=state.packet,needsSend=!packet||state.state==='changed';
- const handoffButton='<button class="btn primary" data-act="handoff" '+(!needsSend?'disabled':'')+'>'+(packet?fl('reSubmit'):t('handoff'))+'</button>';
- if(view==='home')return metrics()+'<div class="grid"><div class="stack">'+
-  card(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>')+
-  card(t('requestTitle'),t('companyOnly'),requestsList(true))+'</div><div class="stack">'+
-  card(fl('flowTitle'),'',flowPanel(),'<button class="btn soft" data-nav="send">'+t('handoff')+'</button>')+
-  card(t('sourceTitle'),t('sourceDesc'),sourceTiles())+'</div></div>';
- if(view==='moves')return metrics()+'<div class="grid"><div class="stack">'+
-  card(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>')+
-  '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+
-  card(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn" data-nav="sources">'+t('import')+'</button>')+'</div></div>';
- if(view==='debts')return '<div class="grid"><div class="stack">'+card(t('billTitle'),t('billDesc'),billTable(),'<button class="btn primary" data-act="bill">'+t('addBill')+'</button>')+
- '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+'</div></div>';
- if(view==='sources')return '<div class="grid"><div class="stack">'+
- card(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn primary" data-act="import">'+t('import')+'</button>')+
- card(t('fiscalDocs'),t('noRealImport'),fiscalList())+
- '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+'</div></div>';
- return '<div class="grid"><div class="stack">'+
- card(fl('flowTitle'),t('resultDesc'),statusFlow()+'<div style="margin-top:12px">'+flowPanel()+'</div><div class="rowfoot">'+handoffButton+'</div>')+
- card(t('requestTitle'),'',requestsList(true))+'</div><div class="stack">'+
- card(t('reviewDocs'),'', '<div class="callout">'+currentMoves().length+' '+t('records')+' · '+currentBills().length+' '+t('billTitle')+' · '+pending().length+' '+t('issues')+'</div>')+
- card(t('audit'),'',auditList())+'</div></div>';
+ const state=flow(),needsSend=!state.packet||state.state==='changed';
+ const submit='<button class="btn primary" data-act="handoff" '+(!needsSend?'disabled':'')+'>'+(state.packet?fl('reSubmit'):t('handoff'))+'</button>';
+ const statusButton='<button class="btn soft" data-nav="send">'+t('handoff')+'</button>';
+ if(view==='home')return taskGrid(
+   taskPanel(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>'),
+   taskPanel(t('requestTitle'),t('companyOnly'),requestsList(true)+infoBreak(fl('flowTitle'),flowPanel()),statusButton),true);
+ if(view==='moves')return taskGrid(
+   taskPanel(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>'),
+   taskPanel(fl('flowTitle'),'',flowPanel()+infoBreak(t('sourceTitle'),sourceTiles()),'<button class="btn soft" data-nav="sources">'+t('sources')+'</button>'),false);
+ if(view==='debts')return taskGrid(
+   taskPanel(t('billTitle'),t('billDesc'),billTable(),'<button class="btn primary" data-act="bill">'+t('addBill')+'</button>'),
+   taskPanel(fl('flowTitle'),'',flowPanel()),false);
+ if(view==='sources')return taskGrid(
+   taskPanel(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn primary" data-act="import">'+t('import')+'</button>'),
+   taskPanel(t('fiscalDocs'),t('noRealImport'),fiscalList()+infoBreak(fl('flowTitle'),flowPanel())),false);
+ return taskGrid(
+   taskPanel(fl('flowTitle'),t('resultDesc'),statusFlow()+flowPanel()+'<div class="rowfoot">'+submit+'</div>'),
+   taskPanel(t('requestTitle'),'',requestsList(true)+infoBreak(t('audit'),auditList())),false);
 }
+
 function auditList(){return history.filter(x=>x.scope===company&&x.at===period).length?'<div class="itemlist">'+history.filter(x=>x.scope===company&&x.at===period).map(x=>'<div class="item"><b>'+esc(x.action)+'</b><span class="pill">'+t(x.who)+'</span></div>').join('')+'</div>':'<div class="empty">'+t('auditEmpty')+'</div>'}
+
 function renderAccounting(){
- const status=flow(),allowShare=canShare();
- const shareButton='<button class="btn primary" data-act="share" '+(allowShare?'':'disabled')+'>'+fl('share')+'</button>';
- const main=card(fl('flowTitle'),t('differenceExplainer'),statusFlow()+'<div style="margin-top:13px">'+flowPanel()+'</div>',shareButton)+
- card(t('allMoves'),fl('reviewHint'),movementTable());
- const side=card(t('requestTitle'),'',requestsList(false),'<button class="btn primary" data-act="ask" '+(!canReview()?'disabled':'')+'>'+t('request')+'</button>')+
- card(t('fiscalDocs'),fl('reviewHint'),fiscalList())+card(t('audit'),'',auditList());
- if(view==='pending')return '<div class="grid"><div class="stack">'+
- card(t('checking'),'',requestsList(false),'<button class="btn primary" data-act="ask" '+(!canReview()?'disabled':'')+'>'+t('request')+'</button>')+
- '</div><div class="stack">'+card(fl('flowTitle'),'',flowPanel())+'</div></div>';
- if(view==='closing')return '<div class="grid"><div class="stack">'+
- card(t('result'),t('resultDesc'),flowPanel(),shareButton)+
- card(t('allMoves'),fl('reviewHint'),movementTable())+'</div><div class="stack">'+
- card(t('fiscalDocs'),'',fiscalList())+card(t('issues'),'',requestsList(false))+
- '</div></div>';
- return '<div class="grid"><div class="stack">'+main+'</div><div class="stack">'+side+'</div></div>';
+ const share='<button class="btn primary" data-act="share" '+(canShare()?'':'disabled')+'>'+fl('share')+'</button>';
+ const ask='<button class="btn primary" data-act="ask" '+(canReview()?'':'disabled')+'>'+t('request')+'</button>';
+ if(view==='pending')return taskGrid(
+  taskPanel(t('checking'),'',requestsList(false),ask),
+  taskPanel(fl('flowTitle'),'',flowPanel()+infoBreak(t('audit'),auditList())),false);
+ if(view==='closing')return taskGrid(
+  taskPanel(t('result'),t('resultDesc'),statusFlow()+flowPanel()+infoBreak(t('audit'),auditList()),share),
+  taskPanel(t('fiscalDocs'),fl('reviewHint'),fiscalList()+infoBreak(t('issues'),requestsList(false))),false);
+ return taskGrid(
+  taskPanel(t('allMoves'),fl('reviewHint'),movementTable()+infoBreak(t('fiscalDocs'),fiscalList())),
+  taskPanel(fl('flowTitle'),t('differenceExplainer'),flowPanel()+infoBreak(t('requestTitle'),requestsList(false)),ask),false);
 }
+
+
 function renderAdvisory(){
- const status=flow(),released=status.state==='released';
- const message=released?fl('advisoryReady'):fl('notReady');
- const body='<div class="callout"><strong>'+message+'</strong><br>'+fl('notTax')+'</div>';
- if(!released)return '<div class="grid"><div class="stack">'+
- card(t('adviceTitle'),t('adviceDesc'),body)+
- card(fl('flowTitle'),'',flowPanel())+'</div><div class="stack">'+
- card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
- if(view==='opportunities')return '<div class="grid"><div class="stack">'+
- card(t('opportunities'),t('adviceDesc'),body)+
- card(t('allMoves'),t('noTax'),movementTable())+'</div><div class="stack">'+
- card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
- return metrics()+'<div class="grid"><div class="stack">'+
- card(t('adviceTitle'),t('adviceDesc'),body)+
- card(fl('flowTitle'),'',flowPanel())+'</div><div class="stack">'+
- card(t('fiscalDocs'),'',fiscalList())+
- card(t('nextStep'),'', '<div class="callout">'+t('nextStepText')+'</div>')+'</div></div>';
+ const state=flow(),released=state.state==='released';
+ const body='<div class="callout"><strong>'+fl(released?'advisoryReady':'notReady')+'</strong><br>'+fl('notTax')+'</div>';
+ if(!released)return taskGrid(
+  taskPanel(t('adviceTitle'),t('adviceDesc'),body),
+  taskPanel(fl('flowTitle'),'',flowPanel()+infoBreak(t('nextStep'),'<div class="callout">'+t('nextStepText')+'</div>')),false);
+ if(view==='opportunities')return taskGrid(
+  taskPanel(t('opportunities'),t('adviceDesc'),body+infoBreak(t('allMoves'),movementTable())),
+  taskPanel(t('nextStep'),'',flowPanel()+'<div class="callout">'+t('nextStepText')+'</div>'),false);
+ return taskGrid(
+  taskPanel(t('adviceTitle'),t('adviceDesc'),body+infoBreak(t('allMoves'),movementTable())),
+  taskPanel(t('fiscalDocs'),'',fiscalList()+infoBreak(fl('flowTitle'),flowPanel())),true);
 }
 
 const SCREEN_MODE_QUERY='(min-width: 1100px) and (min-height: 680px)';
