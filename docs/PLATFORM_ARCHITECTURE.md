@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.28  
+**Version:** 0.29  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -1958,6 +1958,23 @@ The work sequence is:
 
 ---
 
+## 11.10 UX-AUX-1 — Auxiliary page standardization
+
+**Status:** implemented in static previews on main, **pending browser and user visual approval**.
+
+- Shared CSS: `preview/shared-ux/auxiliary.css`; Shell JS now broadcasts theme changes as well as locale changes.
+- `preview/company-onboarding/index.html`: existing eight-stage flow retained in step-focused panels; EVOLU administration context preserved.
+- `preview/company-configuration/index.html`: existing five tasks, entitlement boundaries, ACME and Órbita demonstration fixtures and in-memory form state retained.
+- `preview/tenant-configuration/index.html`: existing EVOLU versus Tenant administration controls, licensed modules and contextual previews retained.
+- `preview/fiscal-document-70031/index.html`: NEXUS Shell plus three presentation tabs (context, evidence, decision); original five-stage human decision/approval/execution simulation remains unchanged. Added `preview/fiscal-document-70031/document-detail.css`.
+- `preview/ux-journey/index.html`: auxiliary preview status updated to pending review; functional links to Office, Fiscal and queue provided where these previews exist.
+
+Validation: JavaScript syntax on all four pages, mocked initialization and locale/theme behavior for three configuration previews, **9/9 mocked case-document interactions** including approval gates and reset. Actual rendered desktop/mobile views, keyboard, zoom and final UX signoff still pending.
+
+No Backend, persistence, real authentication, external integrations or workflows were introduced. Next stages remain UX-ROUTES-1 and UX-REVIEW-1. Explicit final user approval remains mandatory before Backend.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -2194,6 +2211,12 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.29 — Auxiliary workspaces
+
+- Shared work-pane and sidebar standards applied to Company onboarding, Company settings, Tenant administration and the NF-e 70031 detail.
+- Preserved domain/role constraints and original forms; added contextual navigation and case document activity tabs.
+- Static checks and mocked workflows completed; visual/browser acceptance is pending. No Backend or GitHub Actions.
 
 ### 0.28 — Tenant advisory reference workspace
 
