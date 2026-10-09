@@ -19,6 +19,37 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px;font-size:10px;color:var(--dim)}.bottom a{color:var(--violet)}
 @media(max-width:1130px){.grid{grid-template-columns:minmax(0,1fr)}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.app{display:block}aside{display:none}aside.open{position:fixed;display:flex;inset:67px auto 0 0;width:245px;min-height:calc(100vh - 67px);z-index:30;box-shadow:0 18px 60px #0008}.menu{display:block}.top{padding:10px 13px}.demo{font-size:8px}.wrap{padding:17px 13px 45px}.head{flex-direction:column;margin-top:12px}.head h2{font-size:24px}.selectors{width:100%}.selectors .field{flex:1}.selectors select{min-width:0}.metrics{gap:8px}.metric{padding:13px}.metric strong{font-size:17px}.source-grid{grid-template-columns:1fr}}
+/* Desktop: icon-only navigation rail, never overlay the content. */
+.desktop-sidebar-toggle{display:none}
+@media (min-width:801px){
+  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
+  .app{transition:grid-template-columns .18s ease}
+  body.sidebar-collapsed .app{grid-template-columns:76px minmax(0,1fr)}
+  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
+  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
+  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
+  body.sidebar-collapsed aside .identity>div,
+  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
+  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
+  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
+  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
+  body.sidebar-collapsed aside .unit,
+  body.sidebar-collapsed aside .tenant,
+  body.sidebar-collapsed aside .org-chip,
+  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
+  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
+  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
+  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
+  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
+  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
+  body.sidebar-collapsed aside .sidebar-foot{display:none}
+  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
+  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
+  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
+  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
+  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
+  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
+}
 </style></head><body>
 <div class="app">
 <aside id="sidebar">
@@ -29,7 +60,7 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
 </aside>
 <main><header class="top">
 <div><div id="bread" class="crumb">NEXUS / ACME Industrial / Financeiro</div><h1 id="topTitle">Financeiro</h1></div>
-<div class="right"><button class="btn menu" id="mobileMenu" aria-label="Abrir menu">☰</button><span class="demo" data-i="demo">DADOS SINTÉTICOS</span><button class="btn" id="langBtn" aria-label="Idioma">EN</button><button class="btn" id="themeBtn" aria-label="Tema">☀</button></div></header>
+<div class="right"><button type="button" class="btn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button><button class="btn menu" id="mobileMenu" aria-label="Abrir menu">☰</button><span class="demo" data-i="demo">DADOS SINTÉTICOS</span><button class="btn" id="langBtn" aria-label="Idioma">EN</button><button class="btn" id="themeBtn" aria-label="Tema">☀</button></div></header>
 <div class="wrap">
 <div class="notice" data-i="demoBoundary"><strong>Inspeção de UX:</strong> a troca de perfis abaixo existe apenas nesta demonstração. No produto, a empresa não poderá acessar as telas da contabilidade/assessoria sem outra sessão autorizada.</div>
 <div class="head"><div><div class="eyebrow" data-i="eyebrow">OPERAÇÃO FINANCEIRA · COMPANY</div><h2 id="viewTitle">Visão financeira</h2><p id="viewDesc">Informações financeiras fornecidas pela empresa, sem equivalência automática com receitas fiscais ou lançamentos contábeis.</p></div>
@@ -259,5 +290,27 @@ if(['company','accounting','advisory'].includes(demoRole)){
 role=demoRole;view=navs[role][0][0];
 }
 render();
+})();
+</script><script>
+(function(){
+ const control=document.getElementById('desktopSidebarToggle');
+ const aside=document.getElementById('sidebar');
+ if(!control||!aside)return;
+ const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
+   const label=item.textContent.trim().replace(/\s+/g,' ');
+   if(label){item.title=label;item.setAttribute('aria-label',label);}
+ });
+ function sync(){
+  const collapsed=document.body.classList.contains('sidebar-collapsed');
+  const en=document.documentElement.lang.toLowerCase().startsWith('en');
+  const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
+  control.textContent=collapsed?'»':'«';
+  control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
+ }
+ control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
+ const nav=aside.querySelector('.nav');
+ if(nav)new MutationObserver(annotate).observe(nav,{subtree:true,childList:true});
+ new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+ annotate();sync();
 })();
 </script></body></html>
