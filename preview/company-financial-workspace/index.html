@@ -71,6 +71,7 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
 <div><div id="bread" class="crumb">NEXUS / ACME Industrial / Financeiro</div><h1 id="topTitle">Financeiro</h1></div>
 <div class="right"><button class="btn menu" id="mobileMenu" aria-label="Abrir menu">☰</button><span class="demo" data-i="demo">DADOS SINTÉTICOS</span><button class="btn" id="langBtn" aria-label="Idioma">EN</button><button class="btn" id="themeBtn" aria-label="Tema">☀</button></div></header>
 <div class="wrap">
+<div id="readOnlyNotice" class="notice" hidden aria-live="polite"></div>
 <div class="notice" data-i="demoBoundary"><strong>Inspeção de UX:</strong> a troca de perfis abaixo existe apenas nesta demonstração. No produto, a empresa não poderá acessar as telas da contabilidade/assessoria sem outra sessão autorizada.</div>
 <div class="head"><div><div class="eyebrow" data-i="eyebrow">OPERAÇÃO FINANCEIRA · COMPANY</div><h2 id="viewTitle">Visão financeira</h2><p id="viewDesc">Informações financeiras fornecidas pela empresa, sem equivalência automática com receitas fiscais ou lançamentos contábeis.</p></div>
 <div class="selectors">
@@ -79,7 +80,7 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
 <div class="field"><label data-i="period" for="period">Competência</label><select id="period"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
 </div></div>
 <div id="content" aria-live="polite"></div>
-<div class="bottom"><span data-i="foot">Protótipo demonstrativo com dados fictícios. A diferença de movimentações não representa lucro, saldo bancário nem base tributável.</span><a href="../ux-journey/">Mapa da jornada de UX ↗</a><a href="../company-access-home/" data-i="back">Ver início da empresa</a></div>
+<div class="bottom"><span data-i="foot">Protótipo demonstrativo com dados fictícios. A diferença de movimentações não representa lucro, saldo bancário nem base tributável.</span><a href="../ux-journey/">Mapa da jornada de UX ↗</a><a id="homeBack" href="../company-access-home/" data-i="back">Ver início da empresa</a></div>
 </div></main></div>
 <div id="modalBack" class="modalback" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle"></h3><p id="modalDesc"></p><form id="modalForm"><div id="modalFields" class="modalfields"></div><div class="modalfoot"><button type="button" id="cancel" class="btn" data-i="cancel">Cancelar</button><button class="btn primary" type="submit" id="submit" data-i="save">Aplicar apenas na simulação</button></div></form></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
@@ -93,6 +94,14 @@ en:{brandSub:'Accounting & Advisory',clientSpace:'Company finance workspace',syn
 const $=id=>document.getElementById(id), t=k=>langMap[lang][k]||langMap.pt[k]||k;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let lang='pt',theme='dark',role='company',view='home',company='m',period='2026-09',modal=null,answerId=null,toastId;
+const queryParams=new URLSearchParams(window.location.search);
+const previewReadOnly=queryParams.get('role')==='viewer';
+function homeHref(){
+ const q=new URLSearchParams({cnpj:company==='m'?'a':'b',period});
+ if(previewReadOnly)q.set('mode','read');
+ return '../company-access-home/?'+q.toString();
+}
+
 const seedMoves=[
 {id:'M-1',company:'m',period:'2026-09',date:'2026-09-30',name:'Recebimento ERP setembro',kind:'in',value:84500,source:'erp',ref:'ERP-RS-110',reviewed:false},
 {id:'M-2',company:'m',period:'2026-09',date:'2026-09-28',name:'Fornecedor industrial',kind:'out',value:32900,source:'bank',ref:'BANK-984',reviewed:false},
@@ -140,9 +149,10 @@ accounting:[['review','⇄','review'],['pending','◷','pending'],['closing','�
 advisory:[['analysis','◎','analysis'],['opportunities','◇','opportunities']]
 };
 function navUpdate(){
-$('nav').innerHTML=navs[role].map(x=>'<button data-nav="'+x[0]+'" class="'+(view===x[0]?'active':'')+'"><span class="ico">'+x[1]+'</span>'+t(x[2])+'</button>').join('');
+const menu=previewReadOnly&&role==='company'?navs[role].filter(x=>x[0]!=='send'):navs[role];
+$('nav').innerHTML=menu.map(x=>'<button data-nav="'+x[0]+'" class="'+(view===x[0]?'active':'')+'"><span class="ico">'+x[1]+'</span>'+t(x[2])+'</button>').join('');
 $('navCaption').textContent=role==='company'?'FINANCEIRO':role==='accounting'?'CONFERÊNCIA':'ASSESSORIA';
-$('profile').value=role;$('cnpj').value=company;$('period').value=period;
+$('profile').value=role;$('profile').disabled=previewReadOnly;$('cnpj').value=company;$('period').value=period;
 document.querySelectorAll('[data-i]').forEach(x=>{x.textContent=t(x.dataset.i)});
 $('langBtn').textContent=lang==='pt'?'EN':'PT';
 $('themeBtn').textContent=theme==='dark'?'☀':'☾';
@@ -213,8 +223,16 @@ const name=role==='company'?'companyTitle':role==='accounting'?'accountingTitle'
 const desc=role==='company'?'companyDesc':role==='accounting'?'accountingDesc':'advisoryDesc';
 $('viewTitle').textContent=t(name);$('viewDesc').textContent=t(desc);$('topTitle').textContent=t(navs[role].find(x=>x[0]===view)?.[2]||name);
 $('content').innerHTML=role==='company'?renderCompany():role==='accounting'?renderAccounting():renderAdvisory();
+if(previewReadOnly){
+ $('content').querySelectorAll('[data-act],[data-answer],[data-nav="send"]').forEach(el=>el.remove());
+}
+const notice=$('readOnlyNotice');
+notice.hidden=!previewReadOnly;
+notice.textContent=previewReadOnly?(lang==='pt'?'Perfil de consulta: somente leitura. Os comandos de lançamento, importação, resposta e envio foram retirados nesta demonstração.':'Read-only preview: entry, import, reply and handoff actions are unavailable.'):'';
+const backlink=$('homeBack');backlink.hidden=role!=='company';backlink.href=homeHref();
 }
 function openModal(type,id){
+if(previewReadOnly)return;
 modal=type;answerId=id||null;
 $('modalTitle').textContent=t(({move:'modalMove',bill:'modalBill',import:'modalImport',answer:'modalAnswer',ask:'modalReview'})[type]);
 $('modalDesc').textContent=t(({move:'modalMoveDesc',bill:'modalBillDesc',import:'modalImportDesc',answer:'modalAnswerDesc',ask:'modalReviewDesc'})[type]);
@@ -229,6 +247,7 @@ $('modalFields').innerHTML=form;$('modalBack').hidden=false;$('modalForm').reset
 }
 function closeModal(){$('modalBack').hidden=true;modal=null;answerId=null;}
 function action(type){
+if(previewReadOnly)return;
 if(type==='handoff'){
 if(role!=='company')return;hand[key()]={at:period,moves:currentMoves().length};addHistory(t('handoff'));notify(t('handoffDone'));render();return;
 }
@@ -242,7 +261,7 @@ if(type==='ask'&&role!=='accounting')return;
 openModal(type);
 }
 function submitModal(e){
-e.preventDefault();if(!modal)return;
+e.preventDefault();if(previewReadOnly||!modal)return;
 let message='',k=key();
 if(modal==='move'||modal==='bill'){
 const name=$('title').value.trim(),value=Number($('amount').value),type=$('kind').value;
@@ -281,7 +300,7 @@ document.addEventListener('click',e=>{
 const b=e.target.closest('button');if(!b)return;
 if(b.dataset.nav){view=b.dataset.nav;$('sidebar').classList.remove('open');render();return;}
 if(b.dataset.act){action(b.dataset.act);return;}
-if(b.dataset.answer){if(role==='company')openModal('answer',b.dataset.answer);return;}
+if(b.dataset.answer){if(role==='company'&&!previewReadOnly)openModal('answer',b.dataset.answer);return;}
 if(b.id==='cancel'){closeModal();return;}
 if(b.id==='mobileMenu'){$('sidebar').classList.toggle('open');return;}
 if(b.id==='themeBtn'){theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;render();return;}
@@ -290,14 +309,16 @@ if(b.id==='langBtn'){lang=lang==='pt'?'en':'pt';document.documentElement.lang=la
 $('modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack')closeModal()});
 $('modalForm').addEventListener('submit',submitModal);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&& !$('modalBack').hidden)closeModal()});
-$('profile').addEventListener('change',e=>{role=e.target.value;view=navs[role][0][0];$('sidebar').classList.remove('open');render()});
+$('profile').addEventListener('change',e=>{if(previewReadOnly)return;role=e.target.value;view=navs[role][0][0];$('sidebar').classList.remove('open');render()});
 $('cnpj').addEventListener('change',e=>{company=e.target.value;render()});
 $('period').addEventListener('change',e=>{period=e.target.value;render()});
-// UX REVIEW ONLY: query selects the synthetic demo perspective, not authentication.
-const demoRole=new URLSearchParams(window.location.search).get('role');
-if(['company','accounting','advisory'].includes(demoRole)){
-role=demoRole;view=navs[role][0][0];
-}
+// UX REVIEW ONLY: URL parameters select synthetic role/entity/period, never authorization.
+const demoRole=queryParams.get('role');
+if(['company','accounting','advisory'].includes(demoRole)){role=demoRole;}
+if(previewReadOnly){role='company';view='home';}
+else {view=navs[role][0][0];}
+if(['m','f'].includes(queryParams.get('cnpj')))company=queryParams.get('cnpj');
+if(['2026-09','2026-08'].includes(queryParams.get('period')))period=queryParams.get('period');
 render();
 })();
 </script><script>
