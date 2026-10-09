@@ -100,7 +100,7 @@ const allScreens=[
 ];
 const roles={
 'company-fin':{label:'Financeiro da empresa',area:'company',unit:'ACME Industrial',home:'companyHome',cap:{portfolio:false,financeRead:true,financeWrite:true,documents:true,requests:true,fiscalRead:false,accounting:false,advisory:false,admin:false},description:'A equipe financeira registra e fornece informações sem acessar a carteira do escritório.',screenIds:['companyHome','companyFinance']},
-'company-read':{label:'Consulta da empresa',area:'company',unit:'ACME Industrial',home:'companyHome',cap:{portfolio:false,financeRead:true,financeWrite:false,documents:true,requests:false,fiscalRead:false,accounting:false,advisory:false,admin:false},description:'Perfil ilustrativo de consulta. A demonstração de CompanyAccessHome contém ações de lançamento; esta composição é de autorização pretendida, ainda não implementada individualmente naquela tela.',screenIds:['companyHome']},
+'company-read':{label:'Consulta da empresa',area:'company',unit:'ACME Industrial',home:'companyHome',cap:{portfolio:false,financeRead:true,financeWrite:false,documents:true,requests:false,fiscalRead:false,accounting:false,advisory:false,admin:false},description:'Consulta demonstrativa somente leitura: Home e Financeiro ocultam ações de escrita. Não substitui autenticação ou autorização no Backend.',screenIds:['companyHome','companyFinance']},
 'tenant-accounting':{label:'Contábil/Fiscal da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantFinance',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:false},description:'Confere documentos e movimentações das empresas do Tenant autorizadas para o profissional. Não herda permissão de administração nem execução automática da Intelligence.',screenIds:['tenantFinance','fiscalCase']},
 'tenant-advisory':{label:'Assessoria da NEXUS',area:'tenant',unit:'NEXUS',home:'tenantAdvisory',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:true,admin:false},description:'A assessoria analisa o contexto autorizado e recomenda; nem recomendação nem confiança elevada executam mudanças automaticamente.',screenIds:['tenantAdvisory']},
 'tenant-admin':{label:'Administrador da NEXUS',area:'tenant',unit:'NEXUS',home:'companyConfiguration',cap:{portfolio:true,financeRead:true,financeWrite:false,documents:true,requests:true,fiscalRead:true,accounting:true,advisory:false,admin:true},description:'Configura Companies, CNPJs, escopo e usuários dentro dos direitos do Tenant. A página de configuração da organização distingue poderes reservados à EVOLU, que não passam ao administrador do Tenant.',screenIds:['companyConfiguration','companyOnboarding','tenantConfiguration']}
@@ -118,11 +118,19 @@ const reviewItems=[
 ['UX-CFG-3 · CompanyConfiguration','Aguardando revisão explícita',false],
 ['UX-CFG-4 · CompanyAccessHome','Aguardando revisão explícita',false],
 ['UX-CFG-5 · CompanyFinancialWorkspace','Aguardando revisão explícita',false],
-['UX-NAV-1 · Navegação e permissões','Aguardando revisão explícita',false]
+['UX-NAV-1 · Navegação e permissões','Aguardando revisão explícita',false],
+['UX-ACCESS-1 · Consulta e contexto','Pronto para revisão: Home/Financeiro, empresa/CNPJ/período, sem autenticação',false]
 ];
 let role='company-fin',company='acme',theme='dark',tab='journey';
 function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 const getScreen=id=>allScreens.find(s=>s.id===id);
+function screenHref(screen){
+ if(role==='company-read'&&screen.id==='companyHome')return '../company-access-home/?mode=read&cnpj=a&period=2026-09';
+ if(role==='company-read'&&screen.id==='companyFinance')return '../company-financial-workspace/?role=viewer&cnpj=m&period=2026-09';
+ if(role==='company-fin'&&screen.id==='companyHome')return '../company-access-home/?cnpj=a&period=2026-09';
+ if(role==='company-fin'&&screen.id==='companyFinance')return '../company-financial-workspace/?role=company&cnpj=m&period=2026-09';
+ return screen.href;
+}
 function canOpen(screen){
 const r=roles[role];
 return r.screenIds.includes(screen.id);
@@ -131,17 +139,17 @@ function render(){
 const r=roles[role],isCompany=r.area==='company';
 $('role').value=role;
 $('companyChooser').querySelector('label').textContent=isCompany?'Empresa autorizada':'Empresa em análise';
-const select=$('company');select.innerHTML=isCompany?'<option value="acme">ACME Industrial</option>':'<option value="acme">ACME Industrial</option><option value="orbita">Órbita Comércio</option>';if(isCompany)company='acme';select.value=company;
+const select=$('company');select.innerHTML='<option value="acme">ACME Industrial · cenário disponível</option>';company='acme';select.value=company;select.disabled=true;select.title='Somente ACME possui registros sintéticos nesta revisão.';
 $('unitName').textContent=r.unit;$('unitDetail').textContent=r.label;$('unitIcon').textContent=isCompany?'A':'N';
 $('headline').textContent=isCompany?'Ambiente da empresa':'Operação da contabilidade';
 $('summary').textContent=r.description;
 $('breadcrumb').textContent='NEXUS / '+(isCompany?'Empresa cliente':'Equipe interna')+' / '+r.label;
-$('nav').innerHTML=allScreens.filter(canOpen).map(s=>'<a class="'+(s.id===r.home?'current':'')+'" href="'+s.href+'"><span class="sym">↗</span>'+safe(s.label)+'</a>').join('')+'<button class="current" id="returnReview"><span class="sym">◷</span>Revisar jornada</button>';
+$('nav').innerHTML=allScreens.filter(canOpen).map(s=>'<a class="'+(s.id===r.home?'current':'')+'" href="'+screenHref(s)+'"><span class="sym">↗</span>'+safe(s.label)+'</a>').join('')+'<button class="current" id="returnReview"><span class="sym">◷</span>Revisar jornada</button>';
 $('journey').innerHTML=steps.map((step,i)=>{
 const screen=getScreen(step.screen),allowed=canOpen(screen);
-return '<div class="stage"><div class="num">'+(i+1)+'</div><div><h4>'+step.title+'</h4><div class="role">'+step.who+'</div><p>'+step.desc+'</p><div class="actions">'+(allowed?'<a href="'+screen.href+'">Abrir '+safe(screen.label)+' ↗</a>':'<button disabled aria-disabled="true">Acesso não autorizado neste perfil</button>')+'</div>'+(allowed?'':'<div class="why">Esta área pertence a outro perfil. A alternância de perfil acima é somente para avaliação.</div>')+'</div></div>';
+return '<div class="stage"><div class="num">'+(i+1)+'</div><div><h4>'+step.title+'</h4><div class="role">'+step.who+'</div><p>'+step.desc+'</p><div class="actions">'+(allowed?'<a href="'+screenHref(screen)+'">Abrir '+safe(screen.label)+' ↗</a>':'<button disabled aria-disabled="true">Acesso não autorizado neste perfil</button>')+'</div>'+(allowed?'':'<div class="why">Esta área pertence a outro perfil. A alternância de perfil acima é somente para avaliação.</div>')+'</div></div>';
 }).join('');
-$('screens').innerHTML=allScreens.filter(canOpen).map(s=>'<div class="screen"><div><b>'+safe(s.label)+'</b><small>'+safe(s.description)+'</small></div><a class="btn" href="'+s.href+'">Abrir ↗</a></div>').join('');
+$('screens').innerHTML=allScreens.filter(canOpen).map(s=>'<div class="screen"><div><b>'+safe(s.label)+'</b><small>'+safe(s.description)+'</small></div><a class="btn" href="'+screenHref(s)+'">Abrir ↗</a></div>').join('');
 $('screenCount').textContent=r.screenIds.length+' telas';
 $('capabilities').innerHTML=caps.map(([key,label])=>'<div class="capline"><span>'+label+'</span><span class="pill '+(r.cap[key]?'good':'bad')+'">'+(r.cap[key]?'Previsto':'Restrito')+'</span></div>').join('');
 $('boundary').innerHTML='<strong>'+r.label+'</strong><p>'+r.description+'</p><p><strong>Escopo:</strong> '+(isCompany?'ACME Industrial e seus CNPJs autorizados. Não há escolha nem listagem de outros clientes da NEXUS.':'Carteira de Companies do Tenant, limitada às permissões de cada profissional.')+'</p><p><strong>Dados:</strong> cada página estática mantém seu cenário fictício independente; a navegação não sincroniza lançamentos entre arquivos.</p>';
