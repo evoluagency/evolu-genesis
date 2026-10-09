@@ -19,108 +19,28 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px;font-size:10px;color:var(--dim)}.bottom a{color:var(--violet)}
 @media(max-width:1130px){.grid{grid-template-columns:minmax(0,1fr)}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.app{display:block}aside{display:none}aside.open{position:fixed;display:flex;inset:67px auto 0 0;width:245px;min-height:calc(100vh - 67px);z-index:30;box-shadow:0 18px 60px #0008}.menu{display:block}.top{padding:10px 13px}.demo{font-size:8px}.wrap{padding:17px 13px 45px}.head{flex-direction:column;margin-top:12px}.head h2{font-size:24px}.selectors{width:100%}.selectors .field{flex:1}.selectors select{min-width:0}.metrics{gap:8px}.metric{padding:13px}.metric strong{font-size:17px}.source-grid{grid-template-columns:1fr}}
-/* Desktop: icon-only navigation rail, never overlay the content. */
-.desktop-sidebar-toggle{display:none}
-@media (min-width:801px){
-  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
-  .app{transition:grid-template-columns .18s ease}
-  body.sidebar-collapsed .app{grid-template-columns:76px minmax(0,1fr)}
-  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
-  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
-  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
-  body.sidebar-collapsed aside .identity>div,
-  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
-  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
-  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
-  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
-  body.sidebar-collapsed aside .unit,
-  body.sidebar-collapsed aside .tenant,
-  body.sidebar-collapsed aside .org-chip,
-  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
-  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
-  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
-  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
-  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
-  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
-  body.sidebar-collapsed aside .sidebar-foot{display:none}
-  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
-  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
-  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
-  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
-  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
-  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
-}
-
-
-/* Desktop: the existing brand header is the menu toggle; no extra visible button. */
-@media (min-width:801px){
- aside .brand-sidebar-toggle{cursor:pointer;border-radius:10px;min-width:0;min-height:42px;user-select:none;transition:background-color .18s ease}
- aside .brand-sidebar-toggle:hover{background:color-mix(in srgb,var(--violet) 10%,transparent)}
- aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
- body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
-}
-
-/* UX-VIEW-1 — Screen-based desktop composition. Never shrink text to hide content. */
-[hidden]{display:none!important}
-.screen-pager,.table-pager{display:flex;align-items:center;gap:10px;justify-content:space-between}
-.screen-pager{padding:4px 1px 9px;flex:none}
-.screen-pager .screen-label{font-size:11px;font-weight:650;color:var(--sub)}
-.screen-pager .pager-controls,.table-pager .pager-controls{display:flex;align-items:center;gap:6px}
-.screen-pager .pager-count,.table-pager .pager-count{font-size:10px;color:var(--dim);min-width:48px;text-align:center}
-.table-pager{margin-top:10px;flex-wrap:wrap}
-.table-pager .btn,.screen-pager .btn{padding:6px 9px}
-@media(min-width:1100px) and (min-height:680px){
- html,body{height:100%;overflow:hidden}
- .app{height:100dvh;min-height:0;overflow:hidden}
- aside{height:100dvh;min-height:0;overflow-y:auto}
- main{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
- .top{min-height:56px;flex-shrink:0;padding:8px 22px}
- .wrap{margin:0 auto;width:100%;max-height:100%;min-height:0;flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 22px 10px}
- .wrap>.notice{flex-shrink:0;margin-bottom:7px;padding:7px 11px;font-size:10px;line-height:1.35}
- .head{flex-shrink:0;margin:6px 0 9px;gap:12px}
- .head h2{font-size:22px;margin:2px 0 3px}
- .head p{font-size:11px;line-height:1.3}
- .selectors{gap:7px}
- .field select{min-height:34px;padding:7px 9px}
- #content{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
- #content>.metrics{flex-shrink:0;gap:8px;margin-bottom:8px}
- .metric{padding:10px}
- .metric strong{font-size:18px;margin:2px 0}
- .metric em{font-size:9px;line-height:1.25}
- #content>.grid{flex:1;min-height:0;grid-template-columns:minmax(0,1.65fr) minmax(280px,.75fr);align-items:stretch;overflow:hidden}
- #content>.grid>.stack{align-content:start;min-height:0;overflow:hidden}
- #content>.grid>.stack>.card{max-height:100%;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:13px}
- #content .cardhead{flex-shrink:0;margin-bottom:8px}
- #content .cardhead p{font-size:10px;line-height:1.3}
- #content .tablewrap{min-height:0;overflow-x:auto;overflow-y:hidden}
- #content th,#content td{padding:8px 7px;font-size:10px}
- #content .item{padding:8px}
- #content .callout{padding:10px;line-height:1.35}
- #content .card .itemlist,#content .card .source-grid{min-height:0}
- .bottom{flex-shrink:0;margin-top:6px;padding-top:4px;border-top:1px solid var(--stroke);font-size:9px}
-}
-</style></head><body>
-<div class="app">
-<aside id="sidebar">
-<div class="brand brand-sidebar-toggle" id="brandSidebarToggle" role="button" tabindex="0" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="mark">N</span><div><b>NEXUS</b><small data-i="brandSub">Contabilidade & Assessoria</small></div></div>
-<div class="client"><span class="client-icon">A</span><div><b>ACME Industrial</b><small data-i="clientSpace">Área financeira da empresa</small></div></div>
-<div><div class="nav-label" id="navCaption">FINANCEIRO</div><nav class="nav" id="nav"></nav></div>
-<div class="asidefoot" data-i="syntheticNote">Cenário fictício. Sem conexão ou registros reais.</div>
+</style><link rel="stylesheet" href="../shared-ux/shell.css"><script src="../shared-ux/shell.js" defer></script></head><body>
+<div class="app ux-app">
+<aside id="sidebar" class="ux-sidebar" data-ux-sidebar aria-label="Navegação da perspectiva demonstrativa">
+<button type="button" class="brand ux-brand" id="brandSidebarToggle" data-ux-brand aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="mark ux-mark" aria-hidden="true">N</span><span class="ux-brand-copy"><strong>NEXUS</strong><small data-i="brandSub">Contabilidade & Assessoria</small></span></button>
+<div class="client ux-tenant"><span class="client-icon ux-tenant-icon" aria-hidden="true">A</span><div class="ux-tenant-copy"><b>ACME Industrial</b><small data-i="clientSpace">Área financeira da empresa</small></div></div>
+<div><div class="nav-label ux-nav-heading" id="navCaption">FINANCEIRO</div><nav class="nav ux-nav" id="nav" aria-label="Atividades da perspectiva selecionada"></nav></div>
+<div class="asidefoot ux-sidebar-footer" data-i="syntheticNote">Cenário fictício. Sem conexão ou registros reais.</div><button class="btn ux-menu-close" type="button" data-menu-close>Fechar menu</button>
 </aside>
-<main><header class="top">
+<main class="ux-main"><header class="top ux-top">
 <div><div id="bread" class="crumb">NEXUS / ACME Industrial / Financeiro</div><h1 id="topTitle">Financeiro</h1></div>
-<div class="right"><button class="btn menu" id="mobileMenu" aria-label="Abrir menu">☰</button><span class="demo" data-i="demo">DADOS SINTÉTICOS</span><button class="btn" id="langBtn" aria-label="Idioma">EN</button><button class="btn" id="themeBtn" aria-label="Tema">☀</button></div></header>
-<div class="wrap">
+<div class="right"><button class="btn ux-btn ux-mobile-menu" id="mobileMenu" data-menu-open aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menu">☰</button><span class="demo" data-i="demo">DADOS SINTÉTICOS</span><button class="btn ux-btn" id="langBtn" data-locale-toggle aria-label="Idioma">EN</button><button class="btn ux-btn" id="themeBtn" data-theme-toggle aria-label="Tema">☀</button></div></header>
+<div class="wrap ux-wrap">
 <div id="readOnlyNotice" class="notice" hidden aria-live="polite"></div>
 <div class="notice" data-i="demoBoundary"><strong>Inspeção de UX:</strong> a troca de perfis abaixo existe apenas nesta demonstração. No produto, a empresa não poderá acessar as telas da contabilidade/assessoria sem outra sessão autorizada.</div>
-<div class="head"><div><div class="eyebrow" data-i="eyebrow">OPERAÇÃO FINANCEIRA · COMPANY</div><h2 id="viewTitle">Visão financeira</h2><p id="viewDesc">Informações financeiras fornecidas pela empresa, sem equivalência automática com receitas fiscais ou lançamentos contábeis.</p></div>
-<div class="selectors">
+<div class="head ux-head"><div><div class="eyebrow" data-i="eyebrow">OPERAÇÃO FINANCEIRA · COMPANY</div><h2 id="viewTitle">Visão financeira</h2><p id="viewDesc">Informações financeiras fornecidas pela empresa, sem equivalência automática com receitas fiscais ou lançamentos contábeis.</p></div>
+<div class="selectors ux-filters">
 <div class="field"><label data-i="profile" for="profile">Perfil demonstrado</label><select id="profile"><option value="company">Financeiro · ACME</option><option value="accounting">Contábil/Fiscal · NEXUS</option><option value="advisory">Assessoria · NEXUS</option></select></div>
 <div class="field"><label data-i="cnpj" for="cnpj">CNPJ</label><select id="cnpj"><option value="m">Matriz · 0001</option><option value="f">Filial · 0002</option></select></div>
 <div class="field"><label data-i="period" for="period">Competência</label><select id="period"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
 </div></div>
-<div id="content" aria-live="polite"></div>
-<div class="bottom"><span data-i="foot">Protótipo demonstrativo com dados fictícios. A diferença de movimentações não representa lucro, saldo bancário nem base tributável.</span><a href="../ux-journey/">Mapa da jornada de UX ↗</a><a id="homeBack" href="../company-access-home/" data-i="back">Ver início da empresa</a></div>
+<nav class="finance-task-tabs" id="financeTasks" role="tablist" aria-label="Atividades da perspectiva demonstrativa"></nav><div id="content" aria-live="polite"></div>
+<div class="bottom ux-footer"><span data-i="foot">Protótipo demonstrativo com dados fictícios. A diferença de movimentações não representa lucro, saldo bancário nem base tributável.</span><a href="../ux-journey/">Mapa da jornada de UX ↗</a><a id="homeBack" href="../company-access-home/" data-i="back">Ver início da empresa</a></div>
 </div></main></div>
 <div id="modalBack" class="modalback" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle"></h3><p id="modalDesc"></p><form id="modalForm"><div id="modalFields" class="modalfields"></div><div class="modalfoot"><button type="button" id="cancel" class="btn" data-i="cancel">Cancelar</button><button class="btn primary" type="submit" id="submit" data-i="save">Aplicar apenas na simulação</button></div></form></div></div>
 <div class="toast" id="toast" hidden role="status"></div>
@@ -524,32 +444,5 @@ else {view=navs[role][0][0];}
 if(['m','f'].includes(queryParams.get('cnpj')))company=queryParams.get('cnpj');
 if(['2026-09','2026-08'].includes(queryParams.get('period')))period=queryParams.get('period');
 render();
-})();
-</script><script>
-(function(){
- const brand=document.getElementById('brandSidebarToggle');
- const aside=document.getElementById('sidebar');
- if(!brand||!aside)return;
- const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
-  const label=item.textContent.trim().replace(/\s+/g,' ');
-  if(label){item.title=label;item.setAttribute('aria-label',label);}
- });
- function sync(){
-   const collapsed=document.body.classList.contains('sidebar-collapsed');
-   const en=document.documentElement.lang.toLowerCase().startsWith('en');
-   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-   brand.title=label;brand.setAttribute('aria-label',label);
-   brand.setAttribute('aria-expanded',String(!collapsed));
- }
- function toggle(){
-   if(window.innerWidth<=800){aside.classList.remove('open');return;}
-   document.body.classList.toggle('sidebar-collapsed');sync();
- }
- brand.addEventListener('click',toggle);
- brand.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
- const nav=aside.querySelector('.nav');
- if(nav)new MutationObserver(annotate).observe(nav,{childList:true,subtree:true});
- new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
- annotate();sync();
 })();
 </script></body></html>
