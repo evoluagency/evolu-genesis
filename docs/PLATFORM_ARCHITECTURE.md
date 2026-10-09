@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.21  
+**Version:** 0.22  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -801,6 +801,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-CFG-5 CompanyFinancialWorkspace | Interactive static prototype ready; user review pending | `preview/company-financial-workspace/index.html` on main; Company finance → authorized Tenant accounting/fiscal → advisory; no live API, Backend or tax calculations |
 | UX-NAV-1 Journey and access review | Interactive static navigation and access-preview published; user review pending | `preview/ux-journey/index.html` on main, five synthetic roles, access boundaries and links to existing pages |
 | UX-ACCESS-1 Company consultation and scoped navigation | Static previews updated; awaiting user review | Home `?mode=read`, Finance `?role=viewer`; CNPJ/competence links, blocked mock write actions; no secure authorization |
+| UX-FLOW-1 Versioned Finance / Accounting / Advisory handoff | Interactive prototype ready; awaiting user review | `preview/company-financial-workspace/index.html`: submission versions, questions, evidence review, professional advisory release; synthetic only |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1670,6 +1671,61 @@ The UX-NAV-1 inspection page now opens **both** CompanyAccessHome and CompanyFin
 
 ---
 
+
+## 11.3 UX-FLOW-1 — Versioned Financeiro → Contábil/Fiscal → Assessoria handoff
+
+**Status:** interactive synthetic workflow implemented in Genesis CompanyFinancialWorkspace, **pending user acceptance**. It is a client-side UX state machine and does not persist to other pages, issue a fiscal document, execute accounting entries, or integrate with any actual provider.
+
+### Workflow states and transitions
+
+| State | Trigger / condition | Visible effect and allowed next action |
+|---|---|---|
+| Financial draft | no submitted package in current Company/CNPJ/competence | Company may enter simulated source data and send for review |
+| Submission recorded | Company sends the current version | version incremented (v1, v2...); snapshot/fingerprint of current financial movements, commitments and independent fiscal evidence recorded |
+| Awaiting clarification | any open information request remains | Company may answer request; professional validation stays pending |
+| Answer received | Company responds; accountant has not resolved it | Accountant can inspect/resolve the explanation; answer is not automatically approved |
+| Professional review | submitted version matches current records, and source/evidence is not fully checked | Accountant reviews **each** financial movement and fiscal document with a minimum-length evidence/rationale note |
+| Reviewed, not released | all recorded financial movements and separately held fiscal evidence checked; all requests resolved | **only** Tenant Contábil/Fiscal can explicitly share context with advisory |
+| Context released for advisory | authorized accountant selects share, and prior checks are complete | Advisory context becomes available for human interpretation, **not** a tax conclusion or execution approval |
+| Change requires resubmission | record, commitment or fiscal evidence changes after last submission | contextual inspection flags previous submission as out of date; advisory access to reviewed-context details is suspended until the Company sends a new version |
+| New submission | Company resubmits modified scope | creates next version and resets per-record professional review; source IDs and requests remain attached to the selected context |
+
+**Important scope distinctions:**
+- This preview holds one synthetic Company (ACME) and two synthetic CNPJ entities with competence selectors. Fingerprint and stage are scoped to the chosen CNPJ/competence.
+- Money inflow/outflow, accounts payable/receivable, fiscal documents, professional evidence review and fiscal tax classification are **different concepts**, not interchangeable.
+- Reviewing a record or a fiscal document establishes only that a human has recorded a **source/evidence review note** in this demonstration. It is **not** bookkeeping, reconciliation of every source, a deduction, a tax credit, filing or proof that every fiscal figure agrees.
+- Sharing with Advisory only releases this marked-reviewed **context** for subsequent human advisory analysis; Intelligence may support understanding but cannot independently change decisions, approve treatments or execute.
+- The UI uses a synthetic role-selector solely to demonstrate distinct views. No cross-role impersonation, authorization or backend persistence has been implemented.
+- A user can modify the URL in a public preview. All production constraints must be enforced by authenticated server-side Company/CNPJ/competence/role assignments after UX review.
+- The built-in sample import datasets correspond to **September 2026 only** and cannot be used as August data. Manual entry in the August fixture remains demonstrative.
+
+### Interaction acceptance scenarios
+
+1. Select Financeiro da empresa, Matriz, 09/2026 and go to Envio à contabilidade.
+2. Submit version v1, then choose Contábil/Fiscal from the synthetic inspection selector.
+3. Request a clarification; return to Financeiro to answer. Check that the result is **answered but not resolved**.
+4. Switch to Contábil/Fiscal; resolve that answer explicitly, review **each** movement/document with a written rationale (at least 12 characters).
+5. Verify "Disponibilizar contexto à assessoria" remains disabled until the set is complete and all pending questions resolved.
+6. Release context with the professional action; switch to Assessoria and confirm it is accessible for analysis while tax approval remains unasserted.
+7. Return to Financeiro and create another transaction or import a new scoped source item; confirm the old version is flagged out of date and Advisory details are no longer represented as released.
+8. Resubmit version v2 and verify the prior per-record checks were reset.
+9. Switch to Filial or August and confirm it has an independent state. Try importing a September-only sample during August: it must be rejected.
+10. Try Company consultation/read-only preview: there must be no write, upload, request-response or submission action.
+11. Reload the page: all stage history resets as expected for an **ephemeral static prototype**.
+12. Validate desktop menu collapsing, mobile layout and PT-BR/EN separately during visual user review.
+
+### Future production contracts — deferred
+
+- FinanceSubmission: version, CompanyId, CnpjEntityId, AccountingPeriod, source manifest, financial/fiscal separation, actor, timestamp and immutable audit reference.
+- InformationRequest and InformationResponse: origin, recipient, scoped item, explanation, evidence, state, decision record and professional review history.
+- EvidenceReview: reviewer identity, scoped movement/document, evidence/provenance, explicit rationale, reviewed timestamp and limitations.
+- AdvisoryRelease: authorized reviewer decision linking a reviewed submission version to an advisory context; revocable/superseded when sources change.
+- True matching, uniqueness, deduplication, idempotent ingestion, fiscal classification and source freshness rules must be designed and tested with real integration and legal context **after final UX approval**.
+
+These names describe contracts to be considered, not production domain entities already deployed.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -1906,6 +1962,17 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.22 — Professional handoff and evidence review UX
+
+- evolved the CompanyFinancialWorkspace from a single "sent/reviewed" switch into a scoped, versioned Financeiro → Contábil/Fiscal → Assessoria workflow.
+- distinguished requests open, answered and resolved; only a professional inspection actor may close a reviewed response.
+- introduced per-record and per-fiscal-document review with an explicit written evidence/rationale, then a separate accountant-initiated context release to Advisory.
+- marked changes after the last submission as requiring resubmission; review flags reset for a new version and Advisory details are not presented as current.
+- preserved fiscal-document separation, no invented tax results and no automatic approval; added explicit role-specific walkthrough guidance.
+- restricted built-in synthetic import fixtures to September to prevent showing September evidence under a different accounting period.
+- functional tests covered 11 core workflow state transitions; syntax of updated static scripts passed. Public hosted browser/visual acceptance remains unverified.
+- all UX screens still require final user approval before Backend or production integrations.
 
 ### 0.21 — Role-scoped Company UX and navigation continuity
 
