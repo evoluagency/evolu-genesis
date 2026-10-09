@@ -61,6 +61,39 @@ main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between
  aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
  body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
 }
+
+[hidden]{display:none!important}
+.workspace-views{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;flex:none}
+.workspace-views button{border:1px solid var(--line);background:var(--soft);color:var(--muted);border-radius:9px;padding:8px 13px;font-size:11px;font-weight:650}
+.workspace-views button[aria-selected=true]{color:var(--text);background:var(--shade);border-color:var(--accent)}
+.panel-pager{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;font-size:10px;color:var(--quiet)}
+.panel-pager .pager-buttons{display:flex;align-items:center;gap:7px}
+.panel-pager button{border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--text);padding:7px 10px;font-size:10px}
+.panel-pager button:disabled{opacity:.45;cursor:not-allowed}
+@media(min-width:1100px) and (min-height:680px){
+ html,body{height:100%;overflow:hidden}
+ .shell{height:100dvh;min-height:0;overflow:hidden}
+ aside{height:100dvh;min-height:0;overflow-y:auto}
+ main{height:100dvh;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+ .top{min-height:55px;flex:none;padding:8px 22px}
+ .wrap{width:100%;margin:0 auto;min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden;padding:12px 22px 10px}
+ .header{margin-bottom:9px;gap:12px;flex:none}
+ .header h2{font-size:22px;margin:3px 0 5px}
+ .header p{font-size:11px;line-height:1.3}
+ .notice{flex:none;padding:8px 11px;font-size:10px;line-height:1.35;margin-bottom:9px}
+ .workspace-views{margin-bottom:9px}
+ .grid{min-height:0;flex:1;align-items:stretch;overflow:hidden;grid-template-columns:minmax(0,1.58fr) minmax(270px,.82fr)}
+ .grid>.stack{min-height:0;overflow:hidden;align-content:start}
+ .grid>.stack>.card{min-height:0;max-height:100%;overflow:hidden;padding:13px}
+ .cardtitle{margin-bottom:8px}
+ .stage{padding:5px 0 8px}
+ .stage h4{margin:1px 0 2px}
+ .stage p{font-size:10px;line-height:1.32;margin:0 0 6px}
+ .stage .actions{margin-top:4px}
+ .screen{padding:8px 11px}
+ .capline{padding:7px 0}
+ .foot{flex:none;margin-top:7px;padding-top:4px;border-top:1px solid var(--line)}
+}
 </style></head><body>
 <div class="shell"><aside id="sidebar"><div class="brand brand-sidebar-toggle" id="brandSidebarToggle" role="button" tabindex="0" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="mark">N</span><div><b>NEXUS</b><small>Contabilidade & Assessoria</small></div></div>
 <div class="unit"><div class="unit-icon" id="unitIcon">A</div><div><b id="unitName">ACME Industrial</b><small id="unitDetail">Empresa cliente</small></div></div>
@@ -71,6 +104,11 @@ main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between
 <div class="controls"><div class="field"><label for="role">Perfil para avaliação</label><select id="role"><option value="company-fin">Financeiro da empresa</option><option value="company-read">Consulta da empresa</option><option value="tenant-accounting">Contábil/Fiscal da NEXUS</option><option value="tenant-advisory">Assessoria da NEXUS</option><option value="tenant-admin">Administrador da NEXUS</option></select></div>
 <div class="field" id="companyChooser"><label for="company">Empresa de trabalho</label><select id="company"><option value="acme">ACME Industrial</option></select></div></div></div>
 <div class="notice"><strong>Controle apenas demonstrativo.</strong> Alternar perfis aqui serve para revisar a navegação; não autentica ninguém. Na operação real, <code>CompanyAccess</code> e <code>TenantAccess</code> terão sessões distintas, com autorização conferida no Backend após aprovação da UX. Os protótipos vinculados são páginas independentes e não compartilham registros simulados.</div>
+<nav class="workspace-views" role="tablist" aria-label="Painéis da experiência">
+<button type="button" role="tab" data-hub-tab="journey" aria-selected="true">Fluxo</button>
+<button type="button" role="tab" data-hub-tab="screens" aria-selected="false">Telas e permissões</button>
+<button type="button" role="tab" data-hub-tab="review" aria-selected="false">Revisão da UX</button>
+</nav>
 <div class="grid"><div class="stack">
 <section class="card"><div class="cardtitle"><div><h3>Fluxo da informação</h3><p>Quatro etapas operacionais, um contexto de empresa e competência.</p></div><span class="pill">09/2026 · Matriz</span></div>
 <div id="journey"></div></section>
@@ -119,9 +157,12 @@ const reviewItems=[
 ['UX-CFG-4 · CompanyAccessHome','Aguardando revisão explícita',false],
 ['UX-CFG-5 · CompanyFinancialWorkspace','Aguardando revisão explícita',false],
 ['UX-NAV-1 · Navegação e permissões','Aguardando revisão explícita',false],
-['UX-ACCESS-1 · Consulta e contexto','Pronto para revisão: Home/Financeiro, empresa/CNPJ/período, sem autenticação',false]
+['UX-ACCESS-1 · Consulta e contexto','Pronto para revisão: Home/Financeiro, empresa/CNPJ/período, sem autenticação',false],
+['UX-FLOW-1 · Entrega e conferência','Envio versionado e liberação profissional; revisão pendente',false],
+['UX-VIEW-1 · Quadro de trabalho','Fluxo, telas e revisão paginados; revisão visual pendente',false]
 ];
 let role='company-fin',company='acme',theme='dark',tab='journey';
+let reviewPanel='journey',flowPage=0,reviewPage=0;
 function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 const getScreen=id=>allScreens.find(s=>s.id===id);
 function screenHref(screen){
@@ -135,6 +176,34 @@ function canOpen(screen){
 const r=roles[role];
 return r.screenIds.includes(screen.id);
 }
+
+function pageVisible(items,index,count){
+ const max=Math.max(1,Math.ceil(items.length/count));
+ const page=Math.max(0,Math.min(max-1,index));
+ items.forEach((x,i)=>{x.hidden=i<page*count||i>=(page+1)*count});
+ return {page,max};
+}
+function addPager(target,label,page,max,name){
+ if(max<=1)return;
+ const footer=document.createElement('div');footer.className='panel-pager';
+ footer.innerHTML='<span>'+safe(label)+'</span><div class="pager-buttons">'+
+ '<button type="button" data-pager="'+name+'" data-step="-1" '+(page===0?'disabled':'')+'>Anterior</button>'+
+ '<span>'+(page+1)+' / '+max+'</span>'+
+ '<button type="button" data-pager="'+name+'" data-step="1" '+(page+1===max?'disabled':'')+'>Próximo</button></div>';
+ target.after(footer);
+}
+function applyHubPanels(){
+ const journey=$('journey').closest('.card'),screens=$('screens').closest('.card');
+ const caps=$('capabilities').closest('.card'),boundary=$('boundary').closest('.card'),reviews=$('reviews').closest('.card');
+ journey.hidden=reviewPanel!=='journey';screens.hidden=reviewPanel==='journey';
+ caps.hidden=reviewPanel!=='screens';boundary.hidden=reviewPanel!=='journey';reviews.hidden=reviewPanel!=='review';
+ document.querySelectorAll('[data-hub-tab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.hubTab===reviewPanel)));
+ const stages=[...$('journey').querySelectorAll('.stage')];
+ const f=pageVisible(stages,flowPage,2);flowPage=f.page;addPager($('journey'),'Fluxo entre áreas',f.page,f.max,'flow');
+ const reviewRows=[...$('reviews').querySelectorAll('.screen')];
+ const r=pageVisible(reviewRows,reviewPage,3);reviewPage=r.page;addPager($('reviews'),'Itens de revisão',r.page,r.max,'review');
+}
+
 function render(){
 const r=roles[role],isCompany=r.area==='company';
 $('role').value=role;
@@ -154,8 +223,13 @@ $('screenCount').textContent=r.screenIds.length+' telas';
 $('capabilities').innerHTML=caps.map(([key,label])=>'<div class="capline"><span>'+label+'</span><span class="pill '+(r.cap[key]?'good':'bad')+'">'+(r.cap[key]?'Previsto':'Restrito')+'</span></div>').join('');
 $('boundary').innerHTML='<strong>'+r.label+'</strong><p>'+r.description+'</p><p><strong>Escopo:</strong> '+(isCompany?'ACME Industrial e seus CNPJs autorizados. Não há escolha nem listagem de outros clientes da NEXUS.':'Carteira de Companies do Tenant, limitada às permissões de cada profissional.')+'</p><p><strong>Dados:</strong> cada página estática mantém seu cenário fictício independente; a navegação não sincroniza lançamentos entre arquivos.</p>';
 $('reviews').innerHTML=reviewItems.map(x=>'<div class="screen"><div><b>'+x[0]+'</b><small>'+x[1]+'</small></div><span class="pill '+(x[2]?'good':'warn')+'">'+(x[2]?'Aprovado':'Pendente')+'</span></div>').join('');
+applyHubPanels();
 }
-$('role').addEventListener('change',e=>{role=e.target.value;company='acme';render()});
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-hub-tab]');if(t){reviewPanel=t.dataset.hubTab;render();return;}
+ const p=e.target.closest('[data-pager]');if(p){if(p.dataset.pager==='flow')flowPage+=Number(p.dataset.step);else reviewPage+=Number(p.dataset.step);render();}
+});
+$('role').addEventListener('change',e=>{role=e.target.value;company='acme';flowPage=0;reviewPage=0;render()});
 $('company').addEventListener('change',e=>{company=e.target.value;render()});
 themeBtn.addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;themeBtn.textContent=theme==='dark'?'☀':'☾'});
 $('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
