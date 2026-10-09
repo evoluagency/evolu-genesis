@@ -63,7 +63,7 @@
     <nav class="ux-nav" aria-label="Protótipos profissionais">
       <a class="ux-nav-link" id="fiscalNav" href="../tenant-fiscal-workspace/?tab=received&amp;cnpj=m&amp;period=2026-09" title="Área Fiscal/Contábil demonstrativa"><i class="ux-nav-symbol" aria-hidden="true">▤</i><span class="ux-nav-label" data-t="navFiscal">Fiscal · exemplo</span></a>
       <a class="ux-nav-link" id="accountingNav" href="../tenant-fiscal-workspace/?tab=review&amp;cnpj=m&amp;period=2026-09"><i class="ux-nav-symbol" aria-hidden="true">≋</i><span class="ux-nav-label" data-t="navAccounting">Contábil · conferência</span></a>
-      <a class="ux-nav-link" id="advisoryNav" href="../company-financial-workspace/?role=advisory&amp;cnpj=m&amp;period=2026-09"><i class="ux-nav-symbol" aria-hidden="true">◎</i><span class="ux-nav-label" data-t="navAdvisory">Assessoria</span></a>
+      <a class="ux-nav-link" id="advisoryNav" href="../tenant-advisory-workspace/?cnpj=m&amp;period=2026-09"><i class="ux-nav-symbol" aria-hidden="true">◎</i><span class="ux-nav-label" data-t="navAdvisory">Assessoria</span></a>
     </nav>
   </div>
   <div class="ux-nav-group">
@@ -167,7 +167,7 @@ const issues=()=>{const c=selected();return items.filter(x=>x.company===c.compan
 const professionalHref=(tab,item)=>{const c=selected(),q=new URLSearchParams({tab,cnpj:c.cnpj,period:c.period});if(item)q.set('item',item);return '../tenant-fiscal-workspace/?'+q.toString();};
 const accountingHref=()=>professionalHref('review');
 const fiscalHref=()=>professionalHref('received');
-const advisoryHref=()=>{const c=selected();return '../company-financial-workspace/?role=advisory&cnpj='+encodeURIComponent(c.cnpj)+'&period='+encodeURIComponent(c.period);};
+const advisoryHref=()=>{const c=selected();return '../tenant-advisory-workspace/?cnpj='+encodeURIComponent(c.cnpj)+'&period='+encodeURIComponent(c.period);};
 const companyHref=()=>{const c=selected();return '../company-access-home/?cnpj='+(c.cnpj==='m'?'a':'b')+'&period='+encodeURIComponent(c.period);};
 const headerLabel=()=>page==='queue'?'Queue':page==='companies'?'Companies':'Overview';
 function renderMetrics(){
