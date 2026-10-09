@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.23  
+**Version:** 0.24  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -802,6 +802,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-NAV-1 Journey and access review | Interactive static navigation and access-preview published; user review pending | `preview/ux-journey/index.html` on main, five synthetic roles, access boundaries and links to existing pages |
 | UX-ACCESS-1 Company consultation and scoped navigation | Static previews updated; awaiting user review | Home `?mode=read`, Finance `?role=viewer`; CNPJ/competence links, blocked mock write actions; no secure authorization |
 | UX-FLOW-1 Versioned Finance / Accounting / Advisory handoff | Interactive prototype ready; awaiting user review | `preview/company-financial-workspace/index.html`: submission versions, questions, evidence review, professional advisory release; synthetic only |
+| UX-SHELL-1 / UX-OFFICE-1 Shared shell and Tenant office home | Source published; **awaiting visual user review** | `preview/shared-ux/` + `preview/office-workspace/`, ACME-only synthetic scope; no Backend, no real authorization |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1757,6 +1758,35 @@ This document complements and **does not override** the frozen Platform domain d
 
 ---
 
+## 11.5 UX-SHELL-1 / UX-OFFICE-1 — Shared Shell and Office dashboard preview
+
+**Status:** implemented as static frontend in `main`, **visual and functional user acceptance pending**. This delivery executes only the first incremental UX slice from [Unified Workspace Specification](./EVOLU_PLATFORM_UX_UNIFIED_WORKSPACE_SPEC_V1.md).
+
+New source files:
+
+- `preview/shared-ux/shell.css`: common visual tokens, responsive sidebar, topbar, context area, KPI cards, task panels, mobile fallback and scrollable data regions.
+- `preview/shared-ux/shell.js`: logo-triggered sidebar toggle (no second visible button), keyboard/label support, mobile drawer, theme/locale presentation switch.
+- `preview/office-workspace/index.html`: **TenantAccess Office dashboard** with synthetic ACME-only portfolio, Matriz/Filial and 08/2026–09/2026 competence selectors, scoped pending items, company context and concise links to existing professional previews.
+- `preview/ux-journey/index.html`: new Office dashboard entry available **only** to the three internal Tenant inspection roles (accounting, advisory and admin), not Company personas.
+
+Intended review URL: `https://evoluagency.github.io/evolu-genesis/preview/office-workspace/` (the hosted preview could not be independently rendered/verified from the available environment).
+
+Behavior/constraints:
+- menu expands/collapses by clicking the Tenant brand; expanded width 236 px and collapsed width 76 px;
+- the Office desktop page is composed as one task-focused workspace with three metrics, three internal tasks (Overview/Queues/Companies), a main work queue and a narrower context/quick-action panel;
+- focus and keyboard navigation remain available; mobile permits conventional scrolling and a closable drawer; short desktop windows use accessible scrolling rather than hiding content;
+- ACME is the **only synthetic Company** present in this Office preview; September Matriz has exactly two request examples copied conceptually from the Financial preview, while Filial/August has no synthetic requests;
+- company selection, CNPJ/period and role are **demonstration display state**, not authorization; no live Tenant portfolio or CompanyAccess data is exposed;
+- the Office preview is **independent in-memory mock data**, and links to Financeiro/Fiscal/Assessoria do not synchronize transactions or permissions;
+- existing CompanyAccess and Financeiro previews remain unchanged; the new shared shell is **only consumed by the new Office page** so far, avoiding unreviewed wide-scale regressions;
+- no Backend, Supabase, Vercel, providers, GitHub Actions, jobs or workflows added.
+
+Validation completed: remote file re-read, JavaScript syntax checks, static review of routes/scope and mock-DOM logic checks covering Matriz 09/2026 → Filial → Agosto → return to Matriz/September; all these checks passed. **Not yet completed:** pixel/browser render at 1920×1080, 1440×900, 1366×768, 1280×720, zoom 200%, manual keyboard/mobile acceptance, user review. Do not claim the desktop no-scroll criterion has passed without a real viewport test.
+
+**Next permitted slice after this page is reviewed:** UX-COMPANY-1 CompanyAccessHome. Do not treat this milestone as blanket approval to rewrite Financeiro or begin Backend.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -1993,6 +2023,14 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.24 — First unified workspace implementation
+
+- published a reusable static Shell style/interaction layer and the first TenantAccess Office dashboard in Genesis `main`, with no replacement of existing pages;
+- connected Office preview to the UX Journey only for Tenant roles, preserving Company/Tenant separation;
+- added synthetic Company/CNPJ/period selectors, scoped pending queue and quick links to existing professional demonstrations;
+- validated JavaScript syntax, repository references and synthetic scope transitions; real browser viewport checks and user acceptance remain pending;
+- no external integration, actions/workflows or Backend work.
 
 ### 0.23 — Unified workspace UX implementation specification
 
