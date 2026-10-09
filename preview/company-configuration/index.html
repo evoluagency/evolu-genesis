@@ -37,7 +37,7 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--line)
 <aside id="sidebar" class="ux-sidebar" data-ux-sidebar aria-label="Navegação de configuração do escritório">
 <button type="button" class="brand ux-brand" id="brandSidebarToggle" data-ux-brand aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="logo ux-mark" aria-hidden="true">N</span><span class="ux-brand-copy"><strong>NEXUS</strong><small data-t="tenantTag">CONTABILIDADE & ASSESSORIA</small></span></button>
 <div class="tenant ux-tenant"><span class="logo ux-tenant-icon" style="width:32px;height:32px;font-size:15px" aria-hidden="true">N</span><div class="ux-tenant-copy"><b>NEXUS</b><small data-t="license">Organização licenciada</small></div></div>
-<div><div class="nav-label" data-t="oper">OPERAÇÃO</div><div class="nav ux-nav"><button type="button" id="navOverview"><em>⌂</em><span data-t="overview">Visão geral</span></button><button type="button" id="navClients" class="active"><em>▣</em><span data-t="clients">Clientes</span></button><button type="button" id="navFiscal"><em>▤</em>Fiscal</button><button type="button" id="navAccounting"><em>≣</em><span data-t="accounting">Contábil</span></button><button type="button" id="navPending"><em>◷</em><span data-t="pending">Pendências</span></button></div></div>
+<div><div class="nav-label" data-t="oper">OPERAÇÃO</div><div class="nav ux-nav"><a href="../office-workspace/" id="navOverview"><em>⌂</em><span data-t="overview">Visão geral</span></a><button type="button" id="navClients" class="active"><em>▣</em><span data-t="clients">Clientes</span></button><a href="../tenant-fiscal-workspace/" id="navFiscal"><em>▤</em>Fiscal</a><a href="../tenant-fiscal-workspace/?tab=review" id="navAccounting"><em>≣</em><span data-t="accounting">Contábil</span></a><a href="../office-workspace/?tab=queue" id="navPending"><em>◷</em><span data-t="pending">Pendências</span></a></div></div>
 <div class="aside-foot ux-sidebar-footer" data-t="asideFoot">Ambiente demonstrativo • Sem conexão real</div><button type="button" class="tool ux-menu-close" data-menu-close>Fechar menu</button>
 </aside>
 <main class="ux-main">
@@ -114,7 +114,7 @@ if(b.id==="saveBtn"){lastSaved=true;render();toast(tr("saved"));return}
 if(b.id==="reviewBtn"){tab="review";render();return}
 if(b.id==="resetBtn"){reset();return}
 if(b.id==="navClients"){tab="identity";render();return}
-if(b.closest(".nav")){toast(tr("notImplemented"))}
+if(b.closest(".nav")&&b.tagName!=="A"){toast(tr("notImplemented"))}
 });
 document.addEventListener("change",function(e){var target=e.target;if(target.id==="companySelect"){active=target.value;tab="identity";lastSaved=false;render();return}if(target.dataset.field){company()[target.dataset.field]=target.value;lastSaved=false;updateTop()}});
 document.addEventListener("ux:locale",()=>{lang=document.documentElement.lang.startsWith("en")?"en":"pt";render()});
