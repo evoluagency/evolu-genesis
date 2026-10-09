@@ -131,7 +131,7 @@ const allScreens=[
 {id:'tenantConfiguration',label:'Configuração da organização',description:'Modelo operacional, módulos e marca do Tenant',area:'tenant-admin',href:'../tenant-configuration/'},
 {id:'companyOnboarding',label:'Cadastro da empresa',description:'Vincular 1..N CNPJs ao Tenant',area:'tenant-admin',href:'../company-onboarding/'},
 {id:'companyConfiguration',label:'Configuração do cliente',description:'Serviços, origens de dados e acessos',area:'tenant-admin',href:'../company-configuration/'},
-{id:'companyHome',label:'Início da empresa',description:'Financeiro resumido e solicitações',area:'company',href:'../company-access-home/'},
+{id:'companyHome',label:'Início da empresa · novo Shell',description:'Resumo contextual, solicitações e atalhos com visual de uma atividade por tela',area:'company',href:'../company-access-home/'},
 {id:'companyFinance',label:'Financeiro da empresa',description:'Registros, contas, importação e envio à contabilidade',area:'company',href:'../company-financial-workspace/?role=company'},
 {id:'tenantFinance',label:'Conferência contábil/fiscal',description:'Dados enviados, pendências e pré-fechamento',area:'tenant-accounting',href:'../company-financial-workspace/?role=accounting'},
 {id:'tenantAdvisory',label:'Análise da assessoria',description:'Contexto e oportunidades sob revisão',area:'tenant-advisory',href:'../company-financial-workspace/?role=advisory'},
@@ -161,7 +161,8 @@ const reviewItems=[
 ['UX-ACCESS-1 · Consulta e contexto','Pronto para revisão: Home/Financeiro, empresa/CNPJ/período, sem autenticação',false],
 ['UX-FLOW-1 · Entrega e conferência','Envio versionado e liberação profissional; revisão pendente',false],
 ['UX-VIEW-1 · Quadro de trabalho','Fluxo, telas e revisão paginados; revisão visual pendente',false],
-['UX-SHELL-1 / UX-OFFICE-1 · Painel do Escritório','Novo Shell compartilhado e painel interno publicados; validação visual pendente',false]
+['UX-SHELL-1 / UX-OFFICE-1 · Painel do Escritório','Novo Shell compartilhado e painel interno publicados; validação visual pendente',false],
+['UX-COMPANY-1 · Início da Empresa','CompanyAccess com Shell compartilhado, três indicadores e dois painéis; validação visual pendente',false]
 ];
 let role='company-fin',company='acme',theme='dark',tab='journey';
 let reviewPanel='journey',flowPage=0,reviewPage=0;
