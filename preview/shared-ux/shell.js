@@ -40,7 +40,9 @@
       if(hadDrawer&&returnFocus instanceof HTMLElement)returnFocus.focus();
     }
     function synchronizeViewport(){
-      if(!isMobile())closeDrawer();
+      // The mobile drawer always opens with readable labels, even when desktop was collapsed.
+      if(isMobile())document.body.classList.remove('ux-collapsed');
+      else closeDrawer();
       updateBrand();
     }
     function updateTheme(){
