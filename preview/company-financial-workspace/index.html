@@ -93,6 +93,12 @@ en:{brandSub:'Accounting & Advisory',clientSpace:'Company finance workspace',syn
 };
 const $=id=>document.getElementById(id), t=k=>langMap[lang][k]||langMap.pt[k]||k;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const flowLabels={
+pt:{draft:'Rascunho financeiro',changed:'Alterações exigem reenvio',received:'Recebido pela contabilidade',needsInfo:'Aguardando resposta da empresa',answered:'Esclarecimento recebido; revisão pendente',reviewing:'Em conferência',ready:'Conferido, aguardando liberação',released:'Disponível para a assessoria',version:'Versão',checked:'Movimentos conferidos',docs:'Documentos conferidos',unresolved:'Esclarecimentos pendentes',flowTitle:'Andamento da conferência',reSubmit:'Reenviar versão atual',share:'Encaminhar à assessoria',shareOk:'Contexto encaminhado para análise, sem conclusão tributária.',reviewItem:'Conferir documento ou movimento',reviewWhy:'Fundamentação da conferência (mín. 12 caracteres)',reviewHint:'Descreva a evidência analisada. Conferir não significa reconhecer receita fiscal, crédito ou tributo.',reviewSaved:'Evidência conferida nesta demonstração.',reviewMissing:'Registre a evidência analisada (mínimo 12 caracteres).',resolve:'Concluir esclarecimento',resolved:'Esclarecimento conferido',answeredRequest:'Respondido, aguardando conferência',reviewStatus:'Conferência profissional',stale:'Os registros mudaram após o envio. Reenvie esta versão.',needSend:'O Financeiro deve enviar uma versão antes da conferência.',notReady:'O contexto ainda não foi disponibilizado à assessoria.',readyNote:'A conferência documental permite compartilhar o contexto, mas não comprova o tratamento tributário.',notTax:'Conferência de origem não constitui apuração, dedução ou crédito tributário.',missingEvidence:'Há documentos, movimentos ou esclarecimentos pendentes.',newData:'Novo envio criado. Conferências anteriores foram reiniciadas.',scopeInfo:'CNPJ e competência selecionados; dados fictícios.',reviewAll:'Conferir individualmente',doneReply:'Esclarecimento validado por profissional.',requestNotSent:'Envie os dados antes de solicitar esclarecimento.',advisoryReady:'Contexto conferido disponível para análise profissional, sem execução automática.',auditVersion:'Versão vigente'},
+en:{draft:'Financial draft',changed:'Changed data requires resubmission',received:'Received by accounting',needsInfo:'Waiting for company reply',answered:'Reply received; professional review pending',reviewing:'Under review',ready:'Reviewed, awaiting release',released:'Available to advisory',version:'Version',checked:'Reviewed transactions',docs:'Reviewed fiscal documents',unresolved:'Outstanding clarifications',flowTitle:'Review progress',reSubmit:'Resubmit current version',share:'Share with advisory',shareOk:'Context shared for analysis; no tax treatment approved.',reviewItem:'Review document or transaction',reviewWhy:'Review basis (min. 12 characters)',reviewHint:'Describe reviewed evidence. This does not establish taxable revenue or credits.',reviewSaved:'Evidence reviewed in demo.',reviewMissing:'Describe evidence reviewed (at least 12 characters).',resolve:'Resolve clarification',resolved:'Clarification reviewed',answeredRequest:'Answered, awaiting review',reviewStatus:'Professional review',stale:'Records changed after submission; resubmit current version.',needSend:'Company finance must submit a version before review.',notReady:'Context not yet shared with advisory.',readyNote:'Document review allows sharing context, not approving tax treatment.',notTax:'Source review does not constitute a tax calculation, deduction or credit.',missingEvidence:'Records, fiscal documents or clarifications remain open.',newData:'New submission created. Previous reviews reset.',scopeInfo:'Selected tax entity and period; synthetic data.',reviewAll:'Review individually',doneReply:'Clarification confirmed by professional.',requestNotSent:'Submit data before requesting clarification.',advisoryReady:'Reviewed context is available for human analysis; no automatic execution.',auditVersion:'Current version'}
+};
+const fl=k=>(flowLabels[lang]||flowLabels.pt)[k]||k;
 let lang='pt',theme='dark',role='company',view='home',company='m',period='2026-09',modal=null,answerId=null,toastId;
 const queryParams=new URLSearchParams(window.location.search);
 const previewReadOnly=queryParams.get('role')==='viewer';
@@ -137,6 +143,36 @@ const currentBills=()=>bills.filter(x=>x.company===company&&x.period===period);
 const currentRequests=()=>requests.filter(x=>x.company===company&&x.period===period);
 const currentFiscalDocs=()=>fiscalDocs.filter(x=>x.company===company&&x.period===period);
 const pending=()=>currentRequests().filter(x=>x.status==='open');
+const unresolved=()=>currentRequests().filter(x=>x.status!=='resolved');
+function fingerprint(){return JSON.stringify({
+ moves:currentMoves().map(x=>[x.id,x.name,x.value,x.kind,x.source,x.ref]),
+ bills:currentBills().map(x=>[x.id,x.name,x.value,x.kind,x.date,x.settled]),
+ fiscal:currentFiscalDocs().map(x=>[x.ref,x.name,x.value])
+});}
+function flow(){
+ const packet=hand[key()],m=currentMoves(),d=currentFiscalDocs(),r=currentRequests();
+ const stats={movements:m.length,checked:m.filter(x=>x.reviewed).length,docs:d.length,docChecked:d.filter(x=>x.checked).length,unresolved:r.filter(x=>x.status!=='resolved').length};
+ if(!packet)return {state:'draft',packet,stats};
+ if(packet.fingerprint!==fingerprint())return {state:'changed',packet,stats};
+ if(r.some(x=>x.status==='open'))return {state:'needsInfo',packet,stats};
+ if(r.some(x=>x.status==='answered'))return {state:'answered',packet,stats};
+ if(!stats.movements&&!stats.docs)return {state:'received',packet,stats};
+ if(stats.checked!==stats.movements||stats.docChecked!==stats.docs)return {state:'reviewing',packet,stats};
+ return {state:packet.released?'released':'ready',packet,stats};
+}
+function canReview(){return !!flow().packet&&flow().state!=='changed';}
+function canShare(){return role==='accounting'&&flow().state==='ready';}
+function flowPanel(){
+ const x=flow(),n=x.stats,p=x.packet;
+ return '<div class="callout"><strong>'+fl('reviewStatus')+':</strong> <span class="pill '+(x.state==='released'||x.state==='ready'?'good':x.state==='needsInfo'||x.state==='changed'?'warn':'')+'">'+fl(x.state)+'</span><br>'+
+ '<strong>'+fl('version')+':</strong> '+(p?'v'+p.version:'—')+' · '+fl('scopeInfo')+'<br>'+
+ '<strong>'+fl('checked')+':</strong> '+n.checked+'/'+n.movements+'<br>'+
+ '<strong>'+fl('docs')+':</strong> '+n.docChecked+'/'+n.docs+'<br>'+
+ '<strong>'+fl('unresolved')+':</strong> '+n.unresolved+
+ (x.state==='changed'?'<p>'+fl('stale')+'</p>':'')+
+ '<p class="footnote">'+fl('notTax')+'</p></div>';
+}
+
 const inflow=()=>currentMoves().filter(x=>x.kind==='in').reduce((n,x)=>n+x.value,0);
 const outflow=()=>currentMoves().filter(x=>x.kind==='out').reduce((n,x)=>n+x.value,0);
 const payables=()=>currentBills().filter(x=>x.kind==='pay'&&!x.settled).reduce((n,x)=>n+x.value,0);
@@ -169,9 +205,8 @@ return '<div class="metrics">'+rows.map(x=>'<div class="card metric"><small>'+x[
 }
 function card(name,desc,body,action){return '<section class="card"><div class="cardhead"><div><h3>'+name+'</h3>'+(desc?'<p>'+desc+'</p>':'')+'</div>'+(action||'')+'</div>'+body+'</section>'}
 function movementTable(){
-const ls=currentMoves();
-if(!ls.length)return '<div class="empty">'+t('none')+'</div>';
-return '<div class="tablewrap"><table><thead><tr><th>'+t('date')+'</th><th>'+t('description')+'</th><th>'+t('origin')+'</th><th>'+t('kind')+'</th><th>'+t('state')+'</th><th>'+t('value')+'</th></tr></thead><tbody>'+ls.map(x=>'<tr><td>'+esc(x.date.slice(5))+'</td><td><strong>'+esc(x.name)+'</strong><br><span class="muted">'+esc(x.ref||'—')+'</span></td><td>'+t(x.source)+'</td><td>'+t(x.kind)+'</td><td><span class="pill '+(x.reviewed?'good':'warn')+'">'+t(x.reviewed?'approved':'pendingReview')+'</span></td><td>'+money(x.value)+'</td></tr>').join('')+'</tbody></table></div>';
+ const ls=currentMoves();if(!ls.length)return '<div class="empty">'+t('none')+'</div>';
+ return '<div class="tablewrap"><table><thead><tr><th>'+t('date')+'</th><th>'+t('description')+'</th><th>'+t('origin')+'</th><th>'+t('kind')+'</th><th>'+t('state')+'</th><th>'+t('value')+'</th></tr></thead><tbody>'+ls.map(x=>'<tr><td>'+esc(x.date.slice(5))+'</td><td><strong>'+esc(x.name)+'</strong><br><span class="muted">'+esc(x.ref||'—')+'</span></td><td>'+t(x.source)+'</td><td>'+t(x.kind)+'</td><td><span class="pill '+(x.reviewed?'good':'warn')+'">'+t(x.reviewed?'approved':'pendingReview')+'</span></td><td>'+money(x.value)+(role==='accounting'&&!x.reviewed&&canReview()?' <button class="btn soft" data-reviewmove="'+esc(x.id)+'">'+fl('reviewItem')+'</button>':'')+'</td></tr>').join('')+'</tbody></table></div>';
 }
 function billTable(){
 const ls=currentBills();
@@ -183,13 +218,18 @@ const src=[['manual','manual'],['file','file'],['erp','erp'],['bank','bank'],['f
 return '<div class="source-grid">'+src.map(x=>'<div class="source"><b>'+t(x[1])+'</b><small>'+t(x[0]==='manual'?'sample':'disconnected')+' · '+t('sourceNote')+'</small><span class="pill '+(x[0]==='manual'?'good':'warn')+'">'+t(x[0]==='manual'?'sample':'disconnected')+'</span></div>').join('')+'</div>';
 }
 function fiscalList(){
-const list=currentFiscalDocs();
-if(!list.length)return '<div class="empty">'+t('none')+'</div>';
-return '<div class="itemlist">'+list.map(x=>'<div class="item"><div class="left"><span class="icon">▤</span><div><b>'+esc(x.name)+'</b><small>'+esc(x.ref)+' · '+money(x.value)+'</small></div></div><span class="pill warn">'+t('unverified')+'</span></div>').join('')+'</div>';
+ const ls=currentFiscalDocs();if(!ls.length)return '<div class="empty">'+t('none')+'</div>';
+ return '<div class="itemlist">'+ls.map(x=>'<div class="item"><div class="left"><span class="icon">▤</span><div><b>'+esc(x.name)+'</b><small>'+esc(x.ref)+' · '+money(x.value)+'</small></div></div>'+
+ (x.checked?'<span class="pill good">'+t('approved')+'</span>':role==='accounting'&&canReview()?'<button class="btn soft" data-reviewdoc="'+esc(x.ref)+'">'+fl('reviewItem')+'</button>':'<span class="pill warn">'+t('unverified')+'</span>')+'</div>').join('')+'</div>';
 }
 function requestsList(answerMode){
-const arr=currentRequests(); if(!arr.length)return '<div class="empty">'+t('requestEmpty')+'</div>';
-return '<div class="itemlist">'+arr.map(x=>'<div class="item"><div class="left"><span class="icon">?</span><div><b>'+esc(x.title)+'</b><small>'+t(x.status==='open'?'open':'approved')+(x.response?' · '+esc(x.response.slice(0,45)):'')+'</small></div></div>'+(answerMode&&x.status==='open'?'<button class="btn soft" data-answer="'+x.id+'">'+t('answer')+'</button>':'<span class="pill '+(x.status==='open'?'warn':'good')+'">'+t(x.status==='open'?'open':'approved')+'</span>')+'</div>').join('')+'</div>';
+ const arr=currentRequests();if(!arr.length)return '<div class="empty">'+t('requestEmpty')+'</div>';
+ return '<div class="itemlist">'+arr.map(x=>{
+ const label=x.status==='open'?t('open'):fl(x.status==='answered'?'answeredRequest':'resolved');
+ const action=answerMode&&x.status==='open'?'<button class="btn soft" data-answer="'+esc(x.id)+'">'+t('answer')+'</button>':
+ role==='accounting'&&x.status==='answered'&&canReview()?'<button class="btn soft" data-resolve="'+esc(x.id)+'">'+fl('resolve')+'</button>':'<span class="pill '+(x.status==='resolved'?'good':'warn')+'">'+label+'</span>';
+ return '<div class="item"><div class="left"><span class="icon">?</span><div><b>'+esc(x.title)+'</b><small>'+label+(x.response?' · '+esc(x.response.slice(0,45)):'')+'</small></div></div>'+action+'</div>';
+ }).join('')+'</div>';
 }
 function statusFlow(){return '<div class="steps"><span class="'+(role==='company'?'active':'')+'">'+t('financial')+'</span>→<span class="'+(role==='accounting'?'active':'')+'">'+t('fiscal')+'</span>→<span class="'+(role==='advisory'?'active':'')+'">'+t('advisor')+'</span></div>'}
 function renderCompany(){
@@ -278,7 +318,7 @@ seedFiles[batch].forEach(x=>{
 if(batch==='fiscal'){
   const existing=fiscalDocs.some(y=>y.company===company&&y.period===period&&y.ref===x.ref);
   if(existing){duplicated++;return;}
-  fiscalDocs.push({company,period,ref:x.ref,name:x.name,value:x.value,source:'file'});added++;
+  fiscalDocs.push({company,period,ref:x.ref,name:x.name,value:x.value,source:'file',checked:false,note:''});added++;
   return;
 }
 const existing=moves.some(y=>y.company===company&&y.period===period&&y.ref===x.ref);
