@@ -59,7 +59,7 @@ pt:{draft:'Rascunho financeiro',changed:'Alterações exigem reenvio',received:'
 en:{draft:'Financial draft',changed:'Changed data requires resubmission',received:'Received by accounting',needsInfo:'Waiting for company reply',answered:'Reply received; professional review pending',reviewing:'Under review',ready:'Reviewed, awaiting release',released:'Available to advisory',version:'Version',checked:'Reviewed transactions',docs:'Reviewed fiscal documents',unresolved:'Outstanding clarifications',flowTitle:'Review progress',reSubmit:'Resubmit current version',share:'Share with advisory',shareOk:'Context shared for analysis; no tax treatment approved.',reviewItem:'Review document or transaction',reviewWhy:'Review basis (min. 12 characters)',reviewHint:'Describe reviewed evidence. This does not establish taxable revenue or credits.',reviewSaved:'Evidence reviewed in demo.',reviewMissing:'Describe evidence reviewed (at least 12 characters).',resolve:'Resolve clarification',resolved:'Clarification reviewed',answeredRequest:'Answered, awaiting review',reviewStatus:'Professional review',stale:'Records changed after submission; resubmit current version.',needSend:'Company finance must submit a version before review.',notReady:'Context not yet shared with advisory.',readyNote:'Document review allows sharing context, not approving tax treatment.',notTax:'Source review does not constitute a tax calculation, deduction or credit.',missingEvidence:'Records, fiscal documents or clarifications remain open.',newData:'New submission created. Previous reviews reset.',scopeInfo:'Selected tax entity and period; synthetic data.',reviewAll:'Review individually',doneReply:'Clarification confirmed by professional.',requestNotSent:'Submit data before requesting clarification.',advisoryReady:'Reviewed context is available for human analysis; no automatic execution.',auditVersion:'Current version'}
 };
 const fl=k=>(flowLabels[lang]||flowLabels.pt)[k]||k;
-let lang='pt',theme='dark',role='company',view='home',company='m',period='2026-09',modal=null,answerId=null,toastId;
+let lang='pt',theme='dark',role='company',view='home',company='m',period='2026-09',modal=null,answerId=null,toastId,billFilter='all';
 const queryParams=new URLSearchParams(window.location.search);
 const previewReadOnly=queryParams.get('role')==='viewer';
 function homeHref(){
@@ -169,7 +169,7 @@ function movementTable(){
  return '<div class="tablewrap"><table><thead><tr><th>'+t('date')+'</th><th>'+t('description')+'</th><th>'+t('origin')+'</th><th>'+t('kind')+'</th><th>'+t('state')+'</th><th>'+t('value')+'</th></tr></thead><tbody>'+ls.map(x=>'<tr><td>'+esc(x.date.slice(5))+'</td><td><strong>'+esc(x.name)+'</strong><br><span class="muted">'+esc(x.ref||'—')+'</span></td><td>'+t(x.source)+'</td><td>'+t(x.kind)+'</td><td><span class="pill '+(x.reviewed?'good':'warn')+'">'+t(x.reviewed?'approved':'pendingReview')+'</span></td><td>'+money(x.value)+(role==='accounting'&&!x.reviewed&&canReview()?' <button class="btn soft" data-reviewmove="'+esc(x.id)+'">'+fl('reviewItem')+'</button>':'')+'</td></tr>').join('')+'</tbody></table></div>';
 }
 function billTable(){
-const ls=currentBills();
+const ls=currentBills().filter(x=>billFilter==='all'||x.kind===billFilter);
 if(!ls.length)return '<div class="empty">'+t('emptyBill')+'</div>';
 return '<div class="tablewrap"><table><thead><tr><th>'+t('description')+'</th><th>'+t('kind')+'</th><th>'+t('due')+'</th><th>'+t('state')+'</th><th>'+t('value')+'</th></tr></thead><tbody>'+ls.map(x=>'<tr><td>'+esc(x.name)+'</td><td>'+t(x.kind)+'</td><td>'+esc(x.date)+'</td><td><span class="pill '+(x.settled?'good':'warn')+'">'+t(x.settled?'paid':'unpaid')+'</span></td><td>'+money(x.value)+'</td></tr>').join('')+'</tbody></table></div>';
 }
@@ -193,6 +193,11 @@ function requestsList(answerMode){
 }
 function statusFlow(){return '<div class="steps"><span class="'+(role==='company'?'active':'')+'">'+t('financial')+'</span>→<span class="'+(role==='accounting'?'active':'')+'">'+t('fiscal')+'</span>→<span class="'+(role==='advisory'?'active':'')+'">'+t('advisor')+'</span></div>'}
 
+function billFilterTabs(){
+ const options=[['all',lang==='pt'?'Todas':'All'],['pay',t('payable')],['receive',t('receivable')]];
+ return '<div class="finance-filter-tabs" role="group" aria-label="'+(lang==='pt'?'Filtrar contas':'Filter accounts')+'">'+options.map(x=>
+ '<button type="button" class="btn '+(billFilter===x[0]?'soft':'')+'" data-bill-filter="'+x[0]+'" aria-pressed="'+String(billFilter===x[0])+'">'+x[1]+'</button>').join('')+'</div>';
+}
 function taskPanel(name,desc,body,action){
  return '<section class="card ux-card finance-task-card"><div class="cardhead"><div><h3>'+name+'</h3>'+(desc?'<p>'+desc+'</p>':'')+'</div>'+(action||'')+'</div><div class="finance-panel-scroll">'+body+'</div></section>';
 }
@@ -213,7 +218,7 @@ function renderCompany(){
    taskPanel(t('allMoves'),t('sourceNote'),movementTable(),'<button class="btn primary" data-act="move">'+t('addMove')+'</button>'),
    taskPanel(fl('flowTitle'),'',flowPanel()+infoBreak(t('sourceTitle'),sourceTiles()),'<button class="btn soft" data-nav="sources">'+t('sources')+'</button>'),false);
  if(view==='debts')return taskGrid(
-   taskPanel(t('billTitle'),t('billDesc'),billTable(),'<button class="btn primary" data-act="bill">'+t('addBill')+'</button>'),
+   taskPanel(t('billTitle'),t('billDesc'),billFilterTabs()+billTable(),'<button class="btn primary" data-act="bill">'+t('addBill')+'</button>'),
    taskPanel(fl('flowTitle'),'',flowPanel()),false);
  if(view==='sources')return taskGrid(
    taskPanel(t('sourceTitle'),t('sourceDesc'),sourceTiles(),'<button class="btn primary" data-act="import">'+t('import')+'</button>'),
@@ -395,6 +400,7 @@ addHistory(message);closeModal();notify(message);render();
 document.addEventListener('click',e=>{
 const b=e.target.closest('button');if(!b)return;
 if(b.dataset.tableStep){const key=[role,view,company,period].join('|')+'|'+b.dataset.tableIndex;tablePages[key]=Math.max(0,(tablePages[key]||0)+Number(b.dataset.tableStep));render();return;}
+if(b.dataset.billFilter){if(role==='company'&&['all','pay','receive'].includes(b.dataset.billFilter)){billFilter=b.dataset.billFilter;render();}return;}
 if(b.dataset.nav){view=b.dataset.nav;window.EvoluShell?.closeDrawer();render();return;}
 if(b.dataset.act){action(b.dataset.act);return;}
 if(b.dataset.reviewmove){if(role==='accounting'&&canReview())openModal('reviewMove',b.dataset.reviewmove);return;}
