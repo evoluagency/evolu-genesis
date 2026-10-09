@@ -59,32 +59,32 @@ main{min-width:0}.top{min-height:72px;background:var(--side);border-bottom:1px s
  aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
  body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
 }
-</style></head><body>
-<div class="shell"><aside id="side">
-<div class="identity brand-sidebar-toggle" id="brandSidebarToggle" role="button" tabindex="0" aria-controls="side" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="symbol">N</span><div><b>NEXUS</b><small data-t="brandSub">Contabilidade & Assessoria</small></div></div>
-<div class="org-chip"><div class="avatar">A</div><div><b>ACME Industrial</b><small data-t="clientSpace">Área da empresa</small></div></div>
-<div><div class="navlabel" data-t="navGroup">SEU ESPAÇO</div><nav class="nav" id="nav">
+</style><link rel="stylesheet" href="../shared-ux/shell.css"><script src="../shared-ux/shell.js" defer></script></head><body>
+<div class="shell ux-app"><aside id="side" class="ux-sidebar" data-ux-sidebar aria-label="Navegação da empresa">
+<button type="button" class="identity ux-brand" id="brandSidebarToggle" data-ux-brand aria-controls="side" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="symbol ux-mark" aria-hidden="true">N</span><span class="ux-brand-copy"><strong>NEXUS</strong><small data-t="brandSub">Contabilidade & Assessoria</small></span></button>
+<div class="org-chip ux-tenant"><div class="avatar">A</div><div><b>ACME Industrial</b><small data-t="clientSpace">Área da empresa</small></div></div>
+<div><div class="navlabel" data-t="navGroup">SEU ESPAÇO</div><nav class="nav ux-nav" id="nav" aria-label="Atividades da empresa">
 <button class="active" data-page="home"><span class="ico">⌂</span><span data-t="navHome">Início</span></button>
 <button data-page="finance"><span class="ico">≋</span><span data-t="navFinance">Financeiro</span></button>
 <button data-page="documents"><span class="ico">▤</span><span data-t="navDocs">Documentos</span></button>
 <button data-page="requests"><span class="ico">◷</span><span data-t="navRequests">Solicitações</span><span id="requestCount" class="count">2</span></button>
 <button data-page="info"><span class="ico">◫</span><span data-t="navInfo">Informações</span></button>
 </nav></div>
-<div class="asideend" data-t="sideBottom">Ambiente fictício · Dados não enviados a ninguém</div></aside>
-<main>
-<header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / ACME Industrial</div><h1 id="pageTitle">Início</h1></div><div class="topright">
-<button class="b mobilemenu" id="mobileBtn" aria-label="Abrir menu">☰</button>
+<div class="asideend ux-sidebar-footer" data-t="sideBottom">Ambiente fictício · Dados não enviados a ninguém</div><button class="b ux-menu-close" type="button" data-menu-close aria-label="Fechar menu">Fechar menu</button></aside>
+<main class="ux-main">
+<header class="top ux-top"><div><div class="crumb" id="breadcrumb">NEXUS / ACME Industrial</div><h1 id="pageTitle">Início</h1></div><div class="topright">
+<button class="b ux-btn ux-mobile-menu" id="mobileBtn" data-menu-open aria-controls="side" aria-expanded="false" aria-label="Abrir menu" type="button">☰</button>
 <span class="tag" data-t="synthetic">DEMONSTRAÇÃO</span>
-<button class="b" id="langBtn" aria-label="Idioma">EN</button><button class="b" id="themeBtn" aria-label="Tema">☀</button>
+<button class="b ux-btn" id="langBtn" data-locale-toggle aria-label="Idioma">EN</button><button class="b ux-btn" id="themeBtn" data-theme-toggle aria-label="Tema">☀</button>
 </div></header>
-<div class="page">
-<div class="intro"><div><div class="sup" data-t="introTag">PAINEL DA EMPRESA</div><h2 id="greeting">Bom dia, Mariana</h2><p id="introDescription">Acompanhe seu financeiro e os documentos necessários para a contabilidade. Dados simulados.</p></div><div class="selectors">
-<div class="field"><label for="period" data-t="period">Competência</label><select id="period"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
-<div class="field"><label for="cnpj" data-t="cnpj">Estabelecimento</label><select id="cnpj"><option value="a">Matriz · 0001</option><option value="b">Filial · 0002</option></select></div>
+<div class="page ux-wrap">
+<div class="intro ux-head"><div><div class="sup" data-t="introTag">PAINEL DA EMPRESA</div><h2 id="greeting">Bom dia, Mariana</h2><p id="introDescription">Acompanhe seu financeiro e os documentos necessários para a contabilidade. Dados simulados.</p></div><div class="selectors ux-filters">
+<div class="field ux-field"><label for="period" data-t="period">Competência</label><select id="period"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
+<div class="field ux-field"><label for="cnpj" data-t="cnpj">Estabelecimento</label><select id="cnpj"><option value="a">Matriz · 0001</option><option value="b">Filial · 0002</option></select></div>
 </div></div>
 <div id="accessModeNote" class="notice" hidden aria-live="polite"></div>
 <div id="pageContent"></div>
-<div class="foot"><small data-t="footer">Exemplo com dados sintéticos. Valores ilustrativos; não constituem apuração contábil, fiscal ou saldo bancário real.</small><a href="../ux-journey/" style="color:var(--accent)">Mapa da jornada UX ↗</a><small>© NEXUS</small></div>
+<div class="foot ux-footer"><small data-t="footer">Exemplo com dados sintéticos. Valores ilustrativos; não constituem apuração contábil, fiscal ou saldo bancário real.</small><a href="../ux-journey/" style="color:var(--accent)">Mapa da jornada UX ↗</a><small>© NEXUS</small></div>
 </div></main></div>
 <div class="modalback" id="modalBack" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h3 id="modalTitle"></h3><p id="modalDesc"></p><form id="modalForm"><div id="modalFields" class="modalfields"></div><div class="modalfooter"><button type="button" class="b" id="modalCancel" data-t="cancel">Cancelar</button><button type="submit" class="b primary" id="modalSubmit" data-t="save">Registrar na demonstração</button></div></form></div></div><div id="toast" class="toast" hidden role="status"></div>
 <script>
@@ -184,14 +184,12 @@ closeModal();content();
 }
 document.addEventListener("click",e=>{
 const b=e.target.closest("button");if(!b)return;
-if(b.dataset.page){page=b.dataset.page;$("side").classList.remove("open");content();return}
-if(b.dataset.go){page=b.dataset.go;content();return}
+if(b.dataset.page){page=b.dataset.page;window.EvoluShell?.closeDrawer();content();return}
+if(b.dataset.go){page=b.dataset.go;window.EvoluShell?.closeDrawer();content();return}
 if(b.dataset.action){openModal(b.dataset.action);return}
 if(b.dataset.answer){if(!readOnly)openModal("response",b.dataset.answer);return}
 if(b.id==="modalCancel"){closeModal();return}
-if(b.id==="mobileBtn"){$("side").classList.toggle("open");return}
-if(b.id==="themeBtn"){theme=theme==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",theme);b.textContent=theme==="dark"?"☀":"☾";return}
-if(b.id==="langBtn"){lang=lang==="pt"?"en":"pt";document.documentElement.lang=lang==="pt"?"pt-BR":"en";document.querySelectorAll("[data-t]").forEach(x=>{x.textContent=t(x.dataset.t)});b.textContent=lang==="pt"?"EN":"PT";content();return}
+
 });
 $("modalBack").addEventListener("click",e=>{if(e.target.id==="modalBack")closeModal()});
 $("modalForm").addEventListener("submit",addEntry);
@@ -199,33 +197,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("modalBack").hid
 $("period").addEventListener("change",e=>{period=e.target.value;content()});
 $("cnpj").addEventListener("change",e=>{cnpj=e.target.value;content()});
 document.querySelectorAll("[data-t]").forEach(x=>x.textContent=t(x.dataset.t));
+document.addEventListener("ux:locale",()=>{lang=document.documentElement.lang.startsWith("en")?"en":"pt";document.querySelectorAll("[data-t]").forEach(x=>{x.textContent=t(x.dataset.t)});content();});
 content();
-})();
-</script><script>
-(function(){
- const brand=document.getElementById('brandSidebarToggle');
- const aside=document.getElementById('side');
- if(!brand||!aside)return;
- const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
-  const label=item.textContent.trim().replace(/\s+/g,' ');
-  if(label){item.title=label;item.setAttribute('aria-label',label);}
- });
- function sync(){
-   const collapsed=document.body.classList.contains('sidebar-collapsed');
-   const en=document.documentElement.lang.toLowerCase().startsWith('en');
-   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-   brand.title=label;brand.setAttribute('aria-label',label);
-   brand.setAttribute('aria-expanded',String(!collapsed));
- }
- function toggle(){
-   if(window.innerWidth<=800){aside.classList.remove('open');return;}
-   document.body.classList.toggle('sidebar-collapsed');sync();
- }
- brand.addEventListener('click',toggle);
- brand.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
- const nav=aside.querySelector('.nav');
- if(nav)new MutationObserver(annotate).observe(nav,{childList:true,subtree:true});
- new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
- annotate();sync();
 })();
 </script></body></html>
