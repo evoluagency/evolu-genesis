@@ -59,16 +59,115 @@ main{min-width:0}.top{min-height:72px;background:var(--side);border-bottom:1px s
  aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
  body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
 }
-</style><link rel="stylesheet" href="../shared-ux/shell.css"><script src="../shared-ux/shell.js" defer></script></head><body>
+</style><link rel="stylesheet" href="../shared-ux/shell.css"><script src="../shared-ux/shell.js" defer></script><style>
+/* UX-COMPANY-1 — Shared Shell + task-per-viewport CompanyAccess.
+   The Company is not the Tenant portfolio. Existing financial mocks remain in-memory. */
+[hidden]{display:none!important}
+.ux-app .ux-sidebar{padding:19px 12px 16px;min-height:0}
+.ux-app .ux-main{min-width:0}
+.ux-app .ux-sidebar .ux-brand{justify-content:flex-start}
+.ux-app .ux-sidebar .ux-brand strong{font-size:15px;letter-spacing:.08em;line-height:1.2}
+.ux-app .ux-sidebar .ux-brand small{font-size:10px}
+.ux-app .ux-sidebar .ux-brand .symbol{flex:0 0 40px}
+.ux-app .ux-sidebar .ux-nav button{display:flex;align-items:center;gap:12px;min-height:42px;text-align:left}
+.ux-app .ux-sidebar .ux-nav-symbol{width:21px;flex:0 0 21px}
+.ux-app .ux-sidebar .ux-nav-label{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ux-app .ux-sidebar .ux-tenant-copy{min-width:0}
+.ux-app .ux-sidebar .ux-tenant-copy b{font-size:11px}
+.ux-app .ux-sidebar .ux-tenant-copy small{display:block;font-size:10px}
+body.ux-collapsed .ux-app .ux-sidebar .ux-brand{justify-content:center}
+body.ux-collapsed .ux-app .ux-sidebar .ux-tenant-copy,body.ux-collapsed .ux-app .ux-sidebar .count{display:none}
+body.ux-collapsed .ux-app .ux-sidebar .ux-nav button{justify-content:center;padding-inline:0}
+.ux-app .top.ux-top{min-height:65px;padding:9px 25px}
+.ux-app .top.ux-top .topright{display:flex;gap:7px;flex-wrap:wrap}
+.ux-app .page.ux-wrap{width:100%;max-width:1480px;margin:0 auto;padding:19px 25px 19px;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;flex:1}
+.ux-app .intro.ux-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;margin:0;flex:none}
+.ux-app .intro.ux-head>div:first-child{min-width:0}
+.ux-app .intro.ux-head h2{font-size:25px;line-height:1.25;margin:4px 0}
+.ux-app .intro.ux-head p{line-height:1.4}
+.ux-app .selectors.ux-filters{display:flex;gap:9px;flex-wrap:wrap;align-items:flex-end;justify-content:flex-end}
+.ux-app .selectors.ux-filters .field{min-width:136px;max-width:210px;flex:1}
+.ux-app #pageContent{min-width:0;min-height:0;display:flex;flex-direction:column;flex:1;gap:12px}
+.ux-app #pageContent>.metricgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0;flex:none}
+.ux-app #pageContent>.metricgrid .metric{padding:13px 16px}
+.ux-app #pageContent>.metricgrid .metric strong{font-size:21px;margin:2px 0}
+.ux-app #pageContent>.metricgrid .metric em{line-height:1.4}
+.ux-app #pageContent>.grid.ux-grid{grid-template-columns:minmax(0,1.72fr) minmax(285px,.85fr);gap:14px;min-height:0;flex:1;align-items:stretch}
+.ux-app #pageContent .stack{display:flex;flex-direction:column;gap:11px;align-items:stretch;min-height:0;min-width:0;width:100%}
+.ux-app #pageContent .stack>.card{display:flex;flex-direction:column;gap:11px;flex:1;min-height:0;min-width:0;padding:15px;overflow:hidden}
+.ux-app #pageContent .cardheader{margin:0;align-items:flex-start;flex:none}
+.ux-app #pageContent .cardheader h3{font-size:13px}
+.ux-app #pageContent .cardheader p{font-size:10px}
+.ux-app #pageContent .card>.list,.ux-app #pageContent .card>.sources{min-height:0;overflow-y:auto;flex:1;align-content:start}
+.ux-app #pageContent .list{min-width:0}
+.ux-app #pageContent .item{min-width:0;padding:10px}
+.ux-app #pageContent .item .left{min-width:0}
+.ux-app #pageContent .item .left>div:last-child{min-width:0;overflow-wrap:anywhere}
+.ux-app #pageContent .item .value{max-width:40%;white-space:normal;text-align:right}
+.ux-app #pageContent .home-requests{min-height:0;overflow:auto;flex:1}
+.ux-app #pageContent .home-actions-title{border-top:1px solid var(--border);padding-top:8px;color:var(--muted);font-size:10px;font-weight:700;flex:none}
+.ux-app #pageContent .home-grid .quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;flex:none}
+.ux-app #pageContent .home-grid .quick button{padding:9px;min-height:42px}
+.ux-app .foot.ux-footer{margin-top:auto;padding-top:7px;border-top:1px solid var(--border);display:flex;gap:10px;flex:none}
+.ux-app #accessModeNote:not([hidden]){margin:0;flex:none;padding:8px 10px;font-size:10px}
+.ux-app .modalback{z-index:70}
+@media(min-width:1120px) and (min-height:700px){
+ html,body{height:100%;overflow:hidden}
+ .ux-app{height:100dvh;min-height:0;overflow:hidden}
+ .ux-app .ux-sidebar{height:100dvh;overflow:auto}
+ .ux-app .ux-main{height:100dvh;overflow:hidden}
+ .ux-app .page.ux-wrap{overflow:hidden;padding:11px 23px 10px;gap:9px}
+ .ux-app .intro.ux-head h2{font-size:22px}
+ .ux-app #pageContent{overflow:hidden;gap:9px}
+ .ux-app #pageContent>.metricgrid .metric{padding:9px 13px}
+ .ux-app #pageContent>.grid.ux-grid{overflow:hidden}
+ .ux-app #pageContent .stack>.card{padding:12px}
+ .ux-app #pageContent .item{padding:8px}
+ .ux-app #pageContent .home-grid .quick button{padding:8px}
+ .ux-app .foot.ux-footer{font-size:9px;padding-top:5px}
+}
+/* Deliberate height/zoom and device fallback: never silently clip data. */
+@media(max-width:1119px),(max-height:699px){
+ html,body{height:auto;overflow:auto}
+ .ux-app{height:auto;min-height:100vh}
+ .ux-app .ux-main{height:auto;overflow:visible}
+ .ux-app .page.ux-wrap{overflow:visible}
+ .ux-app #pageContent{overflow:visible;flex:none}
+ .ux-app #pageContent>.grid.ux-grid{overflow:visible;min-height:380px}
+ .ux-app #pageContent .stack>.card{overflow:visible;flex:none}
+ .ux-app #pageContent .card>.list,.ux-app #pageContent .card>.sources{overflow:visible}
+ .ux-app #pageContent .home-requests{overflow:visible}
+}
+@media(max-width:1119px){
+ .ux-app #pageContent>.grid.ux-grid{grid-template-columns:minmax(0,1fr)}
+ .ux-app #pageContent .stack{display:grid;grid-template-columns:minmax(0,1fr)}
+ .ux-app .intro.ux-head{align-items:stretch;flex-direction:column}
+ .ux-app .selectors.ux-filters{justify-content:flex-start}
+}
+@media(max-width:767px){
+ .ux-app .ux-sidebar{display:none}
+ .ux-app .ux-sidebar.ux-open{display:flex;position:fixed;z-index:51;inset:0 auto 0 0;width:min(290px,85vw);overflow:auto;box-shadow:0 0 0 100vw rgba(0,0,0,.62)}
+ .ux-app .ux-sidebar .ux-brand{display:flex}
+ .ux-app .ux-top{min-height:60px;padding:10px 13px}
+ .ux-app .ux-mobile-menu{display:inline-flex}
+ .ux-app .page.ux-wrap{padding:16px 13px 24px}
+ .ux-app #pageContent>.metricgrid{grid-template-columns:minmax(0,1fr)}
+ .ux-app #pageContent>.grid.ux-grid{grid-template-columns:1fr;min-height:0}
+ .ux-app #pageContent .home-grid .quick{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ux-app #pageContent .item{align-items:flex-start;flex-wrap:wrap}
+ .ux-app .selectors.ux-filters .field{flex:1;max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){.ux-app{transition:none}}
+</style></head><body>
 <div class="shell ux-app"><aside id="side" class="ux-sidebar" data-ux-sidebar aria-label="Navegação da empresa">
 <button type="button" class="identity ux-brand" id="brandSidebarToggle" data-ux-brand aria-controls="side" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="symbol ux-mark" aria-hidden="true">N</span><span class="ux-brand-copy"><strong>NEXUS</strong><small data-t="brandSub">Contabilidade & Assessoria</small></span></button>
-<div class="org-chip ux-tenant"><div class="avatar">A</div><div><b>ACME Industrial</b><small data-t="clientSpace">Área da empresa</small></div></div>
-<div><div class="navlabel" data-t="navGroup">SEU ESPAÇO</div><nav class="nav ux-nav" id="nav" aria-label="Atividades da empresa">
-<button class="active" data-page="home"><span class="ico">⌂</span><span data-t="navHome">Início</span></button>
-<button data-page="finance"><span class="ico">≋</span><span data-t="navFinance">Financeiro</span></button>
-<button data-page="documents"><span class="ico">▤</span><span data-t="navDocs">Documentos</span></button>
-<button data-page="requests"><span class="ico">◷</span><span data-t="navRequests">Solicitações</span><span id="requestCount" class="count">2</span></button>
-<button data-page="info"><span class="ico">◫</span><span data-t="navInfo">Informações</span></button>
+<div class="org-chip ux-tenant"><div class="avatar ux-tenant-icon" aria-hidden="true">A</div><div class="ux-tenant-copy"><b>ACME Industrial</b><small data-t="clientSpace">Área da empresa</small></div></div>
+<div><div class="navlabel ux-nav-heading" data-t="navGroup">SEU ESPAÇO</div><nav class="nav ux-nav" id="nav" aria-label="Atividades da empresa">
+<button class="active" data-page="home"><span class="ico ux-nav-symbol" aria-hidden="true">⌂</span><span class="ux-nav-label" data-t="navHome">Início</span></button>
+<button data-page="finance"><span class="ico ux-nav-symbol" aria-hidden="true">≋</span><span class="ux-nav-label" data-t="navFinance">Financeiro</span></button>
+<button data-page="documents"><span class="ico ux-nav-symbol" aria-hidden="true">▤</span><span class="ux-nav-label" data-t="navDocs">Documentos</span></button>
+<button data-page="requests"><span class="ico ux-nav-symbol" aria-hidden="true">◷</span><span class="ux-nav-label" data-t="navRequests">Solicitações</span><span id="requestCount" class="count">2</span></button>
+<button data-page="info"><span class="ico ux-nav-symbol" aria-hidden="true">◫</span><span class="ux-nav-label" data-t="navInfo">Informações</span></button>
 </nav></div>
 <div class="asideend ux-sidebar-footer" data-t="sideBottom">Ambiente fictício · Dados não enviados a ninguém</div><button class="b ux-menu-close" type="button" data-menu-close aria-label="Fechar menu">Fechar menu</button></aside>
 <main class="ux-main">
@@ -124,7 +223,7 @@ const pending=()=>reqs.filter(x=>x.cnpj===cnpj&&x.period===period&&x.status==="p
 const currentReqs=()=>reqs.filter(x=>x.cnpj===cnpj&&x.period===period);
 const currentDocs=()=>documents.filter(x=>x.cnpj===cnpj&&x.period===period);
 function notify(msg){const q=$("toast");q.textContent=msg;q.hidden=false;clearTimeout(toastHandle);toastHandle=setTimeout(()=>q.hidden=true,3300)}
-function box(title,subtitle,content,extra=""){return '<section class="card"><div class="cardheader"><div><h3>'+title+'</h3>'+(subtitle?'<p>'+subtitle+'</p>':"")+'</div>'+extra+'</div>'+content+'</section>'}
+function box(title,subtitle,content,extra=""){return '<section class="card ux-card"><div class="cardheader"><div><h3>'+title+'</h3>'+(subtitle?'<p>'+subtitle+'</p>':"")+'</div>'+extra+'</div>'+content+'</section>'}
 function navBtn(id,text){return '<button class="linkbtn" data-go="'+id+'">'+text+' →</button>'}
 function metrics(){const moves=current(),incoming=moves.filter(x=>x.kind==="in").reduce((a,b)=>a+b.value,0),outgoing=moves.filter(x=>x.kind==="out").reduce((a,b)=>a+b.value,0);return '<div class="metricgrid"><div class="card metric"><small>'+t("in")+'</small><strong class="green">'+money(incoming)+'</strong><em>'+t("inNote")+'</em></div><div class="card metric"><small>'+t("out")+'</small><strong>'+money(outgoing)+'</strong><em>'+t("outNote")+'</em></div><div class="card metric"><small>'+t("balance")+'</small><strong>'+money(incoming-outgoing)+'</strong><em>'+t("balanceNote")+'</em></div><div class="card metric"><small>'+t("items")+'</small><strong class="yellow">'+pending().length+'</strong><em>'+t("itemsNote")+'</em></div></div>'}
 function movesList(){const list=current().slice().reverse();return list.length?'<div class="list">'+list.map(x=>'<div class="item"><div class="left"><span class="itemicon">'+(x.kind==="in"?"↘":"↗")+'</span><div><b>'+safe(x.name)+'</b><small>'+x.date+' · '+t(x.source)+'</small></div></div><div class="value" style="color:'+(x.kind==="in"?"var(--green)":"var(--fg)")+'">'+(x.kind==="in"?"+":"−")+money(x.value)+'</div></div>').join("")+'</div>':'<div class="empty">'+t("noMoves")+'</div>'}
@@ -134,6 +233,20 @@ function quick(){if(readOnly)return '<div class="quick"><button data-go="finance
 function sources(){return '<div class="sources">'+[
 ["sourceManual","sourceOk"],["sourceErp","sourceOk"],["sourceFiscal","sourceNot"],["sourceBank","sourceOk"]
 ].map(v=>'<div class="source"><div>'+t(v[0])+'<small>'+t("sourceAlert")+'</small></div><span class="pill '+(v[1]==="sourceOk"?"good":"warn")+'">'+t(v[1])+'</span></div>').join("")+'</div>'}
+
+function compactMetrics(){
+ const values=[
+  [lang==="pt"?"Movimentações do período":"Transactions in period",String(current().length),lang==="pt"?"Registros financeiros simulados, sem classificação tributária.":"Synthetic financial records, no tax classification."],
+  [lang==="pt"?"Documentos apresentados":"Documents submitted",String(currentDocs().length),lang==="pt"?"Documentos não significam caixa ou crédito fiscal.":"Documents do not imply cash or tax credits."],
+  [lang==="pt"?"Solicitações pendentes":"Open requests",String(pending().length),lang==="pt"?"Informações que requerem resposta.":"Requests awaiting a reply."]
+ ];
+ return '<div class="metricgrid ux-metrics ux-company-summary">'+values.map(x=>'<div class="card metric ux-metric"><small>'+safe(x[0])+'</small><strong>'+safe(x[1])+'</strong><em>'+safe(x[2])+'</em></div>').join('')+'</div>';
+}
+function homeAssistance(){
+ const heading=lang==="pt"?"Ações rápidas":"Quick actions";
+ return '<div class="home-requests">'+requestList()+'</div><div class="home-actions-title">'+heading+'</div>'+quick();
+}
+
 function content(){
 const title={home:"navHome",finance:"headingFinance",documents:"headingDocs",requests:"headingRequests",info:"headingInfo"};
 $("pageTitle").textContent=t(title[page]);$("breadcrumb").textContent="NEXUS / ACME Industrial / "+t(title[page]);$("greeting").textContent=page==="home"?t("greet"):t(title[page]);
@@ -141,15 +254,15 @@ $("introDescription").textContent=t(({home:"homeIntro",finance:"financeIntro",do
 document.querySelectorAll("[data-page]").forEach(b=>{b.classList.toggle("active",b.dataset.page===page);b.setAttribute("aria-current",b.dataset.page===page?"page":"false")});
 $("requestCount").textContent=pending().length;let out="";
 if(page==="home"){
-out=metrics()+'<div class="grid"><div class="stack">'+box(t("recent"),t("recentSub"),movesList(),navBtn("finance",t("all")))+box(t("requestTitle"),t("requestSub"),requestList(),navBtn("requests",t("viewAll")) )+'</div><div class="stack">'+box(t("actions"),t("actionsSub"),quick())+box(t("dataQuality"),"",'<div class="notice">'+t("qualityText")+'</div><div class="spacer"></div><div class="trace"><span class="on">Financeiro</span><b>→</b><span>Fiscal / Contábil</span><b>→</b><span>Assessoria</span></div>')+box(t("sources"),t("sourceDesc"),sources(),'<button class="linkbtn" data-action="source">⋯</button>')+'</div></div>';
+out=compactMetrics()+'<div class="grid ux-grid home-grid"><div class="stack">'+box(t("recent"),t("recentSub"),movesList(),navBtn("finance",t("all")))+'</div><div class="stack">'+box(t("requestTitle"),t("requestSub"),homeAssistance(),navBtn("requests",t("viewAll")))+'</div></div>';
 }else if(page==="finance"){
-out=metrics()+'<div class="grid"><div class="stack">'+box(t("recent"),t("recentSub"),movesList(),readOnly?"":'<button class="b primary" data-action="expense">'+t("add")+'</button>')+'</div><div class="stack">'+box(t("sources"),t("sourceDesc"),sources())+box(t("phase"),"",'<div class="notice">'+t("phaseDesc")+'</div><p style="margin:12px 0 0"><a class="b primary" id="openFinancialWorkspace" href="../company-financial-workspace/?role=company">Abrir Financeiro completo ↗</a></p>')+'</div></div>';
+out=metrics()+'<div class="grid ux-grid"><div class="stack">'+box(t("recent"),t("recentSub"),movesList(),readOnly?"":'<button class="b primary" data-action="expense">'+t("add")+'</button>')+'</div><div class="stack">'+box(t("sources"),t("sourceDesc"),sources())+box(t("phase"),"",'<div class="notice">'+t("phaseDesc")+'</div><p style="margin:12px 0 0"><a class="b primary" id="openFinancialWorkspace" href="../company-financial-workspace/?role=company">Abrir Financeiro completo ↗</a></p>')+'</div></div>';
 }else if(page==="documents"){
-out='<div class="grid"><div class="stack">'+box(t("docTitle"),t("docSub"),docList(),readOnly?"":'<button class="b primary" data-action="document">'+t("upload")+'</button>')+'</div><div class="stack">'+box(t("sourceTitle"),t("sourceDesc"),sources())+'</div></div>';
+out='<div class="grid ux-grid"><div class="stack">'+box(t("docTitle"),t("docSub"),docList(),readOnly?"":'<button class="b primary" data-action="document">'+t("upload")+'</button>')+'</div><div class="stack">'+box(t("sourceTitle"),t("sourceDesc"),sources())+'</div></div>';
 }else if(page==="requests"){
-out='<div class="grid"><div class="stack">'+box(t("requestTitle"),t("requestSub"),requestList())+'</div><div class="stack">'+box(t("dataQuality"),"",'<div class="notice">'+t("rationale")+'</div>')+'</div></div>';
+out='<div class="grid ux-grid"><div class="stack">'+box(t("requestTitle"),t("requestSub"),requestList())+'</div><div class="stack">'+box(t("dataQuality"),"",'<div class="notice">'+t("rationale")+'</div>')+'</div></div>';
 }else{
-out='<div class="grid"><div class="stack">'+box(t("headingInfo"),"",'<div class="list"><div class="item"><div><b>ACME Industrial</b><small>Company · '+t("scope")+'</small></div><span class="pill good">'+t("profile")+'</span></div><div class="item"><div><b>'+t("cnpj")+'</b><small>'+(cnpj==="a"?"12.345.678/0001-90 · SP":"12.345.678/0002-71 · MG")+'</small></div></div><div class="item"><div><b>'+t("role")+'</b><small>'+t("profile")+'</small></div></div></div>')+'</div><div class="stack">'+box(t("service"),"",'<div class="notice">'+t("scope")+'</div>')+'</div></div>';
+out='<div class="grid ux-grid"><div class="stack">'+box(t("headingInfo"),"",'<div class="list"><div class="item"><div><b>ACME Industrial</b><small>Company · '+t("scope")+'</small></div><span class="pill good">'+t("profile")+'</span></div><div class="item"><div><b>'+t("cnpj")+'</b><small>'+(cnpj==="a"?"12.345.678/0001-90 · SP":"12.345.678/0002-71 · MG")+'</small></div></div><div class="item"><div><b>'+t("role")+'</b><small>'+t("profile")+'</small></div></div></div>')+'</div><div class="stack">'+box(t("service"),"",'<div class="notice">'+t("scope")+'</div>')+'</div></div>';
 }
 $("pageContent").innerHTML=out;
  const detail=$("openFinancialWorkspace");if(detail)detail.href=fullFinanceHref();
