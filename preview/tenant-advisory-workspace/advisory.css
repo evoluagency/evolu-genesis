@@ -1,0 +1,65 @@
+/* UX-ADVISORY-1 | TenantAccess. Shared Shell is canonical base. */
+.advisory-app .ux-wrap{max-width:1540px;gap:12px}
+.advisory-app .ux-grid{grid-template-columns:minmax(0,1.7fr) minmax(300px,.83fr)}
+.advisory-app .ux-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+.advisory-app .ux-tabs{overflow-x:auto}
+.advisory-app .ux-card{gap:9px}
+.advisory-app .ux-row{align-items:start;padding:10px 12px}
+.advisory-app .ux-row.ux-selected{border-color:var(--accent);background:var(--accent-soft)}
+.advisory-app .ux-row button{align-self:center}
+.advisory-app .ux-row-title{font-size:12px;font-weight:700}
+.advisory-app .advisory-flag{display:flex;gap:8px;align-items:start;padding:9px 11px;background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--muted)}
+.advisory-app .advisory-detail{display:grid;gap:10px;align-content:start}
+.advisory-app .advisory-detail h4{margin:0;font-size:13px}
+.advisory-app .advisory-detail p{font-size:11px;color:var(--muted);margin:0;overflow-wrap:anywhere}
+.advisory-app .advisory-detail dl{display:grid;grid-template-columns:105px minmax(0,1fr);gap:7px 10px;font-size:11px;margin:0}
+.advisory-app .advisory-detail dt{color:var(--muted)}
+.advisory-app .advisory-detail dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.advisory-app .advisory-sep{border-top:1px solid var(--line);padding-top:9px}
+.advisory-app .advisory-block{padding:10px 11px;background:var(--soft);border:1px solid var(--line);border-radius:10px;font-size:11px}
+.advisory-app .advisory-block small{font-size:10px;color:var(--muted)}
+.advisory-app .advisory-form{display:grid;gap:8px}
+.advisory-app .advisory-form label{font-size:11px;font-weight:650}
+.advisory-app .advisory-form textarea{min-height:80px;width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--soft);color:var(--text);font:inherit;resize:vertical}
+.advisory-app .advisory-form .ux-btn{justify-self:start}
+.advisory-app .advisory-actions{display:flex;gap:7px;flex-wrap:wrap}
+.advisory-app .advisory-actions .ux-btn{padding:7px 10px;min-height:34px}
+.advisory-app .advisory-source-list{display:grid;gap:6px}
+.advisory-app .advisory-source-list span{display:block;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--soft);font-size:10px;overflow-wrap:anywhere}
+.advisory-app .advisory-pager{display:flex;gap:6px;align-items:center}
+.advisory-app .advisory-pager .ux-btn{min-height:31px;padding:6px 9px}
+.advisory-app .advisory-empty{border:1px dashed var(--line);border-radius:10px;padding:20px;color:var(--muted);font-size:11px}
+.advisory-app .advisory-limit{border:1px solid var(--line);background:var(--accent-soft);border-radius:10px;padding:8px 11px;font-size:10px;color:var(--muted)}
+.advisory-app .ux-card-footer{border-top:1px solid var(--line);padding-top:7px}
+@media(min-width:1120px) and (min-height:760px){
+ html,body{height:100%;overflow:hidden}
+ .advisory-app.ux-app{height:100dvh;min-height:0;overflow:hidden}
+ .advisory-app .ux-sidebar{height:100dvh;overflow:auto}
+ .advisory-app .ux-main{height:100dvh;overflow:hidden}
+ .advisory-app .ux-wrap{overflow:hidden;gap:10px;padding:12px 22px 10px}
+ .advisory-app .ux-metric{padding:10px 13px}
+ .advisory-app .ux-metric strong{font-size:19px}
+ .advisory-app .ux-grid{overflow:hidden;min-height:0}
+ .advisory-app .ux-card{overflow:hidden;padding:13px}
+ .advisory-app .ux-card-scroll{overflow:auto}
+}
+@media(max-width:1119px),(max-height:759px){
+ html,body{height:auto;overflow:auto}
+ .advisory-app.ux-app{height:auto;min-height:100vh;overflow:visible}
+ .advisory-app .ux-main{height:auto;overflow:visible}
+ .advisory-app .ux-wrap{overflow:visible}
+ .advisory-app .ux-grid{min-height:350px}
+ .advisory-app .ux-card-scroll{max-height:430px}
+}
+@media(max-width:920px){
+ .advisory-app .ux-grid{grid-template-columns:minmax(0,1fr)}
+ .advisory-app .ux-head{flex-direction:column;align-items:stretch}
+}
+@media(max-width:767px){
+ .advisory-app .ux-metrics{grid-template-columns:minmax(0,1fr)}
+ .advisory-app .ux-grid{min-height:0}
+ .advisory-app .ux-row{grid-template-columns:minmax(0,1fr)}
+ .advisory-app .ux-row .ux-btn{justify-self:start}
+ .advisory-app .ux-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .advisory-app .ux-field select{width:100%;min-width:0}
+}
