@@ -1,0 +1,136 @@
+/* EVOLU Platform | UX-SHELL-1 | Static frontend only.
+   Shared language for progressive Genesis preview migration.
+   No hard-coded permissions; visibility in these files is illustrative only. */
+:root{
+  color-scheme:dark;
+  --bg:#0b0e15;--side:#0e141d;--card:#141d2a;--soft:#1b2534;
+  --line:#2b3747;--text:#edf1f9;--muted:#a5b2c4;--quiet:#8190a4;
+  --accent:#a18aff;--accent-soft:rgba(161,138,255,.12);
+  --good:#71dbb2;--warn:#f2c47b;--bad:#ec919e;
+  --shadow:0 12px 34px rgba(0,0,0,.12);
+  --space:14px;--rad:14px;
+}
+html[data-theme="light"]{
+  color-scheme:light;--bg:#f5f7fb;--side:#fff;--card:#fff;--soft:#f1f4f9;
+  --line:#dfe5ed;--text:#1b293b;--muted:#57687d;--quiet:#718094;
+  --accent:#7057d3;--accent-soft:rgba(112,87,211,.10);
+  --good:#157f61;--warn:#9e681c;--bad:#bc505c;--shadow:0 10px 30px rgba(15,35,60,.06);
+}
+*{box-sizing:border-box}
+html{min-width:320px}body{margin:0;background:var(--bg);color:var(--text);font:13px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+a{color:inherit;text-decoration:none}button{cursor:pointer}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+[hidden]{display:none!important}
+.ux-app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100dvh;transition:grid-template-columns .2s ease}
+.ux-sidebar{min-width:0;display:flex;flex-direction:column;gap:19px;background:var(--side);border-right:1px solid var(--line);padding:19px 12px 16px}
+.ux-brand{display:flex;align-items:center;gap:11px;width:100%;border:0;background:transparent;color:var(--text);border-radius:10px;padding:7px;min-height:50px;text-align:left;user-select:none}
+.ux-brand:hover{background:var(--soft)}
+.ux-mark{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;border-radius:12px;background:var(--accent-soft);color:var(--accent);font:600 23px/1 Georgia,serif}
+.ux-brand-copy{min-width:0}.ux-brand-copy strong{display:block;font-size:15px;font-weight:650;letter-spacing:.12em}.ux-brand-copy small{display:block;font-size:10px;white-space:nowrap;color:var(--muted)}
+.ux-tenant{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--card);min-width:0}
+.ux-tenant-icon{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;background:var(--soft);border-radius:9px;color:var(--accent);font-weight:700}
+.ux-tenant-copy{min-width:0}.ux-tenant-copy strong,.ux-tenant-copy small{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.ux-tenant-copy strong{font-size:11px}.ux-tenant-copy small{font-size:10px;color:var(--muted)}
+.ux-nav-group{display:grid;gap:4px}.ux-nav-heading{text-transform:uppercase;letter-spacing:.12em;color:var(--quiet);font-size:10px;font-weight:700;padding:0 10px;margin:0 0 5px}
+.ux-nav{display:grid;gap:3px}.ux-nav a,.ux-nav button{min-height:42px;display:flex;align-items:center;gap:12px;padding:9px 11px;width:100%;border:0;background:none;color:var(--muted);border-radius:9px;text-align:left;font-size:12px}
+.ux-nav a:hover,.ux-nav button:hover{background:var(--soft);color:var(--text)}.ux-nav .active,[aria-current="page"].ux-nav-link{background:var(--accent-soft);color:var(--text)}
+.ux-nav-symbol{font-size:18px;color:var(--accent);flex:0 0 21px;width:21px;text-align:center;font-style:normal}
+.ux-nav-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ux-sidebar-footer{font-size:10px;color:var(--quiet);border-top:1px solid var(--line);padding:15px 8px 0;margin-top:auto}
+.ux-main{min-width:0;min-height:0;display:flex;flex-direction:column}
+.ux-top{min-height:65px;display:flex;align-items:center;justify-content:space-between;gap:15px;background:var(--side);border-bottom:1px solid var(--line);padding:9px 25px;flex:none}
+.ux-breadcrumb{font-size:10px;color:var(--muted)}.ux-top-title{margin:2px 0 0;font-size:16px;font-weight:650;line-height:1.3}.ux-top-right{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap;justify-content:flex-end}
+.ux-tag{border:1px solid var(--line);background:var(--accent-soft);color:var(--accent);border-radius:8px;padding:7px 10px;font-size:9px;letter-spacing:.06em;font-weight:650}
+.ux-btn{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:9px;padding:9px 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:11px;font-weight:650;min-height:36px}
+.ux-btn:hover{border-color:var(--accent)}.ux-btn:disabled{cursor:not-allowed;opacity:.5}
+.ux-btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.ux-btn-soft{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.ux-mobile-menu,.ux-menu-close{display:none}
+.ux-wrap{width:100%;max-width:1550px;margin:0 auto;padding:20px 25px 22px;display:flex;flex-direction:column;gap:var(--space);min-width:0;min-height:0;flex:1}
+.ux-head{display:flex;align-items:flex-end;justify-content:space-between;gap:15px;min-width:0;flex:none}
+.ux-overline{text-transform:uppercase;letter-spacing:.15em;font-size:10px;font-weight:750;color:var(--accent)}
+.ux-head h2{font-size:clamp(21px,2vw,27px);font-weight:550;line-height:1.25;letter-spacing:-.025em;margin:4px 0}
+.ux-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+.ux-filters{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.ux-field{min-width:0;display:grid;gap:4px}.ux-field label{font-size:10px;color:var(--muted);font-weight:650}.ux-field select{min-width:120px;max-width:100%;padding:9px 10px;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:9px;min-height:37px}
+.ux-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex:none}
+.ux-metric{padding:14px 16px;border:1px solid var(--line);background:var(--card);border-radius:var(--rad);min-width:0}
+.ux-metric .ux-meta{display:block;font-size:11px;color:var(--muted)}.ux-metric strong{display:block;font-size:22px;font-weight:650;letter-spacing:-.03em;margin:2px 0}.ux-metric small{display:block;color:var(--quiet);font-size:10px}
+.ux-tabs{display:flex;gap:7px;flex:none;border-bottom:1px solid var(--line);padding-bottom:9px}
+.ux-tab{background:transparent;border:1px solid transparent;color:var(--muted);font-size:12px;font-weight:650;border-radius:9px;padding:7px 12px}
+.ux-tab[aria-selected=true]{color:var(--text);border-color:var(--line);background:var(--card)}
+.ux-grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(285px,.86fr);gap:14px;min-height:0;flex:1;align-items:stretch}
+.ux-card{background:var(--card);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow);min-width:0;min-height:0;padding:15px;display:flex;flex-direction:column;gap:10px}
+.ux-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex:none;min-width:0}.ux-card-header h3{font-size:13px;margin:0;line-height:1.3;font-weight:700}.ux-card-header p{font-size:10px;color:var(--muted);margin:4px 0 0}
+.ux-card-scroll{min-height:0;flex:1;overflow:auto;scrollbar-color:var(--line) transparent}
+.ux-card-footer{margin-top:auto;flex:none;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.ux-list{display:grid;gap:7px;min-width:0}
+.ux-row{border:1px solid var(--line);background:var(--soft);border-radius:10px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px;padding:10px 11px;min-width:0}
+.ux-row-top{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap}
+.ux-row strong{font-size:11px;overflow-wrap:anywhere}.ux-row small{display:block;font-size:10px;line-height:1.5;color:var(--muted);margin-top:3px;overflow-wrap:anywhere}
+.ux-pill{display:inline-flex;align-items:center;border-radius:7px;padding:3px 7px;font-size:9px;font-weight:700;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.ux-pill.warn{color:var(--warn)}.ux-pill.good{color:var(--good)}.ux-pill.accent{color:var(--accent)}
+.ux-note{font-size:10px;color:var(--quiet)}.ux-empty{border:1px dashed var(--line);border-radius:10px;padding:20px;color:var(--muted);font-size:12px}
+.ux-steps{display:flex;gap:7px;align-items:center;justify-content:flex-end;font-size:10px;color:var(--quiet);white-space:nowrap}
+.ux-footer{color:var(--quiet);font-size:10px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;flex:none}
+.ux-footer a{color:var(--accent)}
+.ux-link{color:var(--accent);font-size:11px;font-weight:650}.ux-link:hover{text-decoration:underline}
+.ux-search{min-width:0;width:100%;max-width:320px;background:var(--card);color:var(--text);border:1px solid var(--line);padding:10px 12px;border-radius:9px}
+.ux-muted{color:var(--muted)}.ux-nowrap{white-space:nowrap}
+.ux-quick-list{display:grid;gap:8px}.ux-quick-list a{min-height:41px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;font-size:11px}.ux-quick-list a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.ux-surface-note{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:10px}
+.ux-dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--text);width:min(520px,calc(100vw - 30px));padding:22px;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.ux-dialog::backdrop{background:rgba(0,0,0,.65)}.ux-dialog h3{margin:0 0 10px}.ux-dialog p{font-size:12px;color:var(--muted)}.ux-dialog-actions{display:flex;justify-content:flex-end;margin-top:20px}
+body.ux-collapsed .ux-app{grid-template-columns:76px minmax(0,1fr)}
+body.ux-collapsed .ux-sidebar{padding-inline:9px;gap:18px}
+body.ux-collapsed .ux-brand{padding:5px;justify-content:center}
+body.ux-collapsed .ux-brand-copy,body.ux-collapsed .ux-tenant-copy,body.ux-collapsed .ux-nav-label,body.ux-collapsed .ux-nav-heading,body.ux-collapsed .ux-sidebar-footer{display:none}
+body.ux-collapsed .ux-tenant{justify-content:center;padding:9px 4px}
+body.ux-collapsed .ux-nav a,body.ux-collapsed .ux-nav button{justify-content:center;padding:10px 0}
+body.ux-collapsed .ux-nav-symbol{flex:0 0 24px}
+@media(min-width:1120px) and (min-height:690px){
+  html,body{height:100%}
+  .ux-app{height:100dvh;min-height:0}
+  .ux-sidebar{min-height:0;overflow:auto}
+  .ux-main{height:100dvh;overflow:hidden}
+  .ux-wrap{overflow:hidden;padding-block:12px 11px;gap:10px}
+  .ux-metric{padding:10px 14px}.ux-metric strong{font-size:20px}
+  .ux-head h2{font-size:23px}
+  .ux-card{padding:12px;gap:9px}
+  .ux-row{padding:8px 10px}
+  .ux-top{min-height:57px;padding:8px 22px}
+}
+/* Short windows and zoomed interfaces must be able to scroll. */
+@media(max-height:689px),(max-width:1119px){
+  .ux-app{min-height:100vh;height:auto}
+  .ux-main{overflow:visible}
+  .ux-wrap{overflow:visible}
+  .ux-grid{flex:none;min-height:350px}
+  .ux-card-scroll{max-height:430px}
+}
+@media(max-width:920px){
+ .ux-head{align-items:stretch;flex-direction:column}
+ .ux-filters{justify-content:flex-start}
+ .ux-grid{grid-template-columns:minmax(0,1fr)}
+ .ux-card-scroll{max-height:370px}
+ .ux-sidebar{gap:14px}
+}
+@media(max-width:767px){
+ .ux-app,body.ux-collapsed .ux-app{display:block}
+ .ux-sidebar{display:none}
+ .ux-sidebar.ux-open{display:flex;position:fixed;z-index:51;left:0;top:0;bottom:0;width:min(290px,85vw);min-height:0;overflow:auto;box-shadow:0 0 0 100vw rgba(0,0,0,.62)}
+ .ux-menu-close,.ux-mobile-menu{display:inline-flex}
+ .ux-top{padding:10px 13px;min-height:60px}
+ .ux-top-right{gap:5px}.ux-tag{font-size:8px;padding:7px}
+ .ux-wrap{padding:16px 13px 24px;gap:14px}
+ .ux-head h2{font-size:23px}
+ .ux-metrics{grid-template-columns:minmax(0,1fr)}
+ .ux-grid{grid-template-columns:1fr;min-height:0}
+ .ux-tabs{overflow-x:auto}
+ .ux-row{grid-template-columns:minmax(0,1fr);gap:8px}
+ .ux-row .ux-btn{justify-self:start}
+ .ux-footer{display:block}
+ .ux-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ux-field select{width:100%;min-width:0}
+ .ux-sidebar .ux-brand{display:flex}
+}
+@media(prefers-reduced-motion:reduce){.ux-app,.ux-brand{transition:none}}
