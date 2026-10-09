@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.20  
+**Version:** 0.21  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -800,6 +800,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-CFG-4 CompanyAccessHome | Interactive static prototype ready for user review; not approved | `preview/company-access-home/index.html` on `main`; links to mock Home / Finance / Documents / Requests / Information, no live services |
 | UX-CFG-5 CompanyFinancialWorkspace | Interactive static prototype ready; user review pending | `preview/company-financial-workspace/index.html` on main; Company finance → authorized Tenant accounting/fiscal → advisory; no live API, Backend or tax calculations |
 | UX-NAV-1 Journey and access review | Interactive static navigation and access-preview published; user review pending | `preview/ux-journey/index.html` on main, five synthetic roles, access boundaries and links to existing pages |
+| UX-ACCESS-1 Company consultation and scoped navigation | Static previews updated; awaiting user review | Home `?mode=read`, Finance `?role=viewer`; CNPJ/competence links, blocked mock write actions; no secure authorization |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1620,6 +1621,55 @@ Intended Pages route: https://evoluagency.github.io/evolu-genesis/preview/ux-jou
 
 ---
 
+
+## 11.2 UX-ACCESS-1 — Company consultation and CNPJ/period navigation context
+
+**Status:** implemented in static Genesis previews; **user review pending**. This is an interaction specification and simulated UI restriction, **not authentication, authorization, encryption or secure tenancy**.
+
+### Prototype scenarios
+
+| Scenario | Entry route | Expected visible experience |
+|---|---|---|
+| Company Financeiro (entry allowed) | CompanyAccessHome default | Financial indicators, expense/document entry and authorized requests |
+| Company consultation (read only) | CompanyAccessHome query `?mode=read` | Financial information, documents, requests; no submit/edit/reply controls |
+| Company Financeiro full workspace | CompanyFinancialWorkspace `?role=company` | Financial movements, commitments, synthetic intake and accounting handoff |
+| Company consultation full workspace | CompanyFinancialWorkspace `?role=viewer` | Same authorized financial context, without buttons to enter/import/submit/reply/approve or role inspection switch |
+| Tenant Contábil/Fiscal | CompanyFinancialWorkspace `?role=accounting` | Separate demo role for reconciliation and professional review |
+| Tenant Assessoria | CompanyFinancialWorkspace `?role=advisory` | Separate demo role for analysis and evidence |
+
+The UX-NAV-1 inspection page now opens **both** CompanyAccessHome and CompanyFinancialWorkspace in read-only mode for the Company consultation persona, and keeps the Company Financeiro persona writable in the *synthetic UI*.
+
+### Navigation context contract
+
+- Source parameters are **whitelisted**: `period` in `2026-08` or `2026-09`; CompanyAccessHome `cnpj=a|b`; CompanyFinancialWorkspace `cnpj=m|f` in synthetic fixtures.
+- Matriz maps `a → m`, and Filial maps `b → f`, while moving from CompanyAccessHome to Financeiro; the reverse mapping applies to the return link.
+- Query-driven links preserve the **selected CNPJ and period** plus the read-only persona when moving between those two Company-facing pages.
+- The two HTML pages still have **independent in-memory synthetic datasets**. The same CNPJ and period are carried as navigation context, **not shared write state, transaction reconciliation or real integration**.
+- CompanyAccess in both personas stays scoped to ACME Industrial. UX-NAV-1 no longer permits selecting Órbita in this test fixture because no linked dataset for it exists, preventing false continuity in the preview.
+- URL parameters are deliberately inspectable/editable in this public demo. Altering them can change visible mock mode. **Never** interpret them as claims of secure permission enforcement.
+- The production route and authorization contracts must derive Company, CNPJ, role and Company services from authenticated identity plus server-side grants, never from URL values alone.
+
+### Visible states and controls
+
+- In **read-only Home**, expense/document submission and request-reply buttons are not rendered, and attempts to call protected mock write handlers are blocked.
+- In **read-only Financeiro**, movement entry, commitments, import, handoff, clarifications and role selector changes are unavailable; the selected Company/CNPJ/period and display-only navigation remain accessible.
+- Visible read-only notices distinguish the demo persona from write-enabled Financeiro.
+- Fiscal evidence stays distinct from banking/financial records; there is no automatic tax classification or autonomous action.
+- Default Company and Tenant role mock scenarios remain functional; existing desktop brand-toggle behavior is unaffected.
+
+### Acceptance and next review gap
+
+1. From UX-NAV-1 choose Consulta da empresa: open Home and Financeiro and verify no write actions.
+2. Change period and Matriz/Filial within Home; open detailed Financeiro and verify the same scope is selected.
+3. Return from Financeiro to Home and verify preservation of persona, CNPJ and competence.
+4. Return to UX-NAV-1, choose Financeiro da empresa, and verify that synthetic write actions are available again.
+5. Check that Tenant Accounting and Advisory previews remain separately labeled as inspection-only role changes, not external Company permissions.
+6. Future Backend must implement real authorization and shared handoff state **only after final UX approval**.
+
+**Open:** Browser interaction and viewport validation, real permission enforcement, Company/period persistence across full application routes, Tenant assignment to actual Companies, user acceptance.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -1856,6 +1906,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.21 — Role-scoped Company UX and navigation continuity
+
+- completed UX-ACCESS-1: Company viewer read-only mock directly on Home and Financeiro, with write controls removed and handlers guarded;
+- preserved selected synthetic CNPJ and accounting period on links between the two Company pages, including return navigation and viewer mode;
+- connected UX-NAV-1 Company consultation routes to the read-only previews, and removed inactive non-ACME Company selection from the inspection-only fixture;
+- distinguished read-only UI state from real authentication and permission checking; URL query parameters do not grant secure access;
+- did not implement shared cross-page data storage, Backend, Actions, live connectors or tax classification;
+- JavaScript syntax and static checks for role/context cases passed; public GitHub Pages visual interaction could not be verified by the available inspection tool.
 
 ### 0.20 — Brand-header desktop menu toggle
 
