@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="NEXUS — Assessoria Empresarial em cenário sintético, sem integrações">
+<title>NEXUS · Assessoria Empresarial | EVOLU Genesis</title>
+<link rel="stylesheet" href="../shared-ux/shell.css">
+<link rel="stylesheet" href="./advisory.css">
+<script src="../shared-ux/shell.js" defer></script>
+<script src="./advisory.js" defer></script>
+</head>
+<body>
+<div class="ux-app advisory-app">
+ <aside class="ux-sidebar" id="advisorySidebar" data-ux-sidebar aria-label="Navegação da NEXUS">
+  <button class="ux-brand" type="button" data-ux-brand aria-controls="advisorySidebar" aria-expanded="true"><span class="ux-mark" aria-hidden="true">N</span><span class="ux-brand-copy"><strong>NEXUS</strong><small>CONTABILIDADE & ASSESSORIA</small></span></button>
+  <div class="ux-tenant"><span class="ux-tenant-icon" aria-hidden="true">N</span><span class="ux-tenant-copy"><strong>NEXUS</strong><small data-i="internal">Área interna do escritório · simulação</small></span></div>
+  <div class="ux-nav-group">
+   <div class="ux-nav-heading" data-i="navTeam">ESCRITÓRIO</div>
+   <nav class="ux-nav" aria-label="Áreas profissionais">
+    <a href="../office-workspace/" class="ux-nav-link"><i class="ux-nav-symbol" aria-hidden="true">⌂</i><span class="ux-nav-label" data-i="office">Painel do Escritório</span></a>
+    <a href="../tenant-fiscal-workspace/" id="fiscalLink" class="ux-nav-link"><i class="ux-nav-symbol" aria-hidden="true">▤</i><span class="ux-nav-label" data-i="fiscal">Fiscal e Contábil</span></a>
+    <a href="./" class="ux-nav-link active" aria-current="page"><i class="ux-nav-symbol" aria-hidden="true">◎</i><span class="ux-nav-label" data-i="advisory">Assessoria Empresarial</span></a>
+   </nav>
+  </div>
+  <div class="ux-nav-group">
+   <div class="ux-nav-heading" data-i="related">REFERÊNCIAS · PRÉVIAS</div>
+   <nav class="ux-nav" aria-label="Cenários independentes">
+    <a href="../company-financial-workspace/?role=advisory" class="ux-nav-link" id="financeLink"><i class="ux-nav-symbol" aria-hidden="true">≋</i><span class="ux-nav-label" data-i="financePreview">Conferência independente</span></a>
+    <a href="../ux-journey/" class="ux-nav-link"><i class="ux-nav-symbol" aria-hidden="true">◇</i><span class="ux-nav-label" data-i="journey">Mapa de UX</span></a>
+   </nav>
+  </div>
+  <div class="ux-sidebar-footer" data-i="asideFooter">Simulação: sem autenticação, IA conectada, dados reais ou execução de decisões.</div>
+  <button class="ux-btn ux-menu-close" type="button" data-menu-close data-i="close">Fechar menu</button>
+ </aside>
+ <main class="ux-main">
+  <header class="ux-top">
+   <div style="display:flex;gap:10px;align-items:center;min-width:0">
+    <button class="ux-btn ux-mobile-menu" type="button" data-menu-open aria-controls="advisorySidebar" aria-expanded="false" aria-label="Abrir menu">☰</button>
+    <div><div class="ux-breadcrumb" data-i="bread">NEXUS / Equipe / Assessoria</div><h1 class="ux-top-title" data-i="advisory">Assessoria Empresarial</h1></div>
+   </div>
+   <div class="ux-top-right"><span class="ux-tag" data-i="synthetic">DADOS FICTÍCIOS</span><button class="ux-btn" type="button" data-locale-toggle aria-label="Alternar idioma">EN</button><button class="ux-btn" type="button" data-theme-toggle aria-label="Alternar tema">☀</button></div>
+  </header>
+  <div class="ux-wrap">
+   <div class="ux-head">
+    <div><div class="ux-overline">TENANTACCESS · NEXUS</div><h2 data-i="title">Central de Assessoria</h2><p data-i="subtitle">Contextos, hipóteses e recomendações sob avaliação profissional.</p></div>
+    <div class="ux-filters">
+     <div class="ux-field"><label for="company" data-i="company">Empresa</label><select id="company"><option value="acme">ACME Industrial</option></select></div>
+     <div class="ux-field"><label for="entity" data-i="entity">Estabelecimento</label><select id="entity"><option value="m">Matriz · 0001</option><option value="f">Filial · 0002</option></select></div>
+     <div class="ux-field"><label for="period" data-i="period">Competência</label><select id="period"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
+    </div>
+   </div>
+   <div class="advisory-limit" data-i="boundary">Contextos inteiramente independentes: uma liberação fictícia aqui não significa recebimento do Fiscal. Intelligence não está conectada.</div>
+   <div class="ux-metrics" id="metrics" aria-label="Indicadores demonstrativos"></div>
+   <nav class="ux-tabs" role="tablist" aria-label="Atividades da Assessoria">
+    <button type="button" class="ux-tab" role="tab" data-tab="contexts" aria-selected="true" data-i="tabContexts">Contextos</button>
+    <button type="button" class="ux-tab" role="tab" data-tab="analysis" aria-selected="false" data-i="tabAnalysis">Análises</button>
+    <button type="button" class="ux-tab" role="tab" data-tab="recommendations" aria-selected="false" data-i="tabRecommendations">Recomendações</button>
+   </nav>
+   <div class="ux-grid">
+    <section class="ux-card" aria-labelledby="listTitle">
+     <div class="ux-card-header"><div><h3 id="listTitle"></h3><p id="listDesc"></p></div></div>
+     <div class="ux-card-scroll" id="contextList" aria-live="polite"></div>
+     <div class="ux-card-footer"><span class="ux-note" id="listCount"></span><nav class="advisory-pager" id="pager" aria-label="Paginação de contextos"></nav></div>
+    </section>
+    <section class="ux-card" aria-labelledby="detailTitle">
+     <div class="ux-card-header"><div><h3 id="detailTitle"></h3><p id="detailDesc"></p></div></div>
+     <div class="ux-card-scroll" id="detail" aria-live="polite"></div>
+     <div class="ux-card-footer"><span class="ux-note" data-i="noExecution">Nenhuma recomendação executa lançamentos, impostos ou decisões.</span></div>
+    </section>
+   </div>
+   <div class="ux-footer"><span id="status" role="status" aria-live="polite" data-i="footer">Protótipo independente, sem envio, integração ou aprovação fiscal.</span><a href="../ux-journey/" data-i="reviewJourney">Revisar jornada ↗</a></div>
+  </div>
+ </main>
+</div>
+</body></html>
