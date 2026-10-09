@@ -66,6 +66,7 @@
     themeSwitch?.addEventListener('click',()=>{
       document.documentElement.dataset.theme=document.documentElement.dataset.theme==='light'?'dark':'light';
       updateTheme();
+      document.dispatchEvent(new CustomEvent('ux:theme',{detail:{theme:document.documentElement.dataset.theme}}));
     });
     langSwitch?.addEventListener('click',()=>{
       const next=document.documentElement.lang.startsWith('en')?'pt-BR':'en';
