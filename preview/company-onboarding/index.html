@@ -58,12 +58,25 @@ main{min-width:0}.top{padding:15px 27px;border-bottom:1px solid var(--line);back
   body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
   body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
 }
+
+.sidebar-toggle-wrap{display:none}
+@media(min-width:801px){
+ .sidebar-toggle-wrap{display:block;padding:0 3px;min-width:0}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:39px;padding:8px 11px;border-radius:9px;background:var(--softacc);border:1px solid var(--line);color:var(--text);font-size:11px;font-weight:600;white-space:nowrap}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle:hover{border-color:var(--accent);background:var(--card2)}
+ aside .sidebar-toggle-wrap .toggle-icon{font-size:23px;line-height:1;width:19px;text-align:center;flex-shrink:0;color:var(--accent)}
+ aside .sidebar-toggle-wrap .toggle-label{display:inline;overflow:hidden;text-overflow:ellipsis}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap{padding:0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .desktop-sidebar-toggle{justify-content:center;padding:8px 0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .toggle-label{display:none}
+}
 </style>
 </head>
 <body>
 <div class="app">
 <aside id="sidebar">
 <div class="brand"><img src="./evolu-symbol.svg" alt=""><div><strong>EVOLU</strong><small>PLATFORM</small></div></div>
+<div class="sidebar-toggle-wrap"><button type="button" class="smallbtn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="toggle-icon" aria-hidden="true">‹</span><span class="toggle-label">Recolher menu</span></button></div>
 <div class="tenant"><div class="avatar">M</div><div><b>Contabilidade Modelo</b><small data-i18n="syntheticOrg">Organização sintética</small></div></div>
 <nav class="nav" aria-label="Navegação">
 <div class="nav-title" data-i18n="operation">OPERAÇÃO</div>
@@ -80,7 +93,7 @@ main{min-width:0}.top{padding:15px 27px;border-bottom:1px solid var(--line);back
 <main>
 <header class="top">
 <div style="display:flex;align-items:center;gap:10px"><button class="smallbtn" id="mobileMenu" aria-label="Abrir menu">☰</button><div><div class="crumb" data-i18n="breadcrumb">Clientes / Novo cliente</div><h1 data-i18n="title">Cadastro de cliente</h1></div></div>
-<div class="tools"><button type="button" class="smallbtn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button><span class="synthetic" data-i18n="synthetic">DADOS SINTÉTICOS</span><button type="button" class="smallbtn" id="langBtn" aria-label="Switch language">EN</button><button type="button" class="smallbtn" id="themeBtn" aria-label="Alternar tema">☀</button></div>
+<div class="tools"><span class="synthetic" data-i18n="synthetic">DADOS SINTÉTICOS</span><button type="button" class="smallbtn" id="langBtn" aria-label="Switch language">EN</button><button type="button" class="smallbtn" id="themeBtn" aria-label="Alternar tema">☀</button></div>
 </header>
 <div class="wrap">
 <div class="page-head"><div><div class="eyebrow" data-i18n="area">PLATFORM / CLIENTES</div><h2 data-i18n="heading">Novo cliente</h2><p data-i18n="description">Cadastre a empresa, informe seus estabelecimentos e configure os serviços prestados pela organização.</p></div><button class="secondary" type="button" id="resetBtn" data-i18n="restart">Reiniciar exemplo</button></div>
@@ -184,6 +197,33 @@ $("themeBtn").addEventListener("click",()=>{theme=theme==="dark"?"light":"dark";
 $("mobileMenu").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
 document.querySelectorAll(".nav .other").forEach(b=>b.addEventListener("click",()=>notify("notAvailable")));
 render();
+})();
+</script>
+
+<script>
+(function(){
+ const control=document.getElementById('desktopSidebarToggle');
+ const aside=document.getElementById('sidebar');
+ if(!control||!aside)return;
+ const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
+  const label=item.textContent.trim().replace(/\s+/g,' ');
+  if(label){item.title=label;item.setAttribute('aria-label',label)}
+ });
+ function sync(){
+  const collapsed=document.body.classList.contains('sidebar-collapsed');
+  const en=document.documentElement.lang.toLowerCase().startsWith('en');
+  const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
+  control.querySelector('.toggle-icon').textContent=collapsed?'›':'‹';
+  control.querySelector('.toggle-label').textContent=label;
+  control.title=label;
+  control.setAttribute('aria-label',label);
+  control.setAttribute('aria-expanded',String(!collapsed));
+ }
+ control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync()});
+ const nav=aside.querySelector('.nav');
+ if(nav)new MutationObserver(annotate).observe(nav,{childList:true,subtree:true});
+ new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+ annotate();sync();
 })();
 </script>
 </body>
