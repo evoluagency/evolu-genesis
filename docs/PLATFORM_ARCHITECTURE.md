@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.26  
+**Version:** 0.27  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -805,6 +805,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-SHELL-1 / UX-OFFICE-1 Shared shell and Tenant office home | Source published; **awaiting visual user review** | `preview/shared-ux/` + `preview/office-workspace/`, ACME-only synthetic scope; no Backend, no real authorization |
 | UX-COMPANY-1 CompanyAccessHome unified Shell | Static frontend updated; **awaiting visual user review** | `preview/company-access-home/` now consumes shared Shell; 3 scoped metrics and 2 home panels, read-only and other activities preserved |
 | UX-FINANCE-1 Company/Tenant financial task workspace | Static frontend updated; **awaiting visual user review** | `preview/company-financial-workspace/` with task tabs, scoped pagination and bills filters; existing UX-FLOW-1 intact |
+| UX-FISCAL-1 Tenant Fiscal/Accounting workspace | Static preview on `main`; **awaiting visual review** | `preview/tenant-fiscal-workspace/`: Received, Pending, Evidence Review, Pre-close (mock-only), with scoped Office navigation and independent source fixtures |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1863,6 +1864,47 @@ All screens for these demonstration roles now render a **single two-panel task w
 
 ---
 
+## 11.8 UX-FISCAL-1 — Tenant Fiscal/Contábil workspace
+
+**Status:** interactive static UX preview **implemented on main**; browser/viewport verification and user visual acceptance **pending**. The page is a **TenantAccess internal office surface**; it does not grant access to the Company and does not perform fiscal filing, accounting entries, tax calculation, official pre-close, or Advisory release.
+
+**New route:** `preview/tenant-fiscal-workspace/index.html` — intended public preview:
+`https://evoluagency.github.io/evolu-genesis/preview/tenant-fiscal-workspace/`.
+
+**Navigation updated:**
+- `preview/office-workspace/index.html` links Fiscal/Contábil to the new internal workspace, preserving the current ACME / Matriz–Filial and competence selectors; each pending item opens the specific workspace task via `?tab=pending&item=R-1&cnpj=m&period=2026-09`.
+- The Office's accounting and fiscal quick links go to the new workspace's **Conferência** and **Recebidos** activities, respectively; deeper preexisting financial verification remains available via a clearly labeled *independent* preview.
+- Office `?tab=queue` now opens directly on its pending-items activity, allowing navigation back from Fiscal.
+- `preview/ux-journey/index.html` maps the Tenant Accounting/Tax persona to the new preview, keeping the existing Company role links isolated, and marks UX-FISCAL-1 **pending visual review**.
+- `preview/fiscal-document-70031/index.html` remains unchanged and available as a **separate sample/document case**; its evidence → analysis → recommendation → decision → professional approval sequence has not been condensed into an automatic classification.
+
+### Activity contract
+
+| Tenant activity | Primary work panel | Context panel / decision limits |
+|---|---|---|
+| **Recebidos** | a scoped, paginated list of synthetic financial movement references, fiscal-document references and mock pending requests | read origin, reference, selected Company/CNPJ/competence and documentation status; no claim of real ingestion |
+| **Pendências** | pending clarification queue, keyed to reference and scope | demo-only "reply received" moves request to **answered**, not resolved; a **separate explicit professional review** resolves it |
+| **Conferência** | source evidence review queue, with **financial records distinct from fiscal documents** | an explicit rationale of **at least 12 characters** is required for each source; review means evidence/context confirmed, not tax treatment |
+| **Pré-fechamento** | read-only status/required conditions and evidence-preparation action | only becomes eligible if **all four demo source items are reviewed** and **all requests are resolved**; marking preparation is a UI annotation **not a fiscal or accounting close** |
+
+**Fixture scope:** one synthetic Company **ACME Industrial**, CnpjEntity Matriz `m` and Filial `f`, competence `2026-08` or `2026-09`. Only September Matriz has records: two **synthetic financial references** and two **synthetic fiscal/document references**, plus two open clarification requests. Other scopes correctly display empty/insufficient states and cannot pass pre-close eligibility.
+
+**Critical provenance rule:** these references are **duplicated as independent illustrative fixtures**, not live or local synchronization from CompanyAccess, Financeiro, the office dashboard or the separate NF-e case. The displayed illustrative "v1" is **not a validated submission** and carries no user/authority claim. No source/file has been ingested or matched in this new page.
+
+**Access boundary:** links between publicly hosted static pages are for navigation inspection. URLs, synthetic role selectors, mock justifications and changes to JS state are **not authentication, server authorization, professional qualification or audit-grade records**. The true ingestion/versioned financial submission and human sign-off remain governed by UX-FLOW-1 and later production contracts.
+
+### Validation already performed
+
+- Verified JavaScript syntax, shared-UX stylesheet/script linking, route existence and no code path invoking network APIs or localStorage.
+- Ran a mock DOM route/interaction sequence: deep-linked pending request; pending count 2; receiving a response **did not** resolve it; professional-review action changed status; four item-by-item evidence reviews; pre-close eligibility only after all reviews and pending responses; a new simulated request blocked eligibility and invalidated previous preparation; Filial returned empty scope — **10/10 checks passed**.
+- Confirmed no modification of Backend, Supabase, Vercel, billing, real tax engines, GitHub Actions/jobs/workflows.
+
+**Still open:** full browser UI/viewport checks (desktop 1920×1080, 1440×900, 1366×768 and 1280×720; 200% zoom; mobile drawer; PT-BR/EN; light/dark); end-to-end human acceptance of routes and pixel sizing; focus management for complex tasks; real state transfer is deferred until UX gate and approved Backend phase.
+
+**Next scheduled frontend stage:** `UX-ADVISORY-1` — a dedicated TenantAccess advisory context workspace following the same shared Shell, with explicit "unreleased/unavailable" states, provenance and recommendation-only Intelligence; no autonomous execution.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -2099,6 +2141,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.27 — Dedicated Tenant Fiscal/Accounting UX
+
+- created `preview/tenant-fiscal-workspace/index.html` as a self-contained TenantAccess task workspace using the common NEXUS Shell;
+- provided four functional tasks: received illustrative references, independent information requests, individual evidence confirmation requiring rationale, and documentary pre-close readiness;
+- connected the Tenant Office queue and UX Journey to the workspace using whitelisted demo CNPJ/competence/item scopes, without exposing Tenant portfolio in CompanyAccess;
+- preserved separate public sample pages for NF-e 70031 and financial review, explicitly stating that data is **not synchronized** and no tax or accounting treatment is automatic;
+- validated 10 simulated state/interaction checks plus code syntax; real-browser, responsive/accessibility and user acceptance remain pending;
+- no Backend, API, source ingestion, Vercel/Supabase, GitHub Actions, jobs or workflows.
 
 ### 0.26 — Unified financial workspace by activities
 
