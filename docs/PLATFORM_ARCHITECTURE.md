@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.22  
+**Version:** 0.23  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -1726,6 +1726,37 @@ These names describe contracts to be considered, not production domain entities 
 
 ---
 
+## 11.4 UX-SHELL-1 — Unified workspace and five-page layout specification
+
+**Status:** detailed design and implementation specification created; **awaiting explicit user review and implementation authorization**. The five wireframes discussed in the conversation establish **visual direction**, not blanket acceptance of every workflow, entitlement or tax decision.
+
+Canonical implementation document:
+
+- [EVOLU Platform — Especificação de UX Sistêmica e Plano de Implementação V1](./EVOLU_PLATFORM_UX_UNIFIED_WORKSPACE_SPEC_V1.md)
+
+Coverage:
+- a unified sidebar + header + Company/CNPJ/competence context + one task-focused workspace per authorized surface;
+- five blueprint entry pages: Tenant office home, Company home, Company Financeiro, Tenant Fiscal/Accounting, Tenant Advisory;
+- native desktop sidebar collapse via the brand/header area with no overlapping overlay;
+- no long top-level page scrolling for a standard desktop task at supported viewports, with explicit fallbacks for smaller screens, keyboard access, larger text, zoom and long data tables;
+- activity/task tabs and explicitly paginated tables rather than silently hiding overflow cards;
+- operational navigation within three meaningful clicks where possible (two preferred), with the existing administration exception (four) preserved;
+- reusable component contracts, navigation context, roles, permitted actions, states, source provenance and review/evidence boundaries;
+- change-by-change migration guide for existing static Genesis files plus measurable acceptance tests;
+- explicit handling of **unapproved experimental screen paging** in the existing Financeiro and UX Journey previews: do not treat viewport CSS/hidden overflow as an approved UX contract.
+
+This document complements and **does not override** the frozen Platform domain dictionary, contract catalog or this architecture's Backend approval gate. It is *not* an instruction to deploy Backend, enable external services, create GitHub Actions, or update production products. No preview source files were changed as part of this documentation-only phase.
+
+### User review boundaries
+
+1. Confirm shared desktop Shell and the first **Tenant Office Home** reference page.
+2. Review CompanyAccess Home, Company Financeiro, Fiscal/Accounting and Advisory incrementally.
+3. Validate click budget, context switching, tab behavior, pagination, permissions and desktop/mobile responsive fallbacks.
+4. Approve final UX expressly after reviewing remaining UX-CFG-2 through UX-CFG-5, UX-NAV-1, UX-ACCESS-1, UX-FLOW-1 and the new layout plan.
+5. Only after the complete gate consider Backend planning and implementation.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -1962,6 +1993,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.23 — Unified workspace UX implementation specification
+
+- authored a detailed, standalone Portuguese UX specification (`docs/EVOLU_PLATFORM_UX_UNIFIED_WORKSPACE_SPEC_V1.md`) for five primary product pages with a shared system-style desktop Shell;
+- documented the task-per-viewport design, limits of no-page-scroll behavior, accessible fallback, sidebar interaction, three-click navigation budget, data/provenance boundaries and 18 regression scenarios;
+- mapped target changes to existing Genesis source paths with incremental validation, explicitly avoiding another premature implementation before the visual structure is accepted;
+- noted that existing experimental view paging in Financeiro and UX Journey is not automatically homologated;
+- preserved the canonical Company/Tenant/EVOLU identity and permissions, the existing contract catalog and the explicit final Backend approval gate;
+- made **documentation-only** changes on the architecture branch; no GitHub Actions, Backend, providers or preview source edits.
 
 ### 0.22 — Professional handoff and evidence review UX
 
