@@ -1,0 +1,71 @@
+/* UX-AUX-1 | NF-e 70031 — evidence/decision layout, static demo only */
+.ux-aux.doc-detail .ux-sidebar{height:auto}
+.ux-aux.doc-detail .ux-top{z-index:2;backdrop-filter:none}
+.ux-aux.doc-detail .ux-top .top-context{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}
+.ux-aux.doc-detail .ux-top .chip{padding:6px 9px;font-size:10px}
+.ux-aux.doc-detail .ux-wrap{gap:10px;max-width:1550px}
+.ux-aux.doc-detail .document-head{margin:0;gap:12px;flex:none;align-items:center}
+.ux-aux.doc-detail .document-head h2{margin:3px 0;font-size:24px}
+.ux-aux.doc-detail .document-head p{font-size:11px}
+.ux-aux.doc-detail .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:0;flex:none}
+.ux-aux.doc-detail .flow .step{padding:8px 10px;min-width:0}
+.ux-aux.doc-detail .flow .step small{font-size:9px;line-height:1.2}
+.ux-aux.doc-detail .flow .step strong{font-size:10px;line-height:1.3;overflow-wrap:anywhere}
+.ux-aux.doc-detail .doc-task-tabs{display:flex;gap:7px;align-items:center;overflow-x:auto;flex:none;border-bottom:1px solid var(--line);padding:0 0 9px}
+.ux-aux.doc-detail .doc-task-tabs button{background:none;border:1px solid transparent;border-radius:9px;padding:7px 11px;color:var(--muted);white-space:nowrap;font-size:11px;min-height:34px}
+.ux-aux.doc-detail .doc-task-tabs button[aria-selected="true"]{color:var(--text);border-color:var(--line);background:var(--card)}
+.ux-aux.doc-detail .doc-task-tabs button:hover{background:var(--soft)}
+.ux-aux.doc-detail .layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.85fr);gap:12px;min-height:0;flex:1;align-items:stretch}
+.ux-aux.doc-detail .layout>.stack{min-height:0;overflow:auto;align-content:start;gap:10px}
+.ux-aux.doc-detail .layout>.intel{min-height:0;overflow:auto;position:static;top:auto;padding:13px}
+.ux-aux.doc-detail .layout .card{padding:13px;min-width:0}
+.ux-aux.doc-detail .layout .card+.card{margin-top:10px}
+.ux-aux.doc-detail .intel .intel-body{display:grid;gap:10px}
+.ux-aux.doc-detail .intel .intel-head{margin:0 0 9px}
+.ux-aux.doc-detail .meta-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.ux-aux.doc-detail .tax-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.ux-aux.doc-detail .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ux-aux.doc-detail .choices button{min-width:0}
+.ux-aux.doc-detail .ux-card-scroll{min-height:0;overflow:auto}
+.ux-aux.doc-detail .ux-sidebar .ux-tenant .tenant-mark{flex:0 0 32px}
+.ux-aux.doc-detail .ux-nav a{color:var(--muted);text-decoration:none}
+.ux-aux.doc-detail .ux-nav a:hover{color:var(--text)}
+.ux-aux.doc-detail .mobile-bar{display:none}
+.ux-aux.doc-detail .doc-footer{display:flex;justify-content:space-between;align-items:center;flex:none;gap:10px;color:var(--muted);font-size:10px;border-top:1px solid var(--line);padding:6px 0}
+.ux-aux.doc-detail .doc-footer a{color:var(--accent);text-decoration:none}
+.ux-aux.doc-detail .doc-segment{display:none}
+body[data-doc-pane="context"] .ux-aux.doc-detail .doc-context{display:block}
+body[data-doc-pane="evidence"] .ux-aux.doc-detail .doc-evidence{display:block}
+body[data-doc-pane="decision"] .ux-aux.doc-detail .doc-pending{display:block}
+.ux-aux.doc-detail .toast{z-index:80}
+@media(min-width:1120px) and (min-height:760px){
+ html,body{height:100%;overflow:hidden}
+ .ux-aux.doc-detail.ux-app{height:100dvh;min-height:0;overflow:hidden}
+ .ux-aux.doc-detail .ux-main{height:100dvh;overflow:hidden}
+ .ux-aux.doc-detail .ux-wrap{overflow:hidden;gap:9px;padding:11px 22px 10px}
+ .ux-aux.doc-detail .layout{overflow:hidden}
+ .ux-aux.doc-detail .layout>.stack,.ux-aux.doc-detail .layout>.intel{overflow:auto}
+}
+@media(max-width:1119px),(max-height:759px){
+ html,body{height:auto;overflow:auto}
+ .ux-aux.doc-detail.ux-app{height:auto;min-height:100vh}
+ .ux-aux.doc-detail .ux-main,.ux-aux.doc-detail .ux-wrap{height:auto;overflow:visible}
+ .ux-aux.doc-detail .layout{min-height:400px;overflow:visible}
+ .ux-aux.doc-detail .layout>.stack,.ux-aux.doc-detail .layout>.intel{overflow:visible}
+}
+@media(max-width:920px){
+ .ux-aux.doc-detail .layout{grid-template-columns:minmax(0,1fr)}
+ .ux-aux.doc-detail .flow{grid-template-columns:repeat(5,minmax(0,1fr));overflow-x:auto}
+ .ux-aux.doc-detail .top-context .chip:not(.synthetic){display:none}
+}
+@media(max-width:767px){
+ .ux-aux.doc-detail .ux-sidebar{display:none}
+ .ux-aux.doc-detail .ux-sidebar.ux-open{display:flex;position:fixed;z-index:51;inset:0 auto 0 0;width:min(290px,85vw);height:100dvh;overflow:auto}
+ .ux-aux.doc-detail .ux-top{padding:10px 13px}
+ .ux-aux.doc-detail .ux-wrap{padding:15px 13px 24px}
+ .ux-aux.doc-detail .flow{grid-template-columns:repeat(5,minmax(110px,1fr))}
+ .ux-aux.doc-detail .document-head{grid-template-columns:minmax(0,1fr)}
+ .ux-aux.doc-detail .meta-grid,.ux-aux.doc-detail .tax-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ux-aux.doc-detail .choices{grid-template-columns:minmax(0,1fr)}
+ .ux-aux.doc-detail .layout{min-height:0}
+}
