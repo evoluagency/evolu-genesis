@@ -146,7 +146,7 @@ advisory:[['analysis','◎','analysis'],['opportunities','◇','opportunities']]
 };
 function navUpdate(){
 const menu=previewReadOnly&&role==='company'?navs[role].filter(x=>x[0]!=='send'):navs[role];
-$('nav').innerHTML=menu.map(x=>'<button data-nav="'+x[0]+'" class="'+(view===x[0]?'active':'')+'"><span class="ico">'+x[1]+'</span>'+t(x[2])+'</button>').join('');
+$('nav').innerHTML=menu.map(x=>'<button type="button" data-nav="'+x[0]+'" class="'+(view===x[0]?'active':'')+'" '+(view===x[0]?'aria-current="page"':'')+'><span class="ico ux-nav-symbol" aria-hidden="true">'+x[1]+'</span><span class="ux-nav-label">'+esc(t(x[2]))+'</span></button>').join('');
 $('navCaption').textContent=role==='company'?'FINANCEIRO':role==='accounting'?'CONFERÊNCIA':'ASSESSORIA';
 $('profile').value=role;$('profile').disabled=previewReadOnly;$('cnpj').value=company;$('period').value=period;
 document.querySelectorAll('[data-i]').forEach(x=>{x.textContent=t(x.dataset.i)});
@@ -154,14 +154,14 @@ $('langBtn').textContent=lang==='pt'?'EN':'PT';
 $('themeBtn').textContent=theme==='dark'?'☀':'☾';
 $('bread').textContent='NEXUS / ACME Industrial / '+t(role);
 $('sidebar').querySelector('.client small').textContent=t(role);
+document.dispatchEvent(new Event('ux:navigation-update'));
 }
 function metrics(){
-const rows=[
-[t('inflows'),money(inflow()),t('inNote'),'good'],
-[t('outflows'),money(outflow()),t('outNote'),''],
-[t('payable'),money(payables()),t('payableNote'),'warn'],
-[t('receivable'),money(receivables()),t('receivableNote'),'good']];
-return '<div class="metrics">'+rows.map(x=>'<div class="card metric"><small>'+x[0]+'</small><strong class="'+x[3]+'">'+x[1]+'</strong><em>'+x[2]+'</em></div>').join('')+'</div>';
+ const rows=[
+ [t('inflows'),money(inflow()),t('inNote'),'good'],
+ [t('outflows'),money(outflow()),t('outNote'),'']];
+ return '<div class="metrics ux-metrics">'+rows.map(x=>'<div class="card ux-metric metric"><small>'+x[0]+'</small><strong class="'+x[3]+'">'+x[1]+'</strong><em>'+x[2]+'</em></div>').join('')+
+ '<div class="card ux-metric metric"><small>'+t('payable')+' / '+t('receivable')+'</small><div class="finance-dual-values"><div><strong class="warn">'+money(payables())+'</strong><em>'+t('payableNote')+'</em></div><div><strong class="good">'+money(receivables())+'</strong><em>'+t('receivableNote')+'</em></div></div></div></div>';
 }
 function card(name,desc,body,action){return '<section class="card"><div class="cardhead"><div><h3>'+name+'</h3>'+(desc?'<p>'+desc+'</p>':'')+'</div>'+(action||'')+'</div>'+body+'</section>'}
 function movementTable(){
@@ -254,52 +254,30 @@ function renderAdvisory(){
   taskPanel(t('fiscalDocs'),'',fiscalList()+infoBreak(fl('flowTitle'),flowPanel())),true);
 }
 
-const SCREEN_MODE_QUERY='(min-width: 1100px) and (min-height: 680px)';
-const viewportMode=()=>window.matchMedia(SCREEN_MODE_QUERY).matches;
-let sectionScope='',sectionIndex=0;
-function applyScreenPaging(){
- const container=$('content');if(!container)return;
- const grid=container.querySelector(':scope > .grid');if(!grid||!viewportMode())return;
- const columns=[...grid.children].filter(x=>x.classList.contains('stack'));
- const cards=columns.map(col=>[...col.children].filter(c=>c.classList.contains('card')));
- const maxSections=Math.max(0,...cards.map(xs=>xs.length));
- if(maxSections<=1){paginateTables(container);return}
- const scope=[role,view,company,period].join('|');
- if(sectionScope!==scope){sectionScope=scope;sectionIndex=0;}
- sectionIndex=Math.min(sectionIndex,maxSections-1);
- cards.forEach(xs=>xs.forEach((c,i)=>{c.hidden=i!==sectionIndex;}));
- const active=cards.flatMap(xs=>xs[sectionIndex]?[xs[sectionIndex]]:[]);
- const name=active.map(c=>c.querySelector('h3')?.textContent||'').filter(Boolean).join(' · ');
- const pager=document.createElement('nav');pager.className='screen-pager';pager.setAttribute('aria-label',lang==='pt'?'Navegar por quadros':'Navigate panels');
- const canPrev=sectionIndex>0,canNext=sectionIndex+1<maxSections;
- pager.innerHTML='<span class="screen-label">'+(lang==='pt'?'Quadro: ':'Panel: ')+esc(name)+'</span>'+
- '<div class="pager-controls"><button type="button" class="btn" data-section-step="-1" '+(canPrev?'':'disabled')+'>'+(lang==='pt'?'Anterior':'Previous')+'</button>'+
- '<span class="pager-count">'+(sectionIndex+1)+' / '+maxSections+'</span>'+
- '<button type="button" class="btn primary" data-section-step="1" '+(canNext?'':'disabled')+'>'+(lang==='pt'?'Próximo':'Next')+'</button></div>';
- grid.before(pager);
- paginateTables(container);
+
+/* UX-FINANCE-1: activity tabs replace the experimental numbered-card pager.
+   Lists are paginated with explicit controls, across viewport sizes. */
+const tablePages=Object.create(null);
+function taskTabs(){
+ const menu=previewReadOnly&&role==='company'?navs.company.filter(x=>x[0]!=='send'):navs[role];
+ const host=$('financeTasks');
+ host.innerHTML=menu.map(item=>'<button type="button" class="finance-task-tab" role="tab" aria-selected="'+String(view===item[0])+'" data-nav="'+item[0]+'">'+esc(t(item[2]))+'</button>').join('');
 }
-function paginateTables(container){
- if(!viewportMode())return;
- for(const [index,table] of [...container.querySelectorAll('.card:not([hidden]) .tablewrap table')].entries()){
-  const rows=[...table.querySelectorAll('tbody tr')];
-  if(rows.length<=3)continue;
-  const holder=table.closest('.tablewrap');
-  const pageSize=3;let current=0;
-  const bar=document.createElement('div');bar.className='table-pager';bar.setAttribute('aria-label',lang==='pt'?'Paginação da tabela':'Table pagination');
-  const show=()=>{
-   rows.forEach((tr,i)=>tr.hidden=i<current*pageSize||i>=(current+1)*pageSize);
-   const start=current*pageSize+1,end=Math.min(rows.length,(current+1)*pageSize);
-   bar.innerHTML='<span class="pager-count">'+start+'–'+end+' / '+rows.length+'</span>'+
-   '<div class="pager-controls"><button type="button" class="btn" data-table-step="-1" '+(current===0?'disabled':'')+'>'+(lang==='pt'?'Anterior':'Previous')+'</button>'+
-   '<button type="button" class="btn" data-table-step="1" '+(end>=rows.length?'disabled':'')+'>'+(lang==='pt'?'Próximo':'Next')+'</button></div>';
-  };
-  bar.addEventListener('click',e=>{
-   const btn=e.target.closest('[data-table-step]');if(!btn)return;
-   current=Math.max(0,Math.min(Math.ceil(rows.length/pageSize)-1,current+Number(btn.dataset.tableStep)));show();
-  });
-  holder.after(bar);show();
- }
+function paginateTables(){
+ const tables=[...$('content').querySelectorAll('.tablewrap table')];
+ const pageSize=5,scope=[role,view,company,period].join('|');
+ tables.forEach((table,index)=>{
+  const rows=[...table.querySelectorAll('tbody tr')],pages=Math.ceil(rows.length/pageSize);
+  if(pages<2)return;
+  const id=scope+'|'+index;
+  const selected=Math.min(pages-1,Math.max(0,tablePages[id]||0));tablePages[id]=selected;
+  rows.forEach((row,i)=>{row.hidden=i<selected*pageSize||i>=(selected+1)*pageSize;});
+  const bar=document.createElement('nav');bar.className='finance-table-pager';bar.setAttribute('aria-label',lang==='pt'?'Páginas de registros':'Record pages');
+  bar.innerHTML='<span>'+(selected*pageSize+1)+'–'+Math.min(rows.length,(selected+1)*pageSize)+' / '+rows.length+'</span>'+
+   '<div class="finance-pager-actions"><button type="button" class="btn" data-table-step="-1" data-table-index="'+index+'" '+(!selected?'disabled':'')+'>'+(lang==='pt'?'Anterior':'Previous')+'</button>'+
+   '<button type="button" class="btn" data-table-step="1" data-table-index="'+index+'" '+(selected===pages-1?'disabled':'')+'>'+(lang==='pt'?'Próximo':'Next')+'</button></div>';
+  table.closest('.tablewrap').after(bar);
+ });
 }
 
 function render(){
@@ -325,7 +303,7 @@ const notice=$('readOnlyNotice');
 notice.hidden=!previewReadOnly;
 notice.textContent=previewReadOnly?(lang==='pt'?'Perfil de consulta: somente leitura. Os comandos de lançamento, importação, resposta e envio foram retirados nesta demonstração.':'Read-only preview: entry, import, reply and handoff actions are unavailable.'):'';
 const backlink=$('homeBack');backlink.hidden=role!=='company';backlink.href=homeHref();
-applyScreenPaging();
+taskTabs();paginateTables();
 }
 function openModal(type,id){
 if(previewReadOnly)return;
@@ -416,27 +394,23 @@ addHistory(message);closeModal();notify(message);render();
 }
 document.addEventListener('click',e=>{
 const b=e.target.closest('button');if(!b)return;
-if(b.dataset.sectionStep){
- sectionIndex+=Number(b.dataset.sectionStep);render();return;
-}
-if(b.dataset.nav){view=b.dataset.nav;$('sidebar').classList.remove('open');render();return;}
+if(b.dataset.tableStep){const key=[role,view,company,period].join('|')+'|'+b.dataset.tableIndex;tablePages[key]=Math.max(0,(tablePages[key]||0)+Number(b.dataset.tableStep));render();return;}
+if(b.dataset.nav){view=b.dataset.nav;window.EvoluShell?.closeDrawer();render();return;}
 if(b.dataset.act){action(b.dataset.act);return;}
 if(b.dataset.reviewmove){if(role==='accounting'&&canReview())openModal('reviewMove',b.dataset.reviewmove);return;}
 if(b.dataset.reviewdoc){if(role==='accounting'&&canReview())openModal('reviewDoc',b.dataset.reviewdoc);return;}
 if(b.dataset.resolve){if(role==='accounting'&&canReview()){const req=currentRequests().find(x=>x.id===b.dataset.resolve&&x.status==='answered');if(req){req.status='resolved';addHistory(fl('resolved'));notify(fl('doneReply'));render();}}return;}
 if(b.dataset.answer){if(role==='company'&&!previewReadOnly)openModal('answer',b.dataset.answer);return;}
 if(b.id==='cancel'){closeModal();return;}
-if(b.id==='mobileMenu'){$('sidebar').classList.toggle('open');return;}
-if(b.id==='themeBtn'){theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;render();return;}
-if(b.id==='langBtn'){lang=lang==='pt'?'en':'pt';document.documentElement.lang=lang==='pt'?'pt-BR':'en';render();return;}
+
 });
 $('modalBack').addEventListener('click',e=>{if(e.target.id==='modalBack')closeModal()});
 $('modalForm').addEventListener('submit',submitModal);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&& !$('modalBack').hidden)closeModal()});
-$('profile').addEventListener('change',e=>{if(previewReadOnly)return;role=e.target.value;view=navs[role][0][0];$('sidebar').classList.remove('open');render()});
+$('profile').addEventListener('change',e=>{if(previewReadOnly)return;role=e.target.value;view=navs[role][0][0];window.EvoluShell?.closeDrawer();render()});
 $('cnpj').addEventListener('change',e=>{company=e.target.value;render()});
 $('period').addEventListener('change',e=>{period=e.target.value;render()});
-window.addEventListener('resize',()=>{render();});
+document.addEventListener('ux:locale',()=>{lang=document.documentElement.lang.startsWith('en')?'en':'pt';render();});
 // UX REVIEW ONLY: URL parameters select synthetic role/entity/period, never authorization.
 const demoRole=queryParams.get('role');
 if(['company','accounting','advisory'].includes(demoRole)){role=demoRole;}
