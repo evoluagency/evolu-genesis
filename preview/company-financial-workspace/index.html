@@ -249,7 +249,7 @@ function renderAdvisory(){
  const state=flow(),released=state.state==='released';
  const body='<div class="callout"><strong>'+fl(released?'advisoryReady':'notReady')+'</strong><br>'+fl('notTax')+'</div>';
  if(!released)return taskGrid(
-  taskPanel(t('adviceTitle'),t('adviceDesc'),body),
+  taskPanel(t(view==='opportunities'?'opportunities':'adviceTitle'),t('adviceDesc'),body),
   taskPanel(fl('flowTitle'),'',flowPanel()+infoBreak(t('nextStep'),'<div class="callout">'+t('nextStepText')+'</div>')),false);
  if(view==='opportunities')return taskGrid(
   taskPanel(t('opportunities'),t('adviceDesc'),body+infoBreak(t('allMoves'),movementTable())),
