@@ -19,46 +19,6 @@ main{min-width:0}.top{min-height:72px;background:var(--side);border-bottom:1px s
 .trace{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.trace span{padding:6px 9px;border:1px solid var(--border);border-radius:8px;font-size:10px;color:var(--muted)}.trace span.on{color:var(--accent);border-color:var(--accent)}.trace b{font-size:11px;color:var(--muted)}.notice{border:1px solid var(--border);background:var(--panel2);padding:13px 14px;border-radius:11px;color:var(--muted);font-size:11px}.notice strong{color:var(--fg)}.linkbtn{background:none;border:0;color:var(--accent);font-size:11px;font-weight:700;padding:6px 0}.sources{display:grid;gap:8px}.source{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding:10px 2px;gap:12px;font-size:11px}.source:last-child{border-bottom:0}.source small{display:block;color:var(--muted);font-size:10px}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--border);font-size:11px;white-space:nowrap}th{color:var(--muted);font-weight:600;font-size:10px}td:last-child,th:last-child{text-align:right}.dim{color:var(--muted)}.spacer{height:13px}.modalback{position:fixed;inset:0;background:#060912c9;z-index:20;display:grid;place-items:center;padding:20px}.modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;max-width:500px;width:100%;padding:23px;box-shadow:0 24px 90px #0007}.modal h3{font-size:17px;margin:0 0 4px}.modal p{font-size:11px;color:var(--muted);margin:0 0 19px}.modalfields{display:grid;gap:13px}.modalfooter{display:flex;justify-content:flex-end;gap:9px;margin-top:17px}.toast{position:fixed;right:20px;bottom:18px;background:var(--panel);border:1px solid var(--accent);color:var(--fg);padding:12px 16px;border-radius:10px;z-index:25;font-size:11px;max-width:370px}.mobilemenu{display:none}
 @media(max-width:1150px){.grid{grid-template-columns:minmax(0,1fr)}.intro{grid-template-columns:minmax(0,1fr)}.metricgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.shell{grid-template-columns:1fr}aside{display:none}aside.open{display:flex;position:fixed;inset:65px auto 0 0;min-height:calc(100vh - 65px);width:242px;z-index:13;box-shadow:0 12px 50px #0008}.mobilemenu{display:block}.top{padding:12px 15px}.page{padding:20px 14px 50px}.intro{flex-direction:column}.selectors{width:100%}.selectors .field{flex:1}.field select{min-width:0}.intro h2{font-size:24px}.metricgrid{gap:8px}.metric{padding:13px}.metric strong{font-size:18px}.quick{grid-template-columns:1fr 1fr}.tag{display:none}}
-/* Desktop: icon-only navigation rail, never overlay the content. */
-.desktop-sidebar-toggle{display:none}
-@media (min-width:801px){
-  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
-  .shell{transition:grid-template-columns .18s ease}
-  body.sidebar-collapsed .shell{grid-template-columns:76px minmax(0,1fr)}
-  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
-  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
-  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
-  body.sidebar-collapsed aside .identity>div,
-  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
-  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
-  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
-  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
-  body.sidebar-collapsed aside .unit,
-  body.sidebar-collapsed aside .tenant,
-  body.sidebar-collapsed aside .org-chip,
-  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
-  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
-  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
-  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
-  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
-  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
-  body.sidebar-collapsed aside .sidebar-foot{display:none}
-  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
-  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
-  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
-  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
-  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
-  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
-}
-
-
-/* Desktop: the existing brand header is the menu toggle; no extra visible button. */
-@media (min-width:801px){
- aside .brand-sidebar-toggle{cursor:pointer;border-radius:10px;min-width:0;min-height:42px;user-select:none;transition:background-color .18s ease}
- aside .brand-sidebar-toggle:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
- aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
- body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
-}
 </style><link rel="stylesheet" href="../shared-ux/shell.css"><script src="../shared-ux/shell.js" defer></script><style>
 /* UX-COMPANY-1 — Shared Shell + task-per-viewport CompanyAccess.
    The Company is not the Tenant portfolio. Existing financial mocks remain in-memory. */
