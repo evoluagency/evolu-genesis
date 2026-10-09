@@ -51,12 +51,26 @@ main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between
   body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
   body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
 }
+
+/* Explicit desktop toggle: adjacent to the sidebar identity, never hidden in header actions. */
+.sidebar-toggle-wrap{display:none}
+@media(min-width:801px){
+ .sidebar-toggle-wrap{display:block;padding:0 3px;min-width:0}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:39px;padding:8px 11px;border-radius:9px;background:var(--shade);border:1px solid var(--line);color:var(--text);font-size:11px;font-weight:600;white-space:nowrap}
+ aside .sidebar-toggle-wrap .desktop-sidebar-toggle:hover{border-color:var(--accent);background:var(--soft)}
+ aside .sidebar-toggle-wrap .toggle-icon{font-size:23px;line-height:1;width:19px;text-align:center;flex-shrink:0;color:var(--accent)}
+ aside .sidebar-toggle-wrap .toggle-label{display:inline;overflow:hidden;text-overflow:ellipsis}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap{padding:0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .desktop-sidebar-toggle{justify-content:center;padding:8px 0}
+ body.sidebar-collapsed aside .sidebar-toggle-wrap .toggle-label{display:none}
+}
 </style></head><body>
 <div class="shell"><aside id="sidebar"><div class="brand"><span class="mark">N</span><div><b>NEXUS</b><small>Contabilidade & Assessoria</small></div></div>
+<div class="sidebar-toggle-wrap"><button type="button" class="btn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="toggle-icon" aria-hidden="true">‹</span><span class="toggle-label">Recolher menu</span></button></div>
 <div class="unit"><div class="unit-icon" id="unitIcon">A</div><div><b id="unitName">ACME Industrial</b><small id="unitDetail">Empresa cliente</small></div></div>
 <div><div class="navtitle">JORNADA DE EXPERIÊNCIA</div><nav class="nav" id="nav"></nav></div>
 <div class="endnote">Somente dados sintéticos. A escolha de perfil nesta página não concede acesso real.</div></aside>
-<main><header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / Revisão da UX</div><h1>Mapa de navegação e acesso</h1></div><div class="tools"><button type="button" class="btn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button><button class="btn" id="menuBtn" aria-label="Abrir menu" hidden>☰</button><span class="tag">PROTÓTIPO · SEM BACKEND</span><button class="btn" id="themeBtn" aria-label="Alternar tema">☀</button></div></header>
+<main><header class="top"><div><div class="crumb" id="breadcrumb">NEXUS / Revisão da UX</div><h1>Mapa de navegação e acesso</h1></div><div class="tools"><button class="btn" id="menuBtn" aria-label="Abrir menu" hidden>☰</button><span class="tag">PROTÓTIPO · SEM BACKEND</span><button class="btn" id="themeBtn" aria-label="Alternar tema">☀</button></div></header>
 <div class="wrap"><div class="header"><div><div class="eyebrow">UX-NAV-1 · REVISÃO TRANSVERSAL</div><h2 id="headline">Da empresa à assessoria</h2><p id="summary">Explore o fluxo de informações entre a empresa cliente e os profissionais da contabilidade, com controle de escopo e permissões.</p></div>
 <div class="controls"><div class="field"><label for="role">Perfil para avaliação</label><select id="role"><option value="company-fin">Financeiro da empresa</option><option value="company-read">Consulta da empresa</option><option value="tenant-accounting">Contábil/Fiscal da NEXUS</option><option value="tenant-advisory">Assessoria da NEXUS</option><option value="tenant-admin">Administrador da NEXUS</option></select></div>
 <div class="field" id="companyChooser"><label for="company">Empresa de trabalho</label><select id="company"><option value="acme">ACME Industrial</option></select></div></div></div>
@@ -157,7 +171,8 @@ function responsive(){$('menuBtn').hidden=window.innerWidth>750}window.addEventL
   const collapsed=document.body.classList.contains('sidebar-collapsed');
   const en=document.documentElement.lang.toLowerCase().startsWith('en');
   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-  control.textContent=collapsed?'»':'«';
+  control.querySelector('.toggle-icon').textContent=collapsed?'›':'‹';
+  control.querySelector('.toggle-label').textContent=label;
   control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
  }
  control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
