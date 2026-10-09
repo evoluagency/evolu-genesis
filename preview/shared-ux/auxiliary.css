@@ -1,0 +1,123 @@
+/* UX-AUX-1 | Auxiliary workspace layer.
+   Load AFTER legacy page CSS and shared Shell.
+   Keeps long forms/records available via scrollable work areas,
+   never cuts off required source/permission controls. */
+.ux-aux.ux-app{grid-template-columns:236px minmax(0,1fr);min-width:0;transition:grid-template-columns .2s ease}
+.ux-aux .ux-sidebar{position:relative;inset:auto;left:auto;top:auto;transform:none;width:auto;height:auto;min-height:0;display:flex;flex-direction:column;gap:17px;background:var(--side,var(--sidebar,#0e141d));border-right:1px solid var(--line,var(--border,#2b3747));padding:18px 12px;z-index:auto}
+.ux-aux .ux-main{display:flex;flex-direction:column;min-width:0;min-height:0;overflow:visible}
+.ux-aux .ux-top{position:relative;top:auto;display:flex;align-items:center;justify-content:space-between;min-height:62px;flex:none;padding:9px 23px;border-bottom:1px solid var(--line,var(--border,#2b3747))}
+.ux-aux .ux-top h1{margin:1px 0 0;font-size:16px;line-height:1.25}
+.ux-aux .ux-brand{padding:7px;min-height:52px;display:flex;align-items:center;gap:10px;width:100%;cursor:pointer;color:var(--text);border:0;background:none;border-radius:10px;text-align:left}
+.ux-aux .ux-brand:hover{background:var(--soft,rgba(150,150,150,.08))}
+.ux-aux .ux-brand img,.ux-aux .ux-brand .logo{width:40px;height:40px;flex:0 0 40px}
+.ux-aux .ux-brand-copy{min-width:0;overflow:hidden;display:block}
+.ux-aux .ux-brand-copy strong,.ux-aux .ux-brand-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ux-aux .ux-brand-copy strong{font-size:15px}.ux-aux .ux-brand-copy small{font-size:10px}
+.ux-aux .ux-tenant{min-width:0;display:flex;align-items:center;gap:10px;border-radius:11px;padding:9px;border:1px solid var(--line,var(--border,#2b3747));background:var(--card)}
+.ux-aux .ux-tenant-copy{min-width:0;overflow:hidden}
+.ux-aux .ux-tenant-copy b,.ux-aux .ux-tenant-copy strong,.ux-aux .ux-tenant-copy small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ux-aux .ux-nav{min-width:0;display:grid;gap:3px}
+.ux-aux .ux-nav button,.ux-aux .ux-nav a{display:flex;align-items:center;gap:10px;min-height:39px;padding:8px 10px;border-radius:9px;width:100%;text-align:left;white-space:normal}
+.ux-aux .ux-nav button:hover,.ux-aux .ux-nav a:hover{background:var(--soft,rgba(150,150,150,.1))}
+.ux-aux .ux-nav i,.ux-aux .ux-nav em{font-size:18px;flex:0 0 21px;width:21px;text-align:center;font-style:normal}
+.ux-aux .ux-nav span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ux-aux .ux-sidebar-footer{font-size:10px;margin-top:auto;border-top:1px solid var(--line,var(--border,#2b3747));padding:12px 7px 0;color:var(--muted,var(--sub,#8190a4))}
+.ux-aux .ux-wrap{max-width:1500px;width:100%;margin:0 auto;padding:15px 22px 16px;min-width:0;min-height:0;flex:1;display:flex;flex-direction:column;gap:11px}
+.ux-aux .ux-head{min-width:0;flex:none;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.ux-aux .ux-head h2{font-size:23px;line-height:1.3;margin:3px 0}
+.ux-aux .ux-head p{font-size:11px;line-height:1.4}
+.ux-aux .ux-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ux-aux .ux-tabs{flex:none;overflow-x:auto;min-width:0}
+.ux-aux .ux-card{min-width:0;min-height:0}
+.ux-aux .ux-dialog{max-height:calc(100dvh - 40px);overflow-y:auto}
+.ux-aux .ux-wrap .progress,.ux-aux .ux-wrap .summary,.ux-aux .ux-wrap .stats{margin:0;flex:none}
+.ux-aux .ux-wrap .grid,.ux-aux .ux-wrap .layout,.ux-aux .ux-wrap .split{min-height:0;flex:1}
+.ux-aux .ux-wrap .card{min-height:0}
+.ux-aux .ux-wrap .steps,.ux-aux .ux-wrap .right-panel,.ux-aux .ux-wrap .stack{min-width:0}
+body.ux-collapsed .ux-aux.ux-app{grid-template-columns:76px minmax(0,1fr)}
+body.ux-collapsed .ux-aux .ux-sidebar{padding:16px 9px;gap:15px}
+body.ux-collapsed .ux-aux .ux-brand{justify-content:center;padding:5px}
+body.ux-collapsed .ux-aux .ux-brand-copy,body.ux-collapsed .ux-aux .ux-tenant-copy,body.ux-collapsed .ux-aux .nav-title,body.ux-collapsed .ux-aux .nav-label,body.ux-collapsed .ux-aux .nav-head,body.ux-collapsed .ux-aux .ux-sidebar-footer{display:none}
+body.ux-collapsed .ux-aux .ux-tenant{justify-content:center;padding:9px 4px}
+body.ux-collapsed .ux-aux .ux-nav button,body.ux-collapsed .ux-aux .ux-nav a{justify-content:center;padding:9px 0;gap:0;font-size:0}
+body.ux-collapsed .ux-aux .ux-nav i,body.ux-collapsed .ux-aux .ux-nav em{font-size:18px;width:23px;flex:0 0 23px}
+body.ux-collapsed .ux-aux .ux-nav span{display:none}
+.ux-aux .ux-mobile-menu,.ux-aux .ux-menu-close{display:none}
+.ux-aux .ux-work-region{min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain}
+.ux-aux .ux-work-region:focus-visible{outline:2px solid var(--accent)}
+/* 8-step onboarding: progression, active form and context live in parallel regions. */
+.ux-aux.onboarding .ux-wrap .grid{display:grid;grid-template-columns:minmax(170px,.52fr) minmax(0,1.75fr) minmax(240px,.85fr);gap:12px;align-items:stretch}
+.ux-aux.onboarding .ux-wrap .grid>.card{height:100%;min-width:0;overflow:auto}
+.ux-aux.onboarding .ux-wrap .grid>.card:not(.steps):not(.right-panel){display:flex;flex-direction:column}
+.ux-aux.onboarding #stageContent{min-height:0;overflow:auto;flex:1}
+.ux-aux.onboarding .actions{margin-top:auto;flex:none}
+.ux-aux.onboarding .right-panel{max-width:100%;position:static}
+.ux-aux.onboarding .progress{padding:9px 13px}
+.ux-aux.onboarding .steps{padding:10px}
+.ux-aux.onboarding .steps button{min-height:38px}
+.ux-aux.onboarding .page-head{margin:0}
+.ux-aux.onboarding .page-head h2{font-size:23px}
+/* Company configuration: 4 existing counts retained, but task card + preview split. */
+.ux-aux.company-settings .ux-wrap .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ux-aux.company-settings .ux-wrap .stat{padding:11px 13px}
+.ux-aux.company-settings .ux-wrap .layout{grid-template-columns:minmax(0,1.75fr) minmax(275px,.8fr);gap:12px}
+.ux-aux.company-settings .ux-wrap .layout>.card{height:100%;display:flex;flex-direction:column;overflow:hidden}
+.ux-aux.company-settings .ux-wrap .layout>.card #content{min-height:0;overflow:auto;flex:1}
+.ux-aux.company-settings .ux-wrap .layout .stack{min-height:0;overflow:auto}
+.ux-aux.company-settings .ux-wrap .layout .stack>.card{position:static}
+.ux-aux.company-settings .rowfoot{flex:none}
+.ux-aux.company-settings .tabs{flex:none;margin-bottom:8px}
+.ux-aux.company-settings .head{margin:0}
+.ux-aux.company-settings .head h2{font-size:23px}
+/* Tenant settings: preserve separation of EVOLU and Tenant powers and all forms. */
+.ux-aux.tenant-settings .ux-wrap .summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ux-aux.tenant-settings .ux-wrap .metric{padding:11px 13px}
+.ux-aux.tenant-settings .ux-wrap .split{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,.85fr);gap:12px}
+.ux-aux.tenant-settings .ux-wrap .split>.stack{min-height:0;overflow:auto}
+.ux-aux.tenant-settings .ux-wrap .split .card{min-width:0;margin:0 0 10px}
+.ux-aux.tenant-settings .head{margin:0}
+.ux-aux.tenant-settings .head h2{font-size:23px}
+@media(min-width:1120px) and (min-height:760px){
+ html,body{height:100%}
+ .ux-aux.ux-app{height:100dvh;min-height:0;overflow:hidden}
+ .ux-aux .ux-main{height:100dvh;overflow:hidden}
+ .ux-aux .ux-sidebar{height:100dvh;overflow:auto}
+ .ux-aux .ux-wrap{overflow:hidden;padding:11px 20px 10px;gap:9px}
+ .ux-aux .ux-wrap .grid,.ux-aux .ux-wrap .layout,.ux-aux .ux-wrap .split{overflow:hidden}
+ .ux-aux.onboarding .ux-wrap .grid>.card{min-height:0}
+ .ux-aux.tenant-settings .ux-wrap .split>.stack{overflow:auto}
+}
+@media(max-width:1119px),(max-height:759px){
+ html,body{height:auto;overflow:auto}
+ .ux-aux.ux-app{height:auto;min-height:100vh;overflow:visible}
+ .ux-aux .ux-main{height:auto;overflow:visible}
+ .ux-aux .ux-wrap{overflow:visible}
+ .ux-aux.onboarding .ux-wrap .grid,.ux-aux.company-settings .ux-wrap .layout,.ux-aux.tenant-settings .ux-wrap .split{min-height:350px}
+ .ux-aux .ux-work-region{overflow:visible}
+ .ux-aux.onboarding #stageContent{overflow:visible}
+ .ux-aux.onboarding .ux-wrap .grid>.card{height:auto;overflow:visible}
+ .ux-aux.company-settings .ux-wrap .layout>.card{height:auto;overflow:visible}
+ .ux-aux.company-settings .ux-wrap .layout>.card #content{overflow:visible}
+ .ux-aux.company-settings .ux-wrap .layout .stack,.ux-aux.tenant-settings .ux-wrap .split>.stack{overflow:visible}
+}
+@media(max-width:1199px){
+ .ux-aux.onboarding .ux-wrap .grid{grid-template-columns:minmax(160px,.6fr) minmax(0,1.6fr)}
+ .ux-aux.onboarding .right-panel{grid-column:2}
+}
+@media(max-width:920px){
+ .ux-aux.company-settings .ux-wrap .layout,.ux-aux.tenant-settings .ux-wrap .split{grid-template-columns:minmax(0,1fr)}
+ .ux-aux .ux-head{flex-direction:column;align-items:stretch}
+}
+@media(max-width:767px){
+ .ux-aux.ux-app,body.ux-collapsed .ux-aux.ux-app{display:block;height:auto}
+ .ux-aux .ux-sidebar{display:none}
+ .ux-aux .ux-sidebar.ux-open{display:flex;position:fixed;z-index:51;inset:0 auto 0 0;width:min(290px,85vw);height:100dvh;min-height:0;overflow:auto;box-shadow:0 0 0 100vw rgba(0,0,0,.62)}
+ .ux-aux .ux-menu-close,.ux-aux .ux-mobile-menu{display:inline-flex}
+ .ux-aux .ux-top{min-height:60px;padding:9px 13px}
+ .ux-aux .ux-wrap{padding:14px 13px 23px;gap:13px}
+ .ux-aux.onboarding .ux-wrap .grid,.ux-aux.company-settings .ux-wrap .layout,.ux-aux.tenant-settings .ux-wrap .split{display:grid;grid-template-columns:minmax(0,1fr);min-height:0}
+ .ux-aux.onboarding .right-panel{grid-column:auto}
+ .ux-aux.company-settings .ux-wrap .stats,.ux-aux.tenant-settings .ux-wrap .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ux-aux .ux-head h2{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){.ux-aux.ux-app{transition:none}}
