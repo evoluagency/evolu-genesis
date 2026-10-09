@@ -104,7 +104,7 @@
   <a href="../office-workspace/" class="ux-nav-link"><i class="ux-nav-symbol" aria-hidden="true">⌂</i><span class="ux-nav-label" data-i="office">Painel do Escritório</span></a>
   <a class="ux-nav-link" href="../office-workspace/?tab=queue"><i class="ux-nav-symbol" aria-hidden="true">◷</i><span class="ux-nav-label" data-i="navQueue">Pendências do escritório</span></a>
   <a class="ux-nav-link active" href="./" aria-current="page"><i class="ux-nav-symbol" aria-hidden="true">▤</i><span class="ux-nav-label" data-i="taxAccounting">Fiscal e Contábil</span></a>
-  <a id="advisoryLink" class="ux-nav-link" href="../company-financial-workspace/?role=advisory&amp;cnpj=m&amp;period=2026-09"><i class="ux-nav-symbol" aria-hidden="true">◎</i><span class="ux-nav-label" data-i="advisory">Assessoria · prévia</span></a>
+  <a id="advisoryLink" class="ux-nav-link" href="../tenant-advisory-workspace/?cnpj=m&amp;period=2026-09"><i class="ux-nav-symbol" aria-hidden="true">◎</i><span class="ux-nav-label" data-i="advisory">Assessoria · prévia</span></a>
  </nav></div>
  <div class="ux-nav-group"><div class="ux-nav-heading" data-i="evidenceGroup">EVIDÊNCIAS · PRÉVIAS</div>
  <nav class="ux-nav" aria-label="Referências documentais">
@@ -285,7 +285,7 @@ function render(){
  document.querySelectorAll('[data-tab]').forEach(btn=>btn.setAttribute('aria-selected',String(btn.dataset.tab===activity)));
  const action=$('primaryAction');action.hidden=activity!=='pending';action.textContent=t('requestAction');action.dataset.createRequest='true';
  $('financeCheckLink').href=financeHref();
- $('advisoryLink').href='../company-financial-workspace/?'+new URLSearchParams({role:'advisory',cnpj:scope().cnpj,period:scope().period}).toString();
+ $('advisoryLink').href='../tenant-advisory-workspace/?'+new URLSearchParams({cnpj:scope().cnpj,period:scope().period}).toString();
  renderMetrics();
  if(activity==='preclose'){renderPreclose();return;}
  let shown=activity==='pending'?scopedRequests():activity==='review'?items():items().concat(scopedRequests());
