@@ -134,7 +134,7 @@ const allScreens=[
 {id:'companyHome',label:'Início da empresa · novo Shell',description:'Resumo contextual, solicitações e atalhos com visual de uma atividade por tela',area:'company',href:'../company-access-home/'},
 {id:'companyFinance',label:'Financeiro da empresa · novo Shell',description:'Atividades específicas, tabelas paginadas, contas, fontes e envio à contabilidade',area:'company',href:'../company-financial-workspace/?role=company'},
 {id:'tenantFinance',label:'Fiscal/Contábil · novo Shell',description:'Recebidos, pendências, conferência e pré-fechamento documental, sem apuração automática',area:'tenant-accounting',href:'../tenant-fiscal-workspace/?tab=received'},
-{id:'tenantAdvisory',label:'Análise da assessoria',description:'Contexto e oportunidades sob revisão',area:'tenant-advisory',href:'../company-financial-workspace/?role=advisory'},
+{id:'tenantAdvisory',label:'Assessoria Empresarial · novo Shell',description:'Contextos, análises e recomendações, com liberação fictícia e revisão humana',area:'tenant-advisory',href:'../tenant-advisory-workspace/?tab=contexts'},
 {id:'fiscalCase',label:'Documento fiscal — caso 70031',description:'Evidência → análise → decisão → aprovação simulada',area:'tenant-accounting',href:'../fiscal-document-70031/'}
 ];
 const roles={
@@ -164,7 +164,8 @@ const reviewItems=[
 ['UX-SHELL-1 / UX-OFFICE-1 · Painel do Escritório','Novo Shell compartilhado e painel interno publicados; validação visual pendente',false],
 ['UX-COMPANY-1 · Início da Empresa','CompanyAccess com Shell compartilhado, três indicadores e dois painéis; validação visual pendente',false],
 ['UX-FINANCE-1 · Financeiro por atividades','Financeiro, Contábil/Fiscal e Assessoria com tarefas, paginação de registros e Shell compartilhado; validação visual pendente',false],
-['UX-FISCAL-1 · Central Fiscal e Contábil','Área interna com recebidos, pendências, conferência de evidências e preparo documental; validação visual pendente',false]
+['UX-FISCAL-1 · Central Fiscal e Contábil','Área interna com recebidos, pendências, conferência de evidências e preparo documental; validação visual pendente',false],
+['UX-ADVISORY-1 · Central de Assessoria','Contextos ilustrativos, análise fundamentada e recomendação sem execução; validação visual pendente',false]
 ];
 let role='company-fin',company='acme',theme='dark',tab='journey';
 let reviewPanel='journey',flowPage=0,reviewPage=0;
