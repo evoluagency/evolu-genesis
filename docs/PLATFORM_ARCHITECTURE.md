@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.18  
+**Version:** 0.19  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -1856,6 +1856,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.19 — Collapsible desktop navigation rail
+
+- added a reversible desktop-only sidebar collapse control to the six primary static Genesis UX previews: TenantConfiguration, CompanyOnboarding, CompanyConfiguration, CompanyAccessHome, CompanyFinancialWorkspace and UX-NAV-1;
+- expanded sidebars keep existing widths (232–244 px); compact rail is 76 px with icon navigation, allowing the CSS grid content column to use remaining space rather than creating an overlay;
+- kept sidebar expanded by default; each static page's toggle is local in-memory visual state and is not synchronized across previews or a signed-in preference;
+- icons retain per-item native hover tooltips and accessible labels, while the toggle exposes aria-expanded and descriptive labels; mobile navigation remains unchanged;
+- modified layout and presentation only; no new modules, operational behavior, backend calls, workflows or external integrations;
+- six static previews passed syntax/structural checks after write; real browser device visual review remains pending.
 
 ### 0.18 — UX visual alignment correction
 
