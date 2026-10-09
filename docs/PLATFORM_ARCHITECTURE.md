@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.25  
+**Version:** 0.26  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -804,6 +804,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-FLOW-1 Versioned Finance / Accounting / Advisory handoff | Interactive prototype ready; awaiting user review | `preview/company-financial-workspace/index.html`: submission versions, questions, evidence review, professional advisory release; synthetic only |
 | UX-SHELL-1 / UX-OFFICE-1 Shared shell and Tenant office home | Source published; **awaiting visual user review** | `preview/shared-ux/` + `preview/office-workspace/`, ACME-only synthetic scope; no Backend, no real authorization |
 | UX-COMPANY-1 CompanyAccessHome unified Shell | Static frontend updated; **awaiting visual user review** | `preview/company-access-home/` now consumes shared Shell; 3 scoped metrics and 2 home panels, read-only and other activities preserved |
+| UX-FINANCE-1 Company/Tenant financial task workspace | Static frontend updated; **awaiting visual user review** | `preview/company-financial-workspace/` with task tabs, scoped pagination and bills filters; existing UX-FLOW-1 intact |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1825,6 +1826,43 @@ Source: `preview/company-access-home/index.html` on `main`. Intended review URL:
 
 ---
 
+## 11.7 UX-FINANCE-1 — Task-oriented financial workspace (static preview)
+
+**State:** changes implemented in `main`, subject to visual/user acceptance. The user requested continued staged UX implementation, not Backend authorization. Reference: [Unified Workspace Spec V1](./EVOLU_PLATFORM_UX_UNIFIED_WORKSPACE_SPEC_V1.md), especially chapter 10 and UX-FLOW-1.
+
+**Changed source:**
+
+- `preview/company-financial-workspace/index.html`: now consumes `../shared-ux/shell.css` and `../shared-ux/shell.js`, uses the NEXUS logo as the sole desktop sidebar collapse control and a mobile drawer, and retains theme/locale switching.
+- `preview/company-financial-workspace/finance-workspace.css`: dedicated scoped task-layout styles and short-viewport/mobile fallbacks, loaded **after** shared Shell styles. Old generic sidebar-collapse CSS and experimental numbered-card pagination were removed rather than layered over.
+- `preview/ux-journey/index.html`: identifies the Financeiro migration as **pending visual review**; persona links and the Company consultation route remain.
+
+**Navigation per demo perspective** (not production authorization):
+
+| Perspective | Activity tabs and content | Preserved actions |
+|---|---|---|
+| Company Financeiro | Overview, Movements, Accounts, Sources, Accounting Handoff | synthetic movement/bill entry, import, answer requests, versioned submission |
+| Company Consulta | Overview, Movements, Accounts, Sources; no Handoff | read-only actions only; profile switching disabled |
+| Tenant Accounting/Tax | Evidence Review, Pending Information, Closing/Handoff | request clarification, review movements and separate fiscal documents with written rationale, resolve replies, release context |
+| Tenant Advisory | Analysis, Opportunities | view **only** reviewed/released context; before release, show unavailable state |
+
+All screens for these demonstration roles now render a **single two-panel task workspace**, instead of presenting several unrelated vertical cards that require navigating an artificial `Quadro 1/2/3` pager. Financial Overview shows three summary groups: inflows, outflows and distinct payable/receivable figures displayed within the third card. The Accounts task has **All / Payable / Receivable** filters. Transaction and account tables show five rows per page with explicit previous/next buttons when more records exist.
+
+**Data and permissions contract maintained:** Company/CNPJ/competence passed by whitelisted synthetic URL parameters; read-only mock hides write controls and guards their handlers; movements are not taxable revenue; commitments are not deductibility decisions; fiscal documents are separately evidenced; accounting review never implies tax approval; Advisory release remains explicit and is invalidated when sources change. State is in-memory and not shared between static pages. Switching Company/CNPJ/competence does not display another Company's data, but is not an authenticated authorization mechanism.
+
+**Viewport and fallback:** target standard desktop task pane at >=1120px wide and >=760px high. Main activity has independent scrollable record panels. Short-height/zoom and smaller viewports restore page scrolling, and mobile presents panels in one column. The actual 1920×1080, 1440×900, 1366×768, 1280×720 and zoom/mobile visual acceptances remain to be performed; merely validating CSS and JavaScript is not evidence of pixel-level fit.
+
+**Checks executed:**
+
+- static JS syntax and source integrity; dedicated CSS loaded after Shell;
+- render emulation for Company/Accounting/Advisory/Company read-only scenarios, including two task cards per selected perspective and Company tab navigation;
+- scoped draft → received/clarification → answered → professional review → ready → released → source changed → resubmission tests: **11 successful state cases**;
+- table pagination tested on 12 synthetic rows: visible sets `0–4` and `5–9` with correctly updated controls;
+- non-writing mock Company consultation still excludes its submission task; source data and flow logic retained.
+
+**Remaining work and acceptance gate:** visual browser/device test, accessibility/keyboard audit, inspect cross-tab heights and overflow, full user review. The next specification stage is **UX-FISCAL-1**, which should be undertaken incrementally and must not be equated with final Backend clearance.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -2061,6 +2099,14 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.26 — Unified financial workspace by activities
+
+- migrated Financeiro to shared Shell, dark/light and locale controls, logo-toggle and mobile drawer;
+- removed abandoned numbered-card pager and duplicate sidebar CSS/JS, replacing them with explicit task tabs and individual two-panel workspaces;
+- added table pagination and per-account Payable/Receivable filtering; preserved the synthetic Company/Accounting/Advisory state machine and roles;
+- validated 11 handoff transitions and first/second table pages; real browser render, responsive review and user sign-off still pending;
+- no Backend, storage, provider, Vercel, Supabase or GitHub Actions changes.
 
 ### 0.25 — CompanyAccessHome shared Shell migration
 
