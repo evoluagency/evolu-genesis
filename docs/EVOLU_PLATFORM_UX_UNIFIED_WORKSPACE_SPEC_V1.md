@@ -891,7 +891,7 @@ Estes tópicos dependem de validação posterior e **não devem bloquear a cria�
 
 Antes de cada corte de frontend, guardar commit base da página e critério visual. Se a nova composição perder ações, ocultar dados ou romper um percurso, voltar apenas aquela fatia à versão anterior, não reverter a arquitetura canônica nem outros protótipos aceitos.
 
-Não fundir/implant ar uma refatoração que:
+Não fundir/implantar uma refatoração que:
 - desative o acesso a uma evidência existente;
 - esconda comandos obrigatórios de revisão;
 - apresente papel de Company como autorizado a administrar Tenant;
