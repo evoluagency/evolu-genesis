@@ -56,3 +56,48 @@ body.ux-collapsed .ux-app .ux-sidebar .ux-tenant-copy{display:none}
 .finance-pager-actions .btn{padding:6px 9px}
 .ux-app .bottom.ux-footer{flex:none;border-top:1px solid var(--stroke);padding-top:7px;margin:0;font-size:10px}
 .ux-app .modalback{z-index:70}
+/* Desktop uses one visible work activity with independently scrollable records. */
+@media(min-width:1120px) and (min-height:760px){
+ html,body{height:100%;overflow:hidden}
+ .ux-app{height:100dvh;min-height:0;overflow:hidden}
+ .ux-app .ux-sidebar{height:100dvh;min-height:0;overflow:auto}
+ .ux-app .ux-main{height:100dvh;min-height:0;overflow:hidden}
+ .ux-app .wrap.ux-wrap{overflow:hidden;padding:10px 23px 9px;gap:8px}
+ .ux-app .wrap.ux-wrap>.notice{padding:6px 9px}
+ .ux-app .head.ux-head h2{font-size:21px}
+ .ux-app #content .metric.ux-metric{padding:9px 12px}
+ .ux-app #content .finance-task-card.ux-card{padding:12px}
+ .ux-app #content>.finance-grid.ux-grid{overflow:hidden}
+ .ux-app .bottom.ux-footer{font-size:9px;padding-top:5px}
+}
+/* Height restrictions or zoom must permit scrolling, not clip content. */
+@media(max-width:1119px),(max-height:759px){
+ html,body{height:auto;overflow:auto}
+ .ux-app{height:auto;min-height:100vh;overflow:visible}
+ .ux-app .ux-main{height:auto;overflow:visible}
+ .ux-app .wrap.ux-wrap{overflow:visible;min-height:0}
+ .ux-app #content{min-height:0;overflow:visible;flex:none}
+ .ux-app #content>.finance-grid.ux-grid{min-height:420px;overflow:visible;flex:none}
+ .ux-app #content .finance-task-card.ux-card{height:auto;overflow:visible;flex:none}
+ .ux-app #content .finance-panel-scroll{overflow:visible;max-height:none}
+}
+@media(max-width:1119px){
+ .ux-app #content>.finance-grid.ux-grid{grid-template-columns:minmax(0,1fr)}
+ .ux-app #content>.finance-grid>.stack{min-height:0}
+ .ux-app .head.ux-head{flex-direction:column;align-items:stretch}
+ .ux-app .selectors.ux-filters{justify-content:flex-start}
+}
+@media(max-width:767px){
+ .ux-app .ux-sidebar{display:none}
+ .ux-app .ux-sidebar.ux-open{display:flex;position:fixed;z-index:51;inset:0 auto 0 0;width:min(290px,85vw);min-height:0;overflow:auto;box-shadow:0 0 0 100vw rgba(0,0,0,.62)}
+ .ux-app .ux-top{min-height:60px;padding:10px 13px}
+ .ux-app .ux-mobile-menu{display:inline-flex}
+ .ux-app .wrap.ux-wrap{padding:15px 13px 24px}
+ .ux-app #content>.metrics.ux-metrics{grid-template-columns:minmax(0,1fr)}
+ .ux-app #content>.finance-grid.ux-grid{grid-template-columns:1fr;min-height:0}
+ .ux-app #content .source-grid{grid-template-columns:1fr}
+ .ux-app #content .item{align-items:flex-start;flex-wrap:wrap}
+ .ux-app .selectors.ux-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .ux-app .selectors.ux-filters .field{min-width:0;max-width:none}
+}
+@media(prefers-reduced-motion:reduce){.ux-app{transition:none}}
