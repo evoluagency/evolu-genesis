@@ -297,6 +297,16 @@ navUpdate();
 const name=role==='company'?'companyTitle':role==='accounting'?'accountingTitle':'advisoryTitle';
 const desc=role==='company'?'companyDesc':role==='accounting'?'accountingDesc':'advisoryDesc';
 $('viewTitle').textContent=t(name);$('viewDesc').textContent=t(desc);$('topTitle').textContent=t(navs[role].find(x=>x[0]===view)?.[2]||name);
+const guide=lang==='pt'?{
+company:'Roteiro: registre ou importe informações, abra Envio à contabilidade, envie a versão atual e responda às solicitações.',
+accounting:'Roteiro: confira a versão recebida, solicite esclarecimentos, conclua respostas e revise registros com justificativa antes de encaminhar à assessoria.',
+advisory:'Roteiro: verifique se o contexto foi liberado pelo Contábil/Fiscal. Sem liberação, não há dados conferidos para análise.'
+}:{
+company:'Test path: enter or import records, open Accounting handoff, submit the current version and reply to requests.',
+accounting:'Test path: review the submitted version, request clarification, resolve replies and review each evidence item before sharing with advisory.',
+advisory:'Test path: check if Accounting has shared the reviewed context. Before release, no reviewed data is available for analysis.'
+};
+$('demoBoundary').textContent=t('demoBoundary')+' '+guide[role];
 $('content').innerHTML=role==='company'?renderCompany():role==='accounting'?renderAccounting():renderAdvisory();
 if(previewReadOnly){
  $('content').querySelectorAll('[data-act],[data-answer],[data-nav="send"]').forEach(el=>el.remove());
