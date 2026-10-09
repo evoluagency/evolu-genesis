@@ -184,6 +184,7 @@ function pageVisible(items,index,count){
  return {page,max};
 }
 function addPager(target,label,page,max,name){
+ target.parentElement.querySelectorAll(':scope > .panel-pager').forEach(el=>el.remove());
  if(max<=1)return;
  const footer=document.createElement('div');footer.className='panel-pager';
  footer.innerHTML='<span>'+safe(label)+'</span><div class="pager-buttons">'+
