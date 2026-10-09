@@ -101,3 +101,7 @@ body.ux-collapsed .ux-app .ux-sidebar .ux-tenant-copy{display:none}
  .ux-app .selectors.ux-filters .field{min-width:0;max-width:none}
 }
 @media(prefers-reduced-motion:reduce){.ux-app{transition:none}}
+
+.finance-filter-tabs{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:0 0 12px}
+.finance-filter-tabs .btn{padding:7px 11px}
+.finance-filter-tabs .btn[aria-pressed="true"]{border-color:var(--violet)}
