@@ -41,7 +41,8 @@ body.ux-collapsed .ux-aux .ux-brand-copy,body.ux-collapsed .ux-aux .ux-tenant-co
 body.ux-collapsed .ux-aux .ux-tenant{justify-content:center;padding:9px 4px}
 body.ux-collapsed .ux-aux .ux-nav button,body.ux-collapsed .ux-aux .ux-nav a{justify-content:center;padding:9px 0;gap:0;font-size:0}
 body.ux-collapsed .ux-aux .ux-nav i,body.ux-collapsed .ux-aux .ux-nav em{font-size:18px;width:23px;flex:0 0 23px}
-body.ux-collapsed .ux-aux .ux-nav span{display:none}
+body.ux-collapsed .ux-aux .ux-nav button>span:not(:first-child),body.ux-collapsed .ux-aux .ux-nav a>span:not(:first-child){display:none}
+body.ux-collapsed .ux-aux .ux-nav button>span:first-child,body.ux-collapsed .ux-aux .ux-nav a>span:first-child{font-size:18px;flex:0 0 23px;width:23px;text-align:center}
 .ux-aux .ux-mobile-menu,.ux-aux .ux-menu-close{display:none}
 .ux-aux .ux-work-region{min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain}
 .ux-aux .ux-work-region:focus-visible{outline:2px solid var(--accent)}
