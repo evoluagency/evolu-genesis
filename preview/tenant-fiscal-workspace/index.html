@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="NEXUS · Área Fiscal/Contábil — revisão de UX com dados inteiramente sintéticos">
+<title>NEXUS · Fiscal e Contábil | Genesis</title>
+<link rel="stylesheet" href="../shared-ux/shell.css">
+<style>
+/* UX-FISCAL-1 — scoped to this static TenantAccess preview */
+.fiscal-shell .ux-wrap{max-width:1530px}
+.fiscal-shell .ux-top{min-height:62px}
+.fiscal-shell .ux-head{align-items:flex-end}
+.fiscal-shell .ux-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}
+.fiscal-shell .ux-tabs{overflow-x:auto}
+.fiscal-shell .ux-card{gap:9px}
+.fiscal-shell .ux-grid{grid-template-columns:minmax(0,1.7fr) minmax(300px,.84fr)}
+.fiscal-shell .ux-card-scroll{scrollbar-color:var(--line) transparent}
+.fiscal-shell .ux-list{align-content:start}
+.fiscal-shell .ux-row{grid-template-columns:minmax(0,1fr) auto;padding:10px}
+.fiscal-shell .fiscal-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.fiscal-shell .fiscal-actions .ux-btn{min-height:33px;padding:7px 9px;font-size:10px}
+.fiscal-shell .fiscal-filterline{display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.fiscal-shell .fiscal-filterline .ux-search{max-width:270px}
+.fiscal-shell .fiscal-pillbar{display:flex;gap:6px;flex-wrap:wrap}
+.fiscal-shell .fiscal-pillbar .ux-btn{padding:6px 9px}
+.fiscal-shell .fiscal-pillbar [aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.fiscal-shell .fiscal-detail{display:grid;align-content:start;gap:11px}
+.fiscal-shell .fiscal-detail h4{font-size:12px;margin:0}
+.fiscal-shell .fiscal-detail p{color:var(--muted);font-size:11px;margin:0;overflow-wrap:anywhere}
+.fiscal-shell .fiscal-detail dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 11px;margin:0;font-size:11px}
+.fiscal-shell .fiscal-detail dt{color:var(--muted)}
+.fiscal-shell .fiscal-detail dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.fiscal-shell .fiscal-detail .fiscal-sep{border-top:1px solid var(--line);padding-top:10px}
+.fiscal-shell .fiscal-inset{border:1px solid var(--line);border-radius:10px;background:var(--soft);padding:11px}
+.fiscal-shell .fiscal-inset small{color:var(--muted)}
+.fiscal-shell .fiscal-form{display:grid;gap:8px}
+.fiscal-shell .fiscal-form label{font-size:11px;font-weight:650}
+.fiscal-shell .fiscal-form textarea{width:100%;min-height:96px;resize:vertical;border:1px solid var(--line);border-radius:9px;padding:10px;background:var(--soft);color:var(--text);font:inherit}
+.fiscal-shell .fiscal-counter{font-size:10px;color:var(--muted)}
+.fiscal-shell .fiscal-table{width:100%;border-collapse:collapse}
+.fiscal-shell .fiscal-table th,.fiscal-shell .fiscal-table td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:11px}
+.fiscal-shell .fiscal-table th{font-size:10px;color:var(--muted)}
+.fiscal-shell .fiscal-table td:last-child{text-align:right}
+.fiscal-shell .fiscal-section{display:grid;gap:9px}
+.fiscal-shell .fiscal-minihead{font-size:11px;font-weight:700;margin:0}
+.fiscal-shell .fiscal-role-boundary{font-size:10px;line-height:1.4;color:var(--muted);padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--accent-soft)}
+.fiscal-shell .fiscal-queue-nav{display:flex;gap:6px;align-items:center}
+.fiscal-shell .fiscal-queue-nav small{font-size:10px;color:var(--muted)}
+.fiscal-shell .fiscal-queue-nav button{padding:6px 9px;min-height:31px}
+.fiscal-shell .fiscal-current{border-color:var(--accent);background:var(--accent-soft)}
+.fiscal-shell .ux-card-footer{margin-top:auto;border-top:1px solid var(--line);padding-top:8px}
+.fiscal-shell .fiscal-subdued{color:var(--muted);font-size:11px}
+.fiscal-shell .fiscal-notice{border-left:3px solid var(--accent);padding:8px 11px;font-size:11px;color:var(--muted);background:var(--soft);border-radius:7px}
+.fiscal-shell .fiscal-title-group{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.fiscal-shell .fiscal-title-group h3{margin:0;font-size:13px}
+.fiscal-shell .fiscal-title-group p{font-size:10px;color:var(--muted);margin:3px 0 0}
+@media(min-width:1120px) and (min-height:745px){
+ html,body{height:100%;overflow:hidden}
+ .fiscal-shell.ux-app{height:100dvh;min-height:0;overflow:hidden}
+ .fiscal-shell .ux-sidebar{height:100dvh;min-height:0;overflow:auto}
+ .fiscal-shell .ux-main{height:100dvh;overflow:hidden}
+ .fiscal-shell .ux-wrap{overflow:hidden;gap:10px;padding-block:12px 11px}
+ .fiscal-shell .ux-metric{padding:10px 13px}
+ .fiscal-shell .ux-metric strong{font-size:19px}
+ .fiscal-shell .ux-card{overflow:hidden;padding:13px}
+ .fiscal-shell .ux-grid{min-height:0;overflow:hidden}
+ .fiscal-shell .ux-card-scroll{overflow:auto}
+ .fiscal-shell .ux-head h2{font-size:23px}
+}
+@media(max-width:1119px),(max-height:744px){
+ html,body{height:auto;overflow:auto}
+ .fiscal-shell.ux-app{height:auto;min-height:100vh;overflow:visible}
+ .fiscal-shell .ux-main{height:auto;overflow:visible}
+ .fiscal-shell .ux-wrap{overflow:visible}
+ .fiscal-shell .ux-grid{min-height:350px}
+ .fiscal-shell .ux-card-scroll{max-height:430px}
+}
+@media(max-width:920px){
+ .fiscal-shell .ux-grid{grid-template-columns:minmax(0,1fr)}
+ .fiscal-shell .ux-head{flex-direction:column;align-items:stretch}
+}
+@media(max-width:767px){
+ .fiscal-shell .ux-metrics{grid-template-columns:minmax(0,1fr)}
+ .fiscal-shell .ux-grid{min-height:0}
+ .fiscal-shell .ux-row{grid-template-columns:minmax(0,1fr)}
+ .fiscal-shell .fiscal-actions{justify-content:flex-start}
+ .fiscal-shell .ux-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .fiscal-shell .ux-field select{width:100%;min-width:0}
+ .fiscal-shell .fiscal-filterline .ux-search{max-width:100%}
+}
+</style>
+<script src="../shared-ux/shell.js" defer></script>
+</head>
+<body>
+<div class="ux-app fiscal-shell">
+<aside class="ux-sidebar" id="fiscalSidebar" data-ux-sidebar aria-label="Navegação interna da NEXUS">
+ <button class="ux-brand" data-ux-brand aria-controls="fiscalSidebar" aria-expanded="true" type="button">
+  <span class="ux-mark" aria-hidden="true">N</span><span class="ux-brand-copy"><strong>NEXUS</strong><small>CONTABILIDADE & ASSESSORIA</small></span>
+ </button>
+ <div class="ux-tenant"><span class="ux-tenant-icon" aria-hidden="true">N</span><span class="ux-tenant-copy"><strong>NEXUS</strong><small data-i="internalSpace">Área interna do escritório · simulação</small></span></div>
+ <div class="ux-nav-group"><div class="ux-nav-heading" data-i="navGroup">ESCRITÓRIO</div>
+ <nav class="ux-nav" aria-label="Áreas internas">
+  <a href="../office-workspace/" class="ux-nav-link"><i class="ux-nav-symbol" aria-hidden="true">⌂</i><span class="ux-nav-label" data-i="office">Painel do Escritório</span></a>
+  <a class="ux-nav-link" href="../office-workspace/?tab=queue"><i class="ux-nav-symbol" aria-hidden="true">◷</i><span class="ux-nav-label" data-i="navQueue">Pendências do escritório</span></a>
+  <a class="ux-nav-link active" href="./" aria-current="page"><i class="ux-nav-symbol" aria-hidden="true">▤</i><span class="ux-nav-label" data-i="taxAccounting">Fiscal e Contábil</span></a>
+  <a id="advisoryLink" class="ux-nav-link" href="../company-financial-workspace/?role=advisory&amp;cnpj=m&amp;period=2026-09"><i class="ux-nav-symbol" aria-hidden="true">◎</i><span class="ux-nav-label" data-i="advisory">Assessoria · prévia</span></a>
+ </nav></div>
+ <div class="ux-nav-group"><div class="ux-nav-heading" data-i="evidenceGroup">EVIDÊNCIAS · PRÉVIAS</div>
+ <nav class="ux-nav" aria-label="Referências documentais">
+  <a href="../fiscal-document-70031/" class="ux-nav-link"><i class="ux-nav-symbol" aria-hidden="true">▧</i><span class="ux-nav-label" data-i="fiscalCase">Caso NF-e 70031</span></a>
+  <a id="financeCheckLink" href="../company-financial-workspace/?role=accounting&amp;cnpj=m&amp;period=2026-09" class="ux-nav-link"><i class="ux-nav-symbol" aria-hidden="true">≋</i><span class="ux-nav-label" data-i="sourcePreview">Conferência financeira · prévia</span></a>
+ </nav></div>
+ <div class="ux-sidebar-footer" data-i="noBackend">Dados fictícios. Nenhum serviço fiscal, ERP ou banco está conectado.</div>
+ <button class="ux-btn ux-menu-close" type="button" data-menu-close data-i="close">Fechar menu</button>
+</aside>
+<main class="ux-main">
+<header class="ux-top">
+ <div style="display:flex;align-items:center;gap:10px;min-width:0">
+  <button type="button" class="ux-btn ux-mobile-menu" data-menu-open aria-controls="fiscalSidebar" aria-expanded="false" aria-label="Abrir menu">☰</button>
+  <div><div class="ux-breadcrumb" data-i="bread">NEXUS / Equipe / Fiscal e Contábil</div><h1 class="ux-top-title" data-i="taxAccounting">Fiscal e Contábil</h1></div>
+ </div>
+ <div class="ux-top-right"><span class="ux-tag" data-i="synthetic">DADOS SINTÉTICOS</span><button class="ux-btn" type="button" data-locale-toggle aria-label="Trocar idioma">EN</button><button class="ux-btn" type="button" data-theme-toggle aria-label="Trocar tema">☀</button></div>
+</header>
+<div class="ux-wrap">
+ <div class="ux-head">
+  <div><div class="ux-overline">TENANTACCESS · NEXUS</div><h2 data-i="title">Central Fiscal e Contábil</h2><p data-i="desc">Recebimento, pendências e conferência documental antes de qualquer pré-fechamento.</p></div>
+  <div class="ux-filters">
+   <div class="ux-field"><label for="fiscalCompany" data-i="company">Empresa</label><select id="fiscalCompany"><option value="acme">ACME Industrial</option></select></div>
+   <div class="ux-field"><label for="fiscalEntity" data-i="cnpj">Estabelecimento</label><select id="fiscalEntity"><option value="m">Matriz · 0001</option><option value="f">Filial · 0002</option></select></div>
+   <div class="ux-field"><label for="fiscalPeriod" data-i="period">Competência</label><select id="fiscalPeriod"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
+  </div>
+ </div>
+ <div class="fiscal-role-boundary" data-i="boundary">Simulação isolada: informações desta página não são sincronizadas com Financeiro, NF-e 70031 ou portal da empresa. A troca de links não constitui autorização.</div>
+ <div class="ux-metrics" id="fiscalMetrics" aria-label="Indicadores do cenário"></div>
+ <nav class="ux-tabs" role="tablist" aria-label="Atividades de conferência">
+  <button class="ux-tab" type="button" role="tab" data-tab="received" aria-selected="true" data-i="tabReceived">Recebidos</button>
+  <button class="ux-tab" type="button" role="tab" data-tab="pending" aria-selected="false" data-i="tabPending">Pendências</button>
+  <button class="ux-tab" type="button" role="tab" data-tab="review" aria-selected="false" data-i="tabReview">Conferência</button>
+  <button class="ux-tab" type="button" role="tab" data-tab="preclose" aria-selected="false" data-i="tabPreclose">Pré-fechamento</button>
+ </nav>
+ <div class="ux-grid">
+  <section class="ux-card" aria-labelledby="primaryTitle">
+   <div class="ux-card-header"><div><h3 id="primaryTitle"></h3><p id="primaryDesc"></p></div><button class="ux-btn ux-btn-soft" type="button" id="primaryAction" hidden></button></div>
+   <div class="ux-card-scroll"><div id="fiscalList" aria-live="polite"></div></div>
+   <div class="ux-card-footer"><span class="ux-note" id="fiscalCount"></span><nav class="fiscal-queue-nav" id="fiscalPager" aria-label="Navegação dos itens"></nav></div>
+  </section>
+  <section class="ux-card" aria-labelledby="detailTitle">
+   <div class="ux-card-header"><div><h3 id="detailTitle"></h3><p id="detailDesc"></p></div></div>
+   <div class="ux-card-scroll" id="fiscalDetail" aria-live="polite"></div>
+   <div class="ux-card-footer"><span class="ux-note" data-i="sourceSeparate">Conferir evidência não é apurar ou aprovar imposto.</span></div>
+  </section>
+ </div>
+ <div class="ux-footer"><span data-i="foot">Protótipo local e independente. Nenhuma apuração, escrituração, liberação fiscal ou integração foi realizada.</span><a href="../ux-journey/" data-i="journey">Revisar jornada ↗</a></div>
+</div>
+</main>
+</div>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const dict={
+pt:{
+internalSpace:'Área interna do escritório · simulação',navGroup:'ESCRITÓRIO',office:'Painel do Escritório',navQueue:'Pendências do escritório',taxAccounting:'Fiscal e Contábil',advisory:'Assessoria · prévia',evidenceGroup:'EVIDÊNCIAS · PRÉVIAS',fiscalCase:'Caso NF-e 70031',sourcePreview:'Conferência financeira · prévia',noBackend:'Dados fictícios. Nenhum serviço fiscal, ERP ou banco está conectado.',close:'Fechar menu',bread:'NEXUS / Equipe / Fiscal e Contábil',synthetic:'DADOS SINTÉTICOS',title:'Central Fiscal e Contábil',desc:'Recebimento, pendências e conferência documental antes de qualquer pré-fechamento.',company:'Empresa',cnpj:'Estabelecimento',period:'Competência',boundary:'Simulação isolada: dados desta página não são sincronizados com Financeiro, NF-e 70031 ou portal da empresa. Navegar não concede permissões.',tabReceived:'Recebidos',tabPending:'Pendências',tabReview:'Conferência',tabPreclose:'Pré-fechamento',sourceSeparate:'Conferir evidência não é apurar ou aprovar imposto.',foot:'Protótipo local e independente. Nenhuma apuração, escrituração ou integração foi realizada.',journey:'Revisar jornada ↗',
+receivedTitle:'Objetos do cenário',receivedDesc:'Referências fictícias de origens distintas. Sua presença não comprova envio oficial à contabilidade.',pendingTitle:'Solicitações de informação',pendingDesc:'Respostas exigem revisão explícita; não são automaticamente validadas.',reviewTitle:'Conferência por evidência',reviewDesc:'Conferência documentada e segregada de natureza ou crédito tributário.',precloseTitle:'Preparação para pré-fechamento',precloseDesc:'Checagem de suficiência e pendências; nenhuma apuração automática.',detail:'Contexto do item',detailDesc:'Origem, escopo, status e próximos passos.',receiveStatus:'Origem em demonstração',receivedStatus:'Versão fictícia',pendingStatus:'Pendências abertas',checkedStatus:'Evidências conferidas',scopeStatus:'Estabelecimento e período',empty:'Nenhum registro sintético disponível neste CNPJ/competência.',noneSelected:'Selecione um item para examinar origem e requisitos de validação.',noRequest:'Não há solicitação no contexto atual.',noEvidence:'Não há evidência para conferir neste contexto.',inspect:'Examinar',statusOpen:'Aguardando informação',statusAnswered:'Resposta recebida',statusResolved:'Esclarecimento revisado',statusUnchecked:'Sem conferência',statusChecked:'Conferência registrada',source:'Origem',reference:'Referência',type:'Natureza',state:'Estado',context:'Observação',receipt:'Pacote fictício',receiptNone:'Nenhum envio validado neste contexto.',pending:'Pendência',financial:'Movimentação financeira',fiscal:'Documento fiscal',fiscalDetail:'Abrir caso fiscal independente ↗',financeDetail:'Abrir prévia de conferência independente ↗',reviewNote:'Justificativa/evidência da conferência',reviewHint:'Descreva a evidência verificada (mínimo de 12 caracteres). O registro não classifica impostos.',saveReview:'Registrar conferência simulada',saved:'Conferência documental registrada nesta simulação.',tooShort:'Descreva a evidência em pelo menos 12 caracteres.',answerExample:'Simular recebimento da resposta',answerHelp:'A resposta simulada depende de avaliação profissional. Não está sincronizada com o portal da empresa.',resolve:'Concluir revisão do esclarecimento',answerReceived:'Resposta demonstrativa recebida; análise profissional pendente.',replyReviewed:'Resposta avaliada nesta simulação.',requestAction:'Solicitar informação (simulação)',requestHelp:'A solicitação registrada aqui não é enviada à empresa.',requestMade:'Solicitação simulada criada, sem envio externo.',requestPrompt:'Descreva exatamente a evidência/informação necessária:',requestDefault:'Solicitar comprovante ou finalidade para conferência',precloseNo:'Pré-fechamento não preparado',precloseReady:'Evidências revisadas; apto a preparar uma proposta de pré-fechamento',precloseMissing:'Faltam conferências ou esclarecimentos. Não é possível representar esta competência como preparada.',precloseNotTax:'A indicação de preparo documental não representa DRE, balanço, tributos calculados, apuração, crédito ou escrituração.',precloseNote:'Checagem de documentos e contexto, sem valores fiscais inferidos.',precloseAction:'Marcar preparação documental (simulação)',precloseLogged:'Preparação documental sinalizada. Não foi realizado fechamento contábil ou fiscal.',precloseReset:'Os registros desta versão mudaram: preparação anterior foi invalidada.',noAutomatic:'Nenhum tratamento fiscal foi definido pela automação.',pagination:'Itens exibidos',prev:'Anterior',next:'Próximo',all:'Todos',documents:'Documentos',movements:'Movimentações',permission:'Perspectiva profissional fictícia; autenticação real não implementada.',noSync:'Nenhum dado da outra prévia será importado automaticamente.',itemF1:'Recebimento bancário não identificado',itemF2:'Fornecedor industrial — saída bancária',itemD1:'Documento fiscal sem conciliação',itemD2:'NF-e 70031 — estudo documental independente',req1:'Esclarecer recebimento sem identificação fiscal',req2:'Solicitar comprovante de aquisição de materiais',fallback:'Esta empresa/competência não possui pacote de referência no cenário.',reviewedBy:'Responsável',demoReviewer:'Profissional NEXUS (fictício)',precloseSteps:'Itens de preparo',notFiled:'Não enviado aos sistemas fiscais ou contábeis.'
+},
+en:{
+internalSpace:'Internal office workspace · demo',navGroup:'OFFICE',office:'Office dashboard',navQueue:'Office queue',taxAccounting:'Tax and Accounting',advisory:'Advisory · preview',evidenceGroup:'EVIDENCE · PREVIEWS',fiscalCase:'Invoice 70031 case',sourcePreview:'Financial review · preview',noBackend:'Synthetic data. No tax, ERP or banking services are connected.',close:'Close menu',bread:'NEXUS / Team / Tax and Accounting',synthetic:'SYNTHETIC DATA',title:'Tax and Accounting center',desc:'Receipts, open requests and evidence reviews before any period close.',company:'Company',cnpj:'Establishment',period:'Accounting period',boundary:'Independent demo: data is not synchronized with Financeiro, invoice 70031 or Company portal. Navigation does not grant access.',tabReceived:'Received',tabPending:'Open requests',tabReview:'Evidence review',tabPreclose:'Pre-close',sourceSeparate:'Reviewing evidence is not calculating or approving tax.',foot:'Independent local preview. No tax filing, accounting entry or integration was performed.',journey:'Review journey ↗',
+receivedTitle:'Sample source items',receivedDesc:'Mock references from distinct sources. Presence does not prove formal accounting delivery.',pendingTitle:'Information requests',pendingDesc:'Answers require explicit review and are never automatically approved.',reviewTitle:'Per-evidence review',reviewDesc:'Documented source review, separated from tax classification or credits.',precloseTitle:'Pre-close readiness',precloseDesc:'Evidence sufficiency review; no automatic tax calculation.',detail:'Item context',detailDesc:'Source, scope, state and next actions.',receiveStatus:'Mock source',receivedStatus:'Fictional version',pendingStatus:'Open requests',checkedStatus:'Evidence reviewed',scopeStatus:'Entity and period',empty:'No synthetic data for this tax entity/period.',noneSelected:'Select an item to inspect its source and review requirements.',noRequest:'No request in selected scope.',noEvidence:'No evidence in selected scope.',inspect:'Inspect',statusOpen:'Information required',statusAnswered:'Response received',statusResolved:'Clarification reviewed',statusUnchecked:'Not reviewed',statusChecked:'Review recorded',source:'Source',reference:'Reference',type:'Type',state:'State',context:'Context',receipt:'Mock packet',receiptNone:'No validated submission for this context.',pending:'Request',financial:'Financial transaction',fiscal:'Fiscal document',fiscalDetail:'Open independent tax-document case ↗',financeDetail:'Open independent accounting review ↗',reviewNote:'Review basis and evidence',reviewHint:'Describe evidence reviewed (at least 12 characters). This is not tax classification.',saveReview:'Record sample review',saved:'Document review saved locally in demo.',tooShort:'Describe at least 12 characters of evidence.',answerExample:'Simulate reply received',answerHelp:'Synthetic reply needs professional review. Not synced to Company access.',resolve:'Confirm clarification review',answerReceived:'Synthetic reply received; awaiting professional review.',replyReviewed:'Reply reviewed in this demo.',requestAction:'Create information request (demo)',requestHelp:'The demo request is not sent to the company.',requestMade:'Synthetic request created, not externally sent.',requestPrompt:'Describe exactly what supporting information is needed:',requestDefault:'Provide context or supporting document for review',precloseNo:'Pre-close not prepared',precloseReady:'Evidence reviewed; ready to prepare a proposed pre-close',precloseMissing:'Evidence or clarification remains outstanding. Cannot mark this period ready.',precloseNotTax:'Document readiness does not represent income statements, trial balances, tax filing, tax credits or accounting entries.',precloseNote:'Document/source sufficiency review; no inferred fiscal amounts.',precloseAction:'Mark evidence preparation (demo)',precloseLogged:'Document preparation flagged. No accounting or tax closing performed.',precloseReset:'Source context changed: previous preparation reset.',noAutomatic:'No tax classification has been automated.',pagination:'Items shown',prev:'Previous',next:'Next',all:'All',documents:'Documents',movements:'Transactions',permission:'Simulated professional perspective; no real authentication.',noSync:'Data from other previews is not imported automatically.',itemF1:'Unidentified bank receipt',itemF2:'Industrial supplier — bank outflow',itemD1:'Fiscal document without bank reconciliation',itemD2:'Invoice 70031 — independent document case',req1:'Clarify receipt lacking fiscal identification',req2:'Provide supporting materials purchase document',fallback:'This entity/period has no source packet in fixture.',reviewedBy:'Reviewer',demoReviewer:'NEXUS professional (fictional)',precloseSteps:'Evidence preparation items',notFiled:'No tax or accounting systems were contacted.'
+}
+};
+const t=k=>(dict[document.documentElement.lang.startsWith('en')?'en':'pt']||dict.pt)[k]||k;
+const esc=v=>String(v).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+const seedItems=[
+{id:'F-1',cnpj:'m',period:'2026-09',kind:'financial',source:'bank',ref:'BANK-200',label:'itemF1',note:'',checked:false,description:'refWithoutFiscal'},
+{id:'F-2',cnpj:'m',period:'2026-09',kind:'financial',source:'bank',ref:'BANK-984',label:'itemF2',note:'',checked:false,description:'noTax'},
+{id:'D-1',cnpj:'m',period:'2026-09',kind:'fiscal',source:'file',ref:'FISC-0009',label:'itemD1',note:'',checked:false,description:'noSync'},
+{id:'D-2',cnpj:'m',period:'2026-09',kind:'fiscal',source:'fixture',ref:'NF-70031',label:'itemD2',note:'',checked:false,description:'noSync'}
+];
+const seedRequests=[
+{id:'R-1',cnpj:'m',period:'2026-09',label:'req1',status:'open',response:''},
+{id:'R-2',cnpj:'m',period:'2026-09',label:'req2',status:'open',response:''}
+];
+let records=seedItems.map(x=>({...x})),requests=seedRequests.map(x=>({...x})),activity='received',activeItem=null,filter='all',currentPage=0,prepared=Object.create(null),extraRequest=0,toastHandle=null;
+const params=new URLSearchParams(location.search);
+const safeCnpj=x=>['m','f'].includes(x)?x:'m';
+const safePeriod=x=>['2026-09','2026-08'].includes(x)?x:'2026-09';
+$('fiscalEntity').value=safeCnpj(params.get('cnpj'));
+$('fiscalPeriod').value=safePeriod(params.get('period'));
+if(['received','pending','review','preclose'].includes(params.get('tab')))activity=params.get('tab');
+if(/^(?:R-|F-|D-)[\w-]+$/.test(params.get('item')||''))activeItem=params.get('item');
+const scope=()=>({cnpj:$('fiscalEntity').value,period:$('fiscalPeriod').value});
+const key=()=>scope().cnpj+'|'+scope().period;
+const items=()=>records.filter(x=>x.cnpj===scope().cnpj&&x.period===scope().period);
+const scopedRequests=()=>requests.filter(x=>x.cnpj===scope().cnpj&&x.period===scope().period);
+const pendingRequests=()=>scopedRequests().filter(x=>x.status!=='resolved');
+const isReady=()=>items().length>0&&items().every(x=>x.checked)&&pendingRequests().length===0;
+function notify(message){
+ const live=$('fiscalCount');live.textContent=message;
+ if(toastHandle)clearTimeout(toastHandle);
+ toastHandle=setTimeout(()=>{live.textContent='';},4500);
+}
+function choose(list){
+ if(!list.length){activeItem=null;return}
+ if(!list.some(x=>x.id===activeItem))activeItem=list[0].id;
+}
+function itemScopeString(){return 'ACME Industrial · '+(scope().cnpj==='m'?'0001':'0002')+' · '+scope().period;}
+function tag(k,good){return '<span class="ux-pill '+(good?'good':'warn')+'">'+esc(t(k))+'</span>';}
+function pendingLabel(status){return status==='open'?'statusOpen':status==='answered'?'statusAnswered':'statusResolved';}
+function rowItem(x){
+ const active=x.id===activeItem;
+ const isReq=x.id.startsWith('R-');
+ const status=isReq?pendingLabel(x.status):x.checked?'statusChecked':'statusUnchecked';
+ const sub=isReq?t('pending')+' · '+x.id:itemScopeString()+' · '+x.ref+' · '+t('source')+': '+x.source;
+ return '<div class="ux-row '+(active?'fiscal-current':'')+'"><div><div class="ux-row-top">'+tag(status,(isReq?x.status==='resolved':x.checked))+' <strong>'+esc(t(x.label)||x.label)+'</strong></div><small>'+esc(sub)+'</small></div>'+
+ '<div class="fiscal-actions"><button type="button" class="ux-btn" data-inspect="'+esc(x.id)+'">'+esc(t('inspect'))+'</button></div></div>';
+}
+function navPager(total){
+ const pages=Math.max(1,Math.ceil(total/5));currentPage=Math.max(0,Math.min(pages-1,currentPage));
+ $('fiscalPager').innerHTML=pages<=1?'':'<button type="button" class="ux-btn" data-page="-1" '+(currentPage===0?'disabled':'')+'>'+esc(t('prev'))+'</button><small>'+(currentPage+1)+' / '+pages+'</small><button type="button" class="ux-btn" data-page="1" '+(currentPage+1===pages?'disabled':'')+'>'+esc(t('next'))+'</button>';
+}
+function listWithPager(arr){
+ choose(arr);navPager(arr.length);
+ $('fiscalList').innerHTML=arr.length?'<div class="ux-list">'+arr.slice(currentPage*5,currentPage*5+5).map(rowItem).join('')+'</div>':'<div class="ux-empty">'+esc(t('empty'))+'</div>';
+ if(!arr.length)$('fiscalPager').innerHTML='';
+}
+function detailItem(){
+ const x=records.find(x=>x.id===activeItem&&x.cnpj===scope().cnpj&&x.period===scope().period);
+ const r=requests.find(x=>x.id===activeItem&&x.cnpj===scope().cnpj&&x.period===scope().period);
+ if(!x&&!r)return '<div class="ux-empty">'+esc(t('noneSelected'))+'</div>';
+ if(r){
+  const status=pendingLabel(r.status);
+  return '<div class="fiscal-detail"><h4>'+esc(t(r.label)||r.label)+'</h4>'+tag(status,r.status==='resolved')+
+   '<dl><dt>'+esc(t('reference'))+'</dt><dd>'+esc(r.id)+'</dd><dt>'+esc(t('scopeStatus'))+'</dt><dd>'+esc(itemScopeString())+'</dd></dl>'+
+   '<p class="fiscal-inset">'+esc(t('requestHelp'))+'</p>'+
+   (r.status==='open'?'<button type="button" class="ux-btn ux-btn-soft" data-reply="'+esc(r.id)+'">'+esc(t('answerExample'))+'</button>':
+   r.status==='answered'?'<div class="fiscal-inset"><small>'+esc(r.response||t('answerReceived'))+'</small></div><button class="ux-btn ux-btn-primary" type="button" data-resolve="'+esc(r.id)+'">'+esc(t('resolve'))+'</button>':
+   '<div class="fiscal-notice">'+esc(t('replyReviewed'))+'</div>')+'</div>';
+ }
+ const reviewed=x.checked?'<div class="fiscal-inset"><small>'+esc(t('reviewedBy'))+'</small><br>'+esc(t('demoReviewer'))+'<p>'+esc(x.note)+'</p></div>':'';
+ const form=!x.checked?'<form class="fiscal-form" id="reviewForm"><label for="reviewReason">'+esc(t('reviewNote'))+'</label><textarea id="reviewReason" name="reviewReason" minlength="12" maxlength="1000" required aria-describedby="reviewHint">'+esc(x.note)+'</textarea><span class="fiscal-counter" id="reviewHint">'+esc(t('reviewHint'))+'</span><button class="ux-btn ux-btn-primary" type="submit">'+esc(t('saveReview'))+'</button></form>':reviewed;
+ const link=x.ref==='NF-70031'?'<a class="ux-link" href="../fiscal-document-70031/">'+esc(t('fiscalDetail'))+'</a>':
+ '<a class="ux-link" href="'+esc(financeHref())+'">'+esc(t('financeDetail'))+'</a>';
+ return '<div class="fiscal-detail"><h4>'+esc(t(x.label))+'</h4>'+tag(x.checked?'statusChecked':'statusUnchecked',x.checked)+
+ '<dl><dt>'+esc(t('type'))+'</dt><dd>'+esc(t(x.kind==='financial'?'financial':'fiscal'))+'</dd><dt>'+esc(t('source'))+'</dt><dd>'+esc(x.source)+'</dd><dt>'+esc(t('reference'))+'</dt><dd>'+esc(x.ref)+'</dd><dt>'+esc(t('scopeStatus'))+'</dt><dd>'+esc(itemScopeString())+'</dd></dl>'+
+ '<div class="fiscal-notice">'+esc(t('sourceSeparate'))+'</div>'+form+'<div class="fiscal-sep">'+link+'</div></div>';
+}
+function financeHref(){
+ const q=new URLSearchParams({role:'accounting',cnpj:scope().cnpj,period:scope().period});
+ return '../company-financial-workspace/?'+q.toString();
+}
+function renderMetrics(){
+ const all=items(),unresolved=pendingRequests().length,checked=all.filter(x=>x.checked).length;
+ const groups=[
+ [t('receivedStatus'),all.length?'v1 · '+t('receiveStatus'):'—',t('receiptNone')],
+ [t('pendingStatus'),String(unresolved),t('pendingDesc')],
+ [t('checkedStatus'),checked+' / '+all.length,t('precloseNote')]
+ ];
+ $('fiscalMetrics').innerHTML=groups.map(x=>'<div class="ux-metric"><span class="ux-meta">'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(x[2])+'</small></div>').join('');
+}
+function renderPreclose(){
+ const a=items(),r=pendingRequests(),ready=isReady();
+ const checks=[
+  [t('receipt'),a.length>0],
+  [t('checkedStatus'),a.length>0&&a.every(x=>x.checked)],
+  [t('pendingStatus'),r.length===0]
+ ];
+ const body='<div class="fiscal-section"><div class="fiscal-notice">'+esc(t(ready?'precloseReady':'precloseMissing'))+'</div>'+
+ checks.map(z=>'<div class="office-summary ux-row"><strong>'+esc(z[0])+'</strong>'+tag(z[1]?'statusChecked':'statusUnchecked',z[1])+'</div>').join('')+
+ '<p class="fiscal-subdued">'+esc(t('precloseNotTax'))+'</p>'+
+ '<button class="ux-btn ux-btn-primary" type="button" data-prepare="true" '+(!ready?'disabled':'')+'>'+esc(t('precloseAction'))+'</button>'+
+ (prepared[key()]?'<div class="fiscal-inset">'+esc(t('precloseLogged'))+'</div>':'')+'</div>';
+ $('fiscalList').innerHTML=body;
+ $('fiscalDetail').innerHTML='<div class="fiscal-detail"><h4>'+esc(t('precloseSteps'))+'</h4><p>'+esc(t('precloseNote'))+'</p><div class="fiscal-notice">'+esc(t('noAutomatic'))+'</div>'+
+ '<p>'+esc(t('notFiled'))+'</p><a class="ux-link" href="'+esc(financeHref())+'">'+esc(t('financeDetail'))+'</a></div>';
+ $('fiscalPager').innerHTML='';
+ $('fiscalCount').textContent='';
+}
+function render(){
+ document.querySelectorAll('[data-i]').forEach(n=>n.textContent=t(n.dataset.i));
+ const data={received:['receivedTitle','receivedDesc'],pending:['pendingTitle','pendingDesc'],review:['reviewTitle','reviewDesc'],preclose:['precloseTitle','precloseDesc']};
+ $('primaryTitle').textContent=t(data[activity][0]);$('primaryDesc').textContent=t(data[activity][1]);
+ $('detailTitle').textContent=t(activity==='preclose'?'precloseTitle':'detail');
+ $('detailDesc').textContent=t(activity==='preclose'?'precloseDesc':'detailDesc');
+ document.querySelectorAll('[data-tab]').forEach(btn=>btn.setAttribute('aria-selected',String(btn.dataset.tab===activity)));
+ const action=$('primaryAction');action.hidden=activity!=='pending';action.textContent=t('requestAction');action.dataset.createRequest='true';
+ $('financeCheckLink').href=financeHref();
+ $('advisoryLink').href='../company-financial-workspace/?'+new URLSearchParams({role:'advisory',cnpj:scope().cnpj,period:scope().period}).toString();
+ renderMetrics();
+ if(activity==='preclose'){renderPreclose();return;}
+ let shown=activity==='pending'?scopedRequests():activity==='review'?items():items().concat(scopedRequests());
+ if(activity==='received'&&filter!=='all')shown=shown.filter(x=>filter==='fiscal'?x.kind==='fiscal':x.kind==='financial');
+ listWithPager(shown);
+ $('fiscalDetail').innerHTML=detailItem();
+ $('fiscalCount').textContent=t('pagination')+': '+shown.length;
+}
+function changeActivity(next){
+ if(!['received','pending','review','preclose'].includes(next))return;
+ activity=next;currentPage=0;activeItem=null;render();
+}
+function createRequest(){
+ const desc=window.prompt(t('requestPrompt'),t('requestDefault'));
+ if(desc===null)return;
+ const name=desc.trim();if(name.length<12){notify(t('tooShort'));return}
+ const sc=scope();extraRequest+=1;const id='R-NEW-'+extraRequest;
+ requests.push({id,cnpj:sc.cnpj,period:sc.period,label:name,status:'open',response:''});
+ delete prepared[key()];activity='pending';activeItem=id;currentPage=0;
+ render();notify(t('requestMade'));
+}
+document.addEventListener('click',e=>{
+ const tab=e.target.closest('[data-tab]');if(tab){changeActivity(tab.dataset.tab);return;}
+ const page=e.target.closest('[data-page]');if(page){currentPage=Math.max(0,currentPage+Number(page.dataset.page));render();return;}
+ const item=e.target.closest('[data-inspect]');if(item){activeItem=item.dataset.inspect;render();return;}
+ const answer=e.target.closest('[data-reply]');if(answer){
+  const r=scopedRequests().find(x=>x.id===answer.dataset.reply&&x.status==='open');if(!r)return;
+  r.status='answered';r.response=t('answerReceived');delete prepared[key()];render();notify(t('answerReceived'));return;
+ }
+ const resolve=e.target.closest('[data-resolve]');if(resolve){
+  const r=scopedRequests().find(x=>x.id===resolve.dataset.resolve&&x.status==='answered');if(!r)return;
+  r.status='resolved';delete prepared[key()];render();notify(t('replyReviewed'));return;
+ }
+ if(e.target.closest('[data-create-request]')){createRequest();return}
+ if(e.target.closest('[data-prepare]')){if(isReady()){prepared[key()]=true;render();notify(t('precloseLogged'));}return}
+});
+document.addEventListener('submit',e=>{
+ if(e.target.id!=='reviewForm')return;e.preventDefault();
+ const x=items().find(x=>x.id===activeItem);if(!x)return;
+ const area=$('reviewReason');const note=area.value.trim();
+ if(note.length<12){notify(t('tooShort'));area.focus();return}
+ x.note=note;x.checked=true;delete prepared[key()];render();notify(t('saved'));
+});
+$('fiscalEntity').addEventListener('change',()=>{activeItem=null;currentPage=0;render()});
+$('fiscalPeriod').addEventListener('change',()=>{activeItem=null;currentPage=0;render()});
+document.addEventListener('ux:locale',render);
+render();
+})();
+</script>
+</body>
+</html>
