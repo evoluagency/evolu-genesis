@@ -27,54 +27,14 @@ main{min-width:0}.top{padding:15px 27px;border-bottom:1px solid var(--line);back
 @media(max-width:1270px){.grid{grid-template-columns:215px minmax(0,1fr)}.right-panel{grid-column:2}.steps{padding:10px}}
 @media(max-width:800px){.app{display:block}aside{position:fixed;inset:0 auto 0 0;width:min(300px,87vw);z-index:50;transform:translateX(-110%);transition:transform .18s}aside.open{transform:none;box-shadow:0 0 0 100vw rgba(0,0,0,.5)}#mobileMenu{display:inline-flex}.top{padding:12px 14px}.wrap{padding:19px 13px 60px}.grid{grid-template-columns:1fr}.steps{display:flex;overflow-x:auto;gap:4px}.step{min-width:130px;padding:8px 10px}.step small{display:none}.right-panel{grid-column:auto}.page-head h2{font-size:22px}.synthetic{display:none}}
 @media(max-width:510px){.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.card{padding:14px}.progress{flex-wrap:wrap}.bar{max-width:none;flex-basis:100%}.page-head h2{font-size:20px}.top h1{font-size:13px}.top .crumb{font-size:9px}.actions{flex-wrap:wrap}.actions>div{margin-left:auto}}
-/* Desktop: icon-only navigation rail, never overlay the content. */
-.desktop-sidebar-toggle{display:none}
-@media (min-width:801px){
-  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
-  .app{transition:grid-template-columns .18s ease}
-  body.sidebar-collapsed .app{grid-template-columns:76px minmax(0,1fr)}
-  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
-  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
-  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
-  body.sidebar-collapsed aside .identity>div,
-  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
-  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
-  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
-  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
-  body.sidebar-collapsed aside .unit,
-  body.sidebar-collapsed aside .tenant,
-  body.sidebar-collapsed aside .org-chip,
-  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
-  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
-  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
-  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
-  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
-  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
-  body.sidebar-collapsed aside .sidebar-foot{display:none}
-  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
-  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
-  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
-  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
-  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
-  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
-}
-
-
-/* Desktop: click the existing brand area to collapse/expand; no extra toggle. */
-@media (min-width:801px){
- aside .brand-sidebar-toggle{cursor:pointer;border-radius:10px;min-width:0;min-height:42px;user-select:none;transition:background-color .18s ease}
- aside .brand-sidebar-toggle:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
- aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
- body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
-}
-</style>
+</style><link rel="stylesheet" href="../shared-ux/shell.css"><link rel="stylesheet" href="../shared-ux/auxiliary.css"><script src="../shared-ux/shell.js" defer></script>
 </head>
 <body>
-<div class="app">
-<aside id="sidebar">
-<div class="brand brand-sidebar-toggle" id="brandSidebarToggle" role="button" tabindex="0" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><img src="./evolu-symbol.svg" alt=""><div><strong>EVOLU</strong><small>PLATFORM</small></div></div>
-<div class="tenant"><div class="avatar">M</div><div><b>Contabilidade Modelo</b><small data-i18n="syntheticOrg">Organização sintética</small></div></div>
-<nav class="nav" aria-label="Navegação">
+<div class="app ux-app ux-aux onboarding">
+<aside id="sidebar" class="ux-sidebar" data-ux-sidebar aria-label="Navegação interna do escritório">
+<button type="button" class="brand ux-brand" id="brandSidebarToggle" data-ux-brand aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><img src="./evolu-symbol.svg" alt=""><span class="ux-brand-copy"><strong>EVOLU</strong><small>PLATFORM</small></span></button>
+<div class="tenant ux-tenant"><div class="avatar ux-tenant-icon">M</div><div class="ux-tenant-copy"><b>Contabilidade Modelo</b><small data-i18n="syntheticOrg">Organização sintética</small></div></div>
+<nav class="nav ux-nav" aria-label="Navegação">
 <div class="nav-title" data-i18n="operation">OPERAÇÃO</div>
 <button class="other" type="button"><i class="symbol">⌂</i><span data-i18n="overview">Visão geral</span></button>
 <button class="active" type="button"><i class="symbol">▦</i><span data-i18n="clients">Clientes</span></button>
@@ -84,19 +44,19 @@ main{min-width:0}.top{padding:15px 27px;border-bottom:1px solid var(--line);back
 <div class="nav-title" data-i18n="management">GESTÃO</div>
 <button class="other" type="button"><i class="symbol">☷</i><span data-i18n="pending">Pendências</span></button>
 <button class="other" type="button"><i class="symbol">✓</i><span data-i18n="approvals">Aprovações</span></button>
-</nav><div class="aside-footer" data-i18n="syntheticFooter">Experiência sintética. Nenhuma empresa ou usuário é criado em sistemas reais.</div>
+</nav><div class="aside-footer ux-sidebar-footer" data-i18n="syntheticFooter">Experiência sintética. Nenhuma empresa ou usuário é criado em sistemas reais.</div><button type="button" class="smallbtn ux-menu-close" data-menu-close>Fechar menu</button>
 </aside>
-<main>
-<header class="top">
-<div style="display:flex;align-items:center;gap:10px"><button class="smallbtn" id="mobileMenu" aria-label="Abrir menu">☰</button><div><div class="crumb" data-i18n="breadcrumb">Clientes / Novo cliente</div><h1 data-i18n="title">Cadastro de cliente</h1></div></div>
-<div class="tools"><span class="synthetic" data-i18n="synthetic">DADOS SINTÉTICOS</span><button type="button" class="smallbtn" id="langBtn" aria-label="Switch language">EN</button><button type="button" class="smallbtn" id="themeBtn" aria-label="Alternar tema">☀</button></div>
+<main class="ux-main">
+<header class="top ux-top">
+<div style="display:flex;align-items:center;gap:10px"><button type="button" class="smallbtn ux-btn ux-mobile-menu" id="mobileMenu" data-menu-open aria-label="Abrir menu" aria-expanded="false" aria-controls="sidebar">☰</button><div><div class="crumb" data-i18n="breadcrumb">Clientes / Novo cliente</div><h1 data-i18n="title">Cadastro de cliente</h1></div></div>
+<div class="tools"><span class="synthetic" data-i18n="synthetic">DADOS SINTÉTICOS</span><button type="button" class="smallbtn" id="langBtn" data-locale-toggle aria-label="Switch language">EN</button><button type="button" class="smallbtn" id="themeBtn" data-theme-toggle aria-label="Alternar tema">☀</button></div>
 </header>
-<div class="wrap">
-<div class="page-head"><div><div class="eyebrow" data-i18n="area">PLATFORM / CLIENTES</div><h2 data-i18n="heading">Novo cliente</h2><p data-i18n="description">Cadastre a empresa, informe seus estabelecimentos e configure os serviços prestados pela organização.</p></div><button class="secondary" type="button" id="resetBtn" data-i18n="restart">Reiniciar exemplo</button></div>
+<div class="wrap ux-wrap">
+<div class="page-head ux-head"><div><div class="eyebrow" data-i18n="area">PLATFORM / CLIENTES</div><h2 data-i18n="heading">Novo cliente</h2><p data-i18n="description">Cadastre a empresa, informe seus estabelecimentos e configure os serviços prestados pela organização.</p></div><button class="secondary" type="button" id="resetBtn" data-i18n="restart">Reiniciar exemplo</button></div>
 <div class="progress"><div><b id="progressLabel">Etapa 1 de 8</b><br><small data-i18n="progressHelp">O cadastro pode manter informações pendentes.</small></div><div class="bar" aria-label="Progresso"><i id="progressBar"></i></div></div>
-<div class="grid">
+<div class="grid ux-aux-grid">
 <div class="card steps" id="steps" aria-label="Etapas de cadastro"></div>
-<section class="card">
+<section class="card ux-work-region" tabindex="0" aria-label="Etapa ativa do cadastro">
 <div class="stage-head"><div><h3 id="stageTitle">Identificação da empresa</h3><p id="stageHelp"></p></div><span class="stage-no" id="stageNum">01 / 08</span></div>
 <div id="stageContent"></div>
 <div class="actions"><button type="button" class="secondary" id="backBtn" data-i18n="previous">Voltar</button><div><button type="button" class="primary" id="nextBtn" data-i18n="next">Continuar</button></div></div>
@@ -188,41 +148,13 @@ let timer;function notify(k){$("toast").textContent=t(k);$("toast").hidden=false
 $("nextBtn").addEventListener("click",()=>{const k=validate();if(k){notify(k);return}if(state.step===7){state.done=true;notify("simulated");render();return}state.step++;state.highest=Math.max(state.highest,state.step);render()});
 $("backBtn").addEventListener("click",()=>{if(state.step>0&&!state.done){state.step--;render()}});
 $("resetBtn").addEventListener("click",()=>{state=initial();render();notify("restored")});
-$("langBtn").addEventListener("click",()=>{lang=lang==="pt"?"en":"pt";render()});
-$("themeBtn").addEventListener("click",()=>{theme=theme==="dark"?"light":"dark";render()});
-$("mobileMenu").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
+document.addEventListener("ux:locale",()=>{lang=document.documentElement.lang.startsWith("en")?"en":"pt";render()});
+document.addEventListener("ux:theme",e=>{theme=e.detail.theme;render()});
 document.querySelectorAll(".nav .other").forEach(b=>b.addEventListener("click",()=>notify("notAvailable")));
 render();
 })();
 </script>
 
-<script>
-(function(){
- const brand=document.getElementById('brandSidebarToggle');
- const aside=document.getElementById('sidebar');
- if(!brand||!aside)return;
- const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
-  const label=item.textContent.trim().replace(/\s+/g,' ');
-  if(label){item.title=label;item.setAttribute('aria-label',label);}
- });
- function sync(){
-   const collapsed=document.body.classList.contains('sidebar-collapsed');
-   const en=document.documentElement.lang.toLowerCase().startsWith('en');
-   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-   brand.title=label;brand.setAttribute('aria-label',label);
-   brand.setAttribute('aria-expanded',String(!collapsed));
- }
- function toggle(){
-   if(window.innerWidth<=800){aside.classList.remove('open');return;}
-   document.body.classList.toggle('sidebar-collapsed');sync();
- }
- brand.addEventListener('click',toggle);
- brand.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
- const nav=aside.querySelector('.nav');
- if(nav)new MutationObserver(annotate).observe(nav,{childList:true,subtree:true});
- new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
- annotate();sync();
-})();
-</script>
+
 </body>
 </html>
