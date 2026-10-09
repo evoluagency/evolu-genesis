@@ -55,6 +55,37 @@ main{min-width:0}.top{display:flex;justify-content:space-between;align-items:cen
 @media(max-width:1150px){.split{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){.app{display:block}aside{position:fixed;inset:0 auto 0 0;width:min(300px,90vw);z-index:45;transform:translateX(-110%);transition:transform .18s;box-shadow:0 0 0 100vw transparent}aside.open{transform:none;box-shadow:0 0 0 100vw rgba(0,0,0,.56)}#mobileMenu{display:inline-flex}.top{padding:12px 14px;min-height:62px}.workspace{padding:18px 14px 55px}.head{flex-wrap:wrap}.head h2{font-size:23px}.pill.synth{display:none}}
 @media(max-width:550px){.summary{grid-template-columns:1fr 1fr}.metric b{font-size:12px}.fields{grid-template-columns:1fr}.card{padding:14px}.top h1{font-size:13px}.top .crumb{font-size:9px}.toolbar{gap:4px}.ghostbtn{padding:0 7px}}
+/* Desktop: icon-only navigation rail, never overlay the content. */
+.desktop-sidebar-toggle{display:none}
+@media (min-width:801px){
+  .desktop-sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:36px;font-size:17px}
+  .app{transition:grid-template-columns .18s ease}
+  body.sidebar-collapsed .app{grid-template-columns:76px minmax(0,1fr)}
+  body.sidebar-collapsed aside{padding-left:9px;padding-right:9px;gap:15px}
+  body.sidebar-collapsed aside .brand,body.sidebar-collapsed aside .identity{justify-content:center;padding-inline:0}
+  body.sidebar-collapsed aside .brand>div:not(.logo):not(.mark),
+  body.sidebar-collapsed aside .identity>div,
+  body.sidebar-collapsed aside .unit>div:not(.unit-icon),
+  body.sidebar-collapsed aside .tenant>div:not(.avatar):not(.logo),
+  body.sidebar-collapsed aside .org-chip>div:not(.avatar),
+  body.sidebar-collapsed aside .client>div:not(.client-icon){display:none}
+  body.sidebar-collapsed aside .unit,
+  body.sidebar-collapsed aside .tenant,
+  body.sidebar-collapsed aside .org-chip,
+  body.sidebar-collapsed aside .client{justify-content:center;padding:8px 0}
+  body.sidebar-collapsed aside .navtitle,body.sidebar-collapsed aside .nav-title,
+  body.sidebar-collapsed aside .nav-head,body.sidebar-collapsed aside .navlabel,
+  body.sidebar-collapsed aside .nav-label,body.sidebar-collapsed aside .endnote,
+  body.sidebar-collapsed aside .asideend,body.sidebar-collapsed aside .asidefoot,
+  body.sidebar-collapsed aside .aside-foot,body.sidebar-collapsed aside .aside-footer,
+  body.sidebar-collapsed aside .sidebar-foot{display:none}
+  body.sidebar-collapsed aside .nav a,body.sidebar-collapsed aside .nav button{justify-content:center;gap:0;padding:11px 0;font-size:0}
+  body.sidebar-collapsed aside .nav i,body.sidebar-collapsed aside .nav em,
+  body.sidebar-collapsed aside .nav .ico,body.sidebar-collapsed aside .nav .sym,
+  body.sidebar-collapsed aside .nav .symbol{font-size:18px;width:22px;flex-shrink:0}
+  body.sidebar-collapsed aside .nav button span:not(.ico):not(.sym):not(.symbol),
+  body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
+}
 </style>
 </head>
 <body>
@@ -80,7 +111,7 @@ main{min-width:0}.top{display:flex;justify-content:space-between;align-items:cen
 <main>
 <header class="top">
  <div style="display:flex;align-items:center;gap:10px"><button class="ghostbtn" id="mobileMenu" aria-label="Abrir menu">☰</button><div><div class="crumb" data-i18n="breadcrumb">Administração / Organização</div><h1 data-i18n="pageTitle">Configurações da organização</h1></div></div>
- <div class="toolbar">
+ <div class="toolbar"><button type="button" class="ghostbtn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral">«</button>
   <span class="pill synth" data-i18n="synthetic">DADOS SINTÉTICOS</span>
   <button class="ghostbtn" id="langBtn" aria-label="Mudar idioma">EN</button>
   <button class="ghostbtn" id="themeBtn" aria-label="Alternar tema">☀</button>
