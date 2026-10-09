@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.27  
+**Version:** 0.28  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -806,6 +806,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-COMPANY-1 CompanyAccessHome unified Shell | Static frontend updated; **awaiting visual user review** | `preview/company-access-home/` now consumes shared Shell; 3 scoped metrics and 2 home panels, read-only and other activities preserved |
 | UX-FINANCE-1 Company/Tenant financial task workspace | Static frontend updated; **awaiting visual user review** | `preview/company-financial-workspace/` with task tabs, scoped pagination and bills filters; existing UX-FLOW-1 intact |
 | UX-FISCAL-1 Tenant Fiscal/Accounting workspace | Static preview on `main`; **awaiting visual review** | `preview/tenant-fiscal-workspace/`: Received, Pending, Evidence Review, Pre-close (mock-only), with scoped Office navigation and independent source fixtures |
+| UX-ADVISORY-1 Tenant business-advisory workspace | Static preview on `main`; **awaiting visual review** | `preview/tenant-advisory-workspace/`: context eligibility, evidence-based analysis, recommendation with evaluation only, no real AI/Backend |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1905,6 +1906,58 @@ All screens for these demonstration roles now render a **single two-panel task w
 
 ---
 
+## 11.9 UX-ADVISORY-1 — Dedicated Tenant advisory workspace (static preview)
+
+**Status:** implemented in Genesis `main`; **user visual acceptance and browser-device verification pending**. This delivers the fifth blueprint in [Unified Workspace Spec V1](./EVOLU_PLATFORM_UX_UNIFIED_WORKSPACE_SPEC_V1.md), without implying that the overall UX gate is complete or that Backend was authorized.
+
+### Source and navigation
+
+- New `preview/tenant-advisory-workspace/index.html`: TenantAccess NEXUS advisory page, responsive Shell, role-specific navigation, ACME synthetic Company, CNPJ Matriz/Filial and August/September competence.
+- New `preview/tenant-advisory-workspace/advisory.css`: task-focused list/context grid, legible details and mobile/short-height fallback.
+- New `preview/tenant-advisory-workspace/advisory.js`: client-side-only seeded contexts and guarded work stages. No fetch, database, real Intelligence, storage, automatic calculations or domain writes.
+- `preview/office-workspace/index.html`: professional Advisory sidebar/quick access now points to the new Tenant page with CNPJ and period.
+- `preview/tenant-fiscal-workspace/index.html`: Advisory navigation points to the new page and preserves synthetic context.
+- `preview/ux-journey/index.html`: Tenant advisory persona now reviews this page and UX-ADVISORY-1 appears as **pending**, without exposing the Tenant screen to Company personas.
+- Intended preview: `https://evoluagency.github.io/evolu-genesis/preview/tenant-advisory-workspace/`. GitHub Pages delivery and browser layout have **not** been independently verified.
+
+### UX and evidence boundaries
+
+The desktop view uses three compact indicator cards, task tabs (**Contextos**, **Análises**, **Recomendações**) and a two-panel layout: primary scoped list, secondary selected context/detail or work form. Independent scrolling is permitted in long lists; small screens and short viewports restore vertical page scrolling.
+
+Three **separate fictional cases** are available for Matriz/09-2026:
+
+| Fictional context | Availability | UX behavior |
+|---|---|---|
+| `CTX-09-U` | Not released | Explanation of why analysis/recommendation cannot be recorded; no input form |
+| `CTX-09-R` | Illustratively released and sufficient | Shows two independent source reference labels and fictional reviewer; enables written analysis |
+| `CTX-09-I` | Insufficient evidence | Displays missing-context warning; no analysis/recommendation action |
+
+Other CNPJ/period selectors currently produce a scoped empty state. Source identifiers `BANK-200` and `FISC-0009` are **illustrative labels only** reused from independent synthetic stories; they do **not** assert that the Fiscal/Contábil workspace released any data. Public URL query values select mock records, **not authentication or authorization**.
+
+The work sequence is:
+
+1. Select an available fictional context; all other stages are blocked if it is unapproved/unreleased or insufficient.
+2. Write **hypothesis, source rationale and limitations**, each >=12 characters. Saved in memory as a demonstrative analysis.
+3. Based on a saved analysis, draft a written recommendation and rationale, each >=12 characters; until saved no review stage is possible.
+4. Explicitly mark the recommendation **pending professional evaluation**. This is **local state**, not a message sent to another user.
+5. Record a written **evaluation** with rationale >=12 characters. Status becomes **evaluated**, never “tax approved”, “executed”, or “closed”.
+6. If the source analysis is edited after a recommendation was recorded, reset/delete that associated recommendation and its evaluation; a newly supported recommendation is required.
+
+**Intelligence boundaries:** three fixed questions guide the user when viewing the released context; these are static instructional text, **not** live AI generation. No model/provider is connected. There is no automatic hypothesis, score, confidence level, tax treatment, accounting posting, execution or real tax analysis.
+
+**Data lifecycle:** state persists only while this single HTML page remains open. Page reload resets analyses and evaluations; other static preview pages cannot observe or share this state. The new page has no permission system, audit-grade timestamp or official professional approval. Those require authenticated Backend contracts after UX acceptance.
+
+### Validation and remaining gate
+
+- Remote Javascript syntax and standalone HTML/CSS/JS asset structure checked.
+- Mock-DOM interaction tests **14/14 successful**, covering locked unreleased/insufficient cases, a released case requiring three written fields, recommendation draft, pending evaluation, evaluated state, invalidation after analysis changes, and CNPJ/competence isolation.
+- Office/Fiscal/UX-journey links updated; no old functional prototype was removed.
+- **Still pending:** actual desktop/mobile viewport tests, focus/a11y and zoom, PT-BR/EN rendering, user signoff of the new page and broader Shell consistency.
+
+**Next phase:** finish UX-AUX-1 (Tenant/Company configuration, onboarding and document-detail consistency) and UX-ROUTES-1/UX-REVIEW-1, without beginning Backend. The existence of five main UX reference screens is **not final UX acceptance**.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -2141,6 +2194,15 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.28 — Tenant advisory reference workspace
+
+- added the fifth shared-Shell primary reference: dedicated NEXUS TenantAccess Advisory with context, analysis and recommendation activities;
+- implemented 3 independent fictional context states, only one of which is an explicitly labeled *sample release* permitting analysis;
+- required written evidence/hypothesis/limitation before drafting a recommendation; added separate local pending and evaluated states, no execution;
+- invalidated recommendations after editing analysis; retained CNPJ/competence isolation and read-only informational routes to other static previews;
+- connected Office and Fiscal navigation, updated UX Journey with visual approval still pending;
+- no Intelligence provider, database, Backend, storage, tax calculation, external API, GitHub Action/job/workflow or automatic decision.
 
 ### 0.27 — Dedicated Tenant Fiscal/Accounting UX
 
