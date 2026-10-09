@@ -51,22 +51,18 @@ main{min-width:0}.top{background:var(--side);border-bottom:1px solid var(--strok
   body.sidebar-collapsed aside .nav a span:not(.ico):not(.sym):not(.symbol){display:none}
 }
 
-.sidebar-toggle-wrap{display:none}
-@media(min-width:801px){
- .sidebar-toggle-wrap{display:block;padding:0 3px;min-width:0}
- aside .sidebar-toggle-wrap .desktop-sidebar-toggle{display:flex;align-items:center;justify-content:flex-start;gap:10px;width:100%;min-height:39px;padding:8px 11px;border-radius:9px;background:var(--tint);border:1px solid var(--stroke);color:var(--fg);font-size:11px;font-weight:600;white-space:nowrap}
- aside .sidebar-toggle-wrap .desktop-sidebar-toggle:hover{border-color:var(--violet);background:var(--panel)}
- aside .sidebar-toggle-wrap .toggle-icon{font-size:23px;line-height:1;width:19px;text-align:center;flex-shrink:0;color:var(--violet)}
- aside .sidebar-toggle-wrap .toggle-label{display:inline;overflow:hidden;text-overflow:ellipsis}
- body.sidebar-collapsed aside .sidebar-toggle-wrap{padding:0}
- body.sidebar-collapsed aside .sidebar-toggle-wrap .desktop-sidebar-toggle{justify-content:center;padding:8px 0}
- body.sidebar-collapsed aside .sidebar-toggle-wrap .toggle-label{display:none}
+
+/* Desktop: the existing brand header is the menu toggle; no extra visible button. */
+@media (min-width:801px){
+ aside .brand-sidebar-toggle{cursor:pointer;border-radius:10px;min-width:0;min-height:42px;user-select:none;transition:background-color .18s ease}
+ aside .brand-sidebar-toggle:hover{background:color-mix(in srgb,var(--violet) 10%,transparent)}
+ aside .brand-sidebar-toggle:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+ body.sidebar-collapsed aside .brand-sidebar-toggle{justify-content:center;padding-inline:0}
 }
 </style></head><body>
 <div class="app">
 <aside id="sidebar">
-<div class="brand"><span class="mark">N</span><div><b>NEXUS</b><small data-i="brandSub">Contabilidade & Assessoria</small></div></div>
-<div class="sidebar-toggle-wrap"><button type="button" class="btn desktop-sidebar-toggle" id="desktopSidebarToggle" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="toggle-icon" aria-hidden="true">‹</span><span class="toggle-label">Recolher menu</span></button></div>
+<div class="brand" id="brandSidebarToggle" role="button" tabindex="0" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="mark">N</span><div><b>NEXUS</b><small data-i="brandSub">Contabilidade & Assessoria</small></div></div>
 <div class="client"><span class="client-icon">A</span><div><b>ACME Industrial</b><small data-i="clientSpace">Área financeira da empresa</small></div></div>
 <div><div class="nav-label" id="navCaption">FINANCEIRO</div><nav class="nav" id="nav"></nav></div>
 <div class="asidefoot" data-i="syntheticNote">Cenário fictício. Sem conexão ou registros reais.</div>
@@ -306,24 +302,28 @@ render();
 })();
 </script><script>
 (function(){
- const control=document.getElementById('desktopSidebarToggle');
+ const brand=document.getElementById('brandSidebarToggle');
  const aside=document.getElementById('sidebar');
- if(!control||!aside)return;
+ if(!brand||!aside)return;
  const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
-   const label=item.textContent.trim().replace(/\s+/g,' ');
-   if(label){item.title=label;item.setAttribute('aria-label',label);}
+  const label=item.textContent.trim().replace(/\\s+/g,' ');
+  if(label){item.title=label;item.setAttribute('aria-label',label);}
  });
  function sync(){
-  const collapsed=document.body.classList.contains('sidebar-collapsed');
-  const en=document.documentElement.lang.toLowerCase().startsWith('en');
-  const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
-  control.querySelector('.toggle-icon').textContent=collapsed?'›':'‹';
-  control.querySelector('.toggle-label').textContent=label;
-  control.title=label;control.setAttribute('aria-label',label);control.setAttribute('aria-expanded',String(!collapsed));
+   const collapsed=document.body.classList.contains('sidebar-collapsed');
+   const en=document.documentElement.lang.toLowerCase().startsWith('en');
+   const label=en?(collapsed?'Expand sidebar':'Collapse sidebar'):(collapsed?'Expandir menu lateral':'Recolher menu lateral');
+   brand.title=label;brand.setAttribute('aria-label',label);
+   brand.setAttribute('aria-expanded',String(!collapsed));
  }
- control.addEventListener('click',()=>{document.body.classList.toggle('sidebar-collapsed');sync();});
+ function toggle(){
+   if(window.innerWidth<=800)return;
+   document.body.classList.toggle('sidebar-collapsed');sync();
+ }
+ brand.addEventListener('click',toggle);
+ brand.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
  const nav=aside.querySelector('.nav');
- if(nav)new MutationObserver(annotate).observe(nav,{subtree:true,childList:true});
+ if(nav)new MutationObserver(annotate).observe(nav,{childList:true,subtree:true});
  new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
  annotate();sync();
 })();
