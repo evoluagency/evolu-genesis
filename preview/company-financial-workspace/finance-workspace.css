@@ -1,0 +1,58 @@
+/* UX-FINANCE-1 | Financeiro task layout | synthetic preview only. */
+:root{--stroke:var(--line);--fg:var(--text);--sub:var(--muted);--dim:var(--quiet);--violet:var(--accent);--tint:var(--accent-soft);--panel:var(--soft);--green:var(--good);--amber:var(--warn);--red:var(--bad)}
+html[data-theme="light"]{--stroke:var(--line);--fg:var(--text);--sub:var(--muted);--dim:var(--quiet);--violet:var(--accent);--tint:var(--accent-soft);--panel:var(--soft);--green:var(--good);--amber:var(--warn);--red:var(--bad)}
+.ux-app .ux-sidebar{min-height:0;padding:19px 12px 16px;gap:18px}
+.ux-app .ux-sidebar .ux-brand{min-height:49px;display:flex;justify-content:flex-start}
+.ux-app .ux-sidebar .ux-brand .ux-mark{flex:0 0 40px;width:40px;height:40px}
+.ux-app .ux-sidebar .ux-brand strong{font-size:15px;letter-spacing:.08em}
+.ux-app .ux-sidebar .ux-brand small{font-size:10px}
+.ux-app .ux-sidebar .ux-tenant{min-width:0;padding:10px;gap:10px}
+.ux-app .ux-sidebar .ux-tenant-copy{min-width:0}
+.ux-app .ux-sidebar .ux-tenant-copy small{font-size:10px}
+.ux-app .ux-sidebar .ux-nav{display:grid}
+.ux-app .ux-sidebar .ux-nav button{width:100%;gap:12px;min-height:42px}
+.ux-app .ux-sidebar .ux-nav-label{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ux-app .ux-sidebar .ux-nav-symbol{flex:0 0 21px;width:21px}
+body.ux-collapsed .ux-app .ux-sidebar .ux-brand{justify-content:center}
+body.ux-collapsed .ux-app .ux-sidebar .ux-nav button{justify-content:center;padding-inline:0}
+body.ux-collapsed .ux-app .ux-sidebar .ux-tenant-copy{display:none}
+.ux-app .top.ux-top{min-height:65px;padding:9px 25px}
+.ux-app .top.ux-top .right{display:flex;gap:7px;flex-wrap:wrap}
+.ux-app .wrap.ux-wrap{max-width:1540px;margin:0 auto;width:100%;padding:16px 24px 18px;min-width:0;min-height:0;display:flex;flex-direction:column;gap:10px;flex:1}
+.ux-app .wrap.ux-wrap>.notice{margin:0;flex:none;padding:7px 10px;font-size:10px;line-height:1.35}
+.ux-app .head.ux-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:0;flex:none}
+.ux-app .head.ux-head h2{font-size:23px;line-height:1.3;margin:3px 0}
+.ux-app .head.ux-head p{max-width:720px;font-size:11px;line-height:1.4}
+.ux-app .selectors.ux-filters{display:flex;align-items:flex-end;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.ux-app .selectors.ux-filters .field{min-width:132px;max-width:205px;flex:1}
+.ux-app .selectors.ux-filters select{min-width:0;min-height:36px;padding:7px 9px}
+.finance-task-tabs{display:flex;align-items:center;gap:7px;flex:none;border-bottom:1px solid var(--stroke);padding:0 0 8px;min-width:0;overflow-x:auto}
+.finance-task-tab{font:600 11px/1.3 Inter,system-ui,sans-serif;white-space:nowrap;color:var(--sub);border:1px solid transparent;background:transparent;border-radius:9px;padding:8px 11px;min-height:36px}
+.finance-task-tab:hover{background:var(--tint)}
+.finance-task-tab[aria-selected="true"]{color:var(--fg);background:var(--card);border-color:var(--stroke)}
+.ux-app #content{min-width:0;min-height:0;display:flex;flex-direction:column;gap:10px;flex:1}
+.ux-app #content>.metrics.ux-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:0;flex:none}
+.ux-app #content .metric.ux-metric{padding:11px 14px}
+.ux-app #content .metric.ux-metric strong{font-size:19px;margin:3px 0}
+.finance-dual-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.finance-dual-values>div{min-width:0}
+.ux-app #content>.finance-grid.ux-grid{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(285px,.85fr);gap:13px;min-width:0;min-height:0;flex:1;align-items:stretch}
+.ux-app #content>.finance-grid>.stack{display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:0;gap:0}
+.ux-app #content .finance-task-card.ux-card{width:100%;min-width:0;min-height:0;height:100%;flex:1;display:flex;flex-direction:column;overflow:hidden;padding:14px;gap:9px}
+.ux-app #content .finance-task-card>.cardhead{margin:0;flex:none;align-items:flex-start}
+.ux-app #content .finance-task-card>.cardhead p{font-size:10px;line-height:1.3}
+.ux-app #content .finance-panel-scroll{min-height:0;min-width:0;flex:1;overflow:auto;overscroll-behavior:contain}
+.ux-app #content .finance-subsection{border-top:1px solid var(--stroke);padding-top:10px;margin-top:12px}
+.ux-app #content .finance-subsection h4{font-size:11px;color:var(--sub);font-weight:700;margin:0 0 9px}
+.ux-app #content .tablewrap{overflow-x:auto;overflow-y:visible;min-width:0}
+.ux-app #content th,.ux-app #content td{padding:10px 8px;font-size:11px}
+.ux-app #content .item{min-width:0;padding:9px 10px;gap:8px}
+.ux-app #content .item .left{min-width:0}
+.ux-app #content .source-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.ux-app #content .source{padding:10px}
+.ux-app #content .callout{padding:10px;font-size:10px;line-height:1.5}
+.finance-table-pager{margin:11px 0 0;border-top:1px solid var(--stroke);padding-top:9px;display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--sub);font-size:10px}
+.finance-pager-actions{display:flex;align-items:center;gap:7px}
+.finance-pager-actions .btn{padding:6px 9px}
+.ux-app .bottom.ux-footer{flex:none;border-top:1px solid var(--stroke);padding-top:7px;margin:0;font-size:10px}
+.ux-app .modalback{z-index:70}
