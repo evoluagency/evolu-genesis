@@ -160,7 +160,7 @@ function responsive(){$('menuBtn').hidden=window.innerWidth>750}window.addEventL
  const aside=document.getElementById('sidebar');
  if(!brand||!aside)return;
  const annotate=()=>aside.querySelectorAll('.nav button,.nav a').forEach(item=>{
-  const label=item.textContent.trim().replace(/\\s+/g,' ');
+  const label=item.textContent.trim().replace(/\s+/g,' ');
   if(label){item.title=label;item.setAttribute('aria-label',label);}
  });
  function sync(){
@@ -171,7 +171,7 @@ function responsive(){$('menuBtn').hidden=window.innerWidth>750}window.addEventL
    brand.setAttribute('aria-expanded',String(!collapsed));
  }
  function toggle(){
-   if(window.innerWidth<=800)return;
+   if(window.innerWidth<=800){aside.classList.remove('open');return;}
    document.body.classList.toggle('sidebar-collapsed');sync();
  }
  brand.addEventListener('click',toggle);
