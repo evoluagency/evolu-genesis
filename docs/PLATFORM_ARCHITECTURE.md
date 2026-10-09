@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.19  
+**Version:** 0.20  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -1856,6 +1856,16 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.20 — Brand-header desktop menu toggle
+
+- replaced the separate visible sidebar collapse button with a click target on the existing Tenant/brand header in all six primary static Genesis previews;
+- clicking brand/logo toggles between expanded sidebar and the 76 px icon navigation rail on desktop, freeing actual grid content width with no overlay;
+- pointer hover and focus-visible cues indicate interaction, while dynamic Portuguese/English labels and native tooltips describe "Recolher/Expandir menu";
+- keyboard Enter and Space activate the same interaction; on mobile the existing menu/hamburger model is retained, and activating brand while the drawer is open closes it;
+- sidebar item navigation continues to navigate; no automatic collapse when selecting an actual navigation item;
+- no new buttons or menus, no backend, no real data persistence, no workflows, no fiscal or accounting behavior changes; demo state resets per page;
+- static JavaScript and source structure checks passed; live browser/device acceptance remains pending.
 
 ### 0.19 — Collapsible desktop navigation rail
 
