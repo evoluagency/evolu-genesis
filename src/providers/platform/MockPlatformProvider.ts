@@ -443,6 +443,42 @@ export class MockPlatformProvider implements PlatformProvider {
     };
   }
 
+  async getAuditHistory(input: {
+    tenantId: string;
+    companyId?: string;
+    cnpjId?: string;
+    periodId?: string;
+  }): Promise<AuditHistoryContext> {
+    const events = this.auditEvents
+      .filter(event =>
+        this.matchesScope(
+          {
+            tenantId: event.tenantId,
+            ...(event.companyId ? { companyId: event.companyId } : {}),
+            ...(event.cnpjId ? { cnpjId: event.cnpjId } : {}),
+            ...(event.accountingPeriodId
+              ? { accountingPeriodId: event.accountingPeriodId }
+              : {})
+          },
+          input
+        )
+      )
+      .sort((a, b) => b.occurredAt.localeCompare(a.occurredAt));
+
+    return {
+      schemaVersion: "1.0.0",
+      tenantId: input.tenantId,
+      ...(input.companyId ? { companyId: input.companyId } : {}),
+      ...(input.cnpjId ? { cnpjId: input.cnpjId } : {}),
+      ...(input.periodId ? { accountingPeriodId: input.periodId } : {}),
+      events,
+      capabilities: {
+        canFilterAudit: { status: "allowed" },
+        canOpenSubject: { status: "allowed" }
+      }
+    };
+  }
+
   async recordDecision(request: RecordDecisionRequest): Promise<Decision> {
     const decision: Decision = {
       decisionId: `decision-mock-${this.decisions.length + 1}`,
@@ -575,6 +611,68 @@ export class MockPlatformProvider implements PlatformProvider {
     };
     this.auditEvents.push(event);
     return event;
+  }
+
+  private seedAuditEvents(): void {
+    const pendingScope = purposePendingItem.scope;
+    this.auditEvents.push({
+      eventId: "audit-seed-pending-economic-purpose",
+      eventType: "pending_item.available",
+      tenantId: pendingScope.tenantId,
+      ...(pendingScope.companyId ? { companyId: pendingScope.companyId } : {}),
+      ...(pendingScope.cnpjId ? { cnpjId: pendingScope.cnpjId } : {}),
+      ...(pendingScope.accountingPeriodId
+        ? { accountingPeriodId: pendingScope.accountingPeriodId }
+        : {}),
+      correlationId: `pending:${purposePendingItem.pendingItemId}`,
+      actor: "system",
+      subject: {
+        type: "PendingItem",
+        id: purposePendingItem.pendingItemId
+      },
+      occurredAt: "2026-10-05T12:00:00Z",
+      metadata: {
+        status: purposePendingItem.status,
+        pendingItemType: purposePendingItem.type
+      }
+    });
+
+    for (const approval of this.approvals) {
+      this.auditEvents.push({
+        eventId: `audit-seed-${approval.approvalId}`,
+        eventType: "approval.awaiting",
+        tenantId: approval.scope.tenantId,
+        ...(approval.scope.companyId
+          ? { companyId: approval.scope.companyId }
+          : {}),
+        ...(approval.scope.cnpjId ? { cnpjId: approval.scope.cnpjId } : {}),
+        ...(approval.scope.accountingPeriodId
+          ? { accountingPeriodId: approval.scope.accountingPeriodId }
+          : {}),
+        correlationId: `decision:${approval.decisionId}`,
+        actor: "system",
+        subject: {
+          type: "ApprovalRecord",
+          id: approval.approvalId
+        },
+        occurredAt: "2026-10-10T12:00:01Z",
+        metadata: {
+          decisionId: approval.decisionId,
+          status: approval.status
+        }
+      });
+    }
+  }
+
+  private appendAuditEvent(
+    event: Omit<AuditEvent, "eventId">
+  ): AuditEvent {
+    const recorded: AuditEvent = {
+      ...event,
+      eventId: `audit-mock-${this.auditEvents.length + 1}`
+    };
+    this.auditEvents.push(recorded);
+    return recorded;
   }
 
   private matchesScope(
