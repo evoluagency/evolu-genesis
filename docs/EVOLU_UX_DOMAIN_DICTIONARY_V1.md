@@ -125,7 +125,25 @@ Base fields:
 - capabilities
 - dataQuality
 
-Specialized projections:
+Company-level workspace selection is a separate projection:
+
+### CompanyWorkspaceContext
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- selectedCnpjId
+- cnpjs
+- company
+- activeAccountingPeriod
+- pendingSummary
+- capabilities
+- provenance
+- dataQuality
+
+`CompanyWorkspaceContext` is company-scoped navigation/workspace context. It must not replace the CNPJ-scoped `CompanyContext`.
+
+Specialized CNPJ-scoped projections:
 
 ### FiscalCompanyContext
 Adds:
@@ -152,7 +170,7 @@ Adds:
 - findings
 - pendingItems
 
-Rule: contexts contain only the projection needed for that experience.
+Rule: contexts contain only the projection needed for that experience. All CNPJ-scoped decision contexts preserve `schemaVersion`, `tenantId`, `companyId`, `cnpjId`, `provenance` and `capabilities`.
 
 ## Fiscal and accounting domain
 
@@ -299,6 +317,8 @@ Fields:
 ### ActionCommand
 Explicit request for Platform mutation.
 
+Every command carries a non-null authorization basis. Approval-based actions use an `ApprovalRecord` reference; actions explicitly permitted without a formal approval use a direct permission/capability reference with actor and reason. A missing approval ID must never become an implicit authorization bypass.
+
 Fields:
 - commandId
 - tenantId
@@ -306,7 +326,7 @@ Fields:
 - cnpjId
 - actionType
 - subjectId
-- authorizedByApprovalId
+- authorization
 - payload
 - requestedBy
 - requestedAt
@@ -385,7 +405,7 @@ Never use one generic `pending` state for all families.
 - Provider: abstract source consumed by UX
 - Adapter: implementation translating a core/external system into contracts
 - Ref: lightweight stable reference
-- Capabilities: operations currently available/authorized
+- Capabilities: explicit operation availability/authorization descriptors; each capability has status `allowed | forbidden | unavailable` and may carry a reasonCode
 
 ## Providers and adapters
 
