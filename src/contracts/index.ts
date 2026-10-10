@@ -2,6 +2,7 @@ import type {
   AccountingPeriod,
   Analysis,
   AnalysisStatus,
+  AuditEvent,
   ApprovalRecord,
   CnpjEntity,
   CnpjId,
@@ -167,6 +168,35 @@ export interface ApprovalContext {
   relatedDecisions: Decision[];
   relatedRecommendations: Recommendation[];
   capabilities: Capabilities;
+}
+
+export interface AuditHistoryContext {
+  schemaVersion: SchemaVersion;
+  tenantId: TenantId;
+  companyId?: CompanyId;
+  cnpjId?: CnpjId;
+  accountingPeriodId?: string;
+  events: AuditEvent[];
+  capabilities: Capabilities;
+}
+
+export interface AnalysisHistoryEntry {
+  analysis: Analysis;
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId?: CnpjId;
+  subject: {
+    type: string;
+    id: string;
+  };
+}
+
+export interface AnalysisHistoryContext {
+  schemaVersion: SchemaVersion;
+  tenantId: TenantId;
+  companyId?: CompanyId;
+  cnpjId?: CnpjId;
+  entries: AnalysisHistoryEntry[];
 }
 
 export interface DocumentAnalysisRequest {
