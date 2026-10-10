@@ -7,11 +7,13 @@ import { OfficeWorkQueueController } from "../preview/runtime/features/pending-i
 import { Nfe70031Controller } from "../preview/runtime/features/fiscal-documents/Nfe70031Controller.js";
 import { HistoryController } from "../preview/runtime/features/history/HistoryController.js";
 import {
-  mockTenant, mockCompany, mockCnpj, mockDocument, mockPeriod, purposePendingItem
+  mockTenant, mockCompany, mockCnpj, mockDocument, mockPeriod, purposePendingItem,
+  createNfe70031ScenarioState
 } from "../preview/runtime/mocks/scenarios/nfe-70031.js";
 
-const platformMock = new MockPlatformProvider();
-const intelligenceMock = new MockIntelligenceProvider();
+const sharedScenarioState = createNfe70031ScenarioState();
+const platformMock = new MockPlatformProvider(sharedScenarioState);
+const intelligenceMock = new MockIntelligenceProvider(sharedScenarioState);
 const calls = [];
 const gateway = {
   async invoke(invocation) {
@@ -87,6 +89,22 @@ const history = await new HistoryController(platform, intelligence, {
 assert.ok(history.audit.events.length > 0);
 assert.ok(history.analyses.entries.length > 0);
 
+// Controller-level provider swap must preserve the full approval/execution boundary.
+const resolved = await documentController.recordPurpose("production");
+assert.equal(resolved.status, "completed");
+assert.ok(resolved.recommendations.length > 0);
+const decision = await documentController.recordRecommendationDecision("accept");
+assert.equal(decision.decision, "accept");
+const actionCallsBeforeApproval = calls.filter(call => call.operation === "requestActionExecution").length;
+const documentApproval = await documentController.recordApproval("approve");
+assert.equal(documentApproval.status, "approved");
+assert.equal(calls.filter(call => call.operation === "requestActionExecution").length, actionCallsBeforeApproval);
+const result = await documentController.executeApprovedAction();
+assert.equal(result.status, "succeeded");
+assert.equal(calls.filter(call => call.operation === "requestActionExecution").length, actionCallsBeforeApproval + 1);
+const after = await documentController.getAuditHistory();
+assert.ok(after.events.some(event => event.eventType === "action.succeeded"));
+
 await assert.rejects(
   () => new PlatformAdapter({
     async invoke() { return { schemaVersion: "1.0.0", tenantId: "other-tenant", items: [] }; }
@@ -135,6 +153,35 @@ await assert.rejects(
   /adapter_approval_identity_mismatch/
 );
 await assert.rejects(
+  () => new IntelligenceAdapter({
+    async invoke() {
+      return {
+        schemaVersion: "1.0.0", analysisId: "a", status: "insufficient_context",
+        findings: [], evidence: [], recommendations: [],
+        missingContext: [{ scope: { tenantId: "another-tenant", companyId: scope.companyId, cnpjId: scope.cnpjId } }]
+      };
+    }
+  }).requestDocumentAnalysis({
+    schemaVersion: "1.0.0", tenantId: scope.tenantId,
+    companyId: scope.companyId, cnpjId: scope.cnpjId,
+    documentId: mockDocument.documentId,
+    purpose: "economic_purpose_review", requestedBy: "reviewer-ux7"
+  }),
+  /adapter_scope_mismatch/
+);
+await assert.rejects(
+  () => new PlatformAdapter({
+    async invoke() {
+      return {
+        schemaVersion: "1.0.0", tenantId: scope.tenantId,
+        approvals: [], relatedDecisions: [{ decisionId: "foreign-decision", recommendationId: "r" }],
+        relatedRecommendations: [], capabilities: {}
+      };
+    }
+  }).getApprovals({ tenantId: scope.tenantId }),
+  /adapter_unrelated_decision/
+);
+await assert.rejects(
   () => platform.requestActionExecution({
     tenantId: scope.tenantId, companyId: scope.companyId, cnpjId: scope.cnpjId,
     authorization: { kind: "untrusted" },
@@ -142,6 +189,15 @@ await assert.rejects(
     subjectId: mockDocument.documentId, payload: {}, requestedBy: "reviewer-ux7"
   }),
   /adapter_authorization_required/
+);
+await assert.rejects(
+  () => platform.requestActionExecution({
+    tenantId: scope.tenantId, companyId: scope.companyId, cnpjId: scope.cnpjId,
+    authorization: { kind: "approval_record", approvalId: "" },
+    actionType: "record_economic_purpose", subjectType: "FiscalDocument",
+    subjectId: mockDocument.documentId, payload: {}, requestedBy: "reviewer-ux7"
+  }),
+  /adapter_invalid_response/
 );
 
 console.log("UX-7 adapter contract tests: PASS");
