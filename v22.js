@@ -251,10 +251,13 @@
 
   renderReconciliation = function(){
     const isPt=pt();
+    const contract=reconciliationContractData();
+    const finding=contract.finding;
+    const pending=contract.pending;
     return `<div class="workspace-grid">
       <section class="card">
         <div class="card-head"><div><span class="tiny-label">${isPt?'CASO DE RECONCILIAÇÃO':'RECONCILIATION CASE'}</span><h4>${isPt?'Conciliação da competência · 09/2026':'Period reconciliation · 09/2026'}</h4></div><span class="pill warn">${isPt?'Investigação aberta':'Open investigation'}</span></div>
-        <div class="source-grid">${DATA.sources.map(s=>`<div class="source-card"><span class="category">${CATEGORY_LABELS[s.category][state.lang]}</span><b>${s.value}</b><strong>${langValue(s.name)}</strong><small>${langValue(s.note)}</small><span class="source-origin">${langValue(s.origin)}</span></div>`).join('')}</div>
+        <div class="source-grid">${contract.sources.map(s=>`<div class="source-card"><span class="category">${CATEGORY_LABELS[s.category][state.lang]}</span><b>${s.value}</b><strong>${langValue(s.name)}</strong><small>${langValue(s.note)}</small><span class="source-origin">${langValue(s.origin||'')}</span></div>`).join('')}</div>
         <div class="recon-summary">
           <div class="notice">${isPt?'Essas fontes representam dimensões diferentes. O primeiro passo não é escolher um número, mas definir quais fontes deveriam reconciliar entre si e por qual critério.':'These sources represent different dimensions. The first step is not to choose a number, but to define which sources should reconcile and by which criterion.'}</div>
           <div class="recon-map">
@@ -269,8 +272,8 @@
       <aside class="card">
         <span class="tiny-label">${isPt?'INVESTIGAÇÃO, NÃO ESCOLHA':'INVESTIGATE, DO NOT GUESS'}</span>
         <h4>${isPt?'A diferença só vira problema quando não conseguimos explicar sua origem.':'A difference becomes a problem when we cannot explain its origin.'}</h4>
-        <div class="context-gap"><strong>${isPt?'Hipóteses em aberto':'Open hypotheses'}</strong><p>${isPt?'Cancelamentos · corte de competência · documentos ausentes · critérios gerenciais · lançamentos manuais.':'Cancellations · period cut-off · missing documents · management criteria · manual entries.'}</p></div>
-        ${state.followupCreated?`<div class="notice" style="margin-top:8px"><strong>${isPt?'Pendência criada':'Follow-up created'}</strong><br>${isPt?'Confirmar a origem da diferença entre documentos fiscais e escrituração contábil em 09/2026.':'Confirm the source of the difference between tax documents and accounting records for 09/2026.'}</div>`:''}
+        <div class="context-gap" ${finding?`data-finding-id="${escapeAttr(finding.findingId)}"`:''}><strong>${isPt?'Hipóteses em aberto':'Open hypotheses'}</strong><p>${isPt?'Cancelamentos · corte de competência · documentos ausentes · critérios gerenciais · lançamentos manuais.':'Cancellations · period cut-off · missing documents · management criteria · manual entries.'}</p></div>
+        ${pending?`<div class="notice" style="margin-top:8px"><strong>${isPt?'Pendência criada':'Follow-up created'}</strong><br>${escapeHtml(pending.description)}</div>`:''}
       </aside>
     </div>`;
   };
