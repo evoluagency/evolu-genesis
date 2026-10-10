@@ -99,16 +99,18 @@ export class MockPlatformProvider implements PlatformProvider {
   }
 
   async requestActionExecution(request: ActionExecutionRequest): Promise<ActionResult> {
-    if (request.authorization.kind === "approval_record") {
+    const authorization = request.authorization;
+
+    if (authorization.kind === "approval_record") {
       const approved = this.approvals.some(
         approval =>
-          approval.approvalId === request.authorization.approvalId &&
+          approval.approvalId === authorization.approvalId &&
           approval.status === "approved"
       );
       if (!approved) {
         throw new Error("mock_action_not_authorized");
       }
-    } else if (!request.authorization.capability || !request.authorization.reason) {
+    } else if (!authorization.capability || !authorization.reason) {
       throw new Error("mock_action_not_authorized");
     }
 
