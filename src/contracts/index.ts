@@ -321,6 +321,7 @@ export interface ReconciliationAnalysisRequest {
 
 export interface ReconciliationAnalysisResult {
   schemaVersion: SchemaVersion;
+  analysisId: string;
   status: AnalysisStatus;
   findings: Finding[];
   evidence: Evidence[];
