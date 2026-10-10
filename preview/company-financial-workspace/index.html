@@ -63,7 +63,7 @@ let lang='pt',theme='dark',role='company',view='home',company='m',period='2026-0
 const queryParams=new URLSearchParams(window.location.search);
 const previewReadOnly=queryParams.get('role')==='viewer';
 function homeHref(){
- const q=new URLSearchParams({cnpj:company==='m'?'a':'b',period});
+ const q=new URLSearchParams({cnpj:company==='m'?'a':'b',period,activity:'finance'});
  if(previewReadOnly)q.set('mode','read');
  return '../company-access-home/?'+q.toString();
 }
@@ -424,6 +424,8 @@ if(previewReadOnly){role='company';view='home';}
 else {view=navs[role][0][0];}
 if(['m','f'].includes(queryParams.get('cnpj')))company=queryParams.get('cnpj');
 if(['2026-09','2026-08'].includes(queryParams.get('period')))period=queryParams.get('period');
+const requestedTask=queryParams.get('activity');
+if(navs[role].some(x=>x[0]===requestedTask)&&!(previewReadOnly&&requestedTask==='send'))view=requestedTask;
 render();
 })();
 </script></body></html>
