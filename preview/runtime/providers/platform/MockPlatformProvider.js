@@ -9,21 +9,22 @@ export class MockPlatformProvider {
     recordedPendingItems = [];
     auditEvents = [
         {
-            eventId: "audit-70031-context-requested",
-            eventType: "pending_information_requested",
+            eventId: "audit-seed-pending-economic-purpose",
+            eventType: "pending_item.available",
             tenantId: purposePendingItem.scope.tenantId,
             ...(purposePendingItem.scope.companyId ? { companyId: purposePendingItem.scope.companyId } : {}),
             ...(purposePendingItem.scope.cnpjId ? { cnpjId: purposePendingItem.scope.cnpjId } : {}),
             ...(purposePendingItem.scope.accountingPeriodId ? { accountingPeriodId: purposePendingItem.scope.accountingPeriodId } : {}),
-            actor: "platform",
+            correlationId: `pending:${purposePendingItem.pendingItemId}`,
+            actor: "system",
             subject: {
                 type: "FiscalDocument",
                 id: documentAnalysisContext.document.documentId
             },
             occurredAt: "2026-10-05T12:00:00Z",
             metadata: {
-                pendingItemId: purposePendingItem.pendingItemId,
-                reason: "economic_purpose_required"
+                status: purposePendingItem.status,
+                pendingItemType: purposePendingItem.type
             }
         }
     ];
@@ -141,29 +142,35 @@ export class MockPlatformProvider {
             subject: { ...event.subject },
             metadata: { ...event.metadata }
         }))
-            .sort((a, b) => a.occurredAt.localeCompare(b.occurredAt));
+            .sort((a, b) => b.occurredAt.localeCompare(a.occurredAt));
         return {
             schemaVersion: "1.0.0",
             tenantId: input.tenantId,
             ...(input.companyId ? { companyId: input.companyId } : {}),
             ...(input.cnpjId ? { cnpjId: input.cnpjId } : {}),
+            ...(input.periodId ? { accountingPeriodId: input.periodId } : {}),
             ...(input.subject ? { subject: { ...input.subject } } : {}),
-            events
+            events,
+            capabilities: {
+                canFilterAudit: { status: "allowed" },
+                canOpenSubject: { status: "allowed" }
+            }
         };
     }
     async recordAnalysisObservation(request) {
-        const duplicate = this.auditEvents.some(event => event.eventType === "analysis_observed" &&
+        const duplicate = this.auditEvents.some(event => event.eventType === "analysis.observed" &&
             event.subject.type === request.subjectType &&
             event.subject.id === request.subjectId &&
             event.metadata.analysisId === request.analysisId);
         if (duplicate)
             return;
         this.appendAuditEvent({
-            eventType: "analysis_observed",
+            eventType: "analysis.observed",
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
+            correlationId: `analysis:${request.analysisId}`,
             actor: request.actor,
             subject: {
                 type: request.subjectType,
@@ -194,11 +201,12 @@ export class MockPlatformProvider {
         this.recordedPendingItems.push({ ...request.item });
         const recordedAt = new Date().toISOString();
         this.appendAuditEvent({
-            eventType: "pending_item_recorded",
+            eventType: "pending_item.recorded",
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.item.scope.accountingPeriodId ? { accountingPeriodId: request.item.scope.accountingPeriodId } : {}),
+            correlationId: `pending:${request.item.pendingItemId}`,
             actor: request.recordedBy,
             subject: { ...request.item.subject },
             occurredAt: recordedAt,
@@ -233,11 +241,12 @@ export class MockPlatformProvider {
             ? "awaiting_information"
             : "pending_review";
         this.appendAuditEvent({
-            eventType: "pending_information_recorded",
+            eventType: "pending_information.recorded",
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(purposePendingItem.scope.accountingPeriodId ? { accountingPeriodId: purposePendingItem.scope.accountingPeriodId } : {}),
+            correlationId: `pending:${request.pendingItemId}`,
             actor: request.recordedBy,
             subject: {
                 type: "FiscalDocument",
@@ -246,7 +255,7 @@ export class MockPlatformProvider {
             occurredAt: recordedAt,
             metadata: {
                 pendingItemId: request.pendingItemId,
-                value: request.value,
+                informationProvided: true,
                 status
             }
         });
@@ -291,11 +300,12 @@ export class MockPlatformProvider {
         };
         this.decisions.push(decision);
         this.appendAuditEvent({
-            eventType: "decision_recorded",
+            eventType: "decision.recorded",
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
+            correlationId: `analysis:${request.analysisId}`,
             actor: request.decidedBy,
             subject: {
                 type: request.subjectType,
@@ -357,11 +367,14 @@ export class MockPlatformProvider {
         else
             this.approvals.push(approval);
         this.appendAuditEvent({
-            eventType: "approval_recorded",
+            eventType: approval.status === "approved"
+                ? "approval.approved"
+                : "approval.rejected",
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
+            correlationId: `decision:${request.decisionId}`,
             actor: request.actor,
             subject: {
                 type: request.subjectType,
@@ -420,11 +433,12 @@ export class MockPlatformProvider {
             executedAt
         };
         this.appendAuditEvent({
-            eventType: "action_executed",
+            eventType: "action.succeeded",
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(authorizationPeriodId ? { accountingPeriodId: authorizationPeriodId } : {}),
+            correlationId: `action:${result.commandId}`,
             actor: request.requestedBy,
             subject: {
                 type: request.subjectType,
