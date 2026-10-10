@@ -23,7 +23,7 @@
         row.value={pt:PURPOSE_LABELS[value].pt,en:PURPOSE_LABELS[value].en};
         row.valueKey=value;
         row.source=source==='assistant'
-          ?{pt:'Confirmação via EVOLU Intelligence',en:'Confirmation via EVOLU Intelligence'}
+          ?{pt:'Confirmação via Intelligence',en:'Confirmation via Intelligence'}
           :{pt:'Preenchimento manual na Platform',en:'Manual input in Platform'};
         row.sourceType='human';
         row.evidence=source==='assistant'
