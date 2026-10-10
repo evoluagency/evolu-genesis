@@ -42,6 +42,7 @@ export class ReconciliationController {
       tenantId: this.config.tenantId,
       companyId: this.config.companyId,
       cnpjId: this.config.cnpjId,
+      reconciliationId: context.reconciliation.reconciliationId,
       periodId: this.config.periodId,
       requestedBy: this.config.actor
     });
