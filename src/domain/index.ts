@@ -11,6 +11,16 @@ export type CommandId = string;
 
 export type Scope = "tenant" | "company" | "cnpj" | "document" | "analysis" | "approval";
 
+export type CapabilityStatus = "allowed" | "forbidden" | "unavailable";
+
+export interface Capability {
+  status: CapabilityStatus;
+  reasonCode?: string;
+  description?: string;
+}
+
+export type Capabilities = Readonly<Record<string, Capability>>;
+
 export type ResourceState = "idle" | "loading" | "ready" | "empty" | "error" | "forbidden";
 export type AnalysisStatus = "queued" | "analyzing" | "completed" | "insufficient_context" | "failed";
 export type HumanWorkflowStatus =
@@ -203,6 +213,18 @@ export interface Analysis {
   missingContext: PendingItem[];
 }
 
+export type ActionAuthorizationRef =
+  | {
+      kind: "approval_record";
+      approvalId: ApprovalId;
+    }
+  | {
+      kind: "direct_permission";
+      capability: string;
+      actor: string;
+      reason: string;
+    };
+
 export interface ActionCommand {
   commandId: CommandId;
   tenantId: TenantId;
@@ -210,7 +232,7 @@ export interface ActionCommand {
   cnpjId: CnpjId;
   actionType: string;
   subjectId: string;
-  authorizedByApprovalId?: ApprovalId;
+  authorization: ActionAuthorizationRef;
   payload: Readonly<Record<string, unknown>>;
   requestedBy: string;
   requestedAt: string;
