@@ -50,6 +50,8 @@ export interface CnpjEntitySummary {
   cnpjId: CnpjId;
   cnpj: string;
   legalName: string;
+  establishmentType?: "head_office" | "branch";
+  state?: string;
 }
 
 export interface FiscalDocumentSummary {
@@ -98,6 +100,7 @@ export interface CompanyWorkspaceContext {
   cnpjs: CnpjEntitySummary[];
   company: Company;
   activeAccountingPeriod: AccountingPeriod;
+  availableAccountingPeriods: AccountingPeriod[];
   pendingSummary: Readonly<Record<string, number>>;
   capabilities: Capabilities;
   provenance: ProvenanceEntry[];
