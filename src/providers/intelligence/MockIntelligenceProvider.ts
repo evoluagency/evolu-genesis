@@ -17,7 +17,8 @@ import {
   mockDocument,
   mockPeriod,
   mockTenant,
-  reconciliationAnalysisResult
+  reconciliationAnalysisResult,
+  reconciliationCase
 } from "../../mocks/scenarios/nfe-70031.js";
 import type {
   Nfe70031EconomicPurpose,
@@ -230,7 +231,7 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
       cnpjId: mockCnpj.cnpjId,
       subject: {
         type: "Reconciliation",
-        id: "reconciliation-acme-2026-09"
+        id: reconciliationCase.reconciliationId
       },
       result: reconciliationAnalysisResult,
       type: "reconciliation_analysis",
