@@ -177,7 +177,7 @@ export const portfolioContext: PortfolioContext = {
       companyId: mockCompany.companyId,
       legalName: mockCompany.legalName,
       ...(mockCompany.tradeName ? { tradeName: mockCompany.tradeName } : {}),
-      cnpjCount: 1,
+      cnpjCount: 2,
       pendingCount: 1
     }
   ],
@@ -230,15 +230,19 @@ export const companyWorkspaceContext: CompanyWorkspaceContext = {
       cnpjId: mockCnpj.cnpjId,
       cnpj: mockCnpj.cnpj,
       legalName: mockCnpj.legalName,
-      establishmentType: mockCnpj.establishmentType,
-      state: mockCnpj.state
+      ...(mockCnpj.establishmentType
+        ? { establishmentType: mockCnpj.establishmentType }
+        : {}),
+      ...(mockCnpj.state ? { state: mockCnpj.state } : {})
     },
     {
       cnpjId: mockBranchCnpj.cnpjId,
       cnpj: mockBranchCnpj.cnpj,
       legalName: mockBranchCnpj.legalName,
-      establishmentType: mockBranchCnpj.establishmentType,
-      state: mockBranchCnpj.state
+      ...(mockBranchCnpj.establishmentType
+        ? { establishmentType: mockBranchCnpj.establishmentType }
+        : {}),
+      ...(mockBranchCnpj.state ? { state: mockBranchCnpj.state } : {})
     }
   ],
   company: mockCompany,
