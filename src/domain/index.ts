@@ -262,6 +262,9 @@ export interface AuditEvent {
   tenantId: TenantId;
   companyId?: CompanyId;
   cnpjId?: CnpjId;
+  accountingPeriodId?: string;
+  correlationId: string;
+  causationId?: string;
   actor: string;
   subject: {
     type: string;
