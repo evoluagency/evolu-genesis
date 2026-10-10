@@ -188,10 +188,12 @@ FiscalDocument
 - the existing NF-e timeline renders AuditHistoryContext instead of maintaining a second local audit state
 - HistoryController may aggregate the two projections for future reuse but must not merge their authorities
 
-### UX-7 Replace mocks
-- PlatformAdapter
-- IntelligenceAdapter
-- no feature-component rewrite allowed
+### UX-7 Replace mocks (candidate adapter boundary)
+- PlatformAdapter and IntelligenceAdapter implement the unchanged provider interfaces
+- a server-owned transport is injected; no production endpoint or credentials are assumed
+- do not rewrite feature controllers or screen props
+- the adapter boundary is implemented in an isolated branch; production transport and endpoint wiring remain blocked by documented authorization/runtime gates
+- see [UX7_ADAPTER_BOUNDARY_V1.md](./UX7_ADAPTER_BOUNDARY_V1.md) for verification and release controls
 
 ## Conceptual lint
 
