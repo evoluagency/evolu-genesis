@@ -156,8 +156,10 @@ FiscalDocument
 - make Tenant → Company → CnpjEntity explicit
 - use `CompanyWorkspaceContext` for company-scoped selection/navigation
 - keep `CompanyContext` and specialized decision contexts CNPJ-scoped
-- add CNPJ scope even when current mock has one
-- preserve competence/period context
+- expose only authorized CNPJs and accounting periods through PlatformProvider
+- preserve competence when switching CNPJ and preserve CNPJ when switching competence
+- fail safe to an authorized default for invalid deep-link selections
+- keep legacy operational fixtures behind a temporary compatibility mapping until their own migration slice
 
 ### UX-4 Reconciliation
 - differences become Finding
