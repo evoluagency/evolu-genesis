@@ -84,20 +84,20 @@ async function refreshAuditTimeline() {
   const history = await controller.getAuditHistory();
   const events = history.events;
 
-  const requested = [...events].reverse().find(event =>
+  const requested = events.find(event =>
     ["pending_item.available", "pending_information.recorded"].includes(event.eventType)
   );
-  const analysis = [...events].reverse().find(
+  const analysis = events.find(
     event =>
       event.eventType === "analysis.observed" &&
       Array.isArray(event.metadata.recommendationIds) &&
       event.metadata.recommendationIds.length > 0
   );
-  const approval = [...events].reverse().find(event =>
+  const approval = events.find(event =>
     ["approval.approved", "approval.rejected"].includes(event.eventType)
   );
-  const decision = [...events].reverse().find(event => event.eventType === "decision.recorded");
-  const execution = [...events].reverse().find(event => event.eventType === "action.succeeded");
+  const decision = events.find(event => event.eventType === "decision.recorded");
+  const execution = events.find(event => event.eventType === "action.succeeded");
 
   if (requested) {
     const isRecorded = requested.eventType === "pending_information.recorded";
