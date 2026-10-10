@@ -60,13 +60,13 @@ export interface FiscalDocumentSummary {
   status: string;
 }
 
-export interface DocumentCapabilities {
+export type DocumentCapabilities = Capabilities & {
   canRequestAnalysis: Capability;
   canRequestInformation: Capability;
   canRecordDecision: Capability;
   canRequestApproval: Capability;
   canExecuteApprovedAction: Capability;
-}
+};
 
 export interface PortfolioContext {
   schemaVersion: SchemaVersion;
