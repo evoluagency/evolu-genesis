@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Painel do Escritório — demonstração estática EVOLU Platform/NEXUS com dados fictícios">
-<title>NEXUS · Painel do Escritório | EVOLU Genesis</title>
+<title>NEXUS · Painel do Escritório</title>
 <link rel="stylesheet" href="../shared-ux/shell.css">
 <style>
 .office-chip{display:flex;align-items:center;gap:8px;min-width:0}
@@ -56,6 +56,7 @@
       <button class="active" type="button" data-view="overview" aria-current="page"><i class="ux-nav-symbol" aria-hidden="true">⌂</i><span class="ux-nav-label" data-t="navHome">Início</span></button>
       <button type="button" data-view="companies"><i class="ux-nav-symbol" aria-hidden="true">◫</i><span class="ux-nav-label" data-t="navCompanies">Empresas</span></button>
       <button type="button" data-view="queue"><i class="ux-nav-symbol" aria-hidden="true">◷</i><span class="ux-nav-label" data-t="navQueue">Pendências</span></button>
+      <button type="button" data-view="approvals"><i class="ux-nav-symbol" aria-hidden="true">✓</i><span class="ux-nav-label" data-t="navApprovals">Aprovações</span></button>
     </nav>
   </div>
   <div class="ux-nav-group">
@@ -113,6 +114,7 @@
     <nav class="ux-tabs" role="tablist" aria-label="Atividades do escritório">
       <button type="button" class="ux-tab" role="tab" data-tab="overview" aria-selected="true" data-t="tabOverview">Visão geral</button>
       <button type="button" class="ux-tab" role="tab" data-tab="queue" aria-selected="false" data-t="tabQueue">Pendências</button>
+      <button type="button" class="ux-tab" role="tab" data-tab="approvals" aria-selected="false" data-t="tabApprovals">Aprovações</button>
       <button type="button" class="ux-tab" role="tab" data-tab="companies" aria-selected="false" data-t="tabCompanies">Empresas</button>
     </nav>
     <div class="ux-grid" id="officePanels">
@@ -148,10 +150,10 @@
 const $=id=>document.getElementById(id);
 const text={
 pt:{
-tenantSpace:'Espaço do escritório · simulação',navGroup:'ESCRITÓRIO',navHome:'Início',navCompanies:'Empresas',navQueue:'Pendências',professional:'ÁREAS PROFISSIONAIS · PRÉVIAS',navFiscal:'Fiscal · recebidos',navAccounting:'Contábil · conferência',navAdvisory:'Assessoria',adminLabel:'ADMINISTRAÇÃO',navRegister:'Cadastrar cliente',navSettings:'Organização',sidebarNote:'Prévia pública. Links entre protótipos não transferem lançamentos nem permissões.',closeMenu:'Fechar menu',breadcrumb:'NEXUS / Escritório',synthetic:'DADOS SINTÉTICOS',user:'Equipe NEXUS',demoRole:'Perspectiva demonstrativa',eyebrow:'TENANTACCESS · NEXUS',company:'Empresa',cnpj:'Estabelecimento',period:'Competência',tabOverview:'Visão geral',tabQueue:'Pendências',tabCompanies:'Empresas',titleOverview:'Painel do Escritório',descOverview:'O que exige atenção da equipe e a qual empresa ou competência pertence.',titleQueue:'Pendências da equipe',descQueue:'Solicitações e evidências no escopo selecionado. Nenhuma ação tributária é automática.',titleCompanies:'Empresas atendidas',descCompanies:'Somente ACME Industrial compõe este cenário demonstrativo.',metricCompanies:'Empresas do cenário',metricRequests:'Pendências no contexto',metricPeriod:'Competência analisada',metricSource:'Referências sintéticas',metricNoSync:'Não há dados de outros clientes nesta prévia.',metricsCompany:'Uma empresa fictícia, dois estabelecimentos.',metricsReq:'Solicitações abertas na amostra escolhida.',metricsPeriod:'Nenhum fechamento ou imposto foi calculado.',mainOverview:'Fila de trabalho',mainQueue:'Pendências por competência',mainCompanies:'Carteira demonstrativa',subOverview:'Informações solicitadas e pendentes de revisão.',subQueue:'Abrir contexto profissional para conferir.',subCompanies:'Selecione a empresa e suas atividades.',actionQueue:'Ver pendências ↗',actionCompanies:'Abrir carteira ↗',actionOverview:'Voltar ao início',sideCompany:'Empresa do cenário',sideCompanySub:'Escopo visível da prévia profissional.',sideQueues:'Acesso rápido',sideQueuesSub:'Atividades profissionais sem profundidade extra de menu.',sideCompanyDetail:'Contexto da empresa',sideCompanyDetailSub:'Selecione a atividade após abrir a empresa.',noSync:'Páginas demonstrativas não compartilham lançamentos.',footNote:'Demonstração de UX, não uma conta autenticada. Há uma empresa e dois CNPJs fictícios.',journeyLink:'Revisar jornada completa ↗',allReadOnly:'Esta prévia não salva mudanças e não concede permissões.',noIssues:'Nenhuma pendência na seleção atual.',noContext:'Sem registros sintéticos para este estabelecimento e competência.',queueTotal:'Itens nesta competência',open:'Pendente',waiting:'Aguardando esclarecimento',scenarioCompany:'ACME Industrial',scenarioLabel:'Única Company disponível nesta demonstração.',mainOffice:'Matriz · 0001',branchOffice:'Filial · 0002',statusPending:'Solicitação não respondida na amostra.',statusDemo:'Somente demonstração',item1:'Qual a finalidade do recebimento não identificado?',item2:'Comprovante da aquisição de materiais',item1Description:'A contabilidade precisa contextualizar um crédito bancário que não equivale automaticamente a receita tributável.',item2Description:'Documento de compra é evidência e deve ser conferido antes de qualquer classificação fiscal.',openAccounting:'Abrir pendência ↗',openFiscal:'Ver documento fiscal de exemplo ↗',openSettings:'Configurar empresa ↗',openCompany:'Abrir empresa',openCompanyArea:'Prévia da área da empresa ↗',viewCompany:'Selecionar empresa',registerCompany:'Cadastrar outra empresa (simulação) ↗',accessMode:'Superfície interna do escritório',clientIsSeparate:'O portal da empresa é separado e não concede acesso à carteira.',quickAccounting:'Conferência contábil',quickFiscal:'Recebidos no Fiscal',quickAdvisory:'Contexto de assessoria',quickSettings:'Configurações da empresa',quickOnboarding:'Cadastro guiado',pagerPrev:'Anterior',pagerNext:'Próximo',dialogTitle:'Detalhamento da pendência',dialogScope:'Escopo',dialogEvidence:'Observação da evidência',dialogNext:'Próximo passo',close:'Fechar',footNoShare:'Os protótipos anteriores mantêm estados próprios.',cardsNone:'Nenhuma movimentação/pendência foi sincronizada com esta página.',sourceSep:'Movimentação financeira não substitui evidência fiscal.',clickHint:'Acesso profissional simulado: não existe login ou autorização real.',btnCompany:'Abrir informações',companySelect:'Empresa selecionada'
+tenantSpace:'Espaço do escritório · simulação',navGroup:'ESCRITÓRIO',navHome:'Início',navCompanies:'Empresas',navQueue:'Pendências',navApprovals:'Aprovações',professional:'ÁREAS PROFISSIONAIS · PRÉVIAS',navFiscal:'Fiscal · recebidos',navAccounting:'Contábil · conferência',navAdvisory:'Assessoria',adminLabel:'ADMINISTRAÇÃO',navRegister:'Cadastrar cliente',navSettings:'Organização',sidebarNote:'Prévia pública. Links entre protótipos não transferem lançamentos nem permissões.',closeMenu:'Fechar menu',breadcrumb:'NEXUS / Escritório',synthetic:'DADOS SINTÉTICOS',user:'Equipe NEXUS',demoRole:'Perspectiva demonstrativa',eyebrow:'TENANTACCESS · NEXUS',company:'Empresa',cnpj:'Estabelecimento',period:'Competência',tabOverview:'Visão geral',tabQueue:'Pendências',tabApprovals:'Aprovações',tabCompanies:'Empresas',titleOverview:'Painel do Escritório',descOverview:'O que exige atenção da equipe e a qual empresa ou competência pertence.',titleQueue:'Pendências da equipe',descQueue:'Solicitações e evidências no escopo selecionado. Nenhuma ação tributária é automática.',titleApprovals:'Aprovações',descApprovals:'Autorizações formais aguardando decisão humana. Aprovar não executa a ação automaticamente.',titleCompanies:'Empresas atendidas',descCompanies:'Somente ACME Industrial compõe este cenário demonstrativo.',metricCompanies:'Empresas do cenário',metricRequests:'Pendências no contexto',metricPeriod:'Competência analisada',metricSource:'Referências sintéticas',metricNoSync:'Não há dados de outros clientes nesta prévia.',metricsCompany:'Uma empresa fictícia, dois estabelecimentos.',metricsReq:'Solicitações abertas na amostra escolhida.',metricsPeriod:'Nenhum fechamento ou imposto foi calculado.',mainOverview:'Fila de trabalho',mainQueue:'Pendências por competência',mainApprovals:'Aprovações no escopo',mainCompanies:'Carteira demonstrativa',subOverview:'Informações solicitadas e pendentes de revisão.',subQueue:'Abrir contexto profissional para conferir.',subApprovals:'Revisar Recommendation e Decision antes de autorizar.',subCompanies:'Selecione a empresa e suas atividades.',actionQueue:'Ver pendências ↗',actionCompanies:'Abrir carteira ↗',actionOverview:'Voltar ao início',sideCompany:'Empresa do cenário',sideCompanySub:'Escopo visível da prévia profissional.',sideQueues:'Acesso rápido',sideQueuesSub:'Atividades profissionais sem profundidade extra de menu.',sideCompanyDetail:'Contexto da empresa',sideCompanyDetailSub:'Selecione a atividade após abrir a empresa.',noSync:'Páginas demonstrativas não compartilham lançamentos.',footNote:'Demonstração de UX, não uma conta autenticada. Há uma empresa e dois CNPJs fictícios.',journeyLink:'Revisar jornada completa ↗',allReadOnly:'Esta prévia não salva mudanças e não concede permissões.',noIssues:'Nenhuma pendência na seleção atual.',noContext:'Sem registros sintéticos para este estabelecimento e competência.',queueTotal:'Itens nesta competência',open:'Pendente',waiting:'Aguardando esclarecimento',scenarioCompany:'ACME Industrial',scenarioLabel:'Única Company disponível nesta demonstração.',mainOffice:'Matriz · 0001',branchOffice:'Filial · 0002',statusPending:'Solicitação não respondida na amostra.',statusDemo:'Somente demonstração',item1:'Qual a finalidade do recebimento não identificado?',item2:'Comprovante da aquisição de materiais',item1Description:'A contabilidade precisa contextualizar um crédito bancário que não equivale automaticamente a receita tributável.',item2Description:'Documento de compra é evidência e deve ser conferido antes de qualquer classificação fiscal.',openAccounting:'Abrir pendência ↗',openFiscal:'Ver documento fiscal de exemplo ↗',openSettings:'Configurar empresa ↗',openCompany:'Abrir empresa',openCompanyArea:'Prévia da área da empresa ↗',viewCompany:'Selecionar empresa',registerCompany:'Cadastrar outra empresa (simulação) ↗',accessMode:'Superfície interna do escritório',clientIsSeparate:'O portal da empresa é separado e não concede acesso à carteira.',quickAccounting:'Conferência contábil',quickFiscal:'Recebidos no Fiscal',quickAdvisory:'Contexto de assessoria',quickSettings:'Configurações da empresa',quickOnboarding:'Cadastro guiado',pagerPrev:'Anterior',pagerNext:'Próximo',dialogTitle:'Detalhamento da pendência',dialogScope:'Escopo',dialogEvidence:'Observação da evidência',dialogNext:'Próximo passo',close:'Fechar',footNoShare:'Os protótipos anteriores mantêm estados próprios.',cardsNone:'Nenhuma movimentação/pendência foi sincronizada com esta página.',sourceSep:'Movimentação financeira não substitui evidência fiscal.',clickHint:'Acesso profissional simulado: não existe login ou autorização real.',btnCompany:'Abrir informações',companySelect:'Empresa selecionada',approvalAwaiting:'Aguardando aprovação',approvalApproved:'Aprovada',approvalRejected:'Rejeitada',approve:'Aprovar',reject:'Rejeitar',noApprovals:'Nenhuma aprovação neste escopo.',approvalFormal:'Aprovação é autorização formal. A execução permanece uma etapa separada.'
 },
 en:{
-tenantSpace:'Office workspace · simulation',navGroup:'OFFICE',navHome:'Home',navCompanies:'Companies',navQueue:'Pending items',professional:'PROFESSIONAL AREAS · PREVIEWS',navFiscal:'Tax · received',navAccounting:'Accounting · evidence review',navAdvisory:'Advisory',adminLabel:'ADMINISTRATION',navRegister:'Register client',navSettings:'Organization',sidebarNote:'Public preview. Linked previews do not share entries or permissions.',closeMenu:'Close menu',breadcrumb:'NEXUS / Office',synthetic:'SYNTHETIC DATA',user:'NEXUS team',demoRole:'Demonstration perspective',eyebrow:'TENANTACCESS · NEXUS',company:'Company',cnpj:'Establishment',period:'Accounting period',tabOverview:'Overview',tabQueue:'Pending items',tabCompanies:'Companies',titleOverview:'Office dashboard',descOverview:'What requires the team’s attention, and which company or period it belongs to.',titleQueue:'Team pending items',descQueue:'Requests and evidence within the selected scope. No automated tax decisions.',titleCompanies:'Client companies',descCompanies:'Only ACME Industrial exists in this demonstration fixture.',metricCompanies:'Companies in scenario',metricRequests:'Pending items in scope',metricPeriod:'Selected period',metricSource:'Synthetic references',metricNoSync:'No additional clients are in this preview.',metricsCompany:'One fictional company, two establishments.',metricsReq:'Open requests in the selected sample.',metricsPeriod:'No tax or period close was calculated.',mainOverview:'Work queue',mainQueue:'Pending items by period',mainCompanies:'Demonstration portfolio',subOverview:'Requests and evidence awaiting review.',subQueue:'Open the professional context for review.',subCompanies:'Choose a company and its tasks.',actionQueue:'View pending items ↗',actionCompanies:'Open portfolio ↗',actionOverview:'Back to home',sideCompany:'Scenario company',sideCompanySub:'Scope visible in this professional preview.',sideQueues:'Quick access',sideQueuesSub:'Professional activities without unnecessary menu depth.',sideCompanyDetail:'Company context',sideCompanyDetailSub:'Choose an activity after opening the company.',noSync:'Demonstration pages do not share changes.',footNote:'UX demo, not an authenticated account. One company and two fictional tax entities.',journeyLink:'Review full journey ↗',allReadOnly:'This preview does not save changes or grant permissions.',noIssues:'No pending items in current selection.',noContext:'No synthetic records for this establishment and period.',queueTotal:'Items in this period',open:'Pending',waiting:'Awaiting information',scenarioCompany:'ACME Industrial',scenarioLabel:'Only Company available in this demo.',mainOffice:'Head office · 0001',branchOffice:'Branch · 0002',statusPending:'Request has no reply in demo fixture.',statusDemo:'Demonstration only',item1:'What is the purpose of the unidentified receipt?',item2:'Supporting document for material purchase',item1Description:'Accounting needs context for a bank credit that does not automatically mean taxable revenue.',item2Description:'A purchase document is evidence to be reviewed before any tax classification.',openAccounting:'Open pending item ↗',openFiscal:'View example fiscal document ↗',openSettings:'Configure company ↗',openCompany:'Open company',openCompanyArea:'Company access preview ↗',viewCompany:'Select company',registerCompany:'Register another company (demo) ↗',accessMode:'Internal office surface',clientIsSeparate:'Company access is separate and does not provide portfolio access.',quickAccounting:'Accounting review',quickFiscal:'Tax source queue',quickAdvisory:'Advisory context',quickSettings:'Company settings',quickOnboarding:'Guided onboarding',pagerPrev:'Previous',pagerNext:'Next',dialogTitle:'Pending item details',dialogScope:'Scope',dialogEvidence:'Evidence context',dialogNext:'Next step',close:'Close',footNoShare:'Earlier prototypes keep independent in-memory state.',cardsNone:'No transactions or requests have been synchronized to this page.',sourceSep:'A financial movement is not fiscal evidence.',clickHint:'Simulated professional access: no authentication or real authorization.',btnCompany:'Open company info',companySelect:'Selected company'
+tenantSpace:'Office workspace · simulation',navGroup:'OFFICE',navHome:'Home',navCompanies:'Companies',navQueue:'Pending items',navApprovals:'Approvals',professional:'PROFESSIONAL AREAS · PREVIEWS',navFiscal:'Tax · received',navAccounting:'Accounting · evidence review',navAdvisory:'Advisory',adminLabel:'ADMINISTRATION',navRegister:'Register client',navSettings:'Organization',sidebarNote:'Public preview. Linked previews do not share entries or permissions.',closeMenu:'Close menu',breadcrumb:'NEXUS / Office',synthetic:'SYNTHETIC DATA',user:'NEXUS team',demoRole:'Demonstration perspective',eyebrow:'TENANTACCESS · NEXUS',company:'Company',cnpj:'Establishment',period:'Accounting period',tabOverview:'Overview',tabQueue:'Pending items',tabApprovals:'Approvals',tabCompanies:'Companies',titleOverview:'Office dashboard',descOverview:'What requires the team’s attention, and which company or period it belongs to.',titleQueue:'Team pending items',descQueue:'Requests and evidence within the selected scope. No automated tax decisions.',titleApprovals:'Approvals',descApprovals:'Formal authorizations awaiting human decision. Approval does not execute the action automatically.',titleCompanies:'Client companies',descCompanies:'Only ACME Industrial exists in this demonstration fixture.',metricCompanies:'Companies in scenario',metricRequests:'Pending items in scope',metricPeriod:'Selected period',metricSource:'Synthetic references',metricNoSync:'No additional clients are in this preview.',metricsCompany:'One fictional company, two establishments.',metricsReq:'Open requests in the selected sample.',metricsPeriod:'No tax or period close was calculated.',mainOverview:'Work queue',mainQueue:'Pending items by period',mainApprovals:'Approvals in scope',mainCompanies:'Demonstration portfolio',subOverview:'Requests and evidence awaiting review.',subQueue:'Open the professional context for review.',subApprovals:'Review Recommendation and Decision before authorizing.',subCompanies:'Choose a company and its tasks.',actionQueue:'View pending items ↗',actionCompanies:'Open portfolio ↗',actionOverview:'Back to home',sideCompany:'Scenario company',sideCompanySub:'Scope visible in this professional preview.',sideQueues:'Quick access',sideQueuesSub:'Professional activities without unnecessary menu depth.',sideCompanyDetail:'Company context',sideCompanyDetailSub:'Choose an activity after opening the company.',noSync:'Demonstration pages do not share changes.',footNote:'UX demo, not an authenticated account. One company and two fictional tax entities.',journeyLink:'Review full journey ↗',allReadOnly:'This preview does not save changes or grant permissions.',noIssues:'No pending items in current selection.',noContext:'No synthetic records for this establishment and period.',queueTotal:'Items in this period',open:'Pending',waiting:'Awaiting information',scenarioCompany:'ACME Industrial',scenarioLabel:'Only Company available in this demo.',mainOffice:'Head office · 0001',branchOffice:'Branch · 0002',statusPending:'Request has no reply in demo fixture.',statusDemo:'Demonstration only',item1:'What is the purpose of the unidentified receipt?',item2:'Supporting document for material purchase',item1Description:'Accounting needs context for a bank credit that does not automatically mean taxable revenue.',item2Description:'A purchase document is evidence to be reviewed before any tax classification.',openAccounting:'Open pending item ↗',openFiscal:'View example fiscal document ↗',openSettings:'Configure company ↗',openCompany:'Open company',openCompanyArea:'Company access preview ↗',viewCompany:'Select company',registerCompany:'Register another company (demo) ↗',accessMode:'Internal office surface',clientIsSeparate:'Company access is separate and does not provide portfolio access.',quickAccounting:'Accounting review',quickFiscal:'Tax source queue',quickAdvisory:'Advisory context',quickSettings:'Company settings',quickOnboarding:'Guided onboarding',pagerPrev:'Previous',pagerNext:'Next',dialogTitle:'Pending item details',dialogScope:'Scope',dialogEvidence:'Evidence context',dialogNext:'Next step',close:'Close',footNoShare:'Earlier prototypes keep independent in-memory state.',cardsNone:'No transactions or requests have been synchronized to this page.',sourceSep:'A financial movement is not fiscal evidence.',clickHint:'Simulated professional access: no authentication or real authorization.',btnCompany:'Open company info',companySelect:'Selected company',approvalAwaiting:'Awaiting approval',approvalApproved:'Approved',approvalRejected:'Rejected',approve:'Approve',reject:'Reject',noApprovals:'No approvals in this scope.',approvalFormal:'Approval is formal authorization. Execution remains a separate step.'
 }
 };
 const t=k=>(text[document.documentElement.lang.startsWith('en')?'en':'pt']||text.pt)[k]||k;
@@ -165,15 +167,39 @@ const initialOfficeTab=officeParams.get('tab');
 // Route context is a synthetic, whitelisted selector, never authorization.
 if(['m','f'].includes(officeParams.get('cnpj')))$('selectedCnpj').value=officeParams.get('cnpj');
 if(['2026-08','2026-09'].includes(officeParams.get('period')))$('selectedPeriod').value=officeParams.get('period');
-let page=['queue','companies'].includes(initialOfficeTab)?initialOfficeTab:'overview',queuePage=0,companyOpened=false;
+let page=['queue','approvals','companies'].includes(initialOfficeTab)?initialOfficeTab:'overview',queuePage=0,companyOpened=false;
 const selected=()=>({company:$('selectedCompany').value,cnpj:$('selectedCnpj').value,period:$('selectedPeriod').value});
-const issues=()=>{const c=selected();return items.filter(x=>x.company===c.company&&x.cnpj===c.cnpj&&x.period===c.period);};
+const queueBridge=()=>window.EvoluOfficeWorkQueueBridge||null;
+const pendingLabel=item=>item?.title&&text.pt[item.title]?t(item.title):(item?.title||'');
+const pendingDescription=item=>item?.desc&&text.pt[item.desc]?t(item.desc):(item?.description||item?.desc||'');
+const pendingKind=item=>{
+ const map={information_request:'Informação',review:'Revisão',reconciliation:'Conciliação',approval:'Aprovação',document_issue:'Documento',data_quality_issue:'Qualidade de dados'};
+ return map[item?.type]||item?.kind||'Pendência';
+};
+const issues=()=>{
+ const bridge=queueBridge();
+ if(bridge?.state?.pending?.items){
+  return bridge.state.pending.items.map(item=>({
+   id:item.pendingItemId,
+   title:item.title,
+   description:item.description,
+   type:item.type,
+   status:item.status,
+   subject:item.subject,
+   kind:pendingKind(item),
+   raw:item
+  }));
+ }
+ const s=selected();
+ return items.filter(x=>x.company===s.company&&x.cnpj===s.cnpj&&x.period===s.period);
+};
+const approvals=()=>queueBridge()?.state?.approvals||null;
 const professionalHref=(tab,item)=>{const c=selected(),q=new URLSearchParams({tab,cnpj:c.cnpj,period:c.period});if(item)q.set('item',item);return '../tenant-fiscal-workspace/?'+q.toString();};
 const accountingHref=()=>professionalHref('review');
 const fiscalHref=()=>professionalHref('received');
 const advisoryHref=()=>{const c=selected();return '../tenant-advisory-workspace/?cnpj='+encodeURIComponent(c.cnpj)+'&period='+encodeURIComponent(c.period);};
 const companyHref=()=>{const c=selected();return '../company-access-home/?cnpj='+(c.cnpj==='m'?'a':'b')+'&period='+encodeURIComponent(c.period);};
-const headerLabel=()=>page==='queue'?'Queue':page==='companies'?'Companies':'Overview';
+const headerLabel=()=>page==='queue'?'Queue':page==='approvals'?'Approvals':page==='companies'?'Companies':'Overview';
 function renderMetrics(){
 const count=issues().length,c=selected();
 const rows=[
@@ -184,8 +210,10 @@ const rows=[
 $('metrics').innerHTML=rows.map(x=>'<div class="ux-metric"><span class="ux-meta">'+esc(t(x[0]))+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(t(x[2]))+'</small></div>').join('');
 }
 function row(x){
-return '<div class="ux-row"><div class="office-row-label"><div class="office-row-name"><span class="ux-pill warn">'+esc(t('open'))+'</span> <strong>'+esc(t(x.title))+'</strong></div><small>ACME Industrial · '+esc(t('mainOffice'))+' · '+esc(x.period)+' · '+esc(x.kind)+'</small></div>'+
-'<div class="office-row-actions"><button type="button" class="ux-btn" data-detail="'+esc(x.id)+'">'+esc(t('viewCompany'))+'</button><a class="ux-btn ux-btn-soft" href="'+esc(professionalHref('pending',x.id))+'">'+esc(t('openAccounting'))+'</a></div></div>';
+const title=pendingLabel(x),s=selected(),status=x.status==='awaiting_information'?t('waiting'):t('open');
+const route=x.subject?.type==='FiscalDocument'&&x.subject?.id==='fiscal-document-70031'?'../fiscal-document-70031/':professionalHref('pending');
+return '<div class="ux-row"><div class="office-row-label"><div class="office-row-name"><span class="ux-pill warn">'+esc(status)+'</span> <strong>'+esc(title)+'</strong></div><small>ACME Industrial · '+esc(s.cnpj==='m'?t('mainOffice'):t('branchOffice'))+' · '+esc(s.period)+' · '+esc(pendingKind(x))+'</small></div>'+
+'<div class="office-row-actions"><button type="button" class="ux-btn" data-detail="'+esc(x.id)+'">'+esc(t('viewCompany'))+'</button><a class="ux-btn ux-btn-soft" href="'+esc(route)+'">'+esc(t('openAccounting'))+'</a></div></div>';
 }
 function renderQueue(){
 const list=issues(),pageSize=4,max=Math.max(1,Math.ceil(list.length/pageSize));
@@ -194,6 +222,32 @@ if(!list.length){$('primaryContent').innerHTML='<div class="ux-empty">'+esc(t('n
 else $('primaryContent').innerHTML='<div class="ux-list">'+list.slice(queuePage*pageSize,(queuePage+1)*pageSize).map(row).join('')+'</div>';
 $('queueCount').textContent=t('queueTotal')+': '+list.length;
 $('queuePager').innerHTML=max>1?'<button class="ux-btn" type="button" data-queue-step="-1" '+(queuePage===0?'disabled':'')+'>'+esc(t('pagerPrev'))+'</button><span>'+(queuePage+1)+' / '+max+'</span><button class="ux-btn" type="button" data-queue-step="1" '+(queuePage===max-1?'disabled':'')+'>'+esc(t('pagerNext'))+'</button>':'';
+}
+function approvalStatusLabel(status){
+ if(status==='approved')return t('approvalApproved');
+ if(status==='rejected')return t('approvalRejected');
+ return t('approvalAwaiting');
+}
+function renderApprovals(){
+ const context=approvals();
+ const list=context?.approvals||[];
+ $('queuePager').innerHTML='';
+ $('queueCount').textContent=list.length+' '+(document.documentElement.lang.startsWith('en')?'item(s)':'item(ns)');
+ if(!list.length){
+  $('primaryContent').innerHTML='<div class="ux-empty">'+esc(t('noApprovals'))+'</div>';
+  $('secondaryContent').innerHTML='<div class="ux-empty">'+esc(t('approvalFormal'))+'</div>';
+  return;
+ }
+ $('primaryContent').innerHTML='<div class="ux-list">'+list.map(a=>{
+  const decision=context.relatedDecisions.find(d=>d.decisionId===a.decisionId);
+  const recommendation=context.relatedRecommendations.find(r=>r.recommendationId===decision?.recommendationId);
+  const statusClass=a.status==='awaiting_approval'?'warn':a.status==='approved'?'good':'bad';
+  const actions=a.status==='awaiting_approval'
+   ?'<div class="office-row-actions"><button type="button" class="ux-btn ux-btn-primary" data-approval-action="approve" data-approval-id="'+esc(a.approvalId)+'">'+esc(t('approve'))+'</button><button type="button" class="ux-btn" data-approval-action="reject" data-approval-id="'+esc(a.approvalId)+'">'+esc(t('reject'))+'</button></div>'
+   :'';
+  return '<div class="ux-row"><div class="office-row-label"><div class="office-row-name"><span class="ux-pill '+statusClass+'">'+esc(approvalStatusLabel(a.status))+'</span><strong>'+esc(recommendation?.title||a.subjectType+' · '+a.subjectId)+'</strong></div><small>'+esc(recommendation?.rationale||t('approvalFormal'))+'</small></div>'+actions+'</div>';
+ }).join('')+'</div>';
+ $('secondaryContent').innerHTML='<div class="office-context-note">'+esc(t('approvalFormal'))+'</div>';
 }
 function companyCard(){
 const c=selected();
@@ -223,7 +277,7 @@ $('secondaryContent').innerHTML='<div class="ux-empty">'+esc(t('scenarioLabel'))
 }
 function render(){
 for(const el of document.querySelectorAll('[data-t]'))el.textContent=t(el.dataset.t);
-const map={overview:['titleOverview','descOverview','mainOverview','subOverview','sideCompany','sideCompanySub','actionQueue'],queue:['titleQueue','descQueue','mainQueue','subQueue','sideQueues','sideQueuesSub','actionOverview'],companies:['titleCompanies','descCompanies','mainCompanies','subCompanies',companyOpened?'sideCompanyDetail':'sideCompany','sideCompanyDetailSub','actionOverview']};
+const map={overview:['titleOverview','descOverview','mainOverview','subOverview','sideCompany','sideCompanySub','actionQueue'],queue:['titleQueue','descQueue','mainQueue','subQueue','sideQueues','sideQueuesSub','actionOverview'],approvals:['titleApprovals','descApprovals','mainApprovals','subApprovals','sideQueues','sideQueuesSub','actionOverview'],companies:['titleCompanies','descCompanies','mainCompanies','subCompanies',companyOpened?'sideCompanyDetail':'sideCompany','sideCompanyDetailSub','actionOverview']};
 const m=map[page];
 $('workspaceTitle').textContent=t(m[0]);$('workspaceDescription').textContent=t(m[1]);
 $('topTitle').textContent=t(m[0]);$('mainCardTitle').textContent=t(m[2]);$('mainCardDescription').textContent=t(m[3]);
@@ -233,6 +287,7 @@ for(const b of document.querySelectorAll('[data-view]')){const active=b.dataset.
 for(const b of document.querySelectorAll('[data-tab]'))b.setAttribute('aria-selected',String(b.dataset.tab===page));
 renderMetrics();
 if(page==='companies')renderCompany();
+else if(page==='approvals')renderApprovals();
 else {
  renderQueue();
  $('secondaryContent').innerHTML=page==='overview'?companyCard():shortcuts();
@@ -241,7 +296,7 @@ $('accountingNav').href=accountingHref();$('fiscalNav').href=fiscalHref();$('adv
 document.dispatchEvent(new Event('ux:navigation-update'));
 }
 function changeView(next){
-if(!['overview','queue','companies'].includes(next))return;
+if(!['overview','queue','approvals','companies'].includes(next))return;
 page=next;queuePage=0;if(next!=='companies')companyOpened=false;
 render();
 }
@@ -249,15 +304,35 @@ function openDetails(id){
 const item=issues().find(x=>x.id===id);
 if(!item)return;
 $('dialogTitle').textContent=t('dialogTitle');
-$('dialogContent').innerHTML='<p><strong>'+esc(t(item.title))+'</strong></p><p>'+esc(t(item.desc))+'</p>'+
+$('dialogContent').innerHTML='<p><strong>'+esc(pendingLabel(item))+'</strong></p><p>'+esc(pendingDescription(item))+'</p>'+
  '<p><b>'+esc(t('dialogScope'))+':</b> ACME Industrial · '+esc(t('mainOffice'))+' · '+esc(item.period)+'</p>'+
  '<p><b>'+esc(t('dialogNext'))+':</b> '+esc(t('openAccounting'))+'</p>'+
  '<p>'+esc(t('allReadOnly'))+'</p><a class="ux-btn ux-btn-primary" href="'+esc(professionalHref('pending',item.id))+'">'+esc(t('openAccounting'))+'</a>';
 $('itemDialog').showModal();
 }
+async function refreshWorkQueues(){
+ const bridge=queueBridge();
+ if(!bridge?.load)return;
+ const s=selected();
+ try{await bridge.load({cnpj:s.cnpj,period:s.period});}
+ catch(error){console.error(error);}
+}
+async function decideApproval(approvalId,outcome){
+ const bridge=queueBridge();
+ if(!bridge?.decideApproval)return;
+ try{
+  await bridge.decideApproval(approvalId,outcome);
+  render();
+ }catch(error){
+  console.error(error);
+  $('queueCount').textContent=document.documentElement.lang.startsWith('en')?'Approval could not be recorded.':'Não foi possível registrar a aprovação.';
+ }
+}
+window.addEventListener('evolu:office-work-queue-ready',()=>render());
 document.addEventListener('click',e=>{
-const b=e.target.closest('[data-view],[data-tab],[data-detail],[data-company-open],[data-queue-step]');
+const b=e.target.closest('[data-view],[data-tab],[data-detail],[data-company-open],[data-queue-step],[data-approval-action]');
 if(!b)return;
+if(b.dataset.approvalAction){void decideApproval(b.dataset.approvalId,b.dataset.approvalAction);return;}
 if(b.dataset.view){changeView(b.dataset.view);return;}
 if(b.dataset.tab){changeView(b.dataset.tab);return;}
 if(b.dataset.detail){openDetails(b.dataset.detail);return;}
@@ -266,10 +341,11 @@ if(b.dataset.queueStep){queuePage=Math.max(0,queuePage+Number(b.dataset.queueSte
 });
 $('closeDialog').addEventListener('click',()=>$('itemDialog').close());
 $('itemDialog').addEventListener('click',e=>{if(e.target===$('itemDialog'))$('itemDialog').close();});
-for(const id of ['selectedCompany','selectedCnpj','selectedPeriod'])$(id).addEventListener('change',()=>{queuePage=0;render();});
+for(const id of ['selectedCompany','selectedCnpj','selectedPeriod'])$(id).addEventListener('change',async()=>{queuePage=0;await refreshWorkQueues();render();});
 document.addEventListener('ux:locale',render);
 render();
 })();
 </script>
+<script type="module" src="work-queue-provider.js"></script>
 </body>
 </html>

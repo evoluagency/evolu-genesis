@@ -28,14 +28,24 @@ export interface PlatformProvider {
   getCompanyContext(input: { tenantId: string; companyId: string; cnpjId: string }): Promise<CompanyContext>;
   getFiscalDocuments(input: { tenantId: string; companyId: string; cnpjId: string; periodId?: string }): Promise<FiscalDocumentsContext>;
   getDocumentAnalysisContext(input: { tenantId: string; companyId: string; cnpjId: string; documentId: string }): Promise<DocumentAnalysisContext>;
-  getPendingItems(input: { tenantId: string; companyId?: string; cnpjId?: string }): Promise<PendingItemsContext>;
+  getPendingItems(input: {
+    tenantId: string;
+    companyId?: string;
+    cnpjId?: string;
+    periodId?: string;
+  }): Promise<PendingItemsContext>;
   getReconciliationContext(input: {
     tenantId: string;
     companyId: string;
     cnpjId: string;
     periodId: string;
   }): Promise<ReconciliationContext>;
-  getApprovals(input: { tenantId: string; companyId?: string; cnpjId?: string }): Promise<ApprovalContext>;
+  getApprovals(input: {
+    tenantId: string;
+    companyId?: string;
+    cnpjId?: string;
+    periodId?: string;
+  }): Promise<ApprovalContext>;
 
   recordPendingItem(request: RecordPendingItemRequest): Promise<RecordPendingItemResult>;
   recordPendingInformation(request: RecordPendingInformationRequest): Promise<RecordPendingInformationResult>;

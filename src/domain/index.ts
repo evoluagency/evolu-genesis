@@ -167,9 +167,17 @@ export interface Decision {
   decidedAt: string;
 }
 
+export interface OperationalScopeRef {
+  tenantId: TenantId;
+  companyId?: CompanyId;
+  cnpjId?: CnpjId;
+  accountingPeriodId?: string;
+}
+
 export interface ApprovalRecord {
   approvalId: ApprovalId;
   decisionId: DecisionId;
+  scope: OperationalScopeRef;
   subjectType: string;
   subjectId: string;
   status: "awaiting_approval" | "approved" | "rejected";
@@ -190,6 +198,7 @@ export type PendingItemType =
 export interface PendingItem {
   pendingItemId: PendingItemId;
   type: PendingItemType;
+  scope: OperationalScopeRef;
   title: string;
   description: string;
   status: HumanWorkflowStatus;

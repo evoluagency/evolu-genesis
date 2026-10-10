@@ -76,6 +76,9 @@ export class Nfe70031Controller {
             throw new Error("decision_not_available");
         }
         const approval = await this.platform.recordApproval({
+            tenantId: this.config.tenantId,
+            companyId: this.config.companyId,
+            cnpjId: this.config.cnpjId,
             decisionId: this.decision.decisionId,
             subjectType: "Recommendation",
             subjectId: this.recommendation.recommendationId,

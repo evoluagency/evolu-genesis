@@ -123,6 +123,9 @@ export class Nfe70031Controller {
     }
 
     const approval = await this.platform.recordApproval({
+      tenantId: this.config.tenantId,
+      companyId: this.config.companyId,
+      cnpjId: this.config.cnpjId,
       decisionId: this.decision.decisionId,
       subjectType: "Recommendation",
       subjectId: this.recommendation.recommendationId,

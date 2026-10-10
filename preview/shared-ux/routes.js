@@ -15,6 +15,7 @@ function build(name,input){
  switch(name){
  case 'office': section='office';break;
  case 'officeQueue':section='office';Object.assign(p,{tab:'queue',cnpj:c.entity,period:c.period});break;
+ case 'officeApprovals':section='office';Object.assign(p,{tab:'approvals',cnpj:c.entity,period:c.period});break;
  case 'officeCompanies':section='office';Object.assign(p,{tab:'companies',cnpj:c.entity,period:c.period});break;
  case 'companyHome':case 'companyFinance':case 'companyRequests':case 'companyDocuments':
   section='company';Object.assign(p,{cnpj:c.entity==='m'?'a':'b',period:c.period});
@@ -56,7 +57,8 @@ const cases=[
  ['J-07','tenant-accounting','Esclarecimento → resposta → revisão',['Abrir R-1','Resposta recebida','Concluir revisão humana'],['fiscalPending','fiscalPending','fiscalPending'],'Respondido e resolvido são estados distintos.'],
  ['J-08','tenant-accounting','Fiscal → pré-fechamento documental',['Abrir Fiscal','Pré-fechamento'],['fiscalReceived','fiscalPreclose'],'Acesso ao preparo não dispensa validação de todas as evidências.'],
  ['J-09','tenant-advisory','Assessoria → análise de contexto disponível',['Abrir Assessoria','Análises','Examinar CTX-09-R'],['advisoryContexts','advisoryAnalysis','advisoryAnalysis'],'Liberação é fictícia; a recomendação exige intervenção humana.'],
- ['J-10','tenant-admin','Escritório → empresa → configurações',['Empresas','Abrir ACME','Configuração do cliente'],['officeCompanies','officeCompanies','companyConfiguration'],'Configuração é interna à contabilidade; não pertence ao portal da Company.']
+ ['J-10','tenant-admin','Escritório → empresa → configurações',['Empresas','Abrir ACME','Configuração do cliente'],['officeCompanies','officeCompanies','companyConfiguration'],'Configuração é interna à contabilidade; não pertence ao portal da Company.'],
+ ['J-11','tenant-accounting','Escritório → aprovações',['Aprovações'],['officeApprovals'],'Aprovação formal continua separada de execução.']
 ].map(row=>({id:row[0],role:row[1],title:row[2],labels:row[3],routes:row[4],clicks:row[3].length,notice:row[5]}));
 function validate(){
  const used=new Set();

@@ -303,9 +303,12 @@ Fields:
 - decidedAt
 
 ### ApprovalRecord
+Formal authorization/rejection record. It is not an execution command.
+
 Fields:
 - approvalId
 - decisionId
+- scope: tenantId + companyId/cnpjId/accountingPeriodId when applicable
 - subjectType
 - subjectId
 - status
@@ -357,6 +360,8 @@ Fields:
 
 ### PendingItem
 
+Operational work item. Every item carries explicit scope; portfolio/work-queue views must not infer ownership only from the currently selected screen context.
+
 Types:
 - information_request
 - review
@@ -368,6 +373,7 @@ Types:
 Fields:
 - pendingItemId
 - type
+- scope: tenantId + companyId/cnpjId/accountingPeriodId when applicable
 - title
 - description
 - status

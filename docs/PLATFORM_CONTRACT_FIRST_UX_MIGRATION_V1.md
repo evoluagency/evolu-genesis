@@ -171,7 +171,12 @@ FiscalDocument
 - the existing renderer consumes the contract-driven bridge with legacy data only as load-time fallback
 
 ### UX-5 Pending Items and Approvals
-- first-class queues
+- reuse the Office workspace as the first-class work-queue surface; do not create a duplicate dashboard
+- keep Pending Items and Approvals as separate contracts and activities
+- every PendingItem and ApprovalRecord carries explicit operational scope
+- filter queues by authorized tenant/company/CNPJ/accounting period
+- formal approval updates the existing ApprovalRecord from awaiting_approval to approved/rejected
+- ApprovalRecord never executes the authorized action; ActionCommand remains a separate step
 - no generic Task domain
 
 ### UX-6 Audit and history
