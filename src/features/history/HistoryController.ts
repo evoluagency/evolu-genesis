@@ -42,7 +42,8 @@ export class HistoryController {
       this.intelligence.getAnalysisHistory({
         tenantId: this.config.tenantId,
         ...(selection.companyId ? { companyId: selection.companyId } : {}),
-        ...(selection.cnpjId ? { cnpjId: selection.cnpjId } : {})
+        ...(selection.cnpjId ? { cnpjId: selection.cnpjId } : {}),
+        ...(selection.subject ? { subject: { ...selection.subject } } : {})
       })
     ]);
 
