@@ -2,7 +2,7 @@ const I18N = {
   pt: {
     introEyebrow:'EXPERIÊNCIA PÚBLICA DE PRODUTO',
     introTitle:'Dados não são contexto. Contexto não é conclusão.',
-    introBody:'Genesis demonstra como a EVOLU conecta operação, reconciliação, contexto empresarial e julgamento humano antes de recomendar uma ação.',
+    introBody:'A Platform mostra como operação, conciliação, contexto empresarial e julgamento humano se conectam antes de uma recomendação.',
     startGuided:'Começar experiência guiada',
     exploreFreely:'Explorar livremente',
     syntheticData:'DADOS SINTÉTICOS',
@@ -38,7 +38,7 @@ const I18N = {
   en: {
     introEyebrow:'PUBLIC PRODUCT EXPERIENCE',
     introTitle:'Data is not context. Context is not a conclusion.',
-    introBody:'Genesis shows how EVOLU connects operations, reconciliation, company context and human judgment before recommending an action.',
+    introBody:'Platform shows how operations, reconciliation, company context and human judgment connect before a recommendation.',
     startGuided:'Start guided experience',
     exploreFreely:'Explore freely',
     syntheticData:'SYNTHETIC DATA',
@@ -328,8 +328,8 @@ function initialLedger(){
 
 function createState(){
   return {
-    lang: localStorage.getItem('genesis_lang') || 'pt',
-    theme: localStorage.getItem('genesis_theme') || 'dark',
+    lang: localStorage.getItem('evolu_lang') || 'pt',
+    theme: localStorage.getItem('evolu_theme') || 'dark',
     page:'dashboard',
     selectedInvoice:'NF-e 70031',
     selectedEntry:'CTB-4107',
@@ -382,7 +382,7 @@ function applyI18n(){
     const small=sidebarFoot.querySelector('small');
     if(small) small.textContent=`${langValue(DATA.company.regime)} · ${DATA.company.location}`;
   }
-  $('#intelligenceFab').setAttribute('aria-label',state.lang==='pt'?'Abrir EVOLU Intelligence':'Open EVOLU Intelligence');
+  $('#intelligenceFab').setAttribute('aria-label',state.lang==='pt'?'Abrir Intelligence':'Open Intelligence');
   $('#closePanel').setAttribute('aria-label',state.lang==='pt'?'Fechar':'Close');
   $('#minimizePanel').setAttribute('aria-label',state.lang==='pt'?'Minimizar':'Minimize');
   $('.send').setAttribute('aria-label',state.lang==='pt'?'Enviar':'Send');
@@ -1100,7 +1100,7 @@ function upsertPurposeLedger(value,source){
   const row=state.ledger.find(r=>r.id==='bearing-purpose');
   row.value={pt:PURPOSE_LABELS[value].pt,en:PURPOSE_LABELS[value].en};
   row.source=source==='assistant'
-    ?{pt:'Confirmação via EVOLU Intelligence',en:'Confirmation via EVOLU Intelligence'}
+    ?{pt:'Confirmação via Intelligence',en:'Confirmation via Intelligence'}
     :{pt:'Preenchimento manual na Platform',en:'Manual input in Platform'};
   row.sourceType='human';
   row.evidence=source==='assistant'
@@ -1316,14 +1316,14 @@ function showToast(text){
 
 $$('[data-lang]').forEach(b=>b.addEventListener('click',()=>{
   state.lang=b.dataset.lang;
-  localStorage.setItem('genesis_lang',state.lang);
+  localStorage.setItem('evolu_lang',state.lang);
   state.conversation=[];
   applyI18n();
   if(state.assistantOpen)openAssistant();
 }));
 $$('[data-theme-choice]').forEach(b=>b.addEventListener('click',()=>{
   state.theme=b.dataset.themeChoice;
-  localStorage.setItem('genesis_theme',state.theme);
+  localStorage.setItem('evolu_theme',state.theme);
   applyTheme();
 }));
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));

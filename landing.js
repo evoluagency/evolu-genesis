@@ -6,7 +6,7 @@
 
   function setLang(lang){
     root.lang=lang==='pt'?'pt-BR':'en';
-    localStorage.setItem('genesis_lang',lang);
+    localStorage.setItem('evolu_lang',lang);
     langButtons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
     translatables.forEach(el=>{el.textContent=el.dataset[lang];});
   }
@@ -16,23 +16,23 @@
     return choice;
   }
   function setTheme(choice){
-    localStorage.setItem('genesis_theme',choice);
+    localStorage.setItem('evolu_theme',choice);
     root.dataset.theme=resolvedTheme(choice);
     document.querySelector('meta[name="theme-color"]').setAttribute('content',root.dataset.theme==='light'?'#f6f7fa':'#0b0d12');
     themeButton.textContent=choice==='light'?'☀':choice==='dark'?'☾':'◐';
     themeButton.title=choice==='light'?'Light':choice==='dark'?'Dark':'System';
   }
   function cycleTheme(){
-    const current=localStorage.getItem('genesis_theme')||'system';
+    const current=localStorage.getItem('evolu_theme')||'system';
     setTheme(current==='system'?'light':current==='light'?'dark':'system');
   }
 
   langButtons.forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
   themeButton.addEventListener('click',cycleTheme);
   matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',()=>{
-    if((localStorage.getItem('genesis_theme')||'system')==='system')setTheme('system');
+    if((localStorage.getItem('evolu_theme')||'system')==='system')setTheme('system');
   });
 
-  setLang(localStorage.getItem('genesis_lang')||'pt');
-  setTheme(localStorage.getItem('genesis_theme')||'system');
+  setLang(localStorage.getItem('evolu_lang')||'pt');
+  setTheme(localStorage.getItem('evolu_theme')||'system');
 })();

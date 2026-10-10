@@ -1738,7 +1738,7 @@ These names describe contracts to be considered, not production domain entities 
 
 Canonical implementation document:
 
-- [EVOLU Platform — Especificação de UX Sistêmica e Plano de Implementação V1](./EVOLU_PLATFORM_UX_UNIFIED_WORKSPACE_SPEC_V1.md)
+- [Platform — Especificação de UX Sistêmica e Plano de Implementação V1](./EVOLU_PLATFORM_UX_UNIFIED_WORKSPACE_SPEC_V1.md)
 
 Coverage:
 - a unified sidebar + header + Company/CNPJ/competence context + one task-focused workspace per authorized surface;

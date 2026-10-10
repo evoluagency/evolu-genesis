@@ -1,4 +1,4 @@
-/* EVOLU Genesis V2.2 — Market Transformation Layer
+/* Platform UX legacy-static V2.2 — Market Transformation Layer
    Extends V2.1 without introducing real integrations, tax conclusions or an LLM. */
 (() => {
   const pt = () => state.lang === 'pt';
@@ -350,7 +350,7 @@
     if(!row)return;
     row.value={pt:PURPOSE_LABELS[value].pt,en:PURPOSE_LABELS[value].en};
     row.valueKey=value;
-    row.source=source==='reuse'?{pt:'Contexto anterior + reconfirmação',en:'Prior context + reconfirmation'}:{pt:'Confirmação via EVOLU Intelligence',en:'Confirmation via EVOLU Intelligence'};
+    row.source=source==='reuse'?{pt:'Contexto anterior + reconfirmação',en:'Prior context + reconfirmation'}:{pt:'Confirmação via Intelligence',en:'Confirmation via Intelligence'};
     row.sourceType=source==='reuse'?'reused':'human';
     row.evidence=meta.evidence||{pt:'Confirmação explícita do usuário',en:'Explicit user confirmation'};
     row.recordedAt=new Intl.DateTimeFormat(state.lang==='pt'?'pt-BR':'en-US',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date());

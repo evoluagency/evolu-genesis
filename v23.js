@@ -1,4 +1,4 @@
-/* EVOLU Genesis V2.3 — brand, nomenclature, voice and route standards */
+/* Platform UX legacy-static V2.3 — brand, nomenclature, voice and route standards */
 (() => {
   const isPt=()=>state.lang==='pt';
   const baseRenderPage=renderPage;
@@ -114,11 +114,6 @@
     ['Conduza comigo','Revisar informação'],
     ['Quero fazer manualmente','Fazer manualmente'],
     ['Por que isso importa?','Por que esta informação é necessária?'],
-    ['EVOLU Intelligence','EVOLU'],
-    ['via Intelligence','via EVOLU'],
-    ['pela Intelligence','pela EVOLU'],
-    ['A Intelligence','A EVOLU'],
-    ['a Intelligence','a EVOLU'],
     ['Context Fact','Informação validada'],
     ['Decision Record','Registro da análise']
   ];
@@ -144,10 +139,6 @@
     ['Guide me','Review information'],
     ['I want to do it manually','Do it manually'],
     ['Why does this matter?','Why is this information required?'],
-    ['EVOLU Intelligence','EVOLU'],
-    ['via Intelligence','via EVOLU'],
-    ['by Intelligence','by EVOLU'],
-    ['Intelligence','EVOLU'],
     ['Context Fact','Validated information'],
     ['Decision Record','Analysis record']
   ];
@@ -169,10 +160,10 @@
       el.textContent=isPt()?'Informações da empresa':'Company information';
     });
     const brand=document.querySelector('.intelligence-brand strong');
-    if(brand)brand.textContent='EVOLU';
+    if(brand)brand.textContent='Intelligence';
     const fab=document.getElementById('intelligenceFab');
     if(fab){
-      fab.title=isPt()?'Abrir EVOLU':'Open EVOLU';
+      fab.title=isPt()?'Abrir Intelligence':'Open Intelligence';
       fab.setAttribute('aria-label',fab.title);
     }
     const start=document.getElementById('startGuided');

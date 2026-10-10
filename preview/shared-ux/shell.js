@@ -1,4 +1,4 @@
-/* EVOLU Platform | UX-SHELL-1.
+/* Platform | UX-SHELL-1.
    Shared PRESENTATION only; identity, capabilities and tenant boundaries
    in public static previews must never be mistaken for authorization. */
 (function(global){

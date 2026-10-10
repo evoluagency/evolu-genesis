@@ -1,4 +1,4 @@
-/* Genesis V2.5 — guided tour surface, visibility and target protection */
+/* Platform V2.5 — guided tour surface, visibility and target protection */
 .demo-experience .tour-overlay{position:absolute;inset:0;background:transparent!important;pointer-events:none;overflow:hidden}
 .demo-experience .tour-mask{position:absolute;background:rgba(4,6,11,.32);pointer-events:none;transition:top .12s ease,left .12s ease,width .12s ease,height .12s ease}
 [data-theme="light"] .demo-experience .tour-mask{background:rgba(34,39,50,.18)}

@@ -1,5 +1,5 @@
-/* EVOLU Platform | UX-SHELL-1 | Static frontend only.
-   Shared language for progressive Genesis preview migration.
+/* Platform | UX-SHELL-1 | Static frontend only.
+   Shared language for progressive Platform UX contract-first migration.
    No hard-coded permissions; visibility in these files is illustrative only. */
 :root{
   color-scheme:dark;
