@@ -1,11 +1,12 @@
-# Genesis interface standard — V2.3
+# Platform interface standard
 
-This repository follows four public-interface rules:
+This repository follows five public-interface rules:
 
 1. **Use established accounting and tax terminology.** Do not replace familiar professional terms with proprietary names without a clear reason.
-2. **Keep presentation separate from operation.** `/` explains the product; `/demo/` is the operational environment.
-3. **EVOLU Intelligence is the formal product name; the operational interface uses EVOLU.** The official EVOLU symbol is the interaction point.
-4. **Suggestions are not changes.** Review, approval and traceability remain explicit.
+2. **Keep presentation separate from operation.** `/` explains the product; operational and preview surfaces demonstrate the workflow.
+3. **EVOLU is the company and brand. Platform and Intelligence are the two product names.** The operational interface belongs to Platform; contextual analysis and recommendation belong to Intelligence.
+4. **Recommendations are not changes.** Decision, approval, execution and traceability remain explicit and separate.
+5. **Infrastructure does not enter the core domain.** Vendor, database and mock names stay behind providers/adapters.
 
 Public labels favor terms such as:
 
@@ -14,10 +15,10 @@ Public labels favor terms such as:
 - Histórico
 - Evidências
 - Conciliação
-- Sugestão
+- Recomendação
 - Aprovação
 - Trilha de auditoria
 
-Internal implementation may continue to use technical terms such as Context Ledger, Decision Record and Scenario Graph.
+Internal implementation may use technical contract names such as CompanyContext, Decision, ApprovalRecord, ActionCommand and AuditEvent.
 
-The demo contains only synthetic data and preconfigured analyses. It does not constitute accounting, tax or legal advice.
+The synthetic experience contains only fictitious data and preconfigured analyses. It does not constitute accounting, tax or legal advice.
