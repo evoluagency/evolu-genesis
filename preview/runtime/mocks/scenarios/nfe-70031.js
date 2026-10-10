@@ -98,6 +98,12 @@ export const historicalEvidence = [
 export const purposePendingItem = {
     pendingItemId: "pending-economic-purpose-70031",
     type: "information_request",
+    scope: {
+        tenantId: mockTenant.tenantId,
+        companyId: mockCompany.companyId,
+        cnpjId: mockCnpj.cnpjId,
+        accountingPeriodId: mockPeriod.periodId
+    },
     title: "Finalidade econômica pendente",
     description: "A finalidade econômica do Rolamento 6305 precisa ser confirmada antes da recomendação.",
     status: "awaiting_information",
@@ -290,24 +296,33 @@ export const documentAnalysisContext = {
         issues: ["economic_purpose_missing"]
     }
 };
+export const officePendingItems = [
+    {
+        pendingItemId: "pending-office-unidentified-receipt", type: "information_request",
+        scope: { tenantId: mockTenant.tenantId, companyId: mockCompany.companyId, cnpjId: mockCnpj.cnpjId, accountingPeriodId: mockPeriod.periodId },
+        title: "Qual a finalidade do recebimento não identificado?",
+        description: "A contabilidade precisa contextualizar um crédito bancário que não equivale automaticamente a receita tributável.",
+        status: "awaiting_information", subject: { type: "FinancialMovement", id: "movement-unidentified-receipt-2026-09" }
+    },
+    {
+        pendingItemId: "pending-office-material-proof", type: "document_issue",
+        scope: { tenantId: mockTenant.tenantId, companyId: mockCompany.companyId, cnpjId: mockCnpj.cnpjId, accountingPeriodId: mockPeriod.periodId },
+        title: "Comprovante da aquisição de materiais",
+        description: "Documento de compra é evidência e deve ser conferido antes de qualquer classificação fiscal.",
+        status: "awaiting_information", subject: { type: "FiscalDocument", id: "fiscal-document-material-purchase" }
+    }
+];
 export const pendingItemsContext = {
     schemaVersion: "1.0.0",
     tenantId: mockTenant.tenantId,
     companyId: mockCompany.companyId,
     cnpjId: mockCnpj.cnpjId,
-    items: [purposePendingItem]
+    items: [purposePendingItem, ...officePendingItems]
 };
-export const approvalContext = {
-    schemaVersion: "1.0.0",
-    tenantId: mockTenant.tenantId,
-    approvals: [],
-    relatedDecisions: [],
-    relatedRecommendations: [],
-    capabilities: {
-        canApprove: { status: "unavailable", reasonCode: "no_approval_pending" },
-        canReject: { status: "unavailable", reasonCode: "no_approval_pending" }
-    }
-};
+export const seededApprovalRecommendation = { recommendationId: "recommendation-approval-70018", analysisId: "analysis-approval-70018", type: "record_economic_purpose", title: "Registrar finalidade econômica como componente de produção", rationale: "A finalidade desta operação foi confirmada e a alteração controlada aguarda autorização formal antes de qualquer execução.", evidenceRefs: [], confidence: 0.92, requiresApproval: true, proposedChange: { economicPurpose: "production" } };
+export const seededApprovalDecision = { decisionId: "decision-approval-70018", recommendationId: seededApprovalRecommendation.recommendationId, analysisId: seededApprovalRecommendation.analysisId, decision: "accept", rationale: "Recomendação aceita para submissão ao fluxo formal de aprovação.", decidedBy: "professional-reviewer-demo", decidedAt: "2026-10-10T12:00:00Z" };
+export const seededApprovalRecord = { approvalId: "approval-70018", decisionId: seededApprovalDecision.decisionId, scope: { tenantId: mockTenant.tenantId, companyId: mockCompany.companyId, cnpjId: mockCnpj.cnpjId, accountingPeriodId: mockPeriod.periodId }, subjectType: "FiscalDocument", subjectId: "fiscal-document-70018", status: "awaiting_approval" };
+export const approvalContext = { schemaVersion: "1.0.0", tenantId: mockTenant.tenantId, approvals: [seededApprovalRecord], relatedDecisions: [seededApprovalDecision], relatedRecommendations: [seededApprovalRecommendation], capabilities: { canApprove: { status: "allowed" }, canReject: { status: "allowed" } } };
 export const initialDocumentAnalysisResult = {
     schemaVersion: "1.0.0",
     analysisId: initialAnalysis.analysisId,
@@ -378,6 +393,12 @@ export const reconciliationFinding = {
 export const reconciliationPendingCandidate = {
     pendingItemId: "pending-reconciliation-fiscal-accounting-2026-09",
     type: "reconciliation",
+    scope: {
+        tenantId: mockTenant.tenantId,
+        companyId: mockCompany.companyId,
+        cnpjId: mockCnpj.cnpjId,
+        accountingPeriodId: mockPeriod.periodId
+    },
     title: "Confirmar origem da divergência fiscal × contábil",
     description: "Confirmar a origem da diferença entre documentos fiscais e razão contábil na competência 09/2026.",
     status: "awaiting_information",
