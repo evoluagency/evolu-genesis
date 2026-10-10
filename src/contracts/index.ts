@@ -170,16 +170,6 @@ export interface ApprovalContext {
   capabilities: Capabilities;
 }
 
-export interface AuditHistoryContext {
-  schemaVersion: SchemaVersion;
-  tenantId: TenantId;
-  companyId?: CompanyId;
-  cnpjId?: CnpjId;
-  accountingPeriodId?: string;
-  events: AuditEvent[];
-  capabilities: Capabilities;
-}
-
 export interface AnalysisHistoryEntry {
   analysis: Analysis;
   tenantId: TenantId;
@@ -283,11 +273,13 @@ export interface AuditHistoryContext {
   tenantId: TenantId;
   companyId?: CompanyId;
   cnpjId?: CnpjId;
+  accountingPeriodId?: string;
   subject?: {
     type: string;
     id: string;
   };
   events: AuditEvent[];
+  capabilities: Capabilities;
 }
 
 export interface RecordAnalysisObservationRequest {
