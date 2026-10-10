@@ -241,6 +241,7 @@ export interface ActionCommand {
   companyId: CompanyId;
   cnpjId: CnpjId;
   actionType: string;
+  subjectType: string;
   subjectId: string;
   authorization: ActionAuthorizationRef;
   payload: Readonly<Record<string, unknown>>;
