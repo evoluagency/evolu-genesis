@@ -591,10 +591,11 @@ export class MockPlatformProvider implements PlatformProvider {
           ? { accountingPeriodId: approval.scope.accountingPeriodId }
           : {}),
         correlationId: `subject:${approval.subjectType}:${approval.subjectId}`,
+        causationId: approval.decisionId,
         actor: "system",
         subject: {
-          type: "ApprovalRecord",
-          id: approval.approvalId
+          type: approval.subjectType,
+          id: approval.subjectId
         },
         occurredAt: "2026-10-10T12:00:01Z",
         metadata: {
@@ -661,12 +662,6 @@ export class MockPlatformProvider implements PlatformProvider {
     }
 
     const executedAt = new Date().toISOString();
-    const approvalScope =
-      request.authorization.kind === "approval_record"
-        ? this.approvals.find(
-            item => item.approvalId === request.authorization.approvalId
-          )?.scope
-        : undefined;
     const result: ActionResult = {
       commandId: `command-mock-${request.subjectId}`,
       status: "succeeded",
