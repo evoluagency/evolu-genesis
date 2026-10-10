@@ -1,5 +1,6 @@
 import type {
   ActionExecutionRequest,
+  AuditHistoryContext,
   DocumentAnalysisContext,
   DocumentAnalysisResult
 } from "../../contracts/index.js";
@@ -23,6 +24,7 @@ export interface Nfe70031ControllerConfig {
   companyId: string;
   cnpjId: string;
   documentId: string;
+  accountingPeriodId: string;
   pendingItemId: string;
   actor: string;
 }
@@ -65,6 +67,7 @@ export class Nfe70031Controller {
 
     this.analysis = analysis;
     this.recommendation = analysis.recommendations[0] ?? null;
+    await this.recordAnalysisObservation(analysis);
 
     return { context, analysis };
   }
@@ -95,6 +98,7 @@ export class Nfe70031Controller {
 
     this.analysis = analysis;
     this.recommendation = analysis.recommendations[0] ?? null;
+    await this.recordAnalysisObservation(analysis);
     return analysis;
   }
 
@@ -109,6 +113,9 @@ export class Nfe70031Controller {
       tenantId: this.config.tenantId,
       companyId: this.config.companyId,
       cnpjId: this.config.cnpjId,
+      accountingPeriodId: this.config.accountingPeriodId,
+      subjectType: "FiscalDocument",
+      subjectId: this.config.documentId,
       analysisId: this.analysis.analysisId,
       recommendationId: this.recommendation.recommendationId,
       decision: value,
@@ -129,9 +136,10 @@ export class Nfe70031Controller {
       tenantId: this.config.tenantId,
       companyId: this.config.companyId,
       cnpjId: this.config.cnpjId,
+      accountingPeriodId: this.config.accountingPeriodId,
       decisionId: this.decision.decisionId,
-      subjectType: "Recommendation",
-      subjectId: this.recommendation.recommendationId,
+      subjectType: "FiscalDocument",
+      subjectId: this.config.documentId,
       outcome,
       actor: this.config.actor
     });
@@ -165,5 +173,39 @@ export class Nfe70031Controller {
     };
 
     return this.platform.requestActionExecution(request);
+  }
+
+  async getAuditHistory(): Promise<AuditHistoryContext> {
+    return this.platform.getAuditHistory({
+      tenantId: this.config.tenantId,
+      companyId: this.config.companyId,
+      cnpjId: this.config.cnpjId,
+      periodId: this.config.accountingPeriodId,
+      subject: {
+        type: "FiscalDocument",
+        id: this.config.documentId
+      }
+    });
+  }
+
+  private async recordAnalysisObservation(
+    analysis: DocumentAnalysisResult
+  ): Promise<void> {
+    await this.platform.recordAnalysisObservation({
+      tenantId: this.config.tenantId,
+      companyId: this.config.companyId,
+      cnpjId: this.config.cnpjId,
+      accountingPeriodId: this.config.accountingPeriodId,
+      subjectType: "FiscalDocument",
+      subjectId: this.config.documentId,
+      analysisId: analysis.analysisId,
+      status: analysis.status,
+      findingIds: analysis.findings.map(item => item.findingId),
+      evidenceRefs: analysis.evidence.map(item => item.evidenceId),
+      recommendationIds: analysis.recommendations.map(
+        item => item.recommendationId
+      ),
+      actor: "intelligence"
+    });
   }
 }
