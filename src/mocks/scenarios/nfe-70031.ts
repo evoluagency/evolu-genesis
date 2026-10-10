@@ -350,14 +350,6 @@ export const documentAnalysisContext: DocumentAnalysisContext = {
   }
 };
 
-export const pendingItemsContext: PendingItemsContext = {
-  schemaVersion: "1.0.0",
-  tenantId: mockTenant.tenantId,
-  companyId: mockCompany.companyId,
-  cnpjId: mockCnpj.cnpjId,
-  items: [purposePendingItem, ...officePendingItems]
-};
-
 export const officePendingItems: PendingItem[] = [
   {
     pendingItemId: "pending-office-unidentified-receipt",
@@ -396,6 +388,14 @@ export const officePendingItems: PendingItem[] = [
     }
   }
 ];
+
+export const pendingItemsContext: PendingItemsContext = {
+  schemaVersion: "1.0.0",
+  tenantId: mockTenant.tenantId,
+  companyId: mockCompany.companyId,
+  cnpjId: mockCnpj.cnpjId,
+  items: [purposePendingItem, ...officePendingItems]
+};
 
 export const seededApprovalRecommendation: Recommendation = {
   recommendationId: "recommendation-approval-70018",
