@@ -1,4 +1,4 @@
-/* EVOLU Genesis V2.3 — brand, nomenclature, voice and route standards */
+/* Platform UX legacy-static V2.3 — brand, nomenclature, voice and route standards */
 (() => {
   const isPt=()=>state.lang==='pt';
   const baseRenderPage=renderPage;
