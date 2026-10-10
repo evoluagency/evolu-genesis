@@ -142,7 +142,7 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
       cnpjId: request.cnpjId,
       subject: {
         type: "Reconciliation",
-        id: `reconciliation:${request.periodId}`
+        id: request.reconciliationId
       },
       result: reconciliationAnalysisResult,
       type: "reconciliation_analysis",
@@ -155,14 +155,49 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
     tenantId: string;
     companyId?: string;
     cnpjId?: string;
+    subject?: {
+      type: string;
+      id: string;
+    };
   }): Promise<AnalysisHistoryContext> {
     const entries = this.analysisHistory
       .filter(entry => {
         if (entry.tenantId !== input.tenantId) return false;
         if (input.companyId && entry.companyId !== input.companyId) return false;
         if (input.cnpjId && entry.cnpjId !== input.cnpjId) return false;
+        if (
+          input.subject &&
+          (entry.subject.type !== input.subject.type ||
+            entry.subject.id !== input.subject.id)
+        ) {
+          return false;
+        }
         return true;
       })
+      .map(entry => ({
+        ...entry,
+        subject: { ...entry.subject },
+        analysis: {
+          ...entry.analysis,
+          findings: entry.analysis.findings.map(item => ({
+            ...item,
+            evidenceRefs: [...item.evidenceRefs]
+          })),
+          evidence: entry.analysis.evidence.map(item => ({ ...item })),
+          recommendations: entry.analysis.recommendations.map(item => ({
+            ...item,
+            evidenceRefs: [...item.evidenceRefs],
+            ...(item.proposedChange
+              ? { proposedChange: { ...item.proposedChange } }
+              : {})
+          })),
+          missingContext: entry.analysis.missingContext.map(item => ({
+            ...item,
+            scope: { ...item.scope },
+            subject: { ...item.subject }
+          }))
+        }
+      }))
       .sort((a, b) => b.analysis.createdAt.localeCompare(a.analysis.createdAt));
 
     return {
@@ -195,7 +230,7 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
       cnpjId: mockCnpj.cnpjId,
       subject: {
         type: "Reconciliation",
-        id: `reconciliation:${mockPeriod.periodId}`
+        id: "reconciliation-acme-2026-09"
       },
       result: reconciliationAnalysisResult,
       type: "reconciliation_analysis",
