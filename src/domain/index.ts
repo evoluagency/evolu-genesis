@@ -59,6 +59,7 @@ export interface CnpjEntity {
   tenantId: TenantId;
   cnpj: string;
   legalName: string;
+  establishmentType?: "head_office" | "branch";
   state?: string;
   municipalityIbgeCode?: string;
   status: "active" | "inactive";
