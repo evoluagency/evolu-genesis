@@ -13,11 +13,14 @@ import type {
 import type {
   AccountingPeriod,
   Analysis,
+  ApprovalRecord,
   CnpjEntity,
   Company,
+  Decision,
   Evidence,
   FiscalDocument,
   PendingItem,
+  Recommendation,
   Reconciliation,
   Tenant
 } from "../../domain/index.js";
