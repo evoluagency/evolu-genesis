@@ -8,23 +8,35 @@ import type {
   PendingItemsContext,
   PortfolioContext,
   RecordApprovalRequest,
-  RecordDecisionRequest
+  RecordDecisionRequest,
+  RecordPendingInformationRequest,
+  RecordPendingInformationResult
 } from "../../contracts/index.js";
 import type { ActionResult, ApprovalRecord, Decision } from "../../domain/index.js";
 import {
   approvalContext,
   companyContext,
   companyWorkspaceContext,
+  createNfe70031ScenarioState,
   documentAnalysisContext,
   fiscalDocumentsContext,
   pendingItemsContext,
-  portfolioContext
+  portfolioContext,
+  purposePendingItem
+} from "../../mocks/scenarios/nfe-70031.js";
+import type {
+  Nfe70031EconomicPurpose,
+  Nfe70031ScenarioState
 } from "../../mocks/scenarios/nfe-70031.js";
 import type { PlatformProvider } from "./PlatformProvider.js";
 
 export class MockPlatformProvider implements PlatformProvider {
   private decisions: Decision[] = [];
   private approvals: ApprovalRecord[] = [];
+
+  constructor(
+    private readonly scenarioState: Nfe70031ScenarioState = createNfe70031ScenarioState()
+  ) {}
 
   async getPortfolioContext(): Promise<PortfolioContext> {
     return portfolioContext;
@@ -51,11 +63,69 @@ export class MockPlatformProvider implements PlatformProvider {
     if (input.documentId !== documentAnalysisContext.document.documentId) {
       throw new Error("mock_document_not_found");
     }
-    return documentAnalysisContext;
+
+    const purpose = this.scenarioState.economicPurpose;
+    return {
+      ...documentAnalysisContext,
+      pendingItems:
+        purpose && purpose !== "unknown"
+          ? []
+          : [
+              {
+                ...purposePendingItem,
+                status: "awaiting_information"
+              }
+            ]
+    };
   }
 
   async getPendingItems(): Promise<PendingItemsContext> {
-    return pendingItemsContext;
+    const purpose = this.scenarioState.economicPurpose;
+    return {
+      ...pendingItemsContext,
+      items:
+        purpose && purpose !== "unknown"
+          ? []
+          : [
+              {
+                ...purposePendingItem,
+                status: "awaiting_information"
+              }
+            ]
+    };
+  }
+
+  async recordPendingInformation(
+    request: RecordPendingInformationRequest
+  ): Promise<RecordPendingInformationResult> {
+    if (request.pendingItemId !== purposePendingItem.pendingItemId) {
+      throw new Error("mock_pending_item_not_found");
+    }
+
+    const allowed: Nfe70031EconomicPurpose[] = [
+      "maintenance",
+      "production",
+      "internal_use",
+      "unknown"
+    ];
+
+    if (
+      typeof request.value !== "string" ||
+      !allowed.includes(request.value as Nfe70031EconomicPurpose)
+    ) {
+      throw new Error("mock_pending_information_invalid");
+    }
+
+    this.scenarioState.economicPurpose = request.value as Nfe70031EconomicPurpose;
+
+    return {
+      pendingItemId: request.pendingItemId,
+      status:
+        this.scenarioState.economicPurpose === "unknown"
+          ? "awaiting_information"
+          : "pending_review",
+      recordedAt: new Date().toISOString()
+    };
   }
 
   async getApprovals(): Promise<ApprovalContext> {
@@ -82,6 +152,14 @@ export class MockPlatformProvider implements PlatformProvider {
   }
 
   async recordApproval(request: RecordApprovalRequest): Promise<ApprovalRecord> {
+    const decision = this.decisions.find(item => item.decisionId === request.decisionId);
+    if (!decision) {
+      throw new Error("mock_decision_not_found");
+    }
+    if (request.outcome === "approve" && decision.decision !== "accept") {
+      throw new Error("mock_decision_not_approvable");
+    }
+
     const now = new Date().toISOString();
     const approval: ApprovalRecord = {
       approvalId: `approval-mock-${this.approvals.length + 1}`,
