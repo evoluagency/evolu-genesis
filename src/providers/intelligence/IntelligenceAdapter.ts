@@ -11,6 +11,7 @@ import {
   AdapterContractError,
   assertContext,
   assertFlatScope,
+  assertScopedCollection,
   record,
   requireArray,
   requireEqual,
@@ -43,7 +44,9 @@ export class IntelligenceAdapter implements IntelligenceProvider {
     requireArray(result.findings);
     requireArray(result.evidence);
     requireArray(result.recommendations);
-    requireArray(result.missingContext);
+    // Missing operational information remains scoped Platform work, even when
+    // returned by an analytical operation. Reject foreign tenant/CNPJ rows.
+    assertScopedCollection(result.missingContext, payload);
     // These results do not carry root tenant scope in UX V1; the authorized
     // gateway MUST enforce tenant/CNPJ ownership before returning the result.
     return result as unknown as T;
@@ -67,6 +70,8 @@ export class IntelligenceAdapter implements IntelligenceProvider {
 
   async getAnalysisHistory(input: Parameters<IntelligenceProvider["getAnalysisHistory"]>[0]): Promise<AnalysisHistoryContext> {
     const result = assertContext(await this.invoke<unknown>("getAnalysisHistory", input), input);
+    if (input.companyId !== undefined) requireEqual(result.companyId, input.companyId, "adapter_scope_mismatch");
+    if (input.cnpjId !== undefined) requireEqual(result.cnpjId, input.cnpjId, "adapter_scope_mismatch");
     for (const entry of requireArray(result.entries)) {
       assertFlatScope(entry, input);
       if (input.subject) {
