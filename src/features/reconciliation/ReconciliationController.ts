@@ -52,19 +52,34 @@ export class ReconciliationController {
   }
 
   async createFollowup(): Promise<PendingItem> {
+    const context = this.getCurrentContext();
     const analysis = this.requireAnalysis();
-    const item = analysis.missingContext[0];
+    const finding = analysis.findings.find(
+      item => item.type === "fiscal_accounting_difference"
+    );
 
-    if (!item) {
+    if (!finding) {
       throw new Error("reconciliation_followup_not_required");
     }
 
-    const result = await this.platform.recordPendingItem({
+    const capability = context.capabilities.canCreatePendingItem;
+    if (!capability || capability.status === "forbidden") {
+      throw new Error("canCreatePendingItem_forbidden");
+    }
+    if (capability.status === "unavailable") {
+      throw new Error(
+        `canCreatePendingItem_unavailable${capability.reasonCode ? `:${capability.reasonCode}` : ""}`
+      );
+    }
+
+    const item = await this.platform.createReconciliationPendingItem({
+      schemaVersion: "1.0.0",
       tenantId: this.config.tenantId,
       companyId: this.config.companyId,
       cnpjId: this.config.cnpjId,
-      item,
-      recordedBy: this.config.actor
+      reconciliationId: context.reconciliation.reconciliationId,
+      findingId: finding.findingId,
+      requestedBy: this.config.actor
     });
 
     this.context = await this.platform.getReconciliationContext({
@@ -74,7 +89,7 @@ export class ReconciliationController {
       periodId: this.config.periodId
     });
 
-    return result.item;
+    return item;
   }
 
   getCurrentContext(): ReconciliationContext {
