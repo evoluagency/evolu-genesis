@@ -311,6 +311,7 @@ export interface ActionExecutionRequest {
   cnpjId: CnpjId;
   authorization: ActionAuthorizationRef;
   actionType: string;
+  subjectType: string;
   subjectId: string;
   payload: Readonly<Record<string, unknown>>;
   requestedBy: string;
