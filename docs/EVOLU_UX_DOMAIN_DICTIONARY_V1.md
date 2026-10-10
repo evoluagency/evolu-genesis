@@ -343,6 +343,7 @@ Fields:
 - failure
 
 ### AuditEvent
+Immutable Platform fact describing an observed or executed state transition. AuditEvent never authorizes execution.
 Immutable trace event.
 
 Fields:
