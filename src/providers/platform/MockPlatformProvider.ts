@@ -698,9 +698,10 @@ export class MockPlatformProvider implements PlatformProvider {
 
   async requestActionExecution(request: ActionExecutionRequest): Promise<ActionResult> {
     const authorization = request.authorization;
+    let authorizationPeriodId: string | undefined;
 
     if (authorization.kind === "approval_record") {
-      const approved = this.approvals.some(
+      const approved = this.approvals.find(
         approval =>
           approval.approvalId === authorization.approvalId &&
           approval.status === "approved"
@@ -708,6 +709,7 @@ export class MockPlatformProvider implements PlatformProvider {
       if (!approved) {
         throw new Error("mock_action_not_authorized");
       }
+      authorizationPeriodId = approved.scope.accountingPeriodId;
     } else if (!authorization.capability || !authorization.reason) {
       throw new Error("mock_action_not_authorized");
     }
@@ -725,9 +727,12 @@ export class MockPlatformProvider implements PlatformProvider {
       tenantId: request.tenantId,
       companyId: request.companyId,
       cnpjId: request.cnpjId,
+      ...(authorizationPeriodId
+        ? { accountingPeriodId: authorizationPeriodId }
+        : {}),
       actor: request.requestedBy,
       subject: {
-        type: "FiscalDocument",
+        type: request.subjectType,
         id: request.subjectId
       },
       occurredAt: executedAt,
