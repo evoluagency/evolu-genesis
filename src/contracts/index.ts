@@ -141,10 +141,24 @@ export interface DocumentAnalysisContext extends CompanyContext {
   dataQuality: DataQuality;
 }
 
+export type ReconciliationSourceKind =
+  | "fiscal_documents"
+  | "accounting_ledger"
+  | "management_statement"
+  | "financial_movements";
+
+export interface ReconciliationSourceSummary {
+  sourceId: string;
+  kind: ReconciliationSourceKind;
+  amount: number;
+  currency: "BRL";
+  provenance: ProvenanceEntry;
+}
+
 export interface ReconciliationContext extends CompanyContext {
   accountingPeriod: AccountingPeriod;
   reconciliation: Reconciliation;
-  sources: ProvenanceEntry[];
+  sources: ReconciliationSourceSummary[];
   findings: Finding[];
   evidence: Evidence[];
   pendingItems: PendingItem[];
@@ -209,17 +223,14 @@ export interface RecordApprovalRequest {
   actor: string;
 }
 
-export interface RecordPendingItemRequest {
+export interface CreateReconciliationPendingItemRequest {
+  schemaVersion: SchemaVersion;
   tenantId: TenantId;
   companyId: CompanyId;
   cnpjId: CnpjId;
-  item: PendingItem;
-  recordedBy: string;
-}
-
-export interface RecordPendingItemResult {
-  item: PendingItem;
-  recordedAt: string;
+  reconciliationId: string;
+  findingId: string;
+  requestedBy: string;
 }
 
 export interface RecordPendingInformationRequest {
