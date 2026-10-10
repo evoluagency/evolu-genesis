@@ -27,7 +27,12 @@ export class MockPlatformProvider {
             ...documentAnalysisContext,
             pendingItems: purpose && purpose !== "unknown"
                 ? []
-                : [{ ...purposePendingItem, status: "awaiting_information" }]
+                : [
+                    {
+                        ...purposePendingItem,
+                        status: "awaiting_information"
+                    }
+                ]
         };
     }
     async getPendingItems() {
@@ -36,15 +41,26 @@ export class MockPlatformProvider {
             ...pendingItemsContext,
             items: purpose && purpose !== "unknown"
                 ? []
-                : [{ ...purposePendingItem, status: "awaiting_information" }]
+                : [
+                    {
+                        ...purposePendingItem,
+                        status: "awaiting_information"
+                    }
+                ]
         };
     }
     async recordPendingInformation(request) {
         if (request.pendingItemId !== purposePendingItem.pendingItemId) {
             throw new Error("mock_pending_item_not_found");
         }
-        const allowed = ["maintenance", "production", "internal_use", "unknown"];
-        if (typeof request.value !== "string" || !allowed.includes(request.value)) {
+        const allowed = [
+            "maintenance",
+            "production",
+            "internal_use",
+            "unknown"
+        ];
+        if (typeof request.value !== "string" ||
+            !allowed.includes(request.value)) {
             throw new Error("mock_pending_information_invalid");
         }
         this.scenarioState.economicPurpose = request.value;
@@ -101,10 +117,8 @@ export class MockPlatformProvider {
     async requestActionExecution(request) {
         const authorization = request.authorization;
         if (authorization.kind === "approval_record") {
-            const approved = this.approvals.some(approval =>
-                approval.approvalId === authorization.approvalId &&
-                approval.status === "approved"
-            );
+            const approved = this.approvals.some(approval => approval.approvalId === authorization.approvalId &&
+                approval.status === "approved");
             if (!approved) {
                 throw new Error("mock_action_not_authorized");
             }
