@@ -18,6 +18,9 @@ import {
   companyContext,
   companyWorkspaceContext,
   createNfe70031ScenarioState,
+  mockAccountingPeriods,
+  mockBranchCnpj,
+  mockCnpj,
   documentAnalysisContext,
   fiscalDocumentsContext,
   pendingItemsContext,
@@ -42,12 +45,62 @@ export class MockPlatformProvider implements PlatformProvider {
     return portfolioContext;
   }
 
-  async getCompanyWorkspaceContext(): Promise<CompanyWorkspaceContext> {
-    return companyWorkspaceContext;
+  async getCompanyWorkspaceContext(input: {
+    tenantId: string;
+    companyId: string;
+    cnpjId?: string;
+    accountingPeriodId?: string;
+  }): Promise<CompanyWorkspaceContext> {
+    if (
+      input.tenantId !== companyWorkspaceContext.tenantId ||
+      input.companyId !== companyWorkspaceContext.companyId
+    ) {
+      throw new Error("mock_company_workspace_not_found");
+    }
+
+    const cnpjIds = companyWorkspaceContext.cnpjs.map(item => item.cnpjId);
+    const selectedCnpjId = input.cnpjId ?? companyWorkspaceContext.selectedCnpjId;
+    if (!cnpjIds.includes(selectedCnpjId)) {
+      throw new Error("mock_cnpj_not_authorized");
+    }
+
+    const activeAccountingPeriod =
+      input.accountingPeriodId
+        ? mockAccountingPeriods.find(period => period.periodId === input.accountingPeriodId)
+        : companyWorkspaceContext.activeAccountingPeriod;
+
+    if (!activeAccountingPeriod) {
+      throw new Error("mock_accounting_period_not_available");
+    }
+
+    return {
+      ...companyWorkspaceContext,
+      selectedCnpjId,
+      activeAccountingPeriod
+    };
   }
 
-  async getCompanyContext(): Promise<CompanyContext> {
-    return companyContext;
+  async getCompanyContext(input: {
+    tenantId: string;
+    companyId: string;
+    cnpjId: string;
+  }): Promise<CompanyContext> {
+    if (
+      input.tenantId !== companyContext.tenantId ||
+      input.companyId !== companyContext.companyId
+    ) {
+      throw new Error("mock_company_context_not_found");
+    }
+
+    const cnpj = [mockCnpj, mockBranchCnpj].find(item => item.cnpjId === input.cnpjId);
+    if (!cnpj) {
+      throw new Error("mock_cnpj_not_authorized");
+    }
+
+    return {
+      ...companyContext,
+      cnpjId: cnpj.cnpjId
+    };
   }
 
   async getFiscalDocuments(): Promise<FiscalDocumentsContext> {

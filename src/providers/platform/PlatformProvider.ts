@@ -16,7 +16,12 @@ import type { ActionResult, ApprovalRecord, Decision } from "../../domain/index.
 
 export interface PlatformProvider {
   getPortfolioContext(input: { tenantId: string }): Promise<PortfolioContext>;
-  getCompanyWorkspaceContext(input: { tenantId: string; companyId: string; cnpjId?: string }): Promise<CompanyWorkspaceContext>;
+  getCompanyWorkspaceContext(input: {
+    tenantId: string;
+    companyId: string;
+    cnpjId?: string;
+    accountingPeriodId?: string;
+  }): Promise<CompanyWorkspaceContext>;
   getCompanyContext(input: { tenantId: string; companyId: string; cnpjId: string }): Promise<CompanyContext>;
   getFiscalDocuments(input: { tenantId: string; companyId: string; cnpjId: string; periodId?: string }): Promise<FiscalDocumentsContext>;
   getDocumentAnalysisContext(input: { tenantId: string; companyId: string; cnpjId: string; documentId: string }): Promise<DocumentAnalysisContext>;

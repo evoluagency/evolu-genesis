@@ -4,3 +4,4 @@ export { MockPlatformProvider } from "./providers/platform/MockPlatformProvider.
 export { MockIntelligenceProvider } from "./providers/intelligence/MockIntelligenceProvider.js";
 export * from "./mocks/scenarios/nfe-70031.js";
 export * from "./features/fiscal-documents/Nfe70031Controller.js";
+export * from "./features/company/CompanyWorkspaceController.js";
