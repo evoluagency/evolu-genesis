@@ -52,9 +52,21 @@ export const mockCnpj: CnpjEntity = {
   cnpjId: "cnpj-acme-industrial-hq",
   companyId: mockCompany.companyId,
   tenantId: mockTenant.tenantId,
-  cnpj: "00000000000191",
+  cnpj: "12345678000190",
   legalName: "ACME Industrial Ltda.",
+  establishmentType: "head_office",
   state: "SP",
+  status: "active"
+};
+
+export const mockBranchCnpj: CnpjEntity = {
+  cnpjId: "cnpj-acme-industrial-branch",
+  companyId: mockCompany.companyId,
+  tenantId: mockTenant.tenantId,
+  cnpj: "12345678000271",
+  legalName: "ACME Industrial Ltda. - Filial",
+  establishmentType: "branch",
+  state: "MG",
   status: "active"
 };
 
@@ -64,6 +76,19 @@ export const mockPeriod: AccountingPeriod = {
   status: "open",
   openedAt: "2026-09-01T00:00:00Z"
 };
+
+export const mockPreviousPeriod: AccountingPeriod = {
+  periodId: "period-2026-08",
+  competence: "2026-08",
+  status: "closed",
+  openedAt: "2026-08-01T00:00:00Z",
+  closedAt: "2026-09-10T12:00:00Z"
+};
+
+export const mockAccountingPeriods: AccountingPeriod[] = [
+  mockPeriod,
+  mockPreviousPeriod
+];
 
 export const mockDocument: FiscalDocument = {
   documentId: "fiscal-document-70031",
@@ -204,11 +229,21 @@ export const companyWorkspaceContext: CompanyWorkspaceContext = {
     {
       cnpjId: mockCnpj.cnpjId,
       cnpj: mockCnpj.cnpj,
-      legalName: mockCnpj.legalName
+      legalName: mockCnpj.legalName,
+      establishmentType: mockCnpj.establishmentType,
+      state: mockCnpj.state
+    },
+    {
+      cnpjId: mockBranchCnpj.cnpjId,
+      cnpj: mockBranchCnpj.cnpj,
+      legalName: mockBranchCnpj.legalName,
+      establishmentType: mockBranchCnpj.establishmentType,
+      state: mockBranchCnpj.state
     }
   ],
   company: mockCompany,
   activeAccountingPeriod: mockPeriod,
+  availableAccountingPeriods: mockAccountingPeriods,
   pendingSummary: {
     information_request: 1
   },
