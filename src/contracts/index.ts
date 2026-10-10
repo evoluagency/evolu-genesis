@@ -20,7 +20,8 @@ import type {
   ActionAuthorizationRef,
   Capabilities,
   Capability,
-  TaxProfile
+  TaxProfile,
+  HumanWorkflowStatus
 } from "../domain/index.js";
 
 export type SchemaVersion = "1.0.0";
@@ -203,6 +204,21 @@ export interface RecordApprovalRequest {
   outcome: "approve" | "reject";
   rationale?: string;
   actor: string;
+}
+
+export interface RecordPendingInformationRequest {
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  pendingItemId: string;
+  value: unknown;
+  recordedBy: string;
+}
+
+export interface RecordPendingInformationResult {
+  pendingItemId: string;
+  status: HumanWorkflowStatus;
+  recordedAt: string;
 }
 
 export interface ActionExecutionRequest {
