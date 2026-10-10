@@ -1,7 +1,7 @@
 # Platform UX Homologation v1
 
 **Status:** STATIC_AND_BEHAVIORAL_CLOSURE_COMPLETE — BROWSER_HOMOLOGATION_PENDING  
-**Baseline:** `main@4343eb2967a4d2e59e7e1eb9857bd100a9e77115`  
+**Baseline:** `main@021c485df80db8bfc0c082cd5424997a0352c1d0`  
 **Scope:** Platform UX V1 with synthetic providers  
 **Out of scope:** UX-7 real adapters / production backend integration
 
@@ -121,6 +121,34 @@ Recommended evidence per run:
 - PASS / FAIL;
 - corrective commit when FAIL.
 
+### 6.1 Local browser homologation runner
+
+The repository provides a local-only runner for T-13…T-17:
+
+```bash
+npm run homologate:browser:selftest
+npm run homologate:browser
+```
+
+Properties:
+- uses Node.js plus an installed Chromium/Chrome through the DevTools Protocol;
+- introduces no npm dependency;
+- creates no GitHub Actions workflow and consumes no CI minutes;
+- creates no deployment;
+- writes screenshots, `report.json`, `SUMMARY.md` and `HUMAN_REVIEW.md` under `.local/ux-homologation/`, which is gitignored;
+- supports `CHROME_BIN` when the browser executable is not discoverable;
+- returns `ENVIRONMENT_BLOCKED` instead of a false product failure when a managed browser policy blocks local HTTP;
+- never converts automated layout checks into final visual approval. Successful automated checks remain `REVIEW_REQUIRED` until a human browser review signs off the evidence;
+- the 720×450 layout pass is only a CSS-layout equivalent of 1440×900 at 200% zoom. An actual browser 200% zoom observation remains mandatory for T-14.
+
+Runner self-test evidence in the engineering environment:
+- runner self-test: PASS;
+- runtime exceptions in self-test: 0;
+- real local-page run in this environment: blocked by managed Chromium policy;
+- result: no T-13…T-17 gate was marked FAIL or PASS from that blocked run.
+
+Therefore the final browser homologation must be executed on an unrestricted local Chrome/Chromium installation before the UX V1 freeze.
+
 ## 7. Nomenclature gate
 
 The current baseline passed a repository-wide text scan of the UX source/document set for the retired naming.
@@ -144,7 +172,9 @@ Canonical:
 
 UX-6 passed behavioral runtime regression and static request/contract consistency checks. A fresh independent `tsc` run for the final reconciled UX-6 head was **not** executed in the review environment because the repository could not be materialized there due to network resolution limits. This document does not misrepresent that check as completed.
 
-This caveat is an engineering verification item; it does not change the browser-homologation boundary above.
+The local browser-homologation runner itself passed its synthetic self-test. The managed Chromium available in the review environment blocks local HTTP and file navigation by organization policy; the runner correctly reports `ENVIRONMENT_BLOCKED` rather than classifying the Platform as failed. Consequently, this environment still cannot supply the final human browser evidence for T-13…T-17.
+
+These are engineering verification constraints; they do not change the browser-homologation boundary above.
 
 ## 9. Freeze decision
 
