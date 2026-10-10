@@ -160,7 +160,11 @@ const items=[
 {id:'R-1',company:'acme',cnpj:'m',period:'2026-09',title:'item1',desc:'item1Description',kind:'Financeiro',state:'open'},
 {id:'R-2',company:'acme',cnpj:'m',period:'2026-09',title:'item2',desc:'item2Description',kind:'Fiscal / Financeiro',state:'open'}
 ];
-const initialOfficeTab=new URLSearchParams(window.location.search).get('tab');
+const officeParams=new URLSearchParams(window.location.search);
+const initialOfficeTab=officeParams.get('tab');
+// Route context is a synthetic, whitelisted selector, never authorization.
+if(['m','f'].includes(officeParams.get('cnpj')))$('selectedCnpj').value=officeParams.get('cnpj');
+if(['2026-08','2026-09'].includes(officeParams.get('period')))$('selectedPeriod').value=officeParams.get('period');
 let page=['queue','companies'].includes(initialOfficeTab)?initialOfficeTab:'overview',queuePage=0,companyOpened=false;
 const selected=()=>({company:$('selectedCompany').value,cnpj:$('selectedCnpj').value,period:$('selectedPeriod').value});
 const issues=()=>{const c=selected();return items.filter(x=>x.company===c.company&&x.cnpj===c.cnpj&&x.period===c.period);};
