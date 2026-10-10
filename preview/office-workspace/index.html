@@ -168,8 +168,67 @@ const initialOfficeTab=officeParams.get('tab');
 if(['m','f'].includes(officeParams.get('cnpj')))$('selectedCnpj').value=officeParams.get('cnpj');
 if(['2026-08','2026-09'].includes(officeParams.get('period')))$('selectedPeriod').value=officeParams.get('period');
 let page=['queue','approvals','companies'].includes(initialOfficeTab)?initialOfficeTab:'overview',queuePage=0,companyOpened=false;
-const selected=()=>({company:$('selectedCompany').value,cnpj:$('selectedCnpj').value,period:$('selectedPeriod').value});
 const queueBridge=()=>window.EvoluOfficeWorkQueueBridge||null;
+const portfolio=()=>queueBridge()?.state?.portfolio||null;
+const workspace=()=>queueBridge()?.state?.workspace||null;
+const companyName=()=>{
+ const w=workspace();
+ return w?.company?.tradeName||w?.company?.legalName||'ACME Industrial';
+};
+const legacyCnpjAlias=item=>{
+ if(item==='m'||item==='f')return item;
+ if(!item)return 'm';
+ return item.establishmentType==='branch'?'f':'m';
+};
+const selected=()=>{
+ const w=workspace();
+ const rawCnpj=$('selectedCnpj').value;
+ const summary=w?.cnpjs?.find(item=>item.cnpjId===rawCnpj)||null;
+ return {
+  companyId:$('selectedCompany').value,
+  company:$('selectedCompany').value,
+  cnpjId:summary?.cnpjId||rawCnpj,
+  cnpj:legacyCnpjAlias(summary||rawCnpj),
+  period:$('selectedPeriod').value
+ };
+};
+const activeCnpjSummary=()=>{
+ const w=workspace(),s=selected();
+ return w?.cnpjs?.find(item=>item.cnpjId===s.cnpjId)||null;
+};
+const formatCnpj=value=>String(value||'').replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,'$1.$2.$3/$4-$5');
+const cnpjLabel=item=>{
+ if(!item)return selected().cnpj==='f'?t('branchOffice'):t('mainOffice');
+ const kind=item.establishmentType==='branch'
+  ?(document.documentElement.lang.startsWith('en')?'Branch':'Filial')
+  :(document.documentElement.lang.startsWith('en')?'Head office':'Matriz');
+ return kind+' · '+String(item.cnpj).slice(-4);
+};
+const displayPeriod=value=>{
+ const match=String(value||'').match(/^(\d{4})-(\d{2})$/);
+ return match?match[2]+'/'+match[1]:String(value||'—');
+};
+function hydrateOfficeContext(){
+ const bridge=queueBridge(),state=bridge?.state;
+ if(!state?.portfolio||!state?.workspace)return;
+ const companySelect=$('selectedCompany');
+ companySelect.innerHTML=state.portfolio.companies.map(item=>
+  '<option value="'+esc(item.companyId)+'">'+esc(item.tradeName||item.legalName)+'</option>'
+ ).join('');
+ companySelect.value=state.workspace.company.companyId;
+
+ const cnpjSelect=$('selectedCnpj');
+ cnpjSelect.innerHTML=state.workspace.cnpjs.map(item=>
+  '<option value="'+esc(item.cnpjId)+'">'+esc(cnpjLabel(item))+'</option>'
+ ).join('');
+ cnpjSelect.value=state.workspace.selectedCnpjId;
+
+ const periodSelect=$('selectedPeriod');
+ periodSelect.innerHTML=state.workspace.availableAccountingPeriods.map(item=>
+  '<option value="'+esc(item.competence)+'">'+esc(displayPeriod(item.competence))+'</option>'
+ ).join('');
+ periodSelect.value=state.workspace.activeAccountingPeriod.competence;
+}
 const pendingLabel=item=>item?.title&&text.pt[item.title]?t(item.title):(item?.title||'');
 const pendingDescription=item=>item?.desc&&text.pt[item.desc]?t(item.desc):(item?.description||item?.desc||'');
 const pendingKind=item=>{
@@ -194,25 +253,29 @@ const issues=()=>{
  return items.filter(x=>x.company===s.company&&x.cnpj===s.cnpj&&x.period===s.period);
 };
 const approvals=()=>queueBridge()?.state?.approvals||null;
-const professionalHref=(tab,item)=>{const c=selected(),q=new URLSearchParams({tab,cnpj:c.cnpj,period:c.period});if(item)q.set('item',item);return '../tenant-fiscal-workspace/?'+q.toString();};
+const professionalHref=(tab,item)=>{const c=selected(),q=new URLSearchParams({tab,cnpj:c.cnpj,period:c.period});if(c.cnpjId&&!['m','f'].includes(c.cnpjId))q.set('cnpjId',c.cnpjId);if(item)q.set('item',item);return '../tenant-fiscal-workspace/?'+q.toString();};
 const accountingHref=()=>professionalHref('review');
 const fiscalHref=()=>professionalHref('received');
-const advisoryHref=()=>{const c=selected();return '../tenant-advisory-workspace/?cnpj='+encodeURIComponent(c.cnpj)+'&period='+encodeURIComponent(c.period);};
-const companyHref=()=>{const c=selected();return '../company-access-home/?cnpj='+(c.cnpj==='m'?'a':'b')+'&period='+encodeURIComponent(c.period);};
+const advisoryHref=()=>{const c=selected(),q=new URLSearchParams({cnpj:c.cnpj,period:c.period});if(c.cnpjId&&!['m','f'].includes(c.cnpjId))q.set('cnpjId',c.cnpjId);return '../tenant-advisory-workspace/?'+q.toString();};
+const companyHref=()=>{const c=selected(),q=new URLSearchParams({cnpj:c.cnpj==='m'?'a':'b',period:c.period});if(c.cnpjId&&!['m','f'].includes(c.cnpjId))q.set('cnpjId',c.cnpjId);return '../company-access-home/?'+q.toString();};
 const headerLabel=()=>page==='queue'?'Queue':page==='approvals'?'Approvals':page==='companies'?'Companies':'Overview';
 function renderMetrics(){
-const count=issues().length,c=selected();
-const rows=[
-['metricCompanies','1','metricsCompany'],
-['metricRequests',String(count),'metricsReq'],
-['metricPeriod',c.period==='2026-09'?'09/2026':'08/2026','metricsPeriod']
-];
-$('metrics').innerHTML=rows.map(x=>'<div class="ux-metric"><span class="ux-meta">'+esc(t(x[0]))+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(t(x[2]))+'</small></div>').join('');
+ const count=issues().length,s=selected(),p=portfolio();
+ const companyCount=p?.companies?.length??1;
+ const companyNote=companyCount===1
+  ?t('metricsCompany')
+  :(document.documentElement.lang.startsWith('en')?companyCount+' fictional companies in scope.':companyCount+' empresas fictícias no escopo.');
+ const rows=[
+  [t('metricCompanies'),String(companyCount),companyNote],
+  [t('metricRequests'),String(count),t('metricsReq')],
+  [t('metricPeriod'),displayPeriod(s.period),t('metricsPeriod')]
+ ];
+ $('metrics').innerHTML=rows.map(x=>'<div class="ux-metric"><span class="ux-meta">'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong><small>'+esc(x[2])+'</small></div>').join('');
 }
 function row(x){
 const title=pendingLabel(x),s=selected(),status=x.status==='awaiting_information'?t('waiting'):t('open');
 const route=x.subject?.type==='FiscalDocument'&&x.subject?.id==='fiscal-document-70031'?'../fiscal-document-70031/':professionalHref('pending');
-return '<div class="ux-row"><div class="office-row-label"><div class="office-row-name"><span class="ux-pill warn">'+esc(status)+'</span> <strong>'+esc(title)+'</strong></div><small>ACME Industrial · '+esc(s.cnpj==='m'?t('mainOffice'):t('branchOffice'))+' · '+esc(s.period)+' · '+esc(pendingKind(x))+'</small></div>'+
+return '<div class="ux-row"><div class="office-row-label"><div class="office-row-name"><span class="ux-pill warn">'+esc(status)+'</span> <strong>'+esc(title)+'</strong></div><small>'+esc(companyName())+' · '+esc(cnpjLabel(activeCnpjSummary()))+' · '+esc(displayPeriod(s.period))+' · '+esc(pendingKind(x))+'</small></div>'+
 '<div class="office-row-actions"><button type="button" class="ux-btn" data-detail="'+esc(x.id)+'">'+esc(t('viewCompany'))+'</button><a class="ux-btn ux-btn-soft" href="'+esc(route)+'">'+esc(t('openAccounting'))+'</a></div></div>';
 }
 function renderQueue(){
@@ -250,11 +313,11 @@ function renderApprovals(){
  $('secondaryContent').innerHTML='<div class="office-context-note">'+esc(t('approvalFormal'))+'</div>';
 }
 function companyCard(){
-const c=selected();
+const s=selected(),name=companyName(),cnpj=activeCnpjSummary();
 return '<div class="office-right-split">'+
- '<div class="office-company-top"><span class="ux-tenant-icon" aria-hidden="true">A</span><div><strong>ACME Industrial</strong><small>'+esc(t('scenarioLabel'))+'</small></div></div>'+
- '<div class="office-meta-grid"><div class="office-meta"><small>'+esc(t('cnpj'))+'</small><strong>'+esc(c.cnpj==='m'?t('mainOffice'):t('branchOffice'))+'</strong></div>'+
- '<div class="office-meta"><small>'+esc(t('period'))+'</small><strong>'+esc(c.period==='2026-09'?'09/2026':'08/2026')+'</strong></div></div>'+
+ '<div class="office-company-top"><span class="ux-tenant-icon" aria-hidden="true">'+esc(name.slice(0,1).toUpperCase())+'</span><div><strong>'+esc(name)+'</strong><small>'+esc(t('scenarioLabel'))+'</small></div></div>'+
+ '<div class="office-meta-grid"><div class="office-meta"><small>'+esc(t('cnpj'))+'</small><strong>'+esc(cnpjLabel(cnpj))+'</strong></div>'+
+ '<div class="office-meta"><small>'+esc(t('period'))+'</small><strong>'+esc(displayPeriod(s.period))+'</strong></div></div>'+
  '<div class="office-context-note">'+esc(t('clientIsSeparate'))+'<br>'+esc(t('sourceSep'))+'</div>'+
  '<div class="ux-quick-list"><a href="../company-configuration/">'+esc(t('quickSettings'))+' <span aria-hidden="true">↗</span></a>'+
  '<a href="'+esc(companyHref())+'">'+esc(t('openCompanyArea'))+' <span aria-hidden="true">↗</span></a></div>'+
@@ -266,14 +329,21 @@ return '<div class="office-shortcuts">'+
 '</div><p class="ux-note">'+esc(t('clickHint'))+'</p>';
 }
 function renderCompany(){
-$('queuePager').innerHTML='';$('queueCount').textContent=t('scenarioLabel');
-if(companyOpened){
-$('primaryContent').innerHTML=companyCard();
-$('secondaryContent').innerHTML=shortcuts();
-}else{
-$('primaryContent').innerHTML='<div class="ux-list"><div class="ux-row"><div class="office-row-label"><div class="office-row-name"><strong>ACME Industrial</strong><span class="ux-pill accent">'+esc(t('statusDemo'))+'</span></div><small>'+esc(t('metricsCompany'))+'</small></div><button type="button" class="ux-btn ux-btn-soft" data-company-open="true">'+esc(t('openCompany'))+'</button></div></div>';
-$('secondaryContent').innerHTML='<div class="ux-empty">'+esc(t('scenarioLabel'))+'<br><br>'+esc(t('allReadOnly'))+'</div>';
-}
+ const companies=portfolio()?.companies||[];
+ $('queuePager').innerHTML='';
+ $('queueCount').textContent=companies.length+' '+(document.documentElement.lang.startsWith('en')?'company(ies)':'empresa(s)');
+ if(companyOpened){
+  $('primaryContent').innerHTML=companyCard();
+  $('secondaryContent').innerHTML=shortcuts();
+ }else if(companies.length){
+  $('primaryContent').innerHTML='<div class="ux-list">'+companies.map(item=>
+   '<div class="ux-row"><div class="office-row-label"><div class="office-row-name"><strong>'+esc(item.tradeName||item.legalName)+'</strong><span class="ux-pill accent">'+esc(t('statusDemo'))+'</span></div><small>'+esc(item.cnpjCount+' CNPJ(s) · '+item.pendingCount+' pendência(s)')+'</small></div><button type="button" class="ux-btn ux-btn-soft" data-company-open="'+esc(item.companyId)+'">'+esc(t('openCompany'))+'</button></div>'
+  ).join('')+'</div>';
+  $('secondaryContent').innerHTML='<div class="ux-empty">'+esc(t('scenarioLabel'))+'<br><br>'+esc(t('allReadOnly'))+'</div>';
+ }else{
+  $('primaryContent').innerHTML='<div class="ux-empty">'+esc(t('noContext'))+'</div>';
+  $('secondaryContent').innerHTML='';
+ }
 }
 function render(){
 for(const el of document.querySelectorAll('[data-t]'))el.textContent=t(el.dataset.t);
@@ -305,17 +375,23 @@ const item=issues().find(x=>x.id===id);
 if(!item)return;
 $('dialogTitle').textContent=t('dialogTitle');
 $('dialogContent').innerHTML='<p><strong>'+esc(pendingLabel(item))+'</strong></p><p>'+esc(pendingDescription(item))+'</p>'+
- '<p><b>'+esc(t('dialogScope'))+':</b> ACME Industrial · '+esc(t('mainOffice'))+' · '+esc(item.period)+'</p>'+
+ '<p><b>'+esc(t('dialogScope'))+':</b> '+esc(companyName())+' · '+esc(cnpjLabel(activeCnpjSummary()))+' · '+esc(displayPeriod(selected().period))+'</p>'+
  '<p><b>'+esc(t('dialogNext'))+':</b> '+esc(t('openAccounting'))+'</p>'+
  '<p>'+esc(t('allReadOnly'))+'</p><a class="ux-btn ux-btn-primary" href="'+esc(professionalHref('pending',item.id))+'">'+esc(t('openAccounting'))+'</a>';
 $('itemDialog').showModal();
 }
-async function refreshWorkQueues(){
+async function refreshWorkQueues(options={}){
  const bridge=queueBridge();
  if(!bridge?.load)return;
  const s=selected();
- try{await bridge.load({cnpj:s.cnpj,period:s.period});}
- catch(error){console.error(error);}
+ try{
+  await bridge.load({
+   companyId:s.companyId,
+   ...(options.resetCnpj?{}:{cnpjId:s.cnpjId,cnpj:s.cnpj}),
+   period:s.period
+  });
+  hydrateOfficeContext();
+ }catch(error){console.error(error);}
 }
 async function decideApproval(approvalId,outcome){
  const bridge=queueBridge();
@@ -328,20 +404,30 @@ async function decideApproval(approvalId,outcome){
   $('queueCount').textContent=document.documentElement.lang.startsWith('en')?'Approval could not be recorded.':'Não foi possível registrar a aprovação.';
  }
 }
-window.addEventListener('evolu:office-work-queue-ready',()=>render());
-document.addEventListener('click',e=>{
+window.addEventListener('evolu:office-work-queue-ready',()=>{hydrateOfficeContext();render();});
+document.addEventListener('click',async e=>{
 const b=e.target.closest('[data-view],[data-tab],[data-detail],[data-company-open],[data-queue-step],[data-approval-action]');
 if(!b)return;
 if(b.dataset.approvalAction){void decideApproval(b.dataset.approvalId,b.dataset.approvalAction);return;}
 if(b.dataset.view){changeView(b.dataset.view);return;}
 if(b.dataset.tab){changeView(b.dataset.tab);return;}
 if(b.dataset.detail){openDetails(b.dataset.detail);return;}
-if(b.dataset.companyOpen){companyOpened=true;render();return;}
+if(b.dataset.companyOpen){
+ $('selectedCompany').value=b.dataset.companyOpen;
+ await refreshWorkQueues({resetCnpj:true});
+ companyOpened=true;
+ render();
+ return;
+}
 if(b.dataset.queueStep){queuePage=Math.max(0,queuePage+Number(b.dataset.queueStep));render();return;}
 });
 $('closeDialog').addEventListener('click',()=>$('itemDialog').close());
 $('itemDialog').addEventListener('click',e=>{if(e.target===$('itemDialog'))$('itemDialog').close();});
-for(const id of ['selectedCompany','selectedCnpj','selectedPeriod'])$(id).addEventListener('change',async()=>{queuePage=0;await refreshWorkQueues();render();});
+for(const id of ['selectedCompany','selectedCnpj','selectedPeriod'])$(id).addEventListener('change',async event=>{
+ queuePage=0;
+ await refreshWorkQueues({resetCnpj:event.target.id==='selectedCompany'});
+ render();
+});
 document.addEventListener('ux:locale',render);
 render();
 })();
