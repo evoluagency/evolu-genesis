@@ -16,7 +16,11 @@ import type {
   Recommendation,
   Reconciliation,
   TenantId,
-  ActionResult
+  ActionResult,
+  ActionAuthorizationRef,
+  Capabilities,
+  Capability,
+  TaxProfile
 } from "../domain/index.js";
 
 export type SchemaVersion = "1.0.0";
@@ -57,11 +61,11 @@ export interface FiscalDocumentSummary {
 }
 
 export interface DocumentCapabilities {
-  canRequestAnalysis: boolean;
-  canRequestInformation: boolean;
-  canRecordDecision: boolean;
-  canRequestApproval: boolean;
-  canExecuteApprovedAction: boolean;
+  canRequestAnalysis: Capability;
+  canRequestInformation: Capability;
+  canRecordDecision: Capability;
+  canRequestApproval: Capability;
+  canExecuteApprovedAction: Capability;
 }
 
 export interface PortfolioContext {
@@ -70,11 +74,22 @@ export interface PortfolioContext {
   companies: CompanySummary[];
   metrics: Readonly<Record<string, number>>;
   pendingSummary: Readonly<Record<string, number>>;
-  capabilities: Readonly<Record<string, boolean>>;
+  capabilities: Capabilities;
   provenance: ProvenanceEntry[];
 }
 
 export interface CompanyContext {
+  schemaVersion: SchemaVersion;
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  referenceDate: string;
+  capabilities: Capabilities;
+  provenance: ProvenanceEntry[];
+  dataQuality: DataQuality;
+}
+
+export interface CompanyWorkspaceContext {
   schemaVersion: SchemaVersion;
   tenantId: TenantId;
   companyId: CompanyId;
@@ -83,9 +98,20 @@ export interface CompanyContext {
   company: Company;
   activeAccountingPeriod: AccountingPeriod;
   pendingSummary: Readonly<Record<string, number>>;
-  capabilities: Readonly<Record<string, boolean>>;
+  capabilities: Capabilities;
   provenance: ProvenanceEntry[];
   dataQuality: DataQuality;
+}
+
+export interface FiscalCompanyContext extends CompanyContext {
+  taxProfile: TaxProfile;
+  accountingPeriod: AccountingPeriod;
+  fiscalSummary: Readonly<Record<string, number | string | null>>;
+}
+
+export interface AccountingCompanyContext extends CompanyContext {
+  accountingPeriod: AccountingPeriod;
+  accountingSummary: Readonly<Record<string, number | string | null>>;
 }
 
 export interface FiscalDocumentsContext {
@@ -97,16 +123,11 @@ export interface FiscalDocumentsContext {
   documents: FiscalDocumentSummary[];
   filters: Readonly<Record<string, unknown>>;
   summary: Readonly<Record<string, number>>;
-  capabilities: Readonly<Record<string, boolean>>;
+  capabilities: Capabilities;
   provenance: ProvenanceEntry[];
 }
 
-export interface DocumentAnalysisContext {
-  schemaVersion: SchemaVersion;
-  tenantId: TenantId;
-  companyId: CompanyId;
-  cnpjId: CnpjId;
-  referenceDate: string;
+export interface DocumentAnalysisContext extends CompanyContext {
   document: FiscalDocument;
   analysis?: Analysis;
   pendingItems: PendingItem[];
@@ -116,18 +137,14 @@ export interface DocumentAnalysisContext {
   dataQuality: DataQuality;
 }
 
-export interface ReconciliationContext {
-  schemaVersion: SchemaVersion;
-  tenantId: TenantId;
-  companyId: CompanyId;
-  cnpjId: CnpjId;
+export interface ReconciliationContext extends CompanyContext {
   accountingPeriod: AccountingPeriod;
   reconciliation: Reconciliation;
   sources: ProvenanceEntry[];
   findings: Finding[];
   evidence: Evidence[];
   pendingItems: PendingItem[];
-  capabilities: Readonly<Record<string, boolean>>;
+  capabilities: Capabilities;
   provenance: ProvenanceEntry[];
 }
 
@@ -145,7 +162,7 @@ export interface ApprovalContext {
   approvals: ApprovalRecord[];
   relatedDecisions: Decision[];
   relatedRecommendations: Recommendation[];
-  capabilities: Readonly<Record<string, boolean>>;
+  capabilities: Capabilities;
 }
 
 export interface DocumentAnalysisRequest {
@@ -192,7 +209,7 @@ export interface ActionExecutionRequest {
   tenantId: TenantId;
   companyId: CompanyId;
   cnpjId: CnpjId;
-  approvalId: string;
+  authorization: ActionAuthorizationRef;
   actionType: string;
   subjectId: string;
   payload: Readonly<Record<string, unknown>>;
