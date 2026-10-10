@@ -128,6 +128,36 @@ Fields:
 
 Each `ApprovalRecord` carries the operational scope of the formal authorization. Queue filtering and approval writes must preserve that scope.
 
+### AnalysisHistoryContext
+Intelligence-owned analytical history projection.
+
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- entries
+  - Analysis
+  - subject reference
+  - tenant/company/CNPJ scope
+
+This projection contains analytical history. It is not the Platform audit log and does not authorize operational writes.
+
+### AuditHistoryContext
+Platform-owned immutable operational history projection.
+
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriodId
+- subject
+- events: AuditEvent[]
+- capabilities
+
+Audit events are append-only Platform facts. They may reference Intelligence analyses, findings, evidence and recommendations, but Intelligence does not own or mutate the audit log.
+
 ## Request/result contracts
 
 ### DocumentAnalysisRequest
@@ -155,25 +185,43 @@ Fields:
 
 ### RecordDecisionRequest
 Fields:
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriodId
+- subjectType
+- subjectId
 - analysisId
 - recommendationId
 - decision: accept | reject | adjust | request_information | defer
 - rationale
+- decidedBy
 
 ### RecordApprovalRequest
 Fields:
+- approvalId
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriodId
 - decisionId
 - subjectType
 - subjectId
 - outcome: approve | reject
 - rationale
+- actor
 
 ### ActionExecutionRequest
 Fields:
+- tenantId
+- companyId
+- cnpjId
 - authorization: ActionAuthorizationRef
 - actionType
+- subjectType
 - subjectId
 - payload
+- requestedBy
 
 Returns ActionResult.
 
@@ -206,7 +254,6 @@ Representative operations:
 - getDocumentAnalysisContext
 - getReconciliationContext
 - getPendingItems
-- getReconciliationContext
 - getApprovals
 - getAuditHistory
 - recordAnalysisObservation
@@ -221,6 +268,7 @@ Representative operations:
 - requestDocumentAnalysis
 - requestReconciliationAnalysis
 - explainAnalysis
+- getAnalysisHistory
 
 ## Mock rule
 
@@ -296,6 +344,8 @@ These are UX routes, not backend API routes.
 | Decision | MockPlatformProvider | PlatformAdapter | Platform record |
 | ApprovalRecord | MockPlatformProvider | PlatformAdapter | Platform |
 | ActionResult | MockPlatformProvider | PlatformAdapter | Platform |
+| AnalysisHistoryContext | MockIntelligenceProvider | IntelligenceAdapter | Intelligence projection |
+| AuditHistoryContext | MockPlatformProvider | PlatformAdapter | Platform |
 | AuditEvent | MockPlatformProvider | PlatformAdapter | Platform |
 | ReconciliationAnalysisResult | MockIntelligenceProvider | IntelligenceAdapter | Intelligence |
 
