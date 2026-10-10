@@ -5,7 +5,9 @@ export class MockIntelligenceProvider {
         this.scenarioState = scenarioState;
     }
     async requestDocumentAnalysis(request) {
-        if (request.documentId !== mockDocument.documentId) throw new Error("mock_document_not_found");
+        if (request.documentId !== mockDocument.documentId) {
+            throw new Error("mock_document_not_found");
+        }
         return buildDocumentAnalysisResult(this.scenarioState.economicPurpose);
     }
     async requestReconciliationAnalysis(_request) {
