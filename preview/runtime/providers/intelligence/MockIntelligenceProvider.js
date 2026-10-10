@@ -1,4 +1,4 @@
-import { createNfe70031ScenarioState, historicalEvidence, initialDocumentAnalysisResult, mockDocument } from "../../mocks/scenarios/nfe-70031.js";
+import { createNfe70031ScenarioState, historicalEvidence, initialDocumentAnalysisResult, mockDocument, reconciliationAnalysisResult } from "../../mocks/scenarios/nfe-70031.js";
 export class MockIntelligenceProvider {
     scenarioState;
     constructor(scenarioState = createNfe70031ScenarioState()) {
@@ -65,14 +65,7 @@ export class MockIntelligenceProvider {
         };
     }
     async requestReconciliationAnalysis(_request) {
-        return {
-            schemaVersion: "1.0.0",
-            status: "completed",
-            findings: [],
-            evidence: [],
-            recommendations: [],
-            missingContext: []
-        };
+        return reconciliationAnalysisResult;
     }
     async explainAnalysis(request) {
         return {

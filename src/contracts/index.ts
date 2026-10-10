@@ -209,6 +209,19 @@ export interface RecordApprovalRequest {
   actor: string;
 }
 
+export interface RecordPendingItemRequest {
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  item: PendingItem;
+  recordedBy: string;
+}
+
+export interface RecordPendingItemResult {
+  item: PendingItem;
+  recordedAt: string;
+}
+
 export interface RecordPendingInformationRequest {
   tenantId: TenantId;
   companyId: CompanyId;
