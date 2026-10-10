@@ -1,4 +1,4 @@
-/* EVOLU Genesis V2.2 — Market Transformation Layer
+/* Platform UX legacy-static V2.2 — Market Transformation Layer
    Extends V2.1 without introducing real integrations, tax conclusions or an LLM. */
 (() => {
   const pt = () => state.lang === 'pt';
