@@ -2,7 +2,6 @@ import type {
   ActionExecutionRequest,
   ApprovalContext,
   AuditHistoryContext,
-  AuditHistoryContext,
   CompanyContext,
   CompanyWorkspaceContext,
   DocumentAnalysisContext,
@@ -54,8 +53,13 @@ export interface PlatformProvider {
     companyId?: string;
     cnpjId?: string;
     periodId?: string;
+    subject?: {
+      type: string;
+      id: string;
+    };
   }): Promise<AuditHistoryContext>;
 
+  recordAnalysisObservation(request: RecordAnalysisObservationRequest): Promise<void>;
   recordPendingItem(request: RecordPendingItemRequest): Promise<RecordPendingItemResult>;
   recordPendingInformation(request: RecordPendingInformationRequest): Promise<RecordPendingInformationResult>;
   recordDecision(request: RecordDecisionRequest): Promise<Decision>;
