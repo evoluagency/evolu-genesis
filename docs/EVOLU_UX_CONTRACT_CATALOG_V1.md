@@ -20,7 +20,7 @@ Every screen must declare:
 | Screen | Scope | Entity | Context | Reads | Commands | States | Owner |
 |---|---|---|---|---|---|---|---|
 | CompanyPortfolio | tenant | Company | PortfolioContext | CompanySummary[], KPIs, pending counts | OpenCompany, FilterPortfolio | loading/ready/empty/error/forbidden | Platform |
-| CompanyWorkspace | company | Company | CompanyContext | identity, CNPJs, active period, pending summary | SelectCnpj, SelectPeriod, OpenFeature | loading/ready/error/forbidden | Platform |
+| CompanyWorkspace | company | Company | CompanyWorkspaceContext | identity, CNPJs, active period, pending summary | SelectCnpj, SelectPeriod, OpenFeature | loading/ready/error/forbidden | Platform |
 | CompanyInformation | cnpj | CnpjEntity | CompanyContext | identity, tax profile, provenance, known/unknown facts | RequestInformation, OpenEvidence | loading/ready/empty/error/forbidden | Platform |
 | FiscalDocuments | cnpj | FiscalDocument | FiscalDocumentsContext | document summaries, filters, totals | FilterDocuments, OpenDocument | loading/ready/empty/error/forbidden | Platform |
 | FiscalDocumentDetail | document | FiscalDocument | DocumentAnalysisContext | document, items, classification, pending, analysis | RequestDocumentAnalysis, OpenEvidence, RequestInformation | loading/ready/analyzing/insufficient_context/error/forbidden | Platform + Intelligence |
@@ -46,6 +46,21 @@ Fields:
 - provenance
 
 ### CompanyContext
+Base CNPJ-scoped decision context.
+
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- referenceDate
+- capabilities
+- provenance
+- dataQuality
+
+### CompanyWorkspaceContext
+Company-scoped navigation/workspace projection.
+
 Fields:
 - schemaVersion
 - tenantId
@@ -152,7 +167,7 @@ Fields:
 
 ### ActionExecutionRequest
 Fields:
-- approvalId
+- authorization: ActionAuthorizationRef
 - actionType
 - subjectId
 - payload
@@ -163,6 +178,11 @@ Returns ActionResult.
 
 Capabilities are explicit and should not be inferred only from missing data.
 
+Each capability is an object with:
+- status: `allowed | forbidden | unavailable`
+- reasonCode: optional stable explanation code
+- description: optional human-readable explanation
+
 Example DocumentCapabilities:
 - canRequestAnalysis
 - canRequestInformation
@@ -170,21 +190,14 @@ Example DocumentCapabilities:
 - canRequestApproval
 - canExecuteApprovedAction
 
-Capability false can mean:
-- role restriction
-- tenant policy
-- workflow state
-- missing prerequisite
-- closed period
-- unavailable feature
-
-UX must distinguish `forbidden` from `not_available`.
+`forbidden` means the actor is not authorized. `unavailable` means the operation cannot currently be performed because of workflow state, missing prerequisite, closed period or unsupported feature. The UX must render these as different states.
 
 ## Provider contracts
 
 ### PlatformProvider
 Representative operations:
 - getPortfolioContext
+- getCompanyWorkspaceContext
 - getCompanyContext
 - getFiscalDocuments
 - getDocumentAnalysisContext
@@ -267,6 +280,7 @@ These are UX routes, not backend API routes.
 | Contract | Today | Later | Authority |
 |---|---|---|---|
 | PortfolioContext | MockPlatformProvider | PlatformAdapter | Platform |
+| CompanyWorkspaceContext | MockPlatformProvider | PlatformAdapter | Platform |
 | CompanyContext | MockPlatformProvider | PlatformAdapter | Platform |
 | FiscalDocumentsContext | MockPlatformProvider | PlatformAdapter | Platform |
 | DocumentAnalysisContext | MockPlatformProvider + MockIntelligenceProvider | PlatformAdapter + IntelligenceAdapter | Split |
