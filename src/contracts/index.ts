@@ -205,6 +205,21 @@ export interface RecordApprovalRequest {
   actor: string;
 }
 
+export interface ProvidePendingItemInformationRequest {
+  schemaVersion: SchemaVersion;
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  pendingItemId: string;
+  response: Readonly<Record<string, string | number | boolean | null>>;
+  respondedBy: string;
+}
+
+export interface ProvidePendingItemInformationResult {
+  pendingItem: PendingItem;
+  acceptedContext: Readonly<Record<string, string | number | boolean | null>>;
+}
+
 export interface ActionExecutionRequest {
   tenantId: TenantId;
   companyId: CompanyId;
