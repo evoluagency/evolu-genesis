@@ -538,6 +538,7 @@ export class MockPlatformProvider implements PlatformProvider {
         ? { accountingPeriodId: request.accountingPeriodId }
         : {}),
       correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+      causationId: request.decisionId,
       actor: request.actor,
       subject: {
         type: request.subjectType,
