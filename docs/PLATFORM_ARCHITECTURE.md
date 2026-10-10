@@ -2514,3 +2514,14 @@ This gate applies to:
 - established brand/provider isolation;
 - introduced the first navigation matrix;
 - recorded unresolved decisions explicitly.
+
+
+## UX-7 — Adapter integration boundary (candidate)
+
+The contract-first UX can replace `MockPlatformProvider` with `PlatformAdapter` and `MockIntelligenceProvider` with `IntelligenceAdapter` without changing features, domain names, UX workflow or component props. A `GatewayTransport` abstraction is injected at the provider boundary; no gateway URL or credential is bound by the UX package.
+
+Platform remains the system of record and authority for scopes, decisions, approvals, action execution and append-only audit events. Intelligence remains analytical and cannot authorize or execute a Platform action. Approval and ActionCommand are separate server-authorized transitions.
+
+The gateway must authenticate the effective principal, derive permitted Tenant/Company/CNPJ/AccountingPeriod access from server-side state, and enforce capabilities and idempotency for **every** read/write. Client-provided identifiers are selectors, never authorization. Adapter response guards are defense in depth, not a security perimeter. Browser-to-database/service-role access is prohibited.
+
+**Status:** adapter boundary candidate only. Production integration, real-data access and live writes require the documented staging, protocol, IDOR/authz, replay, audit lineage and rollback gates. See [UX7_ADAPTER_BOUNDARY_V1.md](./UX7_ADAPTER_BOUNDARY_V1.md).
