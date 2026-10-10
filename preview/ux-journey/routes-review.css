@@ -1,0 +1,23 @@
+/* UX-ROUTES-1 — design verification panel, never a permission gateway. */
+.grid.routes-active{grid-template-columns:minmax(0,1fr)}
+.routes-review{display:grid;gap:12px}
+.route-context{display:flex;align-items:end;gap:10px;flex-wrap:wrap}
+.route-context .route-field{display:grid;gap:4px;min-width:155px}
+.route-context label{font-size:10px;font-weight:700;color:var(--muted)}
+.route-context select{min-height:37px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--text)}
+.routes-explainer{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:9px;background:var(--soft);padding:10px 12px;font-size:11px;color:var(--muted);line-height:1.55}
+.route-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.route-card{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px;min-width:0}
+.route-card h4{margin:0 0 5px;font-size:13px}
+.route-card p{margin:8px 0 0;font-size:11px;color:var(--muted)}
+.route-card .route-meta{font-size:10px;color:var(--accent);font-weight:700}
+.route-steps{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+.route-steps li{min-width:0;display:flex;align-items:center;justify-content:space-between;gap:9px;border:1px solid var(--line);background:var(--soft);border-radius:8px;padding:8px}
+.route-steps .route-number{flex:none;width:23px;height:23px;display:grid;place-items:center;border-radius:7px;color:var(--accent);background:var(--shade);font-size:11px;font-weight:700}
+.route-steps .route-label{flex:1;min-width:0;font-size:11px;overflow-wrap:anywhere}
+.route-steps a{flex:none;text-decoration:none;color:var(--accent);font-weight:700;font-size:10px;padding:5px;border-radius:7px}
+.route-steps a:hover{background:var(--shade)}
+.route-steps a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.routes-summary{font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+@media(max-width:1120px){.route-list{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:740px){.route-context{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.route-context .route-field{min-width:0}.route-context select{width:100%}.route-steps li{align-items:start;flex-wrap:wrap}.route-steps a{margin-left:auto}}
