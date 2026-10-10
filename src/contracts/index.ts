@@ -223,6 +223,12 @@ export interface DocumentAnalysisResult {
 }
 
 export interface RecordDecisionRequest {
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  accountingPeriodId?: string;
+  subjectType: string;
+  subjectId: string;
   analysisId: string;
   recommendationId: string;
   decision: DecisionValue;
@@ -270,6 +276,33 @@ export interface RecordPendingInformationResult {
   pendingItemId: string;
   status: HumanWorkflowStatus;
   recordedAt: string;
+}
+
+export interface AuditHistoryContext {
+  schemaVersion: SchemaVersion;
+  tenantId: TenantId;
+  companyId?: CompanyId;
+  cnpjId?: CnpjId;
+  subject?: {
+    type: string;
+    id: string;
+  };
+  events: AuditEvent[];
+}
+
+export interface RecordAnalysisObservationRequest {
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  accountingPeriodId?: string;
+  subjectType: string;
+  subjectId: string;
+  analysisId: string;
+  status: AnalysisStatus;
+  findingIds: string[];
+  evidenceRefs: string[];
+  recommendationIds: string[];
+  actor: string;
 }
 
 export interface ActionExecutionRequest {
