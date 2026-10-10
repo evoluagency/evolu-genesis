@@ -1,15 +1,25 @@
-import { createNfe70031ScenarioState, historicalEvidence, initialDocumentAnalysisResult, mockDocument, reconciliationAnalysisResult } from "../../mocks/scenarios/nfe-70031.js";
+import { createNfe70031ScenarioState, historicalEvidence, initialDocumentAnalysisResult, mockCompany, mockCnpj, mockDocument, mockPeriod, mockTenant, reconciliationAnalysisResult } from "../../mocks/scenarios/nfe-70031.js";
 export class MockIntelligenceProvider {
     scenarioState;
+    analysisHistory = [];
     constructor(scenarioState = createNfe70031ScenarioState()) {
         this.scenarioState = scenarioState;
+        this.seedAnalysisHistory();
     }
     async requestDocumentAnalysis(request) {
-        if (request.documentId !== mockDocument.documentId) {
+        if (request.documentId !== mockDocument.documentId)
             throw new Error("mock_document_not_found");
-        }
         const purpose = this.scenarioState.economicPurpose;
         if (!purpose || purpose === "unknown") {
+            this.recordAnalysisHistory({
+                tenantId: request.tenantId,
+                companyId: request.companyId,
+                cnpjId: request.cnpjId,
+                subject: { type: "FiscalDocument", id: request.documentId },
+                result: initialDocumentAnalysisResult,
+                type: "document_analysis",
+                scope: "document"
+            });
             return initialDocumentAnalysisResult;
         }
         const copy = {
@@ -31,41 +41,127 @@ export class MockIntelligenceProvider {
         };
         const recommendation = copy[purpose];
         const analysisId = `analysis-70031-${purpose}`;
-        return {
+        const result = {
             schemaVersion: "1.0.0",
             analysisId,
             status: "completed",
-            findings: [
-                {
-                    findingId: `finding-economic-purpose-${purpose}`,
-                    type: "economic_purpose_confirmed",
-                    severity: "info",
-                    title: "Finalidade econômica confirmada",
-                    description: recommendation.rationale,
-                    evidenceRefs: ["evidence-bearing-history"]
-                }
-            ],
+            findings: [{
+                findingId: `finding-economic-purpose-${purpose}`,
+                type: "economic_purpose_confirmed",
+                severity: "info",
+                title: "Finalidade econômica confirmada",
+                description: recommendation.rationale,
+                evidenceRefs: ["evidence-bearing-history"]
+            }],
             evidence: historicalEvidence,
-            recommendations: [
-                {
-                    recommendationId: `recommendation-70031-${purpose}`,
-                    analysisId,
-                    type: "record_economic_purpose",
-                    title: recommendation.title,
-                    rationale: recommendation.rationale,
-                    evidenceRefs: ["evidence-bearing-history"],
-                    confidence: recommendation.confidence,
-                    requiresApproval: true,
-                    proposedChange: {
-                        economicPurpose: purpose
-                    }
-                }
-            ],
+            recommendations: [{
+                recommendationId: `recommendation-70031-${purpose}`,
+                analysisId,
+                type: "record_economic_purpose",
+                title: recommendation.title,
+                rationale: recommendation.rationale,
+                evidenceRefs: ["evidence-bearing-history"],
+                confidence: recommendation.confidence,
+                requiresApproval: true,
+                proposedChange: { economicPurpose: purpose }
+            }],
             missingContext: []
         };
+        this.recordAnalysisHistory({
+            tenantId: request.tenantId,
+            companyId: request.companyId,
+            cnpjId: request.cnpjId,
+            subject: { type: "FiscalDocument", id: request.documentId },
+            result,
+            type: "document_analysis",
+            scope: "document"
+        });
+        return result;
     }
-    async requestReconciliationAnalysis(_request) {
+    async requestReconciliationAnalysis(request) {
+        this.recordAnalysisHistory({
+            tenantId: request.tenantId,
+            companyId: request.companyId,
+            cnpjId: request.cnpjId,
+            subject: { type: "Reconciliation", id: `reconciliation:${request.periodId}` },
+            result: reconciliationAnalysisResult,
+            type: "reconciliation_analysis",
+            scope: "cnpj"
+        });
         return reconciliationAnalysisResult;
+    }
+    async getAnalysisHistory(input) {
+        const entries = this.analysisHistory
+            .filter(entry => {
+                if (entry.tenantId !== input.tenantId)
+                    return false;
+                if (input.companyId && entry.companyId !== input.companyId)
+                    return false;
+                if (input.cnpjId && entry.cnpjId !== input.cnpjId)
+                    return false;
+                return true;
+            })
+            .sort((a, b) => b.analysis.createdAt.localeCompare(a.analysis.createdAt));
+        return {
+            schemaVersion: "1.0.0",
+            tenantId: input.tenantId,
+            ...(input.companyId ? { companyId: input.companyId } : {}),
+            ...(input.cnpjId ? { cnpjId: input.cnpjId } : {}),
+            entries
+        };
+    }
+    seedAnalysisHistory() {
+        this.recordAnalysisHistory({
+            tenantId: mockTenant.tenantId,
+            companyId: mockCompany.companyId,
+            cnpjId: mockCnpj.cnpjId,
+            subject: { type: "FiscalDocument", id: mockDocument.documentId },
+            result: initialDocumentAnalysisResult,
+            type: "document_analysis",
+            scope: "document",
+            createdAt: "2026-10-05T12:00:00Z"
+        });
+        this.recordAnalysisHistory({
+            tenantId: mockTenant.tenantId,
+            companyId: mockCompany.companyId,
+            cnpjId: mockCnpj.cnpjId,
+            subject: { type: "Reconciliation", id: `reconciliation:${mockPeriod.periodId}` },
+            result: reconciliationAnalysisResult,
+            type: "reconciliation_analysis",
+            scope: "cnpj",
+            createdAt: "2026-10-05T12:05:00Z"
+        });
+    }
+    recordAnalysisHistory(input) {
+        const analysisId = "analysisId" in input.result
+            ? input.result.analysisId
+            : `reconciliation-analysis-${input.subject.id}`;
+        const existing = this.analysisHistory.find(entry =>
+            entry.analysis.analysisId === analysisId &&
+            entry.subject.type === input.subject.type &&
+            entry.subject.id === input.subject.id);
+        if (existing)
+            return;
+        const createdAt = input.createdAt ?? new Date().toISOString();
+        const analysis = {
+            analysisId,
+            type: input.type,
+            status: input.result.status,
+            scope: input.scope,
+            createdAt,
+            ...(input.result.status === "completed" ? { completedAt: createdAt } : {}),
+            findings: input.result.findings,
+            evidence: input.result.evidence,
+            recommendations: input.result.recommendations,
+            missingContext: input.result.missingContext
+        };
+        this.analysisHistory.push({
+            analysis,
+            tenantId: input.tenantId,
+            companyId: input.companyId,
+            ...(input.cnpjId ? { cnpjId: input.cnpjId } : {}),
+            subject: input.subject
+        });
     }
     async explainAnalysis(request) {
         return {
