@@ -314,6 +314,7 @@ export interface ReconciliationAnalysisRequest {
   tenantId: TenantId;
   companyId: CompanyId;
   cnpjId: CnpjId;
+  reconciliationId: string;
   periodId: string;
   requestedBy: string;
 }
