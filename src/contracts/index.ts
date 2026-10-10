@@ -201,6 +201,11 @@ export interface RecordDecisionRequest {
 }
 
 export interface RecordApprovalRequest {
+  approvalId?: string;
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  accountingPeriodId?: string;
   decisionId: string;
   subjectType: string;
   subjectId: string;
