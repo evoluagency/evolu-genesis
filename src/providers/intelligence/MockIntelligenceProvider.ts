@@ -252,10 +252,7 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
     scope: Analysis["scope"];
     createdAt?: string;
   }): void {
-    const analysisId =
-      "analysisId" in input.result
-        ? input.result.analysisId
-        : `reconciliation-analysis-${input.subject.id}`;
+    const analysisId = input.result.analysisId;
 
     const existing = this.analysisHistory.find(
       entry =>
