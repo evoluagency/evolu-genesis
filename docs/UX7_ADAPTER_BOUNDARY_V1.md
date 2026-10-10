@@ -41,7 +41,7 @@ A production transport must use a **fixed operation allowlist**, not arbitrary t
 
 ## Verification
 
-Run `npm run test:adapters` (builds the TS preview runtime then runs the Node-only no-network contract suite). This includes provider substitution through Office queue / NF-e / History controllers, scoped queues, stable approval identity, no implicit execution, and negative scope/schema checks.
+Run `npm run test:adapters` (builds the TS preview runtime then runs the Node-only no-network contract suite). This includes provider substitution through Office queue / NF-e / History controllers, a shared synthetic scenario for the complete NF-e purpose → reanalysis → decision → approval → explicit execution → audit path, scoped queues, stable approval identity, no implicit execution, and negative scope/schema checks (including analytical missing-context tenant isolation and unrelated approval links).
 
 ## Blocking gates for real integration
 
