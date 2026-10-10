@@ -8,14 +8,13 @@ import type {
   PendingItemsContext,
   PortfolioContext,
   ReconciliationContext,
+  CreateReconciliationPendingItemRequest,
   RecordApprovalRequest,
   RecordDecisionRequest,
   RecordPendingInformationRequest,
-  RecordPendingInformationResult,
-  RecordPendingItemRequest,
-  RecordPendingItemResult
+  RecordPendingInformationResult
 } from "../../contracts/index.js";
-import type { ActionResult, ApprovalRecord, Decision } from "../../domain/index.js";
+import type { ActionResult, ApprovalRecord, Decision, PendingItem } from "../../domain/index.js";
 
 export interface PlatformProvider {
   getPortfolioContext(input: { tenantId: string }): Promise<PortfolioContext>;
@@ -37,7 +36,7 @@ export interface PlatformProvider {
   }): Promise<ReconciliationContext>;
   getApprovals(input: { tenantId: string; companyId?: string; cnpjId?: string }): Promise<ApprovalContext>;
 
-  recordPendingItem(request: RecordPendingItemRequest): Promise<RecordPendingItemResult>;
+  createReconciliationPendingItem(request: CreateReconciliationPendingItemRequest): Promise<PendingItem>;
   recordPendingInformation(request: RecordPendingInformationRequest): Promise<RecordPendingInformationResult>;
   recordDecision(request: RecordDecisionRequest): Promise<Decision>;
   recordApproval(request: RecordApprovalRequest): Promise<ApprovalRecord>;
