@@ -158,6 +158,8 @@ const params=new URLSearchParams(window.location.search);
 const readOnly=params.get("mode")==="read";
 if(["2026-09","2026-08"].includes(params.get("period")))period=params.get("period");
 if(["a","b"].includes(params.get("cnpj")))cnpj=params.get("cnpj");
+// Optional activity deep link is cosmetic demonstration routing, never access control.
+if(["home","finance","documents","requests","info"].includes(params.get("activity")))page=params.get("activity");
 function fullFinanceHref(){
  const q=new URLSearchParams({role:readOnly?"viewer":"company",cnpj:cnpj==="a"?"m":"f",period});
  return "../company-financial-workspace/?"+q.toString();
