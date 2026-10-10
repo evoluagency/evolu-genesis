@@ -208,6 +208,8 @@ Representative operations:
 - getPendingItems
 - getReconciliationContext
 - getApprovals
+- getAuditHistory
+- recordAnalysisObservation
 - recordPendingItem
 - recordPendingInformation
 - recordDecision
