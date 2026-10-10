@@ -181,12 +181,16 @@ FiscalDocument
 
 ### UX-6 Audit and history
 - preserve the existing NF-e audit timeline; do not create a parallel history page
-- AuditEvent is an immutable Platform fact and never an execution authority
+- keep AnalysisHistoryContext and AuditHistoryContext as separate projections with separate authorities
+- Intelligence owns analytical history; Platform owns the immutable operational audit log
+- AuditEvent is an append-only Platform fact and never an execution authority
 - query audit history by tenant/company/CNPJ/accounting period and stable subject reference
 - record observed Intelligence analysis with finding/evidence/recommendation references
 - record pending information, Decision, ApprovalRecord and ActionResult transitions
+- use stable subject-based correlationId and explicit causationId where a prior record/authorization caused the event
 - preserve end-to-end source/evidence/analysis/recommendation/decision/approval/action lineage
-- the UI renders AuditHistoryContext instead of maintaining a second local audit state
+- the existing NF-e timeline renders AuditHistoryContext instead of maintaining a second local audit state
+- HistoryController may aggregate the two projections for future reuse but must not merge their authorities
 
 ### UX-7 Replace mocks
 - PlatformAdapter
