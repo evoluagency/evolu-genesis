@@ -180,8 +180,13 @@ FiscalDocument
 - no generic Task domain
 
 ### UX-6 Audit and history
-- AuditEvent
-- source/evidence/decision/action traceability
+- preserve the existing NF-e audit timeline; do not create a parallel history page
+- AuditEvent is an immutable Platform fact and never an execution authority
+- query audit history by tenant/company/CNPJ/accounting period and stable subject reference
+- record observed Intelligence analysis with finding/evidence/recommendation references
+- record pending information, Decision, ApprovalRecord and ActionResult transitions
+- preserve end-to-end source/evidence/analysis/recommendation/decision/approval/action lineage
+- the UI renders AuditHistoryContext instead of maintaining a second local audit state
 
 ### UX-7 Replace mocks
 - PlatformAdapter
