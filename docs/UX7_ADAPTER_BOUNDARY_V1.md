@@ -41,7 +41,7 @@ A production transport must use a **fixed operation allowlist**, not arbitrary t
 
 ## Verification
 
-Run `npm run test:adapters` (builds the TS preview runtime then runs the Node-only no-network contract suite). This includes provider substitution through Office queue / NF-e / History controllers, a shared synthetic scenario for the complete NF-e purpose → reanalysis → decision → approval → explicit execution → audit path, scoped queues, stable approval identity, no implicit execution, and negative scope/schema checks (including analytical missing-context tenant isolation and unrelated approval links).
+Run `npm install --no-package-lock --ignore-scripts --no-audit --no-fund && npm run typecheck && npm run test:adapters` (builds the TS preview runtime then runs the Node-only no-network contract suite). The repo has no committed package-lock.json; do not use `npm ci`. A restricted GitHub Actions pull-request gate is defined in `.github/workflows/ux7-adapter-contract.yml`. The workflow is a gate, not itself evidence of a passing run. This includes provider substitution through Office queue / NF-e / History controllers, a shared synthetic scenario for the complete NF-e purpose → reanalysis → decision → approval → explicit execution → audit path, scoped queues, stable approval identity, no implicit execution, and negative scope/schema checks (including analytical missing-context tenant isolation and unrelated approval links).
 
 ## Blocking gates for real integration
 
@@ -52,4 +52,4 @@ Run `npm run test:adapters` (builds the TS preview runtime then runs the Node-on
 5. Execute end-to-end request tracing with correlation/causation IDs, immutable event lineage, no unauthorized writes, and rollback checks.
 6. Complete the existing browser homologation T-13…T-17 independently; UX-7 must not silently declare UX V1 visually homologated.
 
-**Merge policy:** candidate adapter layer is reviewable separately; real transport wiring, deployment and live operations stay blocked until all applicable gates are evidenced.
+**Merge policy:** candidate adapter layer is reviewable separately; merge only after an observed successful TypeScript + adapter-contract workflow on the exact PR SHA. Real transport wiring, deployment and live operations stay blocked until all applicable gates are evidenced.
