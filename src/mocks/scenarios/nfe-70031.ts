@@ -1,6 +1,7 @@
 import type {
   ApprovalContext,
   CompanyContext,
+  CompanyWorkspaceContext,
   DocumentAnalysisContext,
   DocumentAnalysisResult,
   FiscalDocumentsContext,
@@ -149,7 +150,7 @@ export const portfolioContext: PortfolioContext = {
     information_request: 1
   },
   capabilities: {
-    canOpenCompany: true
+    canOpenCompany: { status: "allowed" }
   },
   provenance: [
     {
@@ -160,6 +161,27 @@ export const portfolioContext: PortfolioContext = {
 };
 
 export const companyContext: CompanyContext = {
+  schemaVersion: "1.0.0",
+  tenantId: mockTenant.tenantId,
+  companyId: mockCompany.companyId,
+  cnpjId: mockCnpj.cnpjId,
+  referenceDate: "2026-10-05",
+  capabilities: {
+    canOpenCompanyInformation: { status: "allowed" }
+  },
+  provenance: [
+    {
+      source: "mock_platform_provider",
+      reference: "scenario:nfe-70031"
+    }
+  ],
+  dataQuality: {
+    completeness: 0.85,
+    issues: ["economic_purpose_missing"]
+  }
+};
+
+export const companyWorkspaceContext: CompanyWorkspaceContext = {
   schemaVersion: "1.0.0",
   tenantId: mockTenant.tenantId,
   companyId: mockCompany.companyId,
@@ -177,8 +199,8 @@ export const companyContext: CompanyContext = {
     information_request: 1
   },
   capabilities: {
-    canSelectCnpj: true,
-    canSelectPeriod: true
+    canSelectCnpj: { status: "allowed" },
+    canSelectPeriod: { status: "allowed" }
   },
   provenance: [
     {
@@ -214,8 +236,8 @@ export const fiscalDocumentsContext: FiscalDocumentsContext = {
     pendingCount: 1
   },
   capabilities: {
-    canFilterDocuments: true,
-    canOpenDocument: true
+    canFilterDocuments: { status: "allowed" },
+    canOpenDocument: { status: "allowed" }
   },
   provenance: [
     {
@@ -236,11 +258,20 @@ export const documentAnalysisContext: DocumentAnalysisContext = {
   pendingItems: [purposePendingItem],
   historicalEvidence,
   capabilities: {
-    canRequestAnalysis: true,
-    canRequestInformation: true,
-    canRecordDecision: false,
-    canRequestApproval: false,
-    canExecuteApprovedAction: false
+    canRequestAnalysis: { status: "allowed" },
+    canRequestInformation: { status: "allowed" },
+    canRecordDecision: {
+      status: "unavailable",
+      reasonCode: "analysis_insufficient_context"
+    },
+    canRequestApproval: {
+      status: "unavailable",
+      reasonCode: "no_decision_recorded"
+    },
+    canExecuteApprovedAction: {
+      status: "unavailable",
+      reasonCode: "no_action_authorization"
+    }
   },
   provenance: [
     {
@@ -269,8 +300,8 @@ export const approvalContext: ApprovalContext = {
   relatedDecisions: [],
   relatedRecommendations: [],
   capabilities: {
-    canApprove: false,
-    canReject: false
+    canApprove: { status: "unavailable", reasonCode: "no_approval_pending" },
+    canReject: { status: "unavailable", reasonCode: "no_approval_pending" }
   }
 };
 
