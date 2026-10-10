@@ -56,7 +56,9 @@ export class MockIntelligenceProvider {
                     evidenceRefs: ["evidence-bearing-history"],
                     confidence: recommendation.confidence,
                     requiresApproval: true,
-                    proposedChange: { economicPurpose: purpose }
+                    proposedChange: {
+                        economicPurpose: purpose
+                    }
                 }
             ],
             missingContext: []
