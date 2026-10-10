@@ -18,9 +18,20 @@ export const mockCnpj = {
     cnpjId: "cnpj-acme-industrial-hq",
     companyId: mockCompany.companyId,
     tenantId: mockTenant.tenantId,
-    cnpj: "00000000000191",
+    cnpj: "12345678000190",
     legalName: "ACME Industrial Ltda.",
+    establishmentType: "head_office",
     state: "SP",
+    status: "active"
+};
+export const mockBranchCnpj = {
+    cnpjId: "cnpj-acme-industrial-branch",
+    companyId: mockCompany.companyId,
+    tenantId: mockTenant.tenantId,
+    cnpj: "12345678000271",
+    legalName: "ACME Industrial Ltda. - Filial",
+    establishmentType: "branch",
+    state: "MG",
     status: "active"
 };
 export const mockPeriod = {
@@ -29,6 +40,17 @@ export const mockPeriod = {
     status: "open",
     openedAt: "2026-09-01T00:00:00Z"
 };
+export const mockPreviousPeriod = {
+    periodId: "period-2026-08",
+    competence: "2026-08",
+    status: "closed",
+    openedAt: "2026-08-01T00:00:00Z",
+    closedAt: "2026-09-10T12:00:00Z"
+};
+export const mockAccountingPeriods = [
+    mockPeriod,
+    mockPreviousPeriod
+];
 export const mockDocument = {
     documentId: "fiscal-document-70031",
     tenantId: mockTenant.tenantId,
@@ -112,7 +134,7 @@ export const portfolioContext = {
             companyId: mockCompany.companyId,
             legalName: mockCompany.legalName,
             ...(mockCompany.tradeName ? { tradeName: mockCompany.tradeName } : {}),
-            cnpjCount: 1,
+            cnpjCount: 2,
             pendingCount: 1
         }
     ],
@@ -162,11 +184,25 @@ export const companyWorkspaceContext = {
         {
             cnpjId: mockCnpj.cnpjId,
             cnpj: mockCnpj.cnpj,
-            legalName: mockCnpj.legalName
+            legalName: mockCnpj.legalName,
+            ...(mockCnpj.establishmentType
+                ? { establishmentType: mockCnpj.establishmentType }
+                : {}),
+            ...(mockCnpj.state ? { state: mockCnpj.state } : {})
+        },
+        {
+            cnpjId: mockBranchCnpj.cnpjId,
+            cnpj: mockBranchCnpj.cnpj,
+            legalName: mockBranchCnpj.legalName,
+            ...(mockBranchCnpj.establishmentType
+                ? { establishmentType: mockBranchCnpj.establishmentType }
+                : {}),
+            ...(mockBranchCnpj.state ? { state: mockBranchCnpj.state } : {})
         }
     ],
     company: mockCompany,
     activeAccountingPeriod: mockPeriod,
+    availableAccountingPeriods: mockAccountingPeriods,
     pendingSummary: {
         information_request: 1
     },
