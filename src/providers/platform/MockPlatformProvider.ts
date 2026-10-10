@@ -7,6 +7,8 @@ import type {
   FiscalDocumentsContext,
   PendingItemsContext,
   PortfolioContext,
+  ProvidePendingItemInformationRequest,
+  ProvidePendingItemInformationResult,
   RecordApprovalRequest,
   RecordDecisionRequest
 } from "../../contracts/index.js";
@@ -14,6 +16,7 @@ import type { ActionResult, ApprovalRecord, Decision } from "../../domain/index.
 import {
   approvalContext,
   companyContext,
+  createNfe70031ScenarioState,
   companyWorkspaceContext,
   documentAnalysisContext,
   fiscalDocumentsContext,
@@ -25,6 +28,10 @@ import type { PlatformProvider } from "./PlatformProvider.js";
 export class MockPlatformProvider implements PlatformProvider {
   private decisions: Decision[] = [];
   private approvals: ApprovalRecord[] = [];
+
+  constructor(
+    private readonly scenarioState: Nfe70031ScenarioState = createNfe70031ScenarioState()
+  ) {}
 
   async getPortfolioContext(): Promise<PortfolioContext> {
     return portfolioContext;
@@ -55,7 +62,52 @@ export class MockPlatformProvider implements PlatformProvider {
   }
 
   async getPendingItems(): Promise<PendingItemsContext> {
-    return pendingItemsContext;
+    if (this.scenarioState.economicPurpose && this.scenarioState.economicPurpose !== "unknown") {
+      return { ...pendingItemsContext, items: [] };
+    }
+
+    return {
+      ...pendingItemsContext,
+      items: [
+        {
+          ...purposePendingItem,
+          description:
+            this.scenarioState.economicPurpose === "unknown"
+              ? "A empresa informou que ainda não sabe a finalidade econômica desta operação."
+              : purposePendingItem.description
+        }
+      ]
+    };
+  }
+
+  async providePendingItemInformation(
+    request: ProvidePendingItemInformationRequest
+  ): Promise<ProvidePendingItemInformationResult> {
+    if (request.pendingItemId !== purposePendingItem.pendingItemId) {
+      throw new Error("mock_pending_item_not_found");
+    }
+
+    const value = request.response.economicPurpose;
+    if (
+      value !== "maintenance" &&
+      value !== "production" &&
+      value !== "internal_use" &&
+      value !== "unknown"
+    ) {
+      throw new Error("mock_pending_item_invalid_response");
+    }
+
+    this.scenarioState.economicPurpose = value as Nfe70031EconomicPurpose;
+
+    return {
+      pendingItem: {
+        ...purposePendingItem,
+        status: value === "unknown" ? "awaiting_information" : "pending_review"
+      },
+      acceptedContext: {
+        economicPurpose: value
+      }
+    };
   }
 
   async getApprovals(): Promise<ApprovalContext> {
