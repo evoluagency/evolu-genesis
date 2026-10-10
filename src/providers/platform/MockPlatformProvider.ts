@@ -256,7 +256,7 @@ export class MockPlatformProvider implements PlatformProvider {
   ): Promise<void> {
     const duplicate = this.auditEvents.some(
       event =>
-        event.eventType === "analysis_observed" &&
+        event.eventType === "analysis.observed" &&
         event.subject.type === request.subjectType &&
         event.subject.id === request.subjectId &&
         event.metadata.analysisId === request.analysisId
@@ -565,8 +565,8 @@ export class MockPlatformProvider implements PlatformProvider {
       correlationId: `pending:${purposePendingItem.pendingItemId}`,
       actor: "system",
       subject: {
-        type: "PendingItem",
-        id: purposePendingItem.pendingItemId
+        type: "FiscalDocument",
+        id: documentAnalysisContext.document.documentId
       },
       occurredAt: "2026-10-05T12:00:00Z",
       metadata: {
@@ -679,6 +679,7 @@ export class MockPlatformProvider implements PlatformProvider {
       ...(authorizationPeriodId
         ? { accountingPeriodId: authorizationPeriodId }
         : {}),
+      correlationId: `action:${result.commandId}`,
       actor: request.requestedBy,
       subject: {
         type: request.subjectType,
