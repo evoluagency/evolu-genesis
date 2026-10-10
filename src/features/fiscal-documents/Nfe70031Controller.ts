@@ -165,6 +165,7 @@ export class Nfe70031Controller {
         approvalId: this.approval.approvalId
       },
       actionType: "record_economic_purpose",
+      subjectType: "FiscalDocument",
       subjectId: this.config.documentId,
       payload: {
         economicPurpose: this.purpose
