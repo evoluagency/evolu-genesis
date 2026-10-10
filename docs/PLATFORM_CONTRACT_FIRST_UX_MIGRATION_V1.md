@@ -124,8 +124,8 @@ FiscalDocument
 → Evidence
 → Recommendation
 → Decision
-→ ApprovalRecord
-→ ActionCommand
+→ ApprovalRecord [when required]
+→ ActionCommand with explicit authorization
 → ActionResult
 → AuditEvent
 
@@ -150,6 +150,8 @@ FiscalDocument
 
 ### UX-3 Company Workspace
 - make Tenant → Company → CnpjEntity explicit
+- use `CompanyWorkspaceContext` for company-scoped selection/navigation
+- keep `CompanyContext` and specialized decision contexts CNPJ-scoped
 - add CNPJ scope even when current mock has one
 - preserve competence/period context
 
