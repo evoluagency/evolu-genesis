@@ -4,25 +4,21 @@
 
 ## Current repository reality
 
-The current `Platform public UX repository` repository is a static public experience.
+The repository is now a hybrid contract-first Platform UX implementation.
 
-Current structure includes:
-- index.html
-- landing.js
-- script.js
-- v22.js
-- v23.js
-- CSS files
-- /demo/
-- /docs/
+The existing static/public surfaces remain deployable during migration, while the repository now also contains:
+- package.json and TypeScript configuration
+- src/domain
+- src/contracts
+- PlatformProvider / MockPlatformProvider
+- IntelligenceProvider / MockIntelligenceProvider
+- feature controllers for the migrated UX slices
+- compiler-oriented preview runtime modules
+- /demo/, /preview/ and /docs/
 
-There is currently no:
-- package.json
-- src/
-- typed contract layer
-- provider abstraction layer
+The remaining static/global-script structures are compatibility surfaces to be retired only after their corresponding contract-driven flows are complete.
 
-The existing operational demo already contains useful product semantics:
+The existing operational experience contains useful product semantics:
 - Tenant branding (NEXUS)
 - selected company (ACME Industrial)
 - Fiscal Documents
