@@ -3,7 +3,7 @@
 **Status:** Canonical architecture document  
 **Owner:** EVOLU  
 **Products:** Platform, Intelligence  
-**Version:** 0.29  
+**Version:** 0.30  
 **Purpose:** single source of truth for the functional and navigation architecture of Platform.
 
 ---
@@ -807,6 +807,7 @@ Acceptance risk to review: Financeiro is a Company-facing V1 UX priority and not
 | UX-FINANCE-1 Company/Tenant financial task workspace | Static frontend updated; **awaiting visual user review** | `preview/company-financial-workspace/` with task tabs, scoped pagination and bills filters; existing UX-FLOW-1 intact |
 | UX-FISCAL-1 Tenant Fiscal/Accounting workspace | Static preview on `main`; **awaiting visual review** | `preview/tenant-fiscal-workspace/`: Received, Pending, Evidence Review, Pre-close (mock-only), with scoped Office navigation and independent source fixtures |
 | UX-ADVISORY-1 Tenant business-advisory workspace | Static preview on `main`; **awaiting visual review** | `preview/tenant-advisory-workspace/`: context eligibility, evidence-based analysis, recommendation with evaluation only, no real AI/Backend |
+| UX-ROUTES-1 Three-click and scope continuity audit | 10/10 code-level route contracts passed; **browser click verification pending** | `preview/shared-ux/routes.js` + `preview/ux-journey/` new guided route tab; Company/Finance/Office allowlisted deep links |
 
 ### UX-CFG-4 CompanyAccessHome prototype
 
@@ -1975,6 +1976,56 @@ No Backend, persistence, real authentication, external integrations or workflows
 
 ---
 
+## 11.11 UX-ROUTES-1 — Three-click navigation contract and route-review panel
+
+**State:** implemented as static frontend navigation and test catalog; **browser and user sign-off pending**. This advances the implementation sequence in the Unified Workspace Specification, but does **not** meet final UX-REVIEW-1 or approve Backend.
+
+**New/updated files:**
+- `preview/shared-ux/routes.js`: single small, browser-only **route-review contract** with whitelisted demo persona, `m/f` establishment, `2026-08/2026-09` competence and ten named pathways `J-01` … `J-10`. The route contract is used to prepare **test links from UX Journey**; it is not a production router or an authentication/authorization mechanism.
+- `preview/ux-journey/routes-review.css`: dedicated responsive layout for the guided click-budget panel.
+- `preview/ux-journey/index.html`: new fourth tab **“Percursos (3 cliques)”**. When the user chooses the review persona and demonstration CNPJ/competence, the panel shows planned UI actions, direct links to inspect each destination, estimated click counts and explicit pending-acceptance status. It does **not** declare these journeys successfully exercised in a real browser.
+- `preview/office-workspace/index.html`: now reads safe `?tab=queue&cnpj=m|f&period=YYYY-MM` selectors instead of resetting a valid incoming CNPJ/competence.
+- `preview/company-access-home/index.html`: now accepts allowlisted `?activity=home|finance|documents|requests|info` while maintaining existing `cnpj=a|b`, `period` and `mode=read` semantics.
+- `preview/company-financial-workspace/index.html`: now accepts an `activity` value only from the selected mock role's existing task list, preserving `role=viewer` → `role=company` display-mode read-only safeguards; `send` is rejected for `viewer`. The scoped return link leads back to the CompanyHome **Financeiro** activity, preserving Company CNPJ and competence.
+- No production persistence, session transfer, real role authorization or cross-page fixture synchronization was introduced.
+
+### Ten design-path tests
+
+**These budgets count navigation to an activity/operation, not the full number of professional evidence checks or an approval workflow.** Full multi-record review can require more interactions.
+
+| ID | Simulated persona | Planned path | UI click budget |
+|---|---|---|---:|
+| J-01 | Tenant Accounting | Office → work queue → clarification R-1 | 2 |
+| J-02 | Tenant Accounting | Office → received fiscal item D-2 → independent NF-e case | 3 |
+| J-03 | Company Financeiro | Company home → financial overview → detailed movements | 3 |
+| J-04 | Company Financeiro | Requests → respond → save response | 3 |
+| J-05 | Company Consulta | Company home → read-only Financeiro → movements | 3 |
+| J-06 | Tenant Accounting | Fiscal → evidence review → source F-1 | 3 |
+| J-07 | Tenant Accounting | Clarification R-1 → mock answer → explicit professional resolution | 3 |
+| J-08 | Tenant Accounting | Fiscal → documentary pre-close workspace | 2 |
+| J-09 | Tenant Advisory | Office → Advisory → available synthetic analysis context | 3 |
+| J-10 | Tenant Admin | Office → Company list → Company configuration | 3 |
+
+**Important limits:**
+- The `J-02` NF-e 70031 page remains a **separate case**; an item ID on the new Fiscal page cannot prove it was transferred from that source.
+- J-04 and J-07 list **manual UI actions** on the same page; their associated shortcuts intentionally point to the start activity rather than transmitting synthetic form state.
+- J-09's “released” case is a **fixture** independent of the actual Fiscal/Financial flow; a valid link is not evidence of a release event.
+- Only the ACME Matriz/September fixture contains full evidence. Selecting Filial/August correctly navigates to empty or insufficient pages; absence of data is not a broken route or an authorization claim.
+- `mode=read`, `role`, `activity` and all mock entity selectors in the URL are **presentation hints** in public preview pages, never authorization; server-side permission rules must be implemented separately after approval of UX.
+- These paths are **planned <=3-click user interface routes**. The check for CSS layout, real focus order, touch/mobile interactions, and the actual manual click count is part of UX-REVIEW-1 and **still open**.
+
+### Checks performed
+
+- Re-read remote `main` files; validated syntax for the changed pages and route contract.
+- Executed the `EvoluRoutes.validate()` checks: **10/10** named pathways produce safe, defined local URLs and no path exceeds three planned clicks.
+- Verified `CompanyAccess` alias translation `m→a`, `f→b`, valid competence handling and query propagation; read-only URLs retain `mode=read`/viewer status, and the route contract rejects the read-only send action.
+- Executed a minimal mocked-DOM initialization and persona-switch test for the review panel: Company Financeiro shows 2 relevant pathways; Tenant Accounting shows 5; all are labelled as pending browser inspection.
+- Did **not** run or claim a complete browser interaction and responsive-device test. The real three-click budget remains **awaiting end-to-end user confirmation**.
+
+**Next stage:** `UX-REVIEW-1` — cross-application visual and functional acceptance, including all 18 regression scenarios, keyboard access, themes, translations, viewport sizes and real click counts. Stop before Backend pending the explicit final authorization gate.
+
+---
+
 ## 12. Navigation skeleton
 
 ### Core
@@ -2211,6 +2262,13 @@ This gate applies to:
 ---
 
 ## 17. Change log
+
+### 0.30 — UX-ROUTES-1 click-budget audit
+
+- added an explicit route review catalog with ten role-specific design journeys and a four-tab UX Journey preview; actual click and visual acceptance remain pending;
+- fixed safe CNPJ/competence restoration from Office query strings, added Company home activity deep links and role-allowlisted Financeiro task deep links, including read-only protections and contextual return;
+- verified ten route URL mappings and mock-dom route-panel rendering, with no external services, data synchronization or authorization claims;
+- retained final UX-REVIEW-1 and explicit Backend authorization gate. No Actions, jobs, workflows, Supabase, provider or Vercel changes.
 
 ### 0.29 — Auxiliary workspaces
 
