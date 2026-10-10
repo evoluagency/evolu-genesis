@@ -94,7 +94,9 @@ main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between
  .capline{padding:7px 0}
  .foot{flex:none;margin-top:7px;padding-top:4px;border-top:1px solid var(--line)}
 }
-</style></head><body>
+</style>
+<link rel="stylesheet" href="./routes-review.css">
+<script src="../shared-ux/routes.js" defer></script></head><body>
 <div class="shell"><aside id="sidebar"><div class="brand brand-sidebar-toggle" id="brandSidebarToggle" role="button" tabindex="0" aria-controls="sidebar" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu lateral"><span class="mark">N</span><div><b>NEXUS</b><small>Contabilidade & Assessoria</small></div></div>
 <div class="unit"><div class="unit-icon" id="unitIcon">A</div><div><b id="unitName">ACME Industrial</b><small id="unitDetail">Empresa cliente</small></div></div>
 <div><div class="navtitle">JORNADA DE EXPERIÊNCIA</div><nav class="nav" id="nav"></nav></div>
@@ -108,11 +110,23 @@ main{min-width:0}.top{min-height:70px;display:flex;justify-content:space-between
 <button type="button" role="tab" data-hub-tab="journey" aria-selected="true">Fluxo</button>
 <button type="button" role="tab" data-hub-tab="screens" aria-selected="false">Telas e permissões</button>
 <button type="button" role="tab" data-hub-tab="review" aria-selected="false">Revisão da UX</button>
+<button type="button" role="tab" data-hub-tab="routes" aria-selected="false">Percursos (3 cliques)</button>
 </nav>
-<div class="grid"><div class="stack">
+<div class="grid" id="hubGrid"><div class="stack">
 <section class="card"><div class="cardtitle"><div><h3>Fluxo da informação</h3><p>Quatro etapas operacionais, um contexto de empresa e competência.</p></div><span class="pill">09/2026 · Matriz</span></div>
 <div id="journey"></div></section>
 <section class="card"><div class="cardtitle"><div><h3>Telas disponíveis para este perfil</h3><p>Abrir cada protótipo na etapa apropriada; recursos bloqueados não aparecem como disponíveis.</p></div><span class="pill" id="screenCount">0 telas</span></div><div class="cards" id="screens"></div></section>
+<section class="card" id="routesCard" hidden>
+<div class="cardtitle"><div><h3>Percursos operacionais · até 3 cliques</h3><p>Roteiros por perfil, CNPJ e competência; validação real no navegador pendente.</p></div><span class="pill">UX-ROUTES-1</span></div>
+<div class="routes-review">
+<div class="route-context">
+<div class="route-field"><label for="routeEntity">Estabelecimento de teste</label><select id="routeEntity"><option value="m">Matriz · 0001</option><option value="f">Filial · 0002</option></select></div>
+<div class="route-field"><label for="routePeriod">Competência de teste</label><select id="routePeriod"><option value="2026-09">09/2026</option><option value="2026-08">08/2026</option></select></div>
+</div>
+<div class="routes-explainer"><strong>Método de revisão:</strong> execute cada passo usando os controles reais e conte os cliques. Os links diretos são atalhos de teste, não comprovam que o percurso foi aprovado. As páginas não compartilham lançamentos. O limite de três cliques não dispensa conferências nem aprovações profissionais.</div>
+<div class="routes-summary"><span id="routeCount"></span><span>Estado: pendente de validação no navegador.</span></div>
+<div id="routeList" class="route-list" aria-live="polite"></div>
+</div></section>
 </div>
 <div class="stack">
 <section class="card"><div class="cardtitle"><div><h3>Limites de acesso</h3><p>Permissões previstas para o cenário selecionado.</p></div></div><div id="capabilities" class="cap"></div></section>
@@ -200,11 +214,25 @@ function addPager(target,label,page,max,name){
  '<button type="button" data-pager="'+name+'" data-step="1" '+(page+1===max?'disabled':'')+'>Próximo</button></div>';
  target.after(footer);
 }
+function renderRoutes(){
+ const api=window.EvoluRoutes;
+ if(!api){$('routeList').innerHTML='<p class="why">Catálogo de percursos indisponível.</p>';return;}
+ const context={role,entity:$('routeEntity').value,period:$('routePeriod').value};
+ const match=api.cases.filter(c=>c.role===role);
+ $('routeCount').textContent=match.length+' percurso(s) para este perfil (10 no catálogo)';
+ $('routeList').innerHTML=match.length?match.map(c=>
+ '<article class="route-card"><div class="route-meta">'+safe(c.id)+' · '+c.clicks+' clique(s) previstos · máximo 3</div><h4>'+safe(c.title)+'</h4>'+
+ '<ol class="route-steps">'+c.routes.map((route,i)=>'<li><span class="route-number">'+(i+1)+'</span><span class="route-label">'+safe(c.labels[i])+'</span>'+
+ '<a href="'+safe(api.build(route,context))+'" target="_blank" rel="noopener noreferrer" aria-label="Testar etapa '+(i+1)+' de '+safe(c.title)+'">Testar ↗</a></li>').join('')+'</ol>'+
+ '<p>'+safe(c.notice)+'</p></article>'
+ ).join(''):'<div class="why">Não há percurso nessa amostra de perfil. Isso não indica uma autorização.</div>';
+}
 function applyHubPanels(){
- const journey=$('journey').closest('.card'),screens=$('screens').closest('.card');
+ const journey=$('journey').closest('.card'),screens=$('screens').closest('.card'),routes=$('routesCard');
  const caps=$('capabilities').closest('.card'),boundary=$('boundary').closest('.card'),reviews=$('reviews').closest('.card');
- journey.hidden=reviewPanel!=='journey';screens.hidden=reviewPanel==='journey';
+ journey.hidden=reviewPanel!=='journey';screens.hidden=reviewPanel!=='screens';routes.hidden=reviewPanel!=='routes';
  caps.hidden=reviewPanel!=='screens';boundary.hidden=reviewPanel!=='journey';reviews.hidden=reviewPanel!=='review';
+ $('hubGrid').classList.toggle('routes-active',reviewPanel==='routes');
  document.querySelectorAll('[data-hub-tab]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.hubTab===reviewPanel)));
  const stages=[...$('journey').querySelectorAll('.stage')];
  const f=pageVisible(stages,flowPage,2);flowPage=f.page;addPager($('journey'),'Fluxo entre áreas',f.page,f.max,'flow');
@@ -231,7 +259,7 @@ $('screenCount').textContent=r.screenIds.length+' telas';
 $('capabilities').innerHTML=caps.map(([key,label])=>'<div class="capline"><span>'+label+'</span><span class="pill '+(r.cap[key]?'good':'bad')+'">'+(r.cap[key]?'Previsto':'Restrito')+'</span></div>').join('');
 $('boundary').innerHTML='<strong>'+r.label+'</strong><p>'+r.description+'</p><p><strong>Escopo:</strong> '+(isCompany?'ACME Industrial e seus CNPJs autorizados. Não há escolha nem listagem de outros clientes da NEXUS.':'Carteira de Companies do Tenant, limitada às permissões de cada profissional.')+'</p><p><strong>Dados:</strong> cada página estática mantém seu cenário fictício independente; a navegação não sincroniza lançamentos entre arquivos.</p>';
 $('reviews').innerHTML=reviewItems.map(x=>'<div class="screen"><div><b>'+x[0]+'</b><small>'+x[1]+'</small></div><span class="pill '+(x[2]?'good':'warn')+'">'+(x[2]?'Aprovado':'Pendente')+'</span></div>').join('');
-applyHubPanels();
+renderRoutes();applyHubPanels();
 }
 document.addEventListener('click',e=>{
  const t=e.target.closest('[data-hub-tab]');if(t){reviewPanel=t.dataset.hubTab;render();return;}
@@ -239,6 +267,8 @@ document.addEventListener('click',e=>{
 });
 $('role').addEventListener('change',e=>{role=e.target.value;company='acme';flowPage=0;reviewPage=0;render()});
 $('company').addEventListener('change',e=>{company=e.target.value;render()});
+$('routeEntity').addEventListener('change',renderRoutes);
+$('routePeriod').addEventListener('change',renderRoutes);
 themeBtn.addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';document.documentElement.dataset.theme=theme;themeBtn.textContent=theme==='dark'?'☀':'☾'});
 $('menuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('open'));
 function responsive(){$('menuBtn').hidden=window.innerWidth>750}window.addEventListener('resize',responsive);responsive();render();
