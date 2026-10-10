@@ -69,6 +69,7 @@ Fields:
 - cnpjs: CnpjEntitySummary[]
 - company
 - activeAccountingPeriod
+- availableAccountingPeriods
 - pendingSummary
 - capabilities
 - provenance
