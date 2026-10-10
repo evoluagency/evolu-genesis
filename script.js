@@ -328,8 +328,8 @@ function initialLedger(){
 
 function createState(){
   return {
-    lang: localStorage.getItem('genesis_lang') || 'pt',
-    theme: localStorage.getItem('genesis_theme') || 'dark',
+    lang: localStorage.getItem('evolu_lang') || 'pt',
+    theme: localStorage.getItem('evolu_theme') || 'dark',
     page:'dashboard',
     selectedInvoice:'NF-e 70031',
     selectedEntry:'CTB-4107',
@@ -382,7 +382,7 @@ function applyI18n(){
     const small=sidebarFoot.querySelector('small');
     if(small) small.textContent=`${langValue(DATA.company.regime)} · ${DATA.company.location}`;
   }
-  $('#intelligenceFab').setAttribute('aria-label',state.lang==='pt'?'Abrir EVOLU Intelligence':'Open EVOLU Intelligence');
+  $('#intelligenceFab').setAttribute('aria-label',state.lang==='pt'?'Abrir Intelligence':'Open Intelligence');
   $('#closePanel').setAttribute('aria-label',state.lang==='pt'?'Fechar':'Close');
   $('#minimizePanel').setAttribute('aria-label',state.lang==='pt'?'Minimizar':'Minimize');
   $('.send').setAttribute('aria-label',state.lang==='pt'?'Enviar':'Send');
@@ -1100,7 +1100,7 @@ function upsertPurposeLedger(value,source){
   const row=state.ledger.find(r=>r.id==='bearing-purpose');
   row.value={pt:PURPOSE_LABELS[value].pt,en:PURPOSE_LABELS[value].en};
   row.source=source==='assistant'
-    ?{pt:'Confirmação via EVOLU Intelligence',en:'Confirmation via EVOLU Intelligence'}
+    ?{pt:'Confirmação via Intelligence',en:'Confirmation via Intelligence'}
     :{pt:'Preenchimento manual na Platform',en:'Manual input in Platform'};
   row.sourceType='human';
   row.evidence=source==='assistant'
@@ -1316,14 +1316,14 @@ function showToast(text){
 
 $$('[data-lang]').forEach(b=>b.addEventListener('click',()=>{
   state.lang=b.dataset.lang;
-  localStorage.setItem('genesis_lang',state.lang);
+  localStorage.setItem('evolu_lang',state.lang);
   state.conversation=[];
   applyI18n();
   if(state.assistantOpen)openAssistant();
 }));
 $$('[data-theme-choice]').forEach(b=>b.addEventListener('click',()=>{
   state.theme=b.dataset.themeChoice;
-  localStorage.setItem('genesis_theme',state.theme);
+  localStorage.setItem('evolu_theme',state.theme);
   applyTheme();
 }));
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
