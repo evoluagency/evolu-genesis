@@ -6,16 +6,25 @@ import type {
   ReconciliationAnalysisRequest,
   ReconciliationAnalysisResult
 } from "../../contracts/index.js";
-import { initialDocumentAnalysisResult, mockDocument } from "../../mocks/scenarios/nfe-70031.js";
+import {
+  buildDocumentAnalysisResult,
+  createNfe70031ScenarioState,
+  mockDocument,
+  type Nfe70031ScenarioState
+} from "../../mocks/scenarios/nfe-70031.js";
 import type { IntelligenceProvider } from "./IntelligenceProvider.js";
 
 export class MockIntelligenceProvider implements IntelligenceProvider {
+  constructor(
+    private readonly scenarioState: Nfe70031ScenarioState = createNfe70031ScenarioState()
+  ) {}
+
   async requestDocumentAnalysis(request: DocumentAnalysisRequest): Promise<DocumentAnalysisResult> {
     if (request.documentId !== mockDocument.documentId) {
       throw new Error("mock_document_not_found");
     }
 
-    return initialDocumentAnalysisResult;
+    return buildDocumentAnalysisResult(this.scenarioState.economicPurpose);
   }
 
   async requestReconciliationAnalysis(
