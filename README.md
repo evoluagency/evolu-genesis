@@ -1,107 +1,114 @@
-# EVOLU Genesis
+# Platform UX
 
 **Presentation:** https://evoluagency.github.io/evolu-genesis/  
-**Operational demo:** https://evoluagency.github.io/evolu-genesis/demo/
+**Operational synthetic scenario:** https://evoluagency.github.io/evolu-genesis/demo/
 
-EVOLU Genesis is the **public demonstration layer** of the EVOLU ecosystem. It shows how **EVOLU Platform** and **EVOLU Intelligence** can support accounting and tax workflows when the information required for a decision is distributed across documents, bookkeeping, historical records and people.
+This repository contains the public and contract-first UX surface of **Platform**, one of the two EVOLU products.
 
-Genesis is intentionally separated from production runtime. It is a deterministic product-demonstration surface, not a simplified deployment of Platform or Intelligence.
+EVOLU is the company and brand:
 
-The public experience is divided into two parts:
+```text
+EVOLU
+├── Platform
+└── Intelligence
+```
 
-1. a product presentation explaining the problem, workflow and architecture;
-2. a separate operational demo that simulates day-to-day accounting and tax work.
+- **Platform** owns UX, operational state, recorded decisions, approvals, execution and audit.
+- **Intelligence** owns analyses, findings, evidence synthesis, recommendations and explanations.
+- **UX Contracts** define the stable language between the products.
+- **Mocks** are temporary development implementations of providers.
 
-## What the demonstration shows
+The repository name and GitHub Pages path still contain `evolu-genesis` as legacy technical metadata. That string is not a product, domain concept or architectural layer.
 
-The operational environment demonstrates a fictitious accounting and advisory firm working with synthetic companies and transactions. It includes examples of:
+## What the experience shows
+
+The synthetic operational environment demonstrates a fictitious accounting and advisory firm working with synthetic companies and transactions. It includes examples of:
 
 - tax documents and accounting entries;
 - reconciliation between different source categories;
 - missing information that prevents a conclusion;
-- historical classifications used as reference rather than automatic truth;
+- historical classifications used as evidence rather than automatic truth;
 - requests for clarification;
-- suggestions kept separate from approved changes;
-- professional approval before a simulated update;
-- evidence, responsibility and audit trail;
-- reuse of previously validated information in a later transaction.
+- recommendations kept separate from decisions and execution;
+- formal approval before a controlled action;
+- evidence, responsibility and immutable audit trail;
+- company, CNPJ and accounting-period scope.
 
 ## Product principle
 
-The demonstration follows a simple professional sequence:
+The operational chain is:
 
 ```text
-Data sources
-    ↓
-Reconciliation
-    ↓
-Missing information
-    ↓
-Confirmation
-    ↓
 Analysis
-    ↓
-Professional approval
-    ↓
-Change / record
-    ↓
-History and reuse
+↓
+Finding + Evidence
+↓
+Recommendation
+↓
+Decision
+↓
+ApprovalRecord [when required]
+↓
+ActionCommand
+↓
+ActionResult
+↓
+AuditEvent
 ```
 
-In the EVOLU architecture:
+A Recommendation never carries write authority. Platform executes only an explicitly authorized ActionCommand.
 
-- **EVOLU Platform** is the System of Record / Operational Plane;
-- **EVOLU Intelligence** is the System of Intelligence / Decision Plane;
-- **EVOLU Genesis** is the Public Demonstration Layer.
+## Integration architecture
 
-The operational demo may present these capabilities through one unified EVOLU interface. That presentation does not collapse their production authority boundaries.
+```text
+Platform UX
+    │
+    ▼
+UX Contracts
+    │
+    ├──────────────┐
+    ▼              ▼
+PlatformProvider   IntelligenceProvider
+    │              │
+    ▼              ▼
+Platform       Intelligence
+```
+
+During UX development, the providers are implemented by:
+
+```text
+MockPlatformProvider
+MockIntelligenceProvider
+```
+
+Mocks are not products, domain entities or permanent architectural layers.
 
 ## Data sources and integrations
 
-The demo presents source categories rather than architectural dependencies:
+The synthetic experience presents source categories such as:
 
 - tax documents;
 - bookkeeping;
 - financial data;
 - ERP data;
 - spreadsheets;
-- client information.
+- company-supplied information.
 
-Names such as SIEG, Domínio, ERPs and banks may appear only as examples of systems that can occupy those roles. Their presence in the demonstration does not mean that a production connector is currently available.
-
-## What this repository is
-
-This repository contains a simplified, deterministic and public demonstration layer intended to communicate product behavior and workflow without exposing EVOLU production systems.
-
-## What this repository is not
-
-It is not:
-
-- a production runtime;
-- a second implementation of EVOLU Platform;
-- a reduced production runtime of EVOLU Intelligence;
-- a source of operational state;
-- an integration surface for real tenant data.
-
-It does not contain customer data, production infrastructure, internal tax rules, proprietary production Skills, production Company Context, Supabase production resources, model credentials or the production EVOLU Intelligence runtime.
-
-All companies, documents, values and analyses displayed in Genesis are synthetic or simulated. Nothing in the demonstration constitutes accounting, tax or legal advice.
+Names such as SIEG, Domínio, ERPs or banks may appear only as examples of systems that can occupy those roles. Vendor-specific concepts must remain behind adapters and must not enter the core UX domain.
 
 ## Production boundary
 
-Genesis must remain independent from production credentials and real data. Any future attempt to connect Genesis directly to Platform or Intelligence production requires an explicit architectural decision and security review; it must not happen as an incidental demo enhancement.
+The public/synthetic surfaces do not contain customer data, production credentials or direct access to production systems.
 
-Canonical ecosystem architecture and release traceability are maintained in the Platform repository under:
+Real integrations belong behind Platform adapters. The UX must not connect directly to Supabase, SIEG, ONVIO, TOTVS, banks or other infrastructure providers.
 
-- `docs/architecture/EVOLU_SYSTEM_ARCHITECTURE.md`;
-- `docs/architecture/PLATFORM_INTELLIGENCE_CONTRACT.md`;
-- `docs/releases/RELEASE_MANIFEST.md`.
+Canonical ecosystem architecture and release traceability are maintained in the Platform repository.
 
 ## Brand and interface standard
 
-Genesis uses the official EVOLU symbol and keeps established accounting and tax terminology in the user interface. Internal engineering names may be more technical, but public labels should remain familiar to professionals in the sector.
+Public labels use established accounting and tax terminology. Internal engineering names may be more technical, but infrastructure and mock terminology must not leak into the user-facing domain.
 
-The innovation is intended to be visible in the workflow, not in invented terminology.
+All companies, documents, values and analyses in the synthetic scenario are fictitious or simulated. Nothing in the demonstration constitutes accounting, tax or legal advice.
 
 ---
 
