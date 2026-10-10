@@ -1,4 +1,4 @@
-/* Genesis V2.5 — guided tour robustness and operational copy */
+/* Platform synthetic scenario V2.5 — guided tour robustness and operational copy */
 (() => {
   const pt = () => state.lang === 'pt';
   const basePushAssistant = pushAssistant;
