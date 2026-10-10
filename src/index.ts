@@ -3,6 +3,10 @@ export * from "./contracts/index.js";
 
 export type { PlatformProvider } from "./providers/platform/PlatformProvider.js";
 export type { IntelligenceProvider } from "./providers/intelligence/IntelligenceProvider.js";
+export type { GatewayTransport, GatewayInvocation } from "./providers/adapters/GatewayTransport.js";
+export { AdapterContractError } from "./providers/adapters/GatewayTransport.js";
+export { PlatformAdapter } from "./providers/platform/PlatformAdapter.js";
+export { IntelligenceAdapter } from "./providers/intelligence/IntelligenceAdapter.js";
 
 export { MockPlatformProvider } from "./providers/platform/MockPlatformProvider.js";
 export { MockIntelligenceProvider } from "./providers/intelligence/MockIntelligenceProvider.js";
