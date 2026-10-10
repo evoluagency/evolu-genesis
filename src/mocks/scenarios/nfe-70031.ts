@@ -314,3 +314,103 @@ export const initialDocumentAnalysisResult: DocumentAnalysisResult = {
   recommendations: [],
   missingContext: initialAnalysis.missingContext
 };
+
+export type Nfe70031EconomicPurpose =
+  | "maintenance"
+  | "production"
+  | "internal_use"
+  | "unknown";
+
+export interface Nfe70031ScenarioState {
+  economicPurpose: Nfe70031EconomicPurpose | null;
+}
+
+export function createNfe70031ScenarioState(): Nfe70031ScenarioState {
+  return { economicPurpose: null };
+}
+
+export const economicPurposeLabels: Record<
+  Exclude<Nfe70031EconomicPurpose, "unknown">,
+  string
+> = {
+  maintenance: "Manutenção de máquina existente",
+  production: "Produção de nova máquina",
+  internal_use: "Uso interno / consumo"
+};
+
+export function buildDocumentAnalysisResult(
+  purpose: Nfe70031EconomicPurpose | null
+): DocumentAnalysisResult {
+  if (!purpose || purpose === "unknown") {
+    return {
+      ...initialDocumentAnalysisResult,
+      missingContext: [
+        {
+          ...purposePendingItem,
+          description:
+            purpose === "unknown"
+              ? "A empresa informou que ainda não sabe a finalidade econômica desta operação."
+              : purposePendingItem.description
+        }
+      ]
+    };
+  }
+
+  const definitions = {
+    maintenance: {
+      title: "Registrar finalidade como manutenção de máquina existente",
+      rationale:
+        "A informação fornecida é compatível com o padrão histórico predominante. O histórico permanece evidência complementar e não substitui o contexto desta operação.",
+      confidence: 0.9
+    },
+    production: {
+      title: "Registrar finalidade como produção de nova máquina",
+      rationale:
+        "A empresa informou uso produtivo nesta operação. O histórico contém casos semelhantes, mas permanece apenas como evidência complementar.",
+      confidence: 0.72
+    },
+    internal_use: {
+      title: "Registrar finalidade como uso interno / consumo",
+      rationale:
+        "A empresa confirmou uso interno. O registro deve refletir esta operação específica, independentemente da frequência histórica anterior.",
+      confidence: 0.72
+    }
+  } as const;
+
+  const definition = definitions[purpose];
+  const analysisId = `analysis-70031-${purpose}`;
+
+  return {
+    schemaVersion: "1.0.0",
+    analysisId,
+    status: "completed",
+    findings: [
+      {
+        findingId: `finding-economic-purpose-${purpose}`,
+        type: "economic_purpose_confirmed",
+        severity: "info",
+        title: "Finalidade econômica confirmada",
+        description: economicPurposeLabels[purpose],
+        evidenceRefs: ["evidence-bearing-history"]
+      }
+    ],
+    evidence: historicalEvidence,
+    recommendations: [
+      {
+        recommendationId: `recommendation-70031-${purpose}`,
+        analysisId,
+        type: "record_economic_purpose",
+        title: definition.title,
+        rationale: definition.rationale,
+        evidenceRefs: ["evidence-bearing-history"],
+        confidence: definition.confidence,
+        requiresApproval: true,
+        proposedChange: {
+          economicPurpose: purpose,
+          economicPurposeLabel: economicPurposeLabels[purpose]
+        }
+      }
+    ],
+    missingContext: []
+  };
+}
