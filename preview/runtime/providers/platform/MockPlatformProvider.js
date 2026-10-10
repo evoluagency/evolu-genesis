@@ -1,8 +1,9 @@
-import { approvalContext, companyContext, companyWorkspaceContext, createNfe70031ScenarioState, mockAccountingPeriods, mockBranchCnpj, mockCnpj, documentAnalysisContext, fiscalDocumentsContext, pendingItemsContext, portfolioContext, purposePendingItem } from "../../mocks/scenarios/nfe-70031.js";
+import { approvalContext, companyContext, companyWorkspaceContext, createNfe70031ScenarioState, mockAccountingPeriods, mockBranchCnpj, mockCnpj, documentAnalysisContext, fiscalDocumentsContext, pendingItemsContext, portfolioContext, purposePendingItem, reconciliationContext } from "../../mocks/scenarios/nfe-70031.js";
 export class MockPlatformProvider {
     scenarioState;
     decisions = [];
     approvals = [];
+    recordedPendingItems = [];
     constructor(scenarioState = createNfe70031ScenarioState()) {
         this.scenarioState = scenarioState;
     }
@@ -67,16 +68,44 @@ export class MockPlatformProvider {
     }
     async getPendingItems() {
         const purpose = this.scenarioState.economicPurpose;
+        const purposeItems = purpose && purpose !== "unknown"
+            ? []
+            : [{ ...purposePendingItem, status: "awaiting_information" }];
         return {
             ...pendingItemsContext,
-            items: purpose && purpose !== "unknown"
-                ? []
-                : [
-                    {
-                        ...purposePendingItem,
-                        status: "awaiting_information"
-                    }
-                ]
+            items: [...purposeItems, ...this.recordedPendingItems]
+        };
+    }
+    async getReconciliationContext(input) {
+        if (input.tenantId !== reconciliationContext.tenantId ||
+            input.companyId !== reconciliationContext.companyId ||
+            input.cnpjId !== reconciliationContext.cnpjId ||
+            input.periodId !== reconciliationContext.accountingPeriod.periodId) {
+            throw new Error("mock_reconciliation_not_found");
+        }
+        return {
+            ...reconciliationContext,
+            pendingItems: this.recordedPendingItems.filter(item => item.subject.type === "Reconciliation" &&
+                item.subject.id === reconciliationContext.reconciliation.reconciliationId)
+        };
+    }
+    async recordPendingItem(request) {
+        if (request.tenantId !== reconciliationContext.tenantId ||
+            request.companyId !== reconciliationContext.companyId ||
+            request.cnpjId !== reconciliationContext.cnpjId) {
+            throw new Error("mock_pending_item_scope_mismatch");
+        }
+        const existing = this.recordedPendingItems.find(item => item.pendingItemId === request.item.pendingItemId);
+        if (existing) {
+            return {
+                item: existing,
+                recordedAt: new Date().toISOString()
+            };
+        }
+        this.recordedPendingItems.push({ ...request.item });
+        return {
+            item: request.item,
+            recordedAt: new Date().toISOString()
         };
     }
     async recordPendingInformation(request) {

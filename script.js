@@ -605,15 +605,42 @@ function renderAccountingDetail(){
   </div>`;
 }
 
+function reconciliationContractData(){
+  const bridge=window.EvoluReconciliationBridge;
+  if(!bridge?.analysis)return {sources:DATA.sources,finding:null,pending:null};
+
+  const sources=bridge.analysis.evidence
+    .filter(item=>item.type==='reconciliation_source')
+    .map(item=>{
+      const value=item.value&&typeof item.value==='object'?item.value:{};
+      const amount=typeof value.amount==='number'?value.amount:0;
+      return {
+        category:value.dimension||'management',
+        name:value.provider||item.source,
+        value:new Intl.NumberFormat(state.lang==='pt'?'pt-BR':'en-US',{
+          style:'currency',currency:'BRL'
+        }).format(amount),
+        note:{pt:item.label,en:item.label}
+      };
+    });
+
+  return {
+    sources:sources.length?sources:DATA.sources,
+    finding:bridge.analysis.findings[0]||null,
+    pending:bridge.context?.pendingItems?.[0]||bridge.analysis.missingContext?.[0]||null
+  };
+}
+
 function renderReconciliation(){
   const pt=state.lang==='pt';
+  const contract=reconciliationContractData();
   return `<div class="workspace-grid">
     <section class="card">
       <div class="card-head">
         <div><span class="tiny-label">${pt?'CASO DE RECONCILIAÇÃO':'RECONCILIATION CASE'}</span><h4>${pt?'Conciliação da competência · 09/2026':'Period reconciliation · 09/2026'}</h4></div>
         <span class="pill warn">${pt?'Investigação aberta':'Open investigation'}</span>
       </div>
-      <div class="source-grid">${DATA.sources.map(s=>`
+      <div class="source-grid">${contract.sources.map(s=>`
         <div class="source-card">
           <span class="category">${CATEGORY_LABELS[s.category][state.lang]}</span>
           <b>${s.value}</b>
@@ -633,11 +660,11 @@ function renderReconciliation(){
     <aside class="card">
       <span class="tiny-label">${pt?'QUESTÃO EM ABERTO':'OPEN QUESTION'}</span>
       <h4>${pt?'O problema não é existir diferença. É não saber explicar sua origem.':'The problem is not that values differ. It is being unable to explain why.'}</h4>
-      <div class="context-gap">
+      <div class="context-gap" ${contract.finding?`data-finding-id="${escapeAttr(contract.finding.findingId)}"`:''}>
         <strong>${pt?'Hipóteses em investigação':'Hypotheses under review'}</strong>
         <p>${pt?'Cancelamentos · corte de competência · documentos ausentes · critérios gerenciais · lançamentos manuais.':'Cancellations · period cut-off · missing documents · management criteria · manual entries.'}</p>
       </div>
-      ${state.followupCreated?`<div class="notice"><strong>${pt?'Pendência criada':'Follow-up created'}</strong><br>${pt?'Confirmar a origem da diferença entre documentos fiscais e razão contábil na competência 09/2026.':'Confirm the source of the difference between tax documents and the accounting ledger for 09/2026.'}</div>`:''}
+      ${state.followupCreated?`<div class="notice"><strong>${pt?'Pendência criada':'Follow-up created'}</strong><br>${pt&&contract.pending?escapeHtml(contract.pending.description):(pt?'Confirmar a origem da diferença entre documentos fiscais e razão contábil na competência 09/2026.':'Confirm the source of the difference between tax documents and the accounting ledger for 09/2026.')}</div>`:''}
     </aside>
   </div>`;
 }
@@ -1113,7 +1140,19 @@ function applyAccounting(values,source){
   renderPage();
   showToast(t('applied'));
 }
-function createFollowup(){
+async function createFollowup(){
+  let pendingItem=null;
+  const bridge=window.EvoluReconciliationBridge;
+  if(bridge?.createFollowup){
+    try{
+      pendingItem=await bridge.createFollowup();
+    }catch(error){
+      console.error(error);
+      showToast(state.lang==='pt'?'Não foi possível criar a pendência.':'Could not create the follow-up.');
+      return;
+    }
+  }
+
   state.followupCreated=true;
   state.decisions.push({
     object:'Reconciliação 09/2026',
@@ -1122,10 +1161,14 @@ function createFollowup(){
   });
   renderPage();
   pushAssistant(state.lang==='pt'
-    ?'Pendência simulada criada: “Confirmar a origem da diferença entre documentos fiscais e razão contábil na competência 09/2026”. O registro preserva empresa, competência, fontes comparadas e hipóteses em aberto.'
+    ?`Pendência simulada criada: “${pendingItem?.description||'Confirmar a origem da diferença entre documentos fiscais e razão contábil na competência 09/2026.'}” O registro preserva empresa, competência, fontes comparadas e hipóteses em aberto.`
     :'Simulated follow-up created: “Confirm the source of the difference between tax documents and the accounting ledger for 09/2026”. The record preserves company, period, compared sources and open hypotheses.');
   signalTour('followup:created');
 }
+
+window.addEventListener('evolu:reconciliation-ready',()=>{
+  if(state.page==='reconciliation')renderPage();
+});
 
 function startManualTutorial(kind){
   state.manualTutorial={kind,step:0};

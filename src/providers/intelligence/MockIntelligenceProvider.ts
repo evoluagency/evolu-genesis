@@ -10,7 +10,8 @@ import {
   createNfe70031ScenarioState,
   historicalEvidence,
   initialDocumentAnalysisResult,
-  mockDocument
+  mockDocument,
+  reconciliationAnalysisResult
 } from "../../mocks/scenarios/nfe-70031.js";
 import type {
   Nfe70031EconomicPurpose,
@@ -97,14 +98,7 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
   async requestReconciliationAnalysis(
     _request: ReconciliationAnalysisRequest
   ): Promise<ReconciliationAnalysisResult> {
-    return {
-      schemaVersion: "1.0.0",
-      status: "completed",
-      findings: [],
-      evidence: [],
-      recommendations: [],
-      missingContext: []
-    };
+    return reconciliationAnalysisResult;
   }
 
   async explainAnalysis(request: ExplainAnalysisRequest): Promise<ExplainAnalysisResult> {

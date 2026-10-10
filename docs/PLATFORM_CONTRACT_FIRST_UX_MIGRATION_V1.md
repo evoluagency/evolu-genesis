@@ -162,9 +162,13 @@ FiscalDocument
 - keep legacy operational fixtures behind a temporary compatibility mapping until their own migration slice
 
 ### UX-4 Reconciliation
-- differences become Finding
-- support/history becomes Evidence
-- unresolved work becomes PendingItem
+- preserve the existing reconciliation UX; do not create a parallel screen
+- source values and provenance become Evidence
+- differences become Finding with explicit evidenceRefs
+- Intelligence may return missingContext but does not create operational work
+- unresolved work becomes PendingItem only through an explicit Platform action
+- reconciliation follow-up creation is idempotent and scope-validated
+- the existing renderer consumes the contract-driven bridge with legacy data only as load-time fallback
 
 ### UX-5 Pending Items and Approvals
 - first-class queues

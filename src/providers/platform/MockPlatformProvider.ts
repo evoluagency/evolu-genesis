@@ -7,12 +7,15 @@ import type {
   FiscalDocumentsContext,
   PendingItemsContext,
   PortfolioContext,
+  ReconciliationContext,
   RecordApprovalRequest,
   RecordDecisionRequest,
   RecordPendingInformationRequest,
-  RecordPendingInformationResult
+  RecordPendingInformationResult,
+  RecordPendingItemRequest,
+  RecordPendingItemResult
 } from "../../contracts/index.js";
-import type { ActionResult, ApprovalRecord, Decision } from "../../domain/index.js";
+import type { ActionResult, ApprovalRecord, Decision, PendingItem } from "../../domain/index.js";
 import {
   approvalContext,
   companyContext,
@@ -25,7 +28,8 @@ import {
   fiscalDocumentsContext,
   pendingItemsContext,
   portfolioContext,
-  purposePendingItem
+  purposePendingItem,
+  reconciliationContext
 } from "../../mocks/scenarios/nfe-70031.js";
 import type {
   Nfe70031EconomicPurpose,
@@ -36,6 +40,7 @@ import type { PlatformProvider } from "./PlatformProvider.js";
 export class MockPlatformProvider implements PlatformProvider {
   private decisions: Decision[] = [];
   private approvals: ApprovalRecord[] = [];
+  private recordedPendingItems: PendingItem[] = [];
 
   constructor(
     private readonly scenarioState: Nfe70031ScenarioState = createNfe70031ScenarioState()
@@ -134,17 +139,73 @@ export class MockPlatformProvider implements PlatformProvider {
 
   async getPendingItems(): Promise<PendingItemsContext> {
     const purpose = this.scenarioState.economicPurpose;
+    const purposeItems =
+      purpose && purpose !== "unknown"
+        ? []
+        : [
+            {
+              ...purposePendingItem,
+              status: "awaiting_information" as const
+            }
+          ];
+
     return {
       ...pendingItemsContext,
-      items:
-        purpose && purpose !== "unknown"
-          ? []
-          : [
-              {
-                ...purposePendingItem,
-                status: "awaiting_information"
-              }
-            ]
+      items: [...purposeItems, ...this.recordedPendingItems]
+    };
+  }
+
+  async getReconciliationContext(input: {
+    tenantId: string;
+    companyId: string;
+    cnpjId: string;
+    periodId: string;
+  }): Promise<ReconciliationContext> {
+    if (
+      input.tenantId !== reconciliationContext.tenantId ||
+      input.companyId !== reconciliationContext.companyId ||
+      input.cnpjId !== reconciliationContext.cnpjId ||
+      input.periodId !== reconciliationContext.accountingPeriod.periodId
+    ) {
+      throw new Error("mock_reconciliation_not_found");
+    }
+
+    return {
+      ...reconciliationContext,
+      pendingItems: this.recordedPendingItems.filter(
+        item =>
+          item.subject.type === "Reconciliation" &&
+          item.subject.id === reconciliationContext.reconciliation.reconciliationId
+      )
+    };
+  }
+
+  async recordPendingItem(
+    request: RecordPendingItemRequest
+  ): Promise<RecordPendingItemResult> {
+    if (
+      request.tenantId !== reconciliationContext.tenantId ||
+      request.companyId !== reconciliationContext.companyId ||
+      request.cnpjId !== reconciliationContext.cnpjId
+    ) {
+      throw new Error("mock_pending_item_scope_mismatch");
+    }
+
+    const existing = this.recordedPendingItems.find(
+      item => item.pendingItemId === request.item.pendingItemId
+    );
+    if (existing) {
+      return {
+        item: existing,
+        recordedAt: new Date().toISOString()
+      };
+    }
+
+    this.recordedPendingItems.push({ ...request.item });
+
+    return {
+      item: request.item,
+      recordedAt: new Date().toISOString()
     };
   }
 

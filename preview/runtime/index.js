@@ -5,3 +5,4 @@ export { MockIntelligenceProvider } from "./providers/intelligence/MockIntellige
 export * from "./mocks/scenarios/nfe-70031.js";
 export * from "./features/fiscal-documents/Nfe70031Controller.js";
 export * from "./features/company/CompanyWorkspaceController.js";
+export * from "./features/reconciliation/ReconciliationController.js";

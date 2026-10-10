@@ -204,7 +204,9 @@ Representative operations:
 - getDocumentAnalysisContext
 - getReconciliationContext
 - getPendingItems
+- getReconciliationContext
 - getApprovals
+- recordPendingItem
 - recordPendingInformation
 - recordDecision
 - recordApproval
