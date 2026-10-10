@@ -115,7 +115,7 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
         }
       ],
       missingContext: []
-    };;
+    };
 
     this.recordAnalysisHistory({
       tenantId: request.tenantId,
