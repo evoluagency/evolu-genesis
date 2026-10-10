@@ -2,7 +2,7 @@ const I18N = {
   pt: {
     introEyebrow:'EXPERIÊNCIA PÚBLICA DE PRODUTO',
     introTitle:'Dados não são contexto. Contexto não é conclusão.',
-    introBody:'Genesis demonstra como a EVOLU conecta operação, reconciliação, contexto empresarial e julgamento humano antes de recomendar uma ação.',
+    introBody:'A Platform mostra como operação, conciliação, contexto empresarial e julgamento humano se conectam antes de uma recomendação.',
     startGuided:'Começar experiência guiada',
     exploreFreely:'Explorar livremente',
     syntheticData:'DADOS SINTÉTICOS',
@@ -38,7 +38,7 @@ const I18N = {
   en: {
     introEyebrow:'PUBLIC PRODUCT EXPERIENCE',
     introTitle:'Data is not context. Context is not a conclusion.',
-    introBody:'Genesis shows how EVOLU connects operations, reconciliation, company context and human judgment before recommending an action.',
+    introBody:'Platform shows how operations, reconciliation, company context and human judgment connect before a recommendation.',
     startGuided:'Start guided experience',
     exploreFreely:'Explore freely',
     syntheticData:'SYNTHETIC DATA',
