@@ -57,7 +57,7 @@ export class ReconciliationController {
       accountingPeriodId: this.config.periodId,
       subjectType: "Reconciliation",
       subjectId: context.reconciliation.reconciliationId,
-      analysisId: `reconciliation-analysis-${this.config.periodId}`,
+      analysisId: analysis.analysisId,
       status: analysis.status,
       findingIds: analysis.findings.map(item => item.findingId),
       evidenceRefs: analysis.evidence.map(item => item.evidenceId),
