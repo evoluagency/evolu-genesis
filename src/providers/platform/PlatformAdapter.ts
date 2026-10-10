@@ -103,6 +103,8 @@ export class PlatformAdapter implements PlatformProvider {
 
   getPendingItems(input: Parameters<PlatformProvider["getPendingItems"]>[0]): Promise<PendingItemsContext> {
     return this.read("getPendingItems", input, input, result => {
+      if (input.companyId !== undefined) requireEqual(result.companyId, input.companyId, "adapter_scope_mismatch");
+      if (input.cnpjId !== undefined) requireEqual(result.cnpjId, input.cnpjId, "adapter_scope_mismatch");
       assertScopedCollection(result.items, input);
     });
   }
@@ -123,13 +125,40 @@ export class PlatformAdapter implements PlatformProvider {
   getApprovals(input: Parameters<PlatformProvider["getApprovals"]>[0]): Promise<ApprovalContext> {
     return this.read("getApprovals", input, input, result => {
       assertScopedCollection(result.approvals, input);
-      requireArray(result.relatedDecisions);
-      requireArray(result.relatedRecommendations);
+      const approvalIds = new Set<string>();
+      const decisionIds = new Set<string>();
+      for (const value of requireArray(result.approvals)) {
+        const item = record(value);
+        requireString(item.approvalId);
+        requireString(item.decisionId);
+        if (approvalIds.has(item.approvalId as string)) throw new AdapterContractError("adapter_duplicate_approval");
+        approvalIds.add(item.approvalId as string);
+        decisionIds.add(item.decisionId as string);
+        if (!["awaiting_approval", "approved", "rejected"].includes(String(item.status))) {
+          throw new AdapterContractError("adapter_invalid_approval_status");
+        }
+      }
+      const recommendationIds = new Set<string>();
+      for (const value of requireArray(result.relatedDecisions)) {
+        const item = record(value);
+        if (!decisionIds.has(item.decisionId as string)) throw new AdapterContractError("adapter_unrelated_decision");
+        requireString(item.recommendationId);
+        recommendationIds.add(item.recommendationId as string);
+      }
+      for (const value of requireArray(result.relatedRecommendations)) {
+        const item = record(value);
+        if (!recommendationIds.has(item.recommendationId as string)) {
+          throw new AdapterContractError("adapter_unrelated_recommendation");
+        }
+      }
     });
   }
 
   getAuditHistory(input: Parameters<PlatformProvider["getAuditHistory"]>[0]): Promise<AuditHistoryContext> {
     return this.read("getAuditHistory", input, input, result => {
+      if (input.companyId !== undefined) requireEqual(result.companyId, input.companyId, "adapter_scope_mismatch");
+      if (input.cnpjId !== undefined) requireEqual(result.cnpjId, input.cnpjId, "adapter_scope_mismatch");
+      if (input.periodId !== undefined) requireEqual(result.accountingPeriodId, input.periodId, "adapter_scope_mismatch");
       for (const event of requireArray(result.events)) {
         assertFlatScope(event, input);
         if (input.subject) {
@@ -188,7 +217,13 @@ export class PlatformAdapter implements PlatformProvider {
 
   async requestActionExecution(request: ActionExecutionRequest): Promise<ActionResult> {
     const authorization = record(request.authorization);
-    if (authorization.kind !== "approval_record" && authorization.kind !== "direct_permission") {
+    if (authorization.kind === "approval_record") {
+      requireString(authorization.approvalId);
+    } else if (authorization.kind === "direct_permission") {
+      requireString(authorization.capability);
+      requireString(authorization.actor);
+      requireString(authorization.reason);
+    } else {
       throw new AdapterContractError("adapter_authorization_required");
     }
     const result = record(await this.invoke<unknown>("requestActionExecution", request));
