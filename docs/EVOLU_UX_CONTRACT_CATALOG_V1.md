@@ -29,7 +29,7 @@ Every screen must declare:
 | Approvals | tenant/company/cnpj | ApprovalRecord | ApprovalContext | pending approvals, recommendation, decision, evidence | Approve, Reject, OpenEvidence | loading/ready/empty/awaiting_approval/approved/rejected/error | Platform |
 | Reconciliation | cnpj | Reconciliation | ReconciliationContext | source summaries, findings, evidence, differences | RequestReconciliationAnalysis, RequestReview, OpenSource | loading/analyzing/completed/insufficient_context/empty/error | Platform + Intelligence |
 | AccountingEntries | cnpj | AccountingEntry | AccountingEntriesContext | entries, account mapping, provenance | FilterEntries, OpenEntry, RequestReview | loading/ready/empty/error/forbidden | Platform |
-| AnalysisHistory | company/cnpj | Analysis | AnalysisHistoryContext | analyses, findings, decisions | OpenAnalysis | loading/ready/empty/error | Platform/Intelligence projection |
+| AnalysisHistory | company/cnpj | Analysis | AnalysisHistoryContext | analyses, findings, evidence, recommendations | OpenAnalysis | loading/ready/empty/error | Intelligence |
 | AuditHistory | company/cnpj | AuditEvent | AuditHistoryContext | immutable event timeline | FilterAudit, OpenSubject | loading/ready/empty/error/forbidden | Platform |
 | EvoluPanel | contextual | Analysis | AssistantContext | active screen context, entity refs, pending items | RequestAnalysis, RequestExplanation, RequestInformation | idle/loading/ready/insufficient_context/error | Intelligence |
 
