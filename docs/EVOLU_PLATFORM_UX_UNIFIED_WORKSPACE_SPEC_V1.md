@@ -1,4 +1,4 @@
-# EVOLU Platform — Especificação de UX Sistêmica e Plano de Implementação V1
+# Platform — Especificação de UX Sistêmica e Plano de Implementação V1
 
 **Identificador:** UX-SHELL-1 / UX-VIEW-1 / UX-ROUTES-1  
 **Versão deste documento:** 1.0  
@@ -45,7 +45,7 @@ Ao final desta migração incremental de UX, cada uma das cinco páginas deverá
 
 Esta entrega **não** implementa autenticação, autorização persistente, banco de dados, storage, motor fiscal, emissão de documentos, integração bancária/ERP, sincronização entre HTML independentes, workflows automatizados, faturamento/licenciamento ou produto de ERP completo.
 
-Também **não** cria um novo produto chamado “Painel”, “Financeiro” ou “Assessoria”. Os conceitos permanecem pertencentes à EVOLU Platform e suas superfícies TenantAccess/CompanyAccess; Intelligence continua transversal, com análise e recomendação, não execução.
+Também **não** cria um novo produto chamado “Painel”, “Financeiro” ou “Assessoria”. Os conceitos permanecem pertencentes à Platform e suas superfícies TenantAccess/CompanyAccess; Intelligence continua transversal, com análise e recomendação, não execução.
 
 ---
 
