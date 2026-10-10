@@ -7,30 +7,11 @@ export class MockPlatformProvider {
         scope: { ...item.scope }
     }));
     recordedPendingItems = [];
-    auditEvents = [
-        {
-            eventId: "audit-seed-pending-economic-purpose",
-            eventType: "pending_item.available",
-            tenantId: purposePendingItem.scope.tenantId,
-            ...(purposePendingItem.scope.companyId ? { companyId: purposePendingItem.scope.companyId } : {}),
-            ...(purposePendingItem.scope.cnpjId ? { cnpjId: purposePendingItem.scope.cnpjId } : {}),
-            ...(purposePendingItem.scope.accountingPeriodId ? { accountingPeriodId: purposePendingItem.scope.accountingPeriodId } : {}),
-            correlationId: `pending:${purposePendingItem.pendingItemId}`,
-            actor: "system",
-            subject: {
-                type: "FiscalDocument",
-                id: documentAnalysisContext.document.documentId
-            },
-            occurredAt: "2026-10-05T12:00:00Z",
-            metadata: {
-                status: purposePendingItem.status,
-                pendingItemType: purposePendingItem.type
-            }
-        }
-    ];
-    auditSequence = 1;
+    auditEvents = [];
+    auditSequence = 0;
     constructor(scenarioState = createNfe70031ScenarioState()) {
         this.scenarioState = scenarioState;
+        this.seedAuditEvents();
     }
     async getPortfolioContext() {
         return portfolioContext;
@@ -388,6 +369,53 @@ export class MockPlatformProvider {
             }
         });
         return approval;
+    }
+    seedAuditEvents() {
+        const pendingScope = purposePendingItem.scope;
+        this.auditEvents.push({
+            eventId: "audit-seed-pending-economic-purpose",
+            eventType: "pending_item.available",
+            tenantId: pendingScope.tenantId,
+            ...(pendingScope.companyId ? { companyId: pendingScope.companyId } : {}),
+            ...(pendingScope.cnpjId ? { cnpjId: pendingScope.cnpjId } : {}),
+            ...(pendingScope.accountingPeriodId
+                ? { accountingPeriodId: pendingScope.accountingPeriodId }
+                : {}),
+            correlationId: `pending:${purposePendingItem.pendingItemId}`,
+            actor: "system",
+            subject: {
+                type: "FiscalDocument",
+                id: documentAnalysisContext.document.documentId
+            },
+            occurredAt: "2026-10-05T12:00:00Z",
+            metadata: {
+                status: purposePendingItem.status,
+                pendingItemType: purposePendingItem.type
+            }
+        });
+        for (const approval of this.approvals) {
+            this.auditEvents.push({
+                eventId: `audit-seed-${approval.approvalId}`,
+                eventType: "approval.awaiting",
+                tenantId: approval.scope.tenantId,
+                ...(approval.scope.companyId ? { companyId: approval.scope.companyId } : {}),
+                ...(approval.scope.cnpjId ? { cnpjId: approval.scope.cnpjId } : {}),
+                ...(approval.scope.accountingPeriodId
+                    ? { accountingPeriodId: approval.scope.accountingPeriodId }
+                    : {}),
+                correlationId: `decision:${approval.decisionId}`,
+                actor: "system",
+                subject: {
+                    type: "ApprovalRecord",
+                    id: approval.approvalId
+                },
+                occurredAt: "2026-10-10T12:00:01Z",
+                metadata: {
+                    decisionId: approval.decisionId,
+                    status: approval.status
+                }
+            });
+        }
     }
     appendAuditEvent(input) {
         const event = {
