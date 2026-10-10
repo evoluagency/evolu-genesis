@@ -607,27 +607,63 @@ function renderAccountingDetail(){
 
 function reconciliationContractData(){
   const bridge=window.EvoluReconciliationBridge;
-  if(!bridge?.analysis)return {sources:DATA.sources,finding:null,pending:null};
+  if(!bridge?.context||!bridge?.analysis){
+    return {sources:DATA.sources,finding:null,pending:null,difference:null};
+  }
 
-  const sources=bridge.analysis.evidence
-    .filter(item=>item.type==='reconciliation_source')
-    .map(item=>{
-      const value=item.value&&typeof item.value==='object'?item.value:{};
-      const amount=typeof value.amount==='number'?value.amount:0;
-      return {
-        category:value.dimension||'management',
-        name:value.provider||item.source,
-        value:new Intl.NumberFormat(state.lang==='pt'?'pt-BR':'en-US',{
-          style:'currency',currency:'BRL'
-        }).format(amount),
-        note:{pt:item.label,en:item.label}
-      };
-    });
+  const labels={
+    fiscal_documents:{
+      category:"fiscal",
+      name:{pt:"Documentos fiscais / XML",en:"Tax documents / XML"},
+      note:{pt:"Eventos e documentos fiscais da competência",en:"Tax documents and events for the period"},
+      origin:{pt:"Origem simulada: conector documental",en:"Simulated origin: document connector"}
+    },
+    accounting_ledger:{
+      category:"accounting",
+      name:{pt:"Escrituração / Razão",en:"Bookkeeping / Ledger"},
+      note:{pt:"Registros contábeis escriturados",en:"Posted accounting records"},
+      origin:{pt:"Origem simulada: ERP contábil",en:"Simulated origin: accounting ERP"}
+    },
+    management_statement:{
+      category:"management",
+      name:{pt:"Demonstrativo gerencial",en:"Management statement"},
+      note:{pt:"Leitura interna agregada",en:"Aggregated internal reporting view"},
+      origin:{pt:"Origem simulada: fonte gerencial",en:"Simulated origin: management source"}
+    },
+    financial_movements:{
+      category:"financial",
+      name:{pt:"Movimentação financeira",en:"Financial movement"},
+      note:{pt:"Eventos conciliáveis de caixa e banco",en:"Reconcilable cash and bank events"},
+      origin:{pt:"Origem simulada: conector financeiro",en:"Simulated origin: financial connector"}
+    }
+  };
+
+  const rawSources=bridge.context.sources||[];
+  const sources=rawSources.map(source=>{
+    const label=labels[source.kind]||labels.management_statement;
+    return {
+      sourceId:source.sourceId,
+      kind:source.kind,
+      category:label.category,
+      name:label.name,
+      value:new Intl.NumberFormat(state.lang==="pt"?"pt-BR":"en-US",{
+        style:"currency",currency:source.currency||"BRL"
+      }).format(source.amount),
+      amount:source.amount,
+      note:label.note,
+      origin:label.origin
+    };
+  });
+
+  const fiscal=sources.find(source=>source.kind==="fiscal_documents");
+  const accounting=sources.find(source=>source.kind==="accounting_ledger");
+  const difference=fiscal&&accounting?Math.abs(accounting.amount-fiscal.amount):null;
 
   return {
     sources:sources.length?sources:DATA.sources,
-    finding:bridge.analysis.findings[0]||null,
-    pending:bridge.context?.pendingItems?.[0]||bridge.analysis.missingContext?.[0]||null
+    finding:bridge.analysis.findings?.[0]||null,
+    pending:bridge.context.pendingItems?.[0]||null,
+    difference
   };
 }
 
@@ -868,9 +904,13 @@ function handleQuestion(text){
     return;
   }
   if(state.page==='reconciliation'&&(key==='recon_where'||q.includes('diverg')||q.includes('where'))){
+    const contract=reconciliationContractData();
+    const difference=contract.difference===null
+      ?null
+      :new Intl.NumberFormat(state.lang==='pt'?'pt-BR':'en-US',{style:'currency',currency:'BRL'}).format(contract.difference);
     pushAssistant(state.lang==='pt'
-      ?'Há quatro fontes para a mesma competência, mas elas não representam necessariamente a mesma dimensão. Antes de comparar valores, precisamos separar fiscal, contábil, gerencial e financeiro e definir quais pares deveriam reconciliar. Entre documentos fiscais e razão contábil, a diferença simulada é de R$ 4.685,34.'
-      :'There are four sources for the same period, but they do not necessarily represent the same dimension. Before comparing values, we need to separate tax, accounting, management and financial views and define which pairs should reconcile. Between tax documents and the accounting ledger, the simulated difference is R$ 4,685.34.',
+      ?`Há quatro fontes para a mesma competência, mas elas não representam necessariamente a mesma dimensão. Antes de comparar valores, precisamos separar fiscal, contábil, gerencial e financeiro e definir quais pares deveriam reconciliar.${difference?` Entre documentos fiscais e razão contábil, a diferença simulada é de ${difference}.`:''}`
+      :`There are four sources for the same period, but they do not necessarily represent the same dimension. Before comparing values, we need to separate tax, accounting, management and financial views and define which pairs should reconcile.${difference?` Between tax documents and the accounting ledger, the simulated difference is ${difference}.`:''}`,
       [{label:state.lang==='pt'?'O que falta para conciliar?':'What is missing to reconcile?',value:'recon_missing'},{label:state.lang==='pt'?'Criar pendência':'Create follow-up',value:'create_followup'}]);
     return;
   }
@@ -1141,28 +1181,26 @@ function applyAccounting(values,source){
   showToast(t('applied'));
 }
 async function createFollowup(){
-  let pendingItem=null;
   const bridge=window.EvoluReconciliationBridge;
-  if(bridge?.createFollowup){
-    try{
-      pendingItem=await bridge.createFollowup();
-    }catch(error){
-      console.error(error);
-      showToast(state.lang==='pt'?'Não foi possível criar a pendência.':'Could not create the follow-up.');
-      return;
-    }
+  if(!bridge?.createFollowup){
+    showToast(state.lang==='pt'?'Conciliação ainda está carregando.':'Reconciliation is still loading.');
+    return;
+  }
+
+  let pendingItem;
+  try{
+    pendingItem=await bridge.createFollowup();
+  }catch(error){
+    console.error(error);
+    showToast(state.lang==='pt'?'Não foi possível criar a pendência.':'Could not create the follow-up.');
+    return;
   }
 
   state.followupCreated=true;
-  state.decisions.push({
-    object:'Reconciliação 09/2026',
-    action:{pt:'Pendência para investigar origem da divergência',en:'Follow-up to investigate divergence source'},
-    source:{pt:'Solicitação do usuário',en:'User request'}
-  });
   renderPage();
   pushAssistant(state.lang==='pt'
-    ?`Pendência simulada criada: “${pendingItem?.description||'Confirmar a origem da diferença entre documentos fiscais e razão contábil na competência 09/2026.'}” O registro preserva empresa, competência, fontes comparadas e hipóteses em aberto.`
-    :'Simulated follow-up created: “Confirm the source of the difference between tax documents and the accounting ledger for 09/2026”. The record preserves company, period, compared sources and open hypotheses.');
+    ?`Pendência simulada criada: “${pendingItem.description}” O registro preserva empresa, competência, finding e fontes comparadas. Isso não é uma Decision nem uma execução.`
+    :`Simulated follow-up created: “${pendingItem.description}” The record preserves company, period, finding and compared sources. This is neither a Decision nor an execution.`);
   signalTour('followup:created');
 }
 
@@ -1299,6 +1337,7 @@ function resetOperationalState(show=true){
   const lang=state.lang,theme=state.theme;
   state=createState();
   state.lang=lang;state.theme=theme;
+  window.dispatchEvent(new CustomEvent('evolu:reconciliation-reset'));
   renderPage();
   renderConversation();
   closeAssistant();
