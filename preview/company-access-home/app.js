@@ -27,7 +27,8 @@ const legacyByCnpjId={
 };
 const params=new URLSearchParams(window.location.search);
 const readOnly=params.get("mode")==="read";
-if(["2026-09","2026-08"].includes(params.get("period")))period=params.get("period");
+const requestedPeriod=params.get("period");
+if(requestedPeriod)period=requestedPeriod;
 if(["a","b"].includes(params.get("cnpj")))cnpj=params.get("cnpj");
 const requestedCnpjId=params.get("cnpjId");
 if(requestedCnpjId&&legacyByCnpjId[requestedCnpjId])cnpj=legacyByCnpjId[requestedCnpjId];
@@ -178,13 +179,27 @@ $("cnpj").addEventListener("change",async e=>{
 });
 document.querySelectorAll("[data-t]").forEach(x=>x.textContent=t(x.dataset.t));
 document.addEventListener("ux:locale",()=>{lang=document.documentElement.lang.startsWith("en")?"en":"pt";document.querySelectorAll("[data-t]").forEach(x=>{x.textContent=t(x.dataset.t)});renderWorkspaceContext();content();});
-workspaceContext=await workspaceController.load({
- cnpjId:requestedCnpjId&&legacyByCnpjId[requestedCnpjId]?requestedCnpjId:cnpjIdByLegacy[cnpj],
- competence:period
-});
-cnpj=legacyByCnpjId[workspaceContext.selectedCnpjId]||"a";
-period=workspaceContext.activeAccountingPeriod.competence;
-renderWorkspaceContext();
-content();
+try{
+ workspaceContext=await workspaceController.load({
+  cnpjId:requestedCnpjId||cnpjIdByLegacy[cnpj],
+  competence:period
+ });
+ cnpj=legacyByCnpjId[workspaceContext.selectedCnpjId]||"a";
+ period=workspaceContext.activeAccountingPeriod.competence;
+ renderWorkspaceContext();
+ content();
+}catch(error){
+ console.error(error);
+ const note=$("accessModeNote");
+ note.hidden=false;
+ note.textContent=lang==="pt"
+  ?"O contexto solicitado não está autorizado ou disponível para esta empresa."
+  :"The requested context is not authorized or available for this company.";
+ $("period").disabled=true;
+ $("cnpj").disabled=true;
+ $("pageContent").innerHTML='<div class="empty">'+(lang==="pt"
+  ?"Não foi possível abrir este CNPJ/competência. Retorne por uma rota autorizada."
+  :"This establishment/period could not be opened. Return through an authorized route.")+'</div>';
+}
 })();
 
