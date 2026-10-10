@@ -118,7 +118,7 @@ function renderInitialAnalysis(analysis) {
   $("analysisPill").textContent = analysis.status.toUpperCase();
   $("analysisPill").classList.toggle("ready", analysis.status === "completed");
   const finding = analysis.findings[0];
-  if (finding) {
+  if (analysis.status === "insufficient_context" && finding) {
     $("findingTitle").textContent = finding.title;
     $("findingText").textContent = finding.description;
   }
