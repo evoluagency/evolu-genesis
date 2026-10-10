@@ -126,6 +126,8 @@ Fields:
 - relatedRecommendations
 - capabilities
 
+Each `ApprovalRecord` carries the operational scope of the formal authorization. Queue filtering and approval writes must preserve that scope.
+
 ## Request/result contracts
 
 ### DocumentAnalysisRequest
