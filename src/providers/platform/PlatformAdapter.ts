@@ -52,7 +52,7 @@ export class PlatformAdapter implements PlatformProvider {
   ): Promise<T> {
     const result = assertContext(await this.invoke<unknown>(operation, payload), scope);
     verify?.(result);
-    return result as T;
+    return result as unknown as T;
   }
 
   getPortfolioContext(input: Parameters<PlatformProvider["getPortfolioContext"]>[0]): Promise<PortfolioContext> {
