@@ -48,6 +48,24 @@ export class ReconciliationController {
 
     this.context = context;
     this.analysis = analysis;
+
+    await this.platform.recordAnalysisObservation({
+      tenantId: this.config.tenantId,
+      companyId: this.config.companyId,
+      cnpjId: this.config.cnpjId,
+      accountingPeriodId: this.config.periodId,
+      subjectType: "Reconciliation",
+      subjectId: context.reconciliation.reconciliationId,
+      analysisId: `reconciliation-analysis-${this.config.periodId}`,
+      status: analysis.status,
+      findingIds: analysis.findings.map(item => item.findingId),
+      evidenceRefs: analysis.evidence.map(item => item.evidenceId),
+      recommendationIds: analysis.recommendations.map(
+        item => item.recommendationId
+      ),
+      actor: "intelligence"
+    });
+
     return { context, analysis };
   }
 
