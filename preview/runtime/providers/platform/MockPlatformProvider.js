@@ -359,6 +359,7 @@ export class MockPlatformProvider {
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
             correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+            causationId: request.decisionId,
             actor: request.actor,
             subject: {
                 type: request.subjectType,
