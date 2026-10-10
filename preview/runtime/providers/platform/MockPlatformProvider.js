@@ -151,7 +151,8 @@ export class MockPlatformProvider {
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
-            correlationId: `analysis:${request.analysisId}`,
+            correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+            causationId: request.decisionId,
             actor: request.actor,
             subject: {
                 type: request.subjectType,
@@ -187,7 +188,7 @@ export class MockPlatformProvider {
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.item.scope.accountingPeriodId ? { accountingPeriodId: request.item.scope.accountingPeriodId } : {}),
-            correlationId: `pending:${request.item.pendingItemId}`,
+            correlationId: `subject:${request.item.subject.type}:${request.item.subject.id}`,
             actor: request.recordedBy,
             subject: { ...request.item.subject },
             occurredAt: recordedAt,
@@ -227,7 +228,8 @@ export class MockPlatformProvider {
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(purposePendingItem.scope.accountingPeriodId ? { accountingPeriodId: purposePendingItem.scope.accountingPeriodId } : {}),
-            correlationId: `pending:${request.pendingItemId}`,
+            correlationId: `subject:FiscalDocument:${documentAnalysisContext.document.documentId}`,
+            causationId: request.pendingItemId,
             actor: request.recordedBy,
             subject: {
                 type: "FiscalDocument",
@@ -286,7 +288,8 @@ export class MockPlatformProvider {
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
-            correlationId: `analysis:${request.analysisId}`,
+            correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+            causationId: request.recommendationId,
             actor: request.decidedBy,
             subject: {
                 type: request.subjectType,
@@ -355,7 +358,7 @@ export class MockPlatformProvider {
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
-            correlationId: `decision:${request.decisionId}`,
+            correlationId: `subject:${request.subjectType}:${request.subjectId}`,
             actor: request.actor,
             subject: {
                 type: request.subjectType,
@@ -381,7 +384,7 @@ export class MockPlatformProvider {
             ...(pendingScope.accountingPeriodId
                 ? { accountingPeriodId: pendingScope.accountingPeriodId }
                 : {}),
-            correlationId: `pending:${purposePendingItem.pendingItemId}`,
+            correlationId: `subject:FiscalDocument:${documentAnalysisContext.document.documentId}`,
             actor: "system",
             subject: {
                 type: "FiscalDocument",
@@ -466,7 +469,10 @@ export class MockPlatformProvider {
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(authorizationPeriodId ? { accountingPeriodId: authorizationPeriodId } : {}),
-            correlationId: `action:${result.commandId}`,
+            correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+            ...(request.authorization.kind === "approval_record"
+                ? { causationId: request.authorization.approvalId }
+                : {}),
             actor: request.requestedBy,
             subject: {
                 type: request.subjectType,
