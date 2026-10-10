@@ -147,6 +147,10 @@ FiscalDocument
 - migrate NF-e 70031
 - model insufficient_context
 - separate Recommendation, Decision, Approval and Execution
+- pending information is recorded through PlatformProvider
+- reanalysis is requested through IntelligenceProvider
+- feature orchestration is isolated from presentation in Nfe70031Controller
+- static preview runtime is compiler-generated from the typed source contracts
 
 ### UX-3 Company Workspace
 - make Tenant → Company → CnpjEntity explicit

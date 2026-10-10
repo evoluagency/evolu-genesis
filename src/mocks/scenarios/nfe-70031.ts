@@ -19,6 +19,20 @@ import type {
   Tenant
 } from "../../domain/index.js";
 
+export type Nfe70031EconomicPurpose =
+  | "maintenance"
+  | "production"
+  | "internal_use"
+  | "unknown";
+
+export interface Nfe70031ScenarioState {
+  economicPurpose: Nfe70031EconomicPurpose | null;
+}
+
+export function createNfe70031ScenarioState(): Nfe70031ScenarioState {
+  return { economicPurpose: null };
+}
+
 export const mockTenant: Tenant = {
   tenantId: "tenant-nexus",
   tenantSlug: "nexus",
