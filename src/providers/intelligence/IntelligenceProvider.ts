@@ -16,5 +16,9 @@ export interface IntelligenceProvider {
     tenantId: string;
     companyId?: string;
     cnpjId?: string;
+    subject?: {
+      type: string;
+      id: string;
+    };
   }): Promise<AnalysisHistoryContext>;
 }
