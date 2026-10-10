@@ -38,8 +38,11 @@ import type {
 import type { PlatformProvider } from "./PlatformProvider.js";
 
 export class MockPlatformProvider implements PlatformProvider {
-  private decisions: Decision[] = [];
-  private approvals: ApprovalRecord[] = [];
+  private decisions: Decision[] = approvalContext.relatedDecisions.map(item => ({ ...item }));
+  private approvals: ApprovalRecord[] = approvalContext.approvals.map(item => ({
+    ...item,
+    scope: { ...item.scope }
+  }));
   private recordedPendingItems: PendingItem[] = [];
 
   constructor(
@@ -137,7 +140,12 @@ export class MockPlatformProvider implements PlatformProvider {
     };
   }
 
-  async getPendingItems(): Promise<PendingItemsContext> {
+  async getPendingItems(input: {
+    tenantId: string;
+    companyId?: string;
+    cnpjId?: string;
+    periodId?: string;
+  }): Promise<PendingItemsContext> {
     const purpose = this.scenarioState.economicPurpose;
     const purposeItems =
       purpose && purpose !== "unknown"
@@ -149,9 +157,19 @@ export class MockPlatformProvider implements PlatformProvider {
             }
           ];
 
+    const staticItems = pendingItemsContext.items.filter(
+      item => item.pendingItemId !== purposePendingItem.pendingItemId
+    );
+    const items = [...purposeItems, ...staticItems, ...this.recordedPendingItems].filter(
+      item => this.matchesScope(item.scope, input)
+    );
+
     return {
-      ...pendingItemsContext,
-      items: [...purposeItems, ...this.recordedPendingItems]
+      schemaVersion: pendingItemsContext.schemaVersion,
+      tenantId: input.tenantId,
+      ...(input.companyId ? { companyId: input.companyId } : {}),
+      ...(input.cnpjId ? { cnpjId: input.cnpjId } : {}),
+      items
     };
   }
 
@@ -242,11 +260,37 @@ export class MockPlatformProvider implements PlatformProvider {
     };
   }
 
-  async getApprovals(): Promise<ApprovalContext> {
+  async getApprovals(input: {
+    tenantId: string;
+    companyId?: string;
+    cnpjId?: string;
+    periodId?: string;
+  }): Promise<ApprovalContext> {
+    const approvals = this.approvals.filter(item => this.matchesScope(item.scope, input));
+    const decisionIds = new Set(approvals.map(item => item.decisionId));
+    const relatedDecisions = this.decisions.filter(item => decisionIds.has(item.decisionId));
+    const recommendationIds = new Set(
+      relatedDecisions.map(item => item.recommendationId)
+    );
+    const relatedRecommendations = approvalContext.relatedRecommendations.filter(
+      item => recommendationIds.has(item.recommendationId)
+    );
+    const hasAwaiting = approvals.some(item => item.status === "awaiting_approval");
+
     return {
       ...approvalContext,
-      approvals: [...this.approvals],
-      relatedDecisions: [...this.decisions]
+      tenantId: input.tenantId,
+      approvals,
+      relatedDecisions,
+      relatedRecommendations,
+      capabilities: {
+        canApprove: hasAwaiting
+          ? { status: "allowed" }
+          : { status: "unavailable", reasonCode: "no_approval_pending" },
+        canReject: hasAwaiting
+          ? { status: "allowed" }
+          : { status: "unavailable", reasonCode: "no_approval_pending" }
+      }
     };
   }
 
@@ -274,10 +318,41 @@ export class MockPlatformProvider implements PlatformProvider {
       throw new Error("mock_decision_not_approvable");
     }
 
+    const existingIndex = this.approvals.findIndex(item =>
+      request.approvalId
+        ? item.approvalId === request.approvalId
+        : item.decisionId === request.decisionId
+    );
+    const existing = existingIndex >= 0 ? this.approvals[existingIndex] : undefined;
+
+    if (existing && !this.matchesScope(existing.scope, {
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(request.accountingPeriodId ? { periodId: request.accountingPeriodId } : {})
+    })) {
+      throw new Error("mock_approval_scope_mismatch");
+    }
+    if (
+      existing &&
+      (existing.subjectType !== request.subjectType || existing.subjectId !== request.subjectId)
+    ) {
+      throw new Error("mock_approval_subject_mismatch");
+    }
+
     const now = new Date().toISOString();
+    const scope = {
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(request.accountingPeriodId
+        ? { accountingPeriodId: request.accountingPeriodId }
+        : {})
+    };
     const approval: ApprovalRecord = {
-      approvalId: `approval-mock-${this.approvals.length + 1}`,
+      approvalId: existing?.approvalId ?? `approval-mock-${this.approvals.length + 1}`,
       decisionId: request.decisionId,
+      scope,
       subjectType: request.subjectType,
       subjectId: request.subjectId,
       status: request.outcome === "approve" ? "approved" : "rejected",
@@ -286,8 +361,30 @@ export class MockPlatformProvider implements PlatformProvider {
         : { rejectedBy: request.actor, rejectedAt: now })
     };
 
-    this.approvals.push(approval);
+    if (existingIndex >= 0) this.approvals[existingIndex] = approval;
+    else this.approvals.push(approval);
     return approval;
+  }
+
+  private matchesScope(
+    scope: {
+      tenantId: string;
+      companyId?: string;
+      cnpjId?: string;
+      accountingPeriodId?: string;
+    },
+    input: {
+      tenantId: string;
+      companyId?: string;
+      cnpjId?: string;
+      periodId?: string;
+    }
+  ): boolean {
+    if (scope.tenantId !== input.tenantId) return false;
+    if (input.companyId && scope.companyId !== input.companyId) return false;
+    if (input.cnpjId && scope.cnpjId !== input.cnpjId) return false;
+    if (input.periodId && scope.accountingPeriodId !== input.periodId) return false;
+    return true;
   }
 
   async requestActionExecution(request: ActionExecutionRequest): Promise<ActionResult> {
