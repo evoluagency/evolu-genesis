@@ -2,6 +2,7 @@ import type {
   ActionExecutionRequest,
   ApprovalContext,
   CompanyContext,
+  CompanyWorkspaceContext,
   DocumentAnalysisContext,
   FiscalDocumentsContext,
   PendingItemsContext,
@@ -13,6 +14,7 @@ import type { ActionResult, ApprovalRecord, Decision } from "../../domain/index.
 import {
   approvalContext,
   companyContext,
+  companyWorkspaceContext,
   documentAnalysisContext,
   fiscalDocumentsContext,
   pendingItemsContext,
@@ -26,6 +28,10 @@ export class MockPlatformProvider implements PlatformProvider {
 
   async getPortfolioContext(): Promise<PortfolioContext> {
     return portfolioContext;
+  }
+
+  async getCompanyWorkspaceContext(): Promise<CompanyWorkspaceContext> {
+    return companyWorkspaceContext;
   }
 
   async getCompanyContext(): Promise<CompanyContext> {
@@ -93,6 +99,19 @@ export class MockPlatformProvider implements PlatformProvider {
   }
 
   async requestActionExecution(request: ActionExecutionRequest): Promise<ActionResult> {
+    if (request.authorization.kind === "approval_record") {
+      const approved = this.approvals.some(
+        approval =>
+          approval.approvalId === request.authorization.approvalId &&
+          approval.status === "approved"
+      );
+      if (!approved) {
+        throw new Error("mock_action_not_authorized");
+      }
+    } else if (!request.authorization.capability || !request.authorization.reason) {
+      throw new Error("mock_action_not_authorized");
+    }
+
     return {
       commandId: `command-mock-${request.subjectId}`,
       status: "succeeded",
