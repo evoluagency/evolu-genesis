@@ -328,6 +328,7 @@ Fields:
 - companyId
 - cnpjId
 - actionType
+- subjectType
 - subjectId
 - authorization
 - payload
@@ -343,7 +344,7 @@ Fields:
 - failure
 
 ### AuditEvent
-Immutable trace event.
+Immutable, append-only Platform fact describing an observed or executed state transition. AuditEvent never authorizes execution and must never be edited to represent a later state.
 
 Fields:
 - eventId
@@ -351,10 +352,15 @@ Fields:
 - tenantId
 - companyId
 - cnpjId
+- accountingPeriodId
+- correlationId
+- causationId
 - actor
 - subject
 - occurredAt
 - metadata
+
+`correlationId` groups events for the same stable operational subject/flow. `causationId` links an event to the immediately relevant prior record or authorization when one exists. Metadata contains references and observations, not execution authority.
 
 ## Pending work domain
 

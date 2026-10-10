@@ -592,6 +592,7 @@ export const reconciliationContext: ReconciliationContext = {
 
 export const reconciliationAnalysisResult: ReconciliationAnalysisResult = {
   schemaVersion: "1.0.0",
+  analysisId: "analysis-reconciliation-acme-2026-09",
   status: "insufficient_context",
   findings: [reconciliationFinding],
   evidence: reconciliationEvidence,

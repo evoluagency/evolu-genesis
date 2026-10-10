@@ -1,6 +1,7 @@
 import type {
   ActionExecutionRequest,
   ApprovalContext,
+  AuditHistoryContext,
   CompanyContext,
   CompanyWorkspaceContext,
   DocumentAnalysisContext,
@@ -8,6 +9,7 @@ import type {
   PendingItemsContext,
   PortfolioContext,
   ReconciliationContext,
+  RecordAnalysisObservationRequest,
   RecordApprovalRequest,
   RecordDecisionRequest,
   RecordPendingInformationRequest,
@@ -15,7 +17,7 @@ import type {
   RecordPendingItemRequest,
   RecordPendingItemResult
 } from "../../contracts/index.js";
-import type { ActionResult, ApprovalRecord, Decision, PendingItem } from "../../domain/index.js";
+import type { ActionResult, ApprovalRecord, AuditEvent, Decision, PendingItem } from "../../domain/index.js";
 import {
   approvalContext,
   companyContext,
@@ -44,10 +46,14 @@ export class MockPlatformProvider implements PlatformProvider {
     scope: { ...item.scope }
   }));
   private recordedPendingItems: PendingItem[] = [];
+  private auditEvents: AuditEvent[] = [];
+  private auditSequence = 0;
 
   constructor(
     private readonly scenarioState: Nfe70031ScenarioState = createNfe70031ScenarioState()
-  ) {}
+  ) {
+    this.seedAuditEvents();
+  }
 
   async getPortfolioContext(): Promise<PortfolioContext> {
     return portfolioContext;
@@ -198,6 +204,89 @@ export class MockPlatformProvider implements PlatformProvider {
     };
   }
 
+  async getAuditHistory(input: {
+    tenantId: string;
+    companyId?: string;
+    cnpjId?: string;
+    periodId?: string;
+    subject?: {
+      type: string;
+      id: string;
+    };
+  }): Promise<AuditHistoryContext> {
+    const events = this.auditEvents
+      .filter(event => {
+        if (event.tenantId !== input.tenantId) return false;
+        if (input.companyId && event.companyId !== input.companyId) return false;
+        if (input.cnpjId && event.cnpjId !== input.cnpjId) return false;
+        if (input.periodId && event.accountingPeriodId !== input.periodId) return false;
+        if (
+          input.subject &&
+          (event.subject.type !== input.subject.type ||
+            event.subject.id !== input.subject.id)
+        ) {
+          return false;
+        }
+        return true;
+      })
+      .map(event => ({
+        ...event,
+        subject: { ...event.subject },
+        metadata: { ...event.metadata }
+      }))
+      .sort((a, b) => b.occurredAt.localeCompare(a.occurredAt));
+
+    return {
+      schemaVersion: "1.0.0",
+      tenantId: input.tenantId,
+      ...(input.companyId ? { companyId: input.companyId } : {}),
+      ...(input.cnpjId ? { cnpjId: input.cnpjId } : {}),
+      ...(input.periodId ? { accountingPeriodId: input.periodId } : {}),
+      ...(input.subject ? { subject: { ...input.subject } } : {}),
+      events,
+      capabilities: {
+        canFilterAudit: { status: "allowed" },
+        canOpenSubject: { status: "allowed" }
+      }
+    };
+  }
+
+  async recordAnalysisObservation(
+    request: RecordAnalysisObservationRequest
+  ): Promise<void> {
+    const duplicate = this.auditEvents.some(
+      event =>
+        event.eventType === "analysis.observed" &&
+        event.subject.type === request.subjectType &&
+        event.subject.id === request.subjectId &&
+        event.metadata.analysisId === request.analysisId
+    );
+    if (duplicate) return;
+
+    this.appendAuditEvent({
+      eventType: "analysis.observed",
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(request.accountingPeriodId
+        ? { accountingPeriodId: request.accountingPeriodId }
+        : {}),
+      correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+      actor: request.actor,
+      subject: {
+        type: request.subjectType,
+        id: request.subjectId
+      },
+      metadata: {
+        analysisId: request.analysisId,
+        status: request.status,
+        findingIds: [...request.findingIds],
+        evidenceRefs: [...request.evidenceRefs],
+        recommendationIds: [...request.recommendationIds]
+      }
+    });
+  }
+
   async recordPendingItem(
     request: RecordPendingItemRequest
   ): Promise<RecordPendingItemResult> {
@@ -221,9 +310,29 @@ export class MockPlatformProvider implements PlatformProvider {
 
     this.recordedPendingItems.push({ ...request.item });
 
+    const recordedAt = new Date().toISOString();
+    this.appendAuditEvent({
+      eventType: "pending_item.recorded",
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(request.item.scope.accountingPeriodId
+        ? { accountingPeriodId: request.item.scope.accountingPeriodId }
+        : {}),
+      correlationId: `subject:${request.item.subject.type}:${request.item.subject.id}`,
+      actor: request.recordedBy,
+      subject: { ...request.item.subject },
+      occurredAt: recordedAt,
+      metadata: {
+        pendingItemId: request.item.pendingItemId,
+        pendingItemType: request.item.type,
+        status: request.item.status
+      }
+    });
+
     return {
       item: request.item,
-      recordedAt: new Date().toISOString()
+      recordedAt
     };
   }
 
@@ -250,13 +359,39 @@ export class MockPlatformProvider implements PlatformProvider {
 
     this.scenarioState.economicPurpose = request.value as Nfe70031EconomicPurpose;
 
+    const recordedAt = new Date().toISOString();
+    const status =
+      this.scenarioState.economicPurpose === "unknown"
+        ? "awaiting_information"
+        : "pending_review";
+
+    this.appendAuditEvent({
+      eventType: "pending_information.recorded",
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(purposePendingItem.scope.accountingPeriodId
+        ? { accountingPeriodId: purposePendingItem.scope.accountingPeriodId }
+        : {}),
+      correlationId: `subject:FiscalDocument:${documentAnalysisContext.document.documentId}`,
+      causationId: request.pendingItemId,
+      actor: request.recordedBy,
+      subject: {
+        type: "FiscalDocument",
+        id: documentAnalysisContext.document.documentId
+      },
+      occurredAt: recordedAt,
+      metadata: {
+        pendingItemId: request.pendingItemId,
+        informationProvided: true,
+        status
+      }
+    });
+
     return {
       pendingItemId: request.pendingItemId,
-      status:
-        this.scenarioState.economicPurpose === "unknown"
-          ? "awaiting_information"
-          : "pending_review",
-      recordedAt: new Date().toISOString()
+      status,
+      recordedAt
     };
   }
 
@@ -306,6 +441,32 @@ export class MockPlatformProvider implements PlatformProvider {
     };
 
     this.decisions.push(decision);
+
+    this.appendAuditEvent({
+      eventType: "decision.recorded",
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(request.accountingPeriodId
+        ? { accountingPeriodId: request.accountingPeriodId }
+        : {}),
+      correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+      causationId: request.recommendationId,
+      actor: request.decidedBy,
+      subject: {
+        type: request.subjectType,
+        id: request.subjectId
+      },
+      occurredAt: decision.decidedAt,
+      metadata: {
+        decisionId: decision.decisionId,
+        analysisId: decision.analysisId,
+        recommendationId: decision.recommendationId,
+        decision: decision.decision,
+        ...(decision.rationale ? { rationale: decision.rationale } : {})
+      }
+    });
+
     return decision;
   }
 
@@ -363,7 +524,102 @@ export class MockPlatformProvider implements PlatformProvider {
 
     if (existingIndex >= 0) this.approvals[existingIndex] = approval;
     else this.approvals.push(approval);
+
+    this.appendAuditEvent({
+      eventType:
+        approval.status === "approved"
+          ? "approval.approved"
+          : "approval.rejected",
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(request.accountingPeriodId
+        ? { accountingPeriodId: request.accountingPeriodId }
+        : {}),
+      correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+      causationId: request.decisionId,
+      actor: request.actor,
+      subject: {
+        type: request.subjectType,
+        id: request.subjectId
+      },
+      occurredAt: now,
+      metadata: {
+        approvalId: approval.approvalId,
+        decisionId: approval.decisionId,
+        status: approval.status
+      }
+    });
+
     return approval;
+  }
+
+  private seedAuditEvents(): void {
+    const pendingScope = purposePendingItem.scope;
+    this.auditEvents.push({
+      eventId: "audit-seed-pending-economic-purpose",
+      eventType: "pending_item.available",
+      tenantId: pendingScope.tenantId,
+      ...(pendingScope.companyId ? { companyId: pendingScope.companyId } : {}),
+      ...(pendingScope.cnpjId ? { cnpjId: pendingScope.cnpjId } : {}),
+      ...(pendingScope.accountingPeriodId
+        ? { accountingPeriodId: pendingScope.accountingPeriodId }
+        : {}),
+      correlationId: `subject:FiscalDocument:${documentAnalysisContext.document.documentId}`,
+      actor: "system",
+      subject: {
+        type: "FiscalDocument",
+        id: documentAnalysisContext.document.documentId
+      },
+      occurredAt: "2026-10-05T12:00:00Z",
+      metadata: {
+        status: purposePendingItem.status,
+        pendingItemType: purposePendingItem.type
+      }
+    });
+
+    for (const approval of this.approvals) {
+      this.auditEvents.push({
+        eventId: `audit-seed-${approval.approvalId}`,
+        eventType: "approval.awaiting",
+        tenantId: approval.scope.tenantId,
+        ...(approval.scope.companyId
+          ? { companyId: approval.scope.companyId }
+          : {}),
+        ...(approval.scope.cnpjId ? { cnpjId: approval.scope.cnpjId } : {}),
+        ...(approval.scope.accountingPeriodId
+          ? { accountingPeriodId: approval.scope.accountingPeriodId }
+          : {}),
+        correlationId: `subject:${approval.subjectType}:${approval.subjectId}`,
+        causationId: approval.decisionId,
+        actor: "system",
+        subject: {
+          type: approval.subjectType,
+          id: approval.subjectId
+        },
+        occurredAt: "2026-10-10T12:00:01Z",
+        metadata: {
+          decisionId: approval.decisionId,
+          status: approval.status
+        }
+      });
+    }
+  }
+
+  private appendAuditEvent(
+    input: Omit<AuditEvent, "eventId" | "occurredAt"> & {
+      occurredAt?: string;
+    }
+  ): AuditEvent {
+    const event: AuditEvent = {
+      ...input,
+      eventId: `audit-mock-${++this.auditSequence}`,
+      occurredAt: input.occurredAt ?? new Date().toISOString(),
+      subject: { ...input.subject },
+      metadata: { ...input.metadata }
+    };
+    this.auditEvents.push(event);
+    return event;
   }
 
   private matchesScope(
@@ -389,9 +645,10 @@ export class MockPlatformProvider implements PlatformProvider {
 
   async requestActionExecution(request: ActionExecutionRequest): Promise<ActionResult> {
     const authorization = request.authorization;
+    let authorizationPeriodId: string | undefined;
 
     if (authorization.kind === "approval_record") {
-      const approved = this.approvals.some(
+      const approved = this.approvals.find(
         approval =>
           approval.approvalId === authorization.approvalId &&
           approval.status === "approved"
@@ -399,15 +656,45 @@ export class MockPlatformProvider implements PlatformProvider {
       if (!approved) {
         throw new Error("mock_action_not_authorized");
       }
+      authorizationPeriodId = approved.scope.accountingPeriodId;
     } else if (!authorization.capability || !authorization.reason) {
       throw new Error("mock_action_not_authorized");
     }
 
-    return {
+    const executedAt = new Date().toISOString();
+    const result: ActionResult = {
       commandId: `command-mock-${request.subjectId}`,
       status: "succeeded",
       changedRecordRefs: [request.subjectId],
-      executedAt: new Date().toISOString()
+      executedAt
     };
+
+    this.appendAuditEvent({
+      eventType: "action.succeeded",
+      tenantId: request.tenantId,
+      companyId: request.companyId,
+      cnpjId: request.cnpjId,
+      ...(authorizationPeriodId
+        ? { accountingPeriodId: authorizationPeriodId }
+        : {}),
+      correlationId: `subject:${request.subjectType}:${request.subjectId}`,
+      ...(request.authorization.kind === "approval_record"
+        ? { causationId: request.authorization.approvalId }
+        : {}),
+      actor: request.requestedBy,
+      subject: {
+        type: request.subjectType,
+        id: request.subjectId
+      },
+      occurredAt: executedAt,
+      metadata: {
+        commandId: result.commandId,
+        actionType: request.actionType,
+        authorization: { ...request.authorization },
+        changedRecordRefs: [...result.changedRecordRefs]
+      }
+    });
+
+    return result;
   }
 }

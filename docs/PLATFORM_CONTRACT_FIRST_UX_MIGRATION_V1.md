@@ -4,25 +4,21 @@
 
 ## Current repository reality
 
-The current `Platform public UX repository` repository is a static public experience.
+The repository is now a hybrid contract-first Platform UX implementation.
 
-Current structure includes:
-- index.html
-- landing.js
-- script.js
-- v22.js
-- v23.js
-- CSS files
-- /demo/
-- /docs/
+The existing static/public surfaces remain deployable during migration, while the repository now also contains:
+- package.json and TypeScript configuration
+- src/domain
+- src/contracts
+- PlatformProvider / MockPlatformProvider
+- IntelligenceProvider / MockIntelligenceProvider
+- feature controllers for the migrated UX slices
+- compiler-oriented preview runtime modules
+- /demo/, /preview/ and /docs/
 
-There is currently no:
-- package.json
-- src/
-- typed contract layer
-- provider abstraction layer
+The remaining static/global-script structures are compatibility surfaces to be retired only after their corresponding contract-driven flows are complete.
 
-The existing operational demo already contains useful product semantics:
+The existing operational experience contains useful product semantics:
 - Tenant branding (NEXUS)
 - selected company (ACME Industrial)
 - Fiscal Documents
@@ -180,8 +176,17 @@ FiscalDocument
 - no generic Task domain
 
 ### UX-6 Audit and history
-- AuditEvent
-- source/evidence/decision/action traceability
+- preserve the existing NF-e audit timeline; do not create a parallel history page
+- keep AnalysisHistoryContext and AuditHistoryContext as separate projections with separate authorities
+- Intelligence owns analytical history; Platform owns the immutable operational audit log
+- AuditEvent is an append-only Platform fact and never an execution authority
+- query audit history by tenant/company/CNPJ/accounting period and stable subject reference
+- record observed Intelligence analysis with finding/evidence/recommendation references
+- record pending information, Decision, ApprovalRecord and ActionResult transitions
+- use stable subject-based correlationId and explicit causationId where a prior record/authorization caused the event
+- preserve end-to-end source/evidence/analysis/recommendation/decision/approval/action lineage
+- the existing NF-e timeline renders AuditHistoryContext instead of maintaining a second local audit state
+- HistoryController may aggregate the two projections for future reuse but must not merge their authorities
 
 ### UX-7 Replace mocks
 - PlatformAdapter

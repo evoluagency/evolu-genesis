@@ -35,6 +35,7 @@ function createController() {
     companyId: mockCompany.companyId,
     cnpjId: mockCnpj.cnpjId,
     documentId: mockDocument.documentId,
+    accountingPeriodId: mockPeriod.periodId,
     pendingItemId: purposePendingItem.pendingItemId,
     actor: "professional-user-demo"
   });
@@ -65,13 +66,90 @@ function setStep(name, status, text) {
   if (text) strong.textContent = text;
 }
 
-function setAudit(id, state, title, text) {
+function setAudit(id, state, title, text, occurredAt) {
   const el = $(id);
   el.classList.remove("active", "done");
   if (state) el.classList.add(state);
-  el.querySelector("small").textContent = now();
+  el.querySelector("small").textContent = occurredAt
+    ? new Intl.DateTimeFormat("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(new Date(occurredAt))
+    : "—";
   el.querySelector("strong").textContent = title;
   el.querySelector("p").textContent = text;
+}
+
+async function refreshAuditTimeline() {
+  const history = await controller.getAuditHistory();
+  const events = history.events;
+
+  const requested = events.find(event =>
+    ["pending_item.available", "pending_information.recorded"].includes(event.eventType)
+  );
+  const analysis = events.find(
+    event =>
+      event.eventType === "analysis.observed" &&
+      Array.isArray(event.metadata.recommendationIds) &&
+      event.metadata.recommendationIds.length > 0
+  );
+  const approval = events.find(event =>
+    ["approval.approved", "approval.rejected"].includes(event.eventType)
+  );
+  const decision = events.find(event => event.eventType === "decision.recorded");
+  const execution = events.find(event => event.eventType === "action.succeeded");
+
+  if (requested) {
+    const isRecorded = requested.eventType === "pending_information.recorded";
+    const isUnknown = requested.metadata.status === "awaiting_information";
+    setAudit(
+      "auditContext",
+      isRecorded && !isUnknown ? "done" : "active",
+      isRecorded ? (isUnknown ? "Pendência mantida" : "Contexto confirmado") : "Informação pendente identificada",
+      isRecorded
+        ? (isUnknown ? "A finalidade econômica continua sem confirmação." : "A finalidade econômica foi registrada para esta operação.")
+        : "Finalidade econômica necessária para continuar.",
+      requested.occurredAt
+    );
+  }
+
+  if (analysis) {
+    setAudit(
+      "auditRecommendation",
+      decision ? "done" : "active",
+      "Recomendação disponível",
+      "A análise registrada produziu recomendação vinculada à evidência.",
+      analysis.occurredAt
+    );
+  }
+
+  const decisionEvent = approval ?? decision;
+  if (decisionEvent) {
+    const approvedStatus = approval?.metadata.status;
+    setAudit(
+      "auditDecision",
+      approval ? "done" : "active",
+      approval
+        ? approvedStatus === "approved"
+          ? "Aprovação registrada"
+          : "Aprovação rejeitada"
+        : "Decisão registrada",
+      approval
+        ? "O ApprovalRecord foi atualizado sem executar a ação."
+        : "A escolha humana foi registrada e vinculada à recomendação.",
+      decisionEvent.occurredAt
+    );
+  }
+
+  if (execution) {
+    setAudit(
+      "auditExecution",
+      "done",
+      "Alteração executada",
+      "ActionResult succeeded · alteração vinculada à autorização formal.",
+      execution.occurredAt
+    );
+  }
 }
 
 function formatDate(isoDate) {
@@ -204,12 +282,7 @@ $("reanalyze").addEventListener("click", async () => {
 
     if (analysis.status === "insufficient_context") {
       setStep("analysis", "active", "Contexto insuficiente");
-      setAudit(
-        "auditContext",
-        "active",
-        "Pendência mantida",
-        "A empresa informou que ainda não sabe a finalidade econômica."
-      );
+      await refreshAuditTimeline();
       notify("A análise permaneceu inconclusiva sem forçar uma recomendação.");
       return;
     }
@@ -223,8 +296,7 @@ $("reanalyze").addEventListener("click", async () => {
     $("recommendationBlock").hidden = false;
     setStep("analysis", "done", "Concluída");
     setStep("recommendation", "active", "Disponível");
-    setAudit("auditContext", "done", "Contexto confirmado", `${purposeLabels[selectedPurpose]}.`);
-    setAudit("auditRecommendation", "active", "Recomendação criada", `${recommendation.title}.`);
+    await refreshAuditTimeline();
     notify("Reanálise concluída. Uma recomendação está disponível.");
   } catch (error) {
     await handleProviderError(error, "Não foi possível reanalisar o documento.");
@@ -240,8 +312,7 @@ $("acceptRecommendation").addEventListener("click", async () => {
     setStep("recommendation", "done", "Aceita");
     setStep("decision", "done", "Aceitar");
     setStep("approval", "active", "Aguardando aprovação");
-    setAudit("auditRecommendation", "done", "Recomendação aceita", `${$("recommendationTitle").textContent}.`);
-    setAudit("auditDecision", "done", "Decisão registrada", "Usuário aceitou a recomendação e solicitou aprovação.");
+    await refreshAuditTimeline();
     notify("Decision registrada. A recomendação ainda não executou nenhuma alteração.");
   } catch (error) {
     await handleProviderError(error, "Não foi possível registrar a decisão.");
@@ -257,8 +328,7 @@ $("rejectRecommendation").addEventListener("click", async () => {
     setStep("decision", "done", "Rejeitar");
     setStep("approval", "", "Não necessária");
     setStep("execution", "", "Não solicitada");
-    setAudit("auditRecommendation", "done", "Recomendação rejeitada", "Nenhuma alteração foi autorizada.");
-    setAudit("auditDecision", "done", "Decisão registrada", "Usuário rejeitou a recomendação.");
+    await refreshAuditTimeline();
     notify("Recomendação rejeitada. Nenhuma mutação foi solicitada.");
   } catch (error) {
     await handleProviderError(error, "Não foi possível registrar a rejeição.");
@@ -272,6 +342,7 @@ $("approveAction").addEventListener("click", async () => {
     $("executeBlock").hidden = false;
     setStep("approval", "done", "Aprovada");
     setStep("execution", "active", "Pronta para executar");
+    await refreshAuditTimeline();
     notify("ApprovalRecord criado. A execução continua separada.");
   } catch (error) {
     await handleProviderError(error, "Não foi possível registrar a aprovação.");
@@ -284,6 +355,7 @@ $("rejectApproval").addEventListener("click", async () => {
     $("executeBlock").hidden = true;
     setStep("approval", "done", "Rejeitada");
     setStep("execution", "", "Bloqueada");
+    await refreshAuditTimeline();
     notify("Aprovação rejeitada. ActionCommand não será criado.");
   } catch (error) {
     await handleProviderError(error, "Não foi possível registrar a rejeição da aprovação.");
@@ -297,7 +369,7 @@ $("executeAction").addEventListener("click", async () => {
     $("resultBlock").hidden = false;
     $("executeBlock").hidden = true;
     setStep("execution", "done", "Succeeded");
-    setAudit("auditExecution", "done", "Alteração executada", "ActionResult succeeded · finalidade registrada.");
+    await refreshAuditTimeline();
     notify("ActionResult: alteração aplicada no cenário sintético.");
   } catch (error) {
     await handleProviderError(error, "A alteração não foi executada.");
@@ -310,6 +382,7 @@ $("resetFlow").addEventListener("click", async () => {
   const loaded = await controller.load();
   renderDocument(loaded.context);
   renderInitialAnalysis(loaded.analysis);
+  await refreshAuditTimeline();
   notify("Fluxo reiniciado.");
 });
 
@@ -340,6 +413,7 @@ try {
   const loaded = await controller.load();
   renderDocument(loaded.context);
   renderInitialAnalysis(loaded.analysis);
+  await refreshAuditTimeline();
 } catch (error) {
   await handleProviderError(error, "Não foi possível carregar o cenário sintético.");
 }

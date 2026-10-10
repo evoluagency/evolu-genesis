@@ -30,6 +30,7 @@ export class Nfe70031Controller {
         });
         this.analysis = analysis;
         this.recommendation = analysis.recommendations[0] ?? null;
+        await this.recordAnalysisObservation(analysis);
         return { context, analysis };
     }
     async recordPurpose(purpose) {
@@ -55,13 +56,19 @@ export class Nfe70031Controller {
         });
         this.analysis = analysis;
         this.recommendation = analysis.recommendations[0] ?? null;
+        await this.recordAnalysisObservation(analysis);
         return analysis;
     }
     async recordRecommendationDecision(value) {
-        if (!this.analysis || !this.recommendation) {
+        if (!this.analysis || !this.recommendation)
             throw new Error("recommendation_not_available");
-        }
         const decision = await this.platform.recordDecision({
+            tenantId: this.config.tenantId,
+            companyId: this.config.companyId,
+            cnpjId: this.config.cnpjId,
+            accountingPeriodId: this.config.accountingPeriodId,
+            subjectType: "FiscalDocument",
+            subjectId: this.config.documentId,
             analysisId: this.analysis.analysisId,
             recommendationId: this.recommendation.recommendationId,
             decision: value,
@@ -72,16 +79,16 @@ export class Nfe70031Controller {
         return decision;
     }
     async recordApproval(outcome) {
-        if (!this.decision || !this.recommendation) {
+        if (!this.decision || !this.recommendation)
             throw new Error("decision_not_available");
-        }
         const approval = await this.platform.recordApproval({
             tenantId: this.config.tenantId,
             companyId: this.config.companyId,
             cnpjId: this.config.cnpjId,
+            accountingPeriodId: this.config.accountingPeriodId,
             decisionId: this.decision.decisionId,
-            subjectType: "Recommendation",
-            subjectId: this.recommendation.recommendationId,
+            subjectType: "FiscalDocument",
+            subjectId: this.config.documentId,
             outcome,
             actor: this.config.actor
         });
@@ -89,12 +96,10 @@ export class Nfe70031Controller {
         return approval;
     }
     async executeApprovedAction() {
-        if (!this.approval || this.approval.status !== "approved") {
+        if (!this.approval || this.approval.status !== "approved")
             throw new Error("approval_not_granted");
-        }
-        if (!this.purpose || this.purpose === "unknown") {
+        if (!this.purpose || this.purpose === "unknown")
             throw new Error("economic_purpose_not_resolved");
-        }
         const request = {
             tenantId: this.config.tenantId,
             companyId: this.config.companyId,
@@ -104,6 +109,7 @@ export class Nfe70031Controller {
                 approvalId: this.approval.approvalId
             },
             actionType: "record_economic_purpose",
+            subjectType: "FiscalDocument",
             subjectId: this.config.documentId,
             payload: {
                 economicPurpose: this.purpose
@@ -111,5 +117,33 @@ export class Nfe70031Controller {
             requestedBy: this.config.actor
         };
         return this.platform.requestActionExecution(request);
+    }
+    async getAuditHistory() {
+        return this.platform.getAuditHistory({
+            tenantId: this.config.tenantId,
+            companyId: this.config.companyId,
+            cnpjId: this.config.cnpjId,
+            periodId: this.config.accountingPeriodId,
+            subject: {
+                type: "FiscalDocument",
+                id: this.config.documentId
+            }
+        });
+    }
+    async recordAnalysisObservation(analysis) {
+        await this.platform.recordAnalysisObservation({
+            tenantId: this.config.tenantId,
+            companyId: this.config.companyId,
+            cnpjId: this.config.cnpjId,
+            accountingPeriodId: this.config.accountingPeriodId,
+            subjectType: "FiscalDocument",
+            subjectId: this.config.documentId,
+            analysisId: analysis.analysisId,
+            status: analysis.status,
+            findingIds: analysis.findings.map(item => item.findingId),
+            evidenceRefs: analysis.evidence.map(item => item.evidenceId),
+            recommendationIds: analysis.recommendations.map(item => item.recommendationId),
+            actor: "intelligence"
+        });
     }
 }

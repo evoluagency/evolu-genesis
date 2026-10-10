@@ -29,7 +29,7 @@ Every screen must declare:
 | Approvals | tenant/company/cnpj | ApprovalRecord | ApprovalContext | pending approvals, recommendation, decision, evidence | Approve, Reject, OpenEvidence | loading/ready/empty/awaiting_approval/approved/rejected/error | Platform |
 | Reconciliation | cnpj | Reconciliation | ReconciliationContext | source summaries, findings, evidence, differences | RequestReconciliationAnalysis, RequestReview, OpenSource | loading/analyzing/completed/insufficient_context/empty/error | Platform + Intelligence |
 | AccountingEntries | cnpj | AccountingEntry | AccountingEntriesContext | entries, account mapping, provenance | FilterEntries, OpenEntry, RequestReview | loading/ready/empty/error/forbidden | Platform |
-| AnalysisHistory | company/cnpj | Analysis | AnalysisHistoryContext | analyses, findings, decisions | OpenAnalysis | loading/ready/empty/error | Platform/Intelligence projection |
+| AnalysisHistory | company/cnpj | Analysis | AnalysisHistoryContext | analyses, findings, evidence, recommendations | OpenAnalysis | loading/ready/empty/error | Intelligence |
 | AuditHistory | company/cnpj | AuditEvent | AuditHistoryContext | immutable event timeline | FilterAudit, OpenSubject | loading/ready/empty/error/forbidden | Platform |
 | EvoluPanel | contextual | Analysis | AssistantContext | active screen context, entity refs, pending items | RequestAnalysis, RequestExplanation, RequestInformation | idle/loading/ready/insufficient_context/error | Intelligence |
 
@@ -128,6 +128,36 @@ Fields:
 
 Each `ApprovalRecord` carries the operational scope of the formal authorization. Queue filtering and approval writes must preserve that scope.
 
+### AnalysisHistoryContext
+Intelligence-owned analytical history projection.
+
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- entries
+  - Analysis
+  - subject reference
+  - tenant/company/CNPJ scope
+
+This projection contains analytical history. It is not the Platform audit log and does not authorize operational writes.
+
+### AuditHistoryContext
+Platform-owned immutable operational history projection.
+
+Fields:
+- schemaVersion
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriodId
+- subject
+- events: AuditEvent[]
+- capabilities
+
+Audit events are append-only Platform facts. They may reference Intelligence analyses, findings, evidence and recommendations, but Intelligence does not own or mutate the audit log.
+
 ## Request/result contracts
 
 ### DocumentAnalysisRequest
@@ -155,25 +185,43 @@ Fields:
 
 ### RecordDecisionRequest
 Fields:
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriodId
+- subjectType
+- subjectId
 - analysisId
 - recommendationId
 - decision: accept | reject | adjust | request_information | defer
 - rationale
+- decidedBy
 
 ### RecordApprovalRequest
 Fields:
+- approvalId
+- tenantId
+- companyId
+- cnpjId
+- accountingPeriodId
 - decisionId
 - subjectType
 - subjectId
 - outcome: approve | reject
 - rationale
+- actor
 
 ### ActionExecutionRequest
 Fields:
+- tenantId
+- companyId
+- cnpjId
 - authorization: ActionAuthorizationRef
 - actionType
+- subjectType
 - subjectId
 - payload
+- requestedBy
 
 Returns ActionResult.
 
@@ -206,8 +254,9 @@ Representative operations:
 - getDocumentAnalysisContext
 - getReconciliationContext
 - getPendingItems
-- getReconciliationContext
 - getApprovals
+- getAuditHistory
+- recordAnalysisObservation
 - recordPendingItem
 - recordPendingInformation
 - recordDecision
@@ -219,6 +268,7 @@ Representative operations:
 - requestDocumentAnalysis
 - requestReconciliationAnalysis
 - explainAnalysis
+- getAnalysisHistory
 
 ## Mock rule
 
@@ -294,6 +344,8 @@ These are UX routes, not backend API routes.
 | Decision | MockPlatformProvider | PlatformAdapter | Platform record |
 | ApprovalRecord | MockPlatformProvider | PlatformAdapter | Platform |
 | ActionResult | MockPlatformProvider | PlatformAdapter | Platform |
+| AnalysisHistoryContext | MockIntelligenceProvider | IntelligenceAdapter | Intelligence projection |
+| AuditHistoryContext | MockPlatformProvider | PlatformAdapter | Platform |
 | AuditEvent | MockPlatformProvider | PlatformAdapter | Platform |
 | ReconciliationAnalysisResult | MockIntelligenceProvider | IntelligenceAdapter | Intelligence |
 

@@ -2,6 +2,7 @@ import type {
   AccountingPeriod,
   Analysis,
   AnalysisStatus,
+  AuditEvent,
   ApprovalRecord,
   CnpjEntity,
   CnpjId,
@@ -169,6 +170,25 @@ export interface ApprovalContext {
   capabilities: Capabilities;
 }
 
+export interface AnalysisHistoryEntry {
+  analysis: Analysis;
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId?: CnpjId;
+  subject: {
+    type: string;
+    id: string;
+  };
+}
+
+export interface AnalysisHistoryContext {
+  schemaVersion: SchemaVersion;
+  tenantId: TenantId;
+  companyId?: CompanyId;
+  cnpjId?: CnpjId;
+  entries: AnalysisHistoryEntry[];
+}
+
 export interface DocumentAnalysisRequest {
   schemaVersion: SchemaVersion;
   tenantId: TenantId;
@@ -193,6 +213,12 @@ export interface DocumentAnalysisResult {
 }
 
 export interface RecordDecisionRequest {
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  accountingPeriodId?: string;
+  subjectType: string;
+  subjectId: string;
   analysisId: string;
   recommendationId: string;
   decision: DecisionValue;
@@ -242,12 +268,42 @@ export interface RecordPendingInformationResult {
   recordedAt: string;
 }
 
+export interface AuditHistoryContext {
+  schemaVersion: SchemaVersion;
+  tenantId: TenantId;
+  companyId?: CompanyId;
+  cnpjId?: CnpjId;
+  accountingPeriodId?: string;
+  subject?: {
+    type: string;
+    id: string;
+  };
+  events: AuditEvent[];
+  capabilities: Capabilities;
+}
+
+export interface RecordAnalysisObservationRequest {
+  tenantId: TenantId;
+  companyId: CompanyId;
+  cnpjId: CnpjId;
+  accountingPeriodId?: string;
+  subjectType: string;
+  subjectId: string;
+  analysisId: string;
+  status: AnalysisStatus;
+  findingIds: string[];
+  evidenceRefs: string[];
+  recommendationIds: string[];
+  actor: string;
+}
+
 export interface ActionExecutionRequest {
   tenantId: TenantId;
   companyId: CompanyId;
   cnpjId: CnpjId;
   authorization: ActionAuthorizationRef;
   actionType: string;
+  subjectType: string;
   subjectId: string;
   payload: Readonly<Record<string, unknown>>;
   requestedBy: string;
@@ -258,12 +314,14 @@ export interface ReconciliationAnalysisRequest {
   tenantId: TenantId;
   companyId: CompanyId;
   cnpjId: CnpjId;
+  reconciliationId: string;
   periodId: string;
   requestedBy: string;
 }
 
 export interface ReconciliationAnalysisResult {
   schemaVersion: SchemaVersion;
+  analysisId: string;
   status: AnalysisStatus;
   findings: Finding[];
   evidence: Evidence[];

@@ -241,6 +241,7 @@ export interface ActionCommand {
   companyId: CompanyId;
   cnpjId: CnpjId;
   actionType: string;
+  subjectType: string;
   subjectId: string;
   authorization: ActionAuthorizationRef;
   payload: Readonly<Record<string, unknown>>;
@@ -262,6 +263,9 @@ export interface AuditEvent {
   tenantId: TenantId;
   companyId?: CompanyId;
   cnpjId?: CnpjId;
+  accountingPeriodId?: string;
+  correlationId: string;
+  causationId?: string;
   actor: string;
   subject: {
     type: string;

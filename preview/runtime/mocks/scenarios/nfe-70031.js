@@ -443,6 +443,7 @@ export const reconciliationContext = {
 };
 export const reconciliationAnalysisResult = {
     schemaVersion: "1.0.0",
+    analysisId: "analysis-reconciliation-acme-2026-09",
     status: "insufficient_context",
     findings: [reconciliationFinding],
     evidence: reconciliationEvidence,
