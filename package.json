@@ -6,7 +6,9 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "check": "npm run typecheck",
-    "build:preview-runtime": "tsc -p tsconfig.preview.json"
+    "build:preview-runtime": "tsc -p tsconfig.preview.json",
+    "homologate:browser": "node scripts/ux-browser-homologation.mjs",
+    "homologate:browser:selftest": "node scripts/ux-browser-homologation.mjs --self-test"
   },
   "devDependencies": {
     "typescript": "^5.9.0"
