@@ -8,12 +8,11 @@ import type {
   PendingItemsContext,
   PortfolioContext,
   ReconciliationContext,
+  CreateReconciliationPendingItemRequest,
   RecordApprovalRequest,
   RecordDecisionRequest,
   RecordPendingInformationRequest,
-  RecordPendingInformationResult,
-  RecordPendingItemRequest,
-  RecordPendingItemResult
+  RecordPendingInformationResult
 } from "../../contracts/index.js";
 import type { ActionResult, ApprovalRecord, Decision, PendingItem } from "../../domain/index.js";
 import {
@@ -28,9 +27,13 @@ import {
   fiscalDocumentsContext,
   pendingItemsContext,
   portfolioContext,
-  purposePendingItem,
-  reconciliationContext
+  purposePendingItem
 } from "../../mocks/scenarios/nfe-70031.js";
+import {
+  reconciliationContext,
+  reconciliationFinding,
+  reconciliationPendingTemplate
+} from "../../mocks/scenarios/reconciliation-2026-09.js";
 import type {
   Nfe70031EconomicPurpose,
   Nfe70031ScenarioState
@@ -180,33 +183,43 @@ export class MockPlatformProvider implements PlatformProvider {
     };
   }
 
-  async recordPendingItem(
-    request: RecordPendingItemRequest
-  ): Promise<RecordPendingItemResult> {
+  async createReconciliationPendingItem(
+    request: CreateReconciliationPendingItemRequest
+  ): Promise<PendingItem> {
     if (
       request.tenantId !== reconciliationContext.tenantId ||
       request.companyId !== reconciliationContext.companyId ||
-      request.cnpjId !== reconciliationContext.cnpjId
+      request.cnpjId !== reconciliationContext.cnpjId ||
+      request.reconciliationId !== reconciliationContext.reconciliation.reconciliationId
     ) {
-      throw new Error("mock_pending_item_scope_mismatch");
+      throw new Error("mock_reconciliation_pending_scope_mismatch");
+    }
+
+    if (request.findingId !== reconciliationFinding.findingId) {
+      throw new Error("mock_reconciliation_finding_not_found");
+    }
+
+    const capability = reconciliationContext.capabilities.canCreatePendingItem;
+    if (!capability || capability.status === "forbidden") {
+      throw new Error("mock_reconciliation_pending_forbidden");
+    }
+    if (capability.status === "unavailable") {
+      throw new Error("mock_reconciliation_pending_unavailable");
     }
 
     const existing = this.recordedPendingItems.find(
-      item => item.pendingItemId === request.item.pendingItemId
+      item => item.pendingItemId === reconciliationPendingTemplate.pendingItemId
     );
     if (existing) {
-      return {
-        item: existing,
-        recordedAt: new Date().toISOString()
-      };
+      return existing;
     }
 
-    this.recordedPendingItems.push({ ...request.item });
-
-    return {
-      item: request.item,
-      recordedAt: new Date().toISOString()
+    const item: PendingItem = {
+      ...reconciliationPendingTemplate,
+      assignedTo: request.requestedBy
     };
+    this.recordedPendingItems.push(item);
+    return item;
   }
 
   async recordPendingInformation(
