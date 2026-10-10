@@ -10,9 +10,12 @@ import {
   createNfe70031ScenarioState,
   historicalEvidence,
   initialDocumentAnalysisResult,
-  mockDocument,
-  reconciliationAnalysisResult
+  mockDocument
 } from "../../mocks/scenarios/nfe-70031.js";
+import {
+  reconciliationAnalysisResult,
+  reconciliationContext
+} from "../../mocks/scenarios/reconciliation-2026-09.js";
 import type {
   Nfe70031EconomicPurpose,
   Nfe70031ScenarioState
@@ -96,8 +99,17 @@ export class MockIntelligenceProvider implements IntelligenceProvider {
   }
 
   async requestReconciliationAnalysis(
-    _request: ReconciliationAnalysisRequest
+    request: ReconciliationAnalysisRequest
   ): Promise<ReconciliationAnalysisResult> {
+    if (
+      request.tenantId !== reconciliationContext.tenantId ||
+      request.companyId !== reconciliationContext.companyId ||
+      request.cnpjId !== reconciliationContext.cnpjId ||
+      request.periodId !== reconciliationContext.accountingPeriod.periodId
+    ) {
+      throw new Error("mock_reconciliation_analysis_scope_mismatch");
+    }
+
     return reconciliationAnalysisResult;
   }
 
