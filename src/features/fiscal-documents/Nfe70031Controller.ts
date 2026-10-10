@@ -106,6 +106,9 @@ export class Nfe70031Controller {
     }
 
     const decision = await this.platform.recordDecision({
+      tenantId: this.config.tenantId,
+      companyId: this.config.companyId,
+      cnpjId: this.config.cnpjId,
       analysisId: this.analysis.analysisId,
       recommendationId: this.recommendation.recommendationId,
       decision: value,
