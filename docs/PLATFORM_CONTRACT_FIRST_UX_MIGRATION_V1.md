@@ -158,7 +158,7 @@ FiscalDocument
 - keep `CompanyContext` and specialized decision contexts CNPJ-scoped
 - expose only authorized CNPJs and accounting periods through PlatformProvider
 - preserve competence when switching CNPJ and preserve CNPJ when switching competence
-- fail safe to an authorized default for invalid deep-link selections
+- reject invalid canonical `cnpjId` or accounting-period deep links; legacy route aliases remain compatibility-only and never grant authorization
 - keep legacy operational fixtures behind a temporary compatibility mapping until their own migration slice
 
 ### UX-4 Reconciliation
