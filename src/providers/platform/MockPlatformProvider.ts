@@ -21,7 +21,10 @@ import {
   documentAnalysisContext,
   fiscalDocumentsContext,
   pendingItemsContext,
-  portfolioContext
+  portfolioContext,
+  purposePendingItem,
+  type Nfe70031EconomicPurpose,
+  type Nfe70031ScenarioState
 } from "../../mocks/scenarios/nfe-70031.js";
 import type { PlatformProvider } from "./PlatformProvider.js";
 
