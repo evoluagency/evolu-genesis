@@ -85,22 +85,23 @@ async function refreshAuditTimeline() {
   const events = history.events;
 
   const requested = [...events].reverse().find(event =>
-    ["pending_information_requested", "pending_information_recorded"].includes(event.eventType)
+    ["pending_item.available", "pending_information.recorded"].includes(event.eventType)
   );
   const analysis = [...events].reverse().find(
     event =>
-      event.eventType === "analysis_observed" &&
+      event.eventType === "analysis.observed" &&
       Array.isArray(event.metadata.recommendationIds) &&
       event.metadata.recommendationIds.length > 0
   );
-  const approval = [...events].reverse().find(event => event.eventType === "approval_recorded");
-  const decision = [...events].reverse().find(event => event.eventType === "decision_recorded");
-  const execution = [...events].reverse().find(event => event.eventType === "action_executed");
+  const approval = [...events].reverse().find(event =>
+    ["approval.approved", "approval.rejected"].includes(event.eventType)
+  );
+  const decision = [...events].reverse().find(event => event.eventType === "decision.recorded");
+  const execution = [...events].reverse().find(event => event.eventType === "action.succeeded");
 
   if (requested) {
-    const value = requested.metadata.value;
-    const isUnknown = value === "unknown";
-    const isRecorded = requested.eventType === "pending_information_recorded";
+    const isRecorded = requested.eventType === "pending_information.recorded";
+    const isUnknown = requested.metadata.status === "awaiting_information";
     setAudit(
       "auditContext",
       isRecorded && !isUnknown ? "done" : "active",
