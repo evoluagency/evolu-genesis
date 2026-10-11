@@ -60,8 +60,9 @@ export class Nfe70031Controller {
         return analysis;
     }
     async recordRecommendationDecision(value) {
-        if (!this.analysis || !this.recommendation)
+        if (!this.analysis || !this.recommendation) {
             throw new Error("recommendation_not_available");
+        }
         const decision = await this.platform.recordDecision({
             tenantId: this.config.tenantId,
             companyId: this.config.companyId,
@@ -79,8 +80,9 @@ export class Nfe70031Controller {
         return decision;
     }
     async recordApproval(outcome) {
-        if (!this.decision || !this.recommendation)
+        if (!this.decision || !this.recommendation) {
             throw new Error("decision_not_available");
+        }
         const approval = await this.platform.recordApproval({
             tenantId: this.config.tenantId,
             companyId: this.config.companyId,
@@ -96,10 +98,12 @@ export class Nfe70031Controller {
         return approval;
     }
     async executeApprovedAction() {
-        if (!this.approval || this.approval.status !== "approved")
+        if (!this.approval || this.approval.status !== "approved") {
             throw new Error("approval_not_granted");
-        if (!this.purpose || this.purpose === "unknown")
+        }
+        if (!this.purpose || this.purpose === "unknown") {
             throw new Error("economic_purpose_not_resolved");
+        }
         const request = {
             tenantId: this.config.tenantId,
             companyId: this.config.companyId,

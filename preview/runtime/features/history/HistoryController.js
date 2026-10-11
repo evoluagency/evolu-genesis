@@ -25,8 +25,9 @@ export class HistoryController {
         return this.state;
     }
     getCurrent() {
-        if (!this.state)
+        if (!this.state) {
             throw new Error("history_not_loaded");
+        }
         return this.state;
     }
 }
