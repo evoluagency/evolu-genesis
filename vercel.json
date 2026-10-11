@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm install --no-package-lock --ignore-scripts --no-audit --no-fund",
+  "buildCommand": "npm run typecheck && npm run test:adapters && npm run build:public",
+  "outputDirectory": ".evolu-public-dist",
+  "git": {
+    "deploymentEnabled": {
+      "chore/genesis-allowlisted-public-release": false
+    }
+  }
+}

@@ -1,1 +1,6 @@
 .local/
+node_modules/
+.evolu-public-dist/
+.evolu-site-build-*/
+private-ux/
+*.tsbuildinfo
