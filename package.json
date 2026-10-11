@@ -9,7 +9,9 @@
     "build:preview-runtime": "tsc -p tsconfig.preview.json",
     "homologate:browser": "node scripts/ux-browser-homologation.mjs",
     "homologate:browser:selftest": "node scripts/ux-browser-homologation.mjs --self-test",
-    "test:adapters": "npm run build:preview-runtime && node scripts/ux7-adapter-contract-tests.mjs"
+    "test:adapters": "npm run build:preview-runtime && node scripts/ux7-adapter-contract-tests.mjs",
+    "build:public": "npm run build:preview-runtime && node scripts/build-public-site.mjs --build && node scripts/verify-public-artifact.mjs",
+    "verify:public-repo": "node scripts/verify-public-repo.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.0"
