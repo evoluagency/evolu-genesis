@@ -1,24 +1,37 @@
-# Platform UX
+# EVOLU Genesis — Front-end / UX
 
-**Presentation:** https://evoluagency.github.io/evolu-genesis/  
-**Operational synthetic scenario:** https://evoluagency.github.io/evolu-genesis/demo/
+**Official website:** https://evolu.ink/  
+**Public interactive demo:** https://evolu.ink/demo/  
+**GitHub Pages technical fallback:** https://evoluagency.github.io/evolu-genesis/
 
-This repository contains the public and contract-first UX surface of **Platform**, one of the two EVOLU products.
+## EVOLU — technology startup positioning
+
+**EVOLU is a bootstrapped, pre-commercial technology startup initiative** developing a professional, extensible enterprise platform for accounting, tax, financial and business operations and intelligence. Its product vision is broader than the present demonstration; phased validation does **not** limit the intended product scope. Current investment prioritizes existing tools and no additional planned infrastructure expenditure. Commercial launch and potential outside investment are later decisions, grounded in verified operating results.
+
+The long-term ambition is to compete in enterprise software and business intelligence markets. Thomson Reuters, SAP and TOTVS are strategic market references, **not claims of current feature parity, affiliation or endorsement**.
+
+Pilot validation is intended to use real businesses' authorized operational data, **only in separate, private and controlled environments** after applicable legal, contractual, security and privacy requirements are met (including Brazilian LGPD and relevant ANPD guidance). No compliance certification or production readiness is claimed merely by this statement.
+
+## Architectural role
+
+This repository owns **the front-end, user experience and UX contracts** for the EVOLU ecosystem: the public product presentation, synthetic interactive demonstration and future authenticated interfaces. Genesis is a repository/interface layer, **not a third standalone commercial product**.
 
 EVOLU is the company and brand:
 
 ```text
 EVOLU
-├── Platform
-└── Intelligence
+├── Platform (operational back-end / system of record)
+├── Intelligence (analysis and decision intelligence)
+└── Genesis (front-end / UX for the ecosystem)
 ```
 
-- **Platform** owns UX, operational state, recorded decisions, approvals, execution and audit.
+- **Genesis** owns UX, visual interfaces, navigation and user interactions.
+- **Platform** owns authorized operational state, APIs, business rules, decisions, approvals, execution and audit.
 - **Intelligence** owns analyses, findings, evidence synthesis, recommendations and explanations.
-- **UX Contracts** define the stable language between the products.
+- **UX Contracts** define the stable language between the components.
 - **Mocks** are temporary development implementations of providers.
 
-The repository name and GitHub Pages path still contain `evolu-genesis` as legacy technical metadata. That string is not a product, domain concept or architectural layer.
+The repository slug `evolu-genesis` remains technical metadata; it is not an additional business product.
 
 ## What the experience shows
 
@@ -61,7 +74,7 @@ A Recommendation never carries write authority. Platform executes only an explic
 ## Integration architecture
 
 ```text
-Platform UX
+Genesis Front-end
     │
     ▼
 UX Contracts
@@ -101,6 +114,8 @@ Names such as SIEG, Domínio, ERPs or banks may appear only as examples of syste
 The public/synthetic surfaces do not contain customer data, production credentials or direct access to production systems.
 
 Real integrations belong behind Platform adapters. The UX must not connect directly to Supabase, SIEG, ONVIO, TOTVS, banks or other infrastructure providers.
+
+A future authenticated Genesis interface may serve controlled operational pilots, but must use a separate environment and authorized back-end interfaces, with tenant segregation, access controls, traceability, legally appropriate processing, data retention rules and incident-response procedures. **Do not place real business data in the public synthetic demo.**
 
 Canonical ecosystem architecture and release traceability are maintained in the Platform repository.
 
