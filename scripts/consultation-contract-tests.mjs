@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import {
   ConsultativeIntelligenceAdapter,
   ConsultationContractError,
@@ -142,4 +143,23 @@ test("Genesis group ID is never confused with Intelligence CNPJ company_id", asy
   assert.equal(body.company_selection.company_id, selection.cnpjId);
   assert.notEqual(body.company_selection.company_id, selection.companyId);
   assert.equal(result.verifiedScope, "TENANT_CNPJ_ONLY");
+});
+
+test("Genesis preview has no browser network, credential or persistence pathway", () => {
+  const source = readFileSync(new URL("../preview/intelligence-consultation/consultation.js", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(/);
+  assert.doesNotMatch(source, /\b(?:localStorage|sessionStorage)\s*\./);
+  assert.doesNotMatch(source, /\b(?:access_token|service_role|apikey)\s*[:=]/i);
+});
+
+test("Genesis navigation and preview explicitly preserve synthetic isolation", () => {
+  const html = readFileSync(new URL("../preview/intelligence-consultation/index.html", import.meta.url), "utf8");
+  const advisory = readFileSync(new URL("../preview/tenant-advisory-workspace/index.html", import.meta.url), "utf8");
+  assert.match(html, /PRÉVIA SINTÉTICA/);
+  assert.match(html, /Sem integração ativa/);
+  assert.match(html, /id="consultation-form"/);
+  assert.match(html, /id="company"/);
+  assert.match(html, /id="thread-list"/);
+  assert.match(advisory, /href="\.\.\/intelligence-consultation\/"/);
+  assert.doesNotMatch(html, /\/api\/intelligence|SUPABASE_SERVICE_ROLE_KEY/);
 });
