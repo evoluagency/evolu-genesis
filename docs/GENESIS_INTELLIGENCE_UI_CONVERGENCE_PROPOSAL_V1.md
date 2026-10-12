@@ -1,5 +1,7 @@
 # EVOLU — Proposta de convergência visual Genesis + Intelligence (V1)
 
+> **ATUALIZAÇÃO DE PRECEDÊNCIA — 2026-10-12:** a especificação [EVOLU Intelligence — Arquitetura de UX e Identidade Visual | Pré-construção V1](./EVOLU_INTELLIGENCE_UX_PRECONSTRUCTION_ARCHITECTURE_V1.md) é agora a **referência principal** para layout de nove telas, a camada viva com botão flutuante, tema Light/Dark da Platform e logomarca original SEM FUNDO. Esta proposta anterior é histórica e auxiliar; em caso de divergência visual ou comportamental, prevalece o novo documento pré-construção. A prévia independente de consulta criada anteriormente não deve ser interpretada como UX definitiva nem publicada como integração autenticada.
+
 **Data:** 2026-10-12  
 **Estado:** PROPOSTA DE MIGRAÇÃO, ainda não aprovada nem implementada no runtime  
 **Referências verificadas:** Genesis `evoluagency/evolu-genesis@765853a183b50666c21a08d7090c6e35dc0231e0`; Intelligence `evolu2/intelligence@d31506fb6270000d631432949919faa475630787`.  
