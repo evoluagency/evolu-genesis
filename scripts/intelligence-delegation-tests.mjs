@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import {
   createExecutionHandoffDraft, DelegationPolicyError,
 } from "../preview/runtime/features/intelligence/DelegatedExecutionPolicy.js";
@@ -123,4 +124,36 @@ test("duplicate steps, invalid capability and illegal plan are rejected", () => 
 test("missing or spoofed actor cannot produce a handoff", () => {
   rejected(() => createExecutionHandoffDraft(plan(), human({ actorId: "user" }), now),
     "authorization_plan_scope_mismatch");
+});
+
+test("floating layer does not call services, store traces or execute operations", () => {
+  const overlay = readFileSync(new URL("../preview/shared-ux/intelligence-layer.js", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../preview/shared-ux/intelligence-layer.css", import.meta.url), "utf8");
+  assert.doesNotThrow(() => new Function(overlay));
+  assert.doesNotMatch(overlay, /\bfetch\s*\(|\bXMLHttpRequest\s*\(|\bWebSocket\s*\(/);
+  assert.doesNotMatch(overlay, /\blocalStorage\b|\bsessionStorage\b|\bsendBeacon\b/);
+  assert.doesNotMatch(overlay, /\b(?:eval|Function)\s*\(/);
+  assert.match(overlay, /authorization.*simul/i);
+  assert.match(overlay, /NENHUMA EXECUÇÃO/);
+  assert.match(css, /background:transparent!important/);
+  assert.match(css, /var\(--card\)/);
+  assert.match(css, /var\(--accent\)/);
+});
+test("transparent Intelligence mark remains alpha PNG inside background-free SVG", () => {
+  const svg = readFileSync(new URL("../preview/shared-ux/intelligence-mark-transparent.svg", import.meta.url), "utf8");
+  assert.doesNotMatch(svg, /<(?:rect|circle|path)\b/);
+  const match = svg.match(/data:image\/png;base64,([A-Za-z0-9+/=]+)/);
+  assert.ok(match);
+  const png = Buffer.from(match[1], "base64");
+  assert.equal(png.subarray(1, 4).toString("ascii"), "PNG");
+  assert.equal(png.readUInt32BE(16), 48);
+  assert.equal(png.readUInt32BE(20), 48);
+  assert.equal(png[25], 6, "PNG RGBA alpha is required");
+});
+test("two Genesis page surfaces opt into the same independent contextual layer", () => {
+  for (const page of ["tenant-advisory-workspace", "tenant-fiscal-workspace"]) {
+    const html = readFileSync(new URL(`../preview/${page}/index.html`, import.meta.url), "utf8");
+    assert.match(html, /shared-ux\/intelligence-layer\.css/);
+    assert.match(html, /shared-ux\/intelligence-layer\.js/);
+  }
 });
