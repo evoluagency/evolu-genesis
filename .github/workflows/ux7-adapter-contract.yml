@@ -7,6 +7,8 @@ on:
       - ".github/workflows/ux7-adapter-contract.yml"
       - "src/**"
       - "scripts/ux7-adapter-contract-tests.mjs"
+      - "scripts/consultation-contract-tests.mjs"
+      - "preview/intelligence-consultation/**"
       - "package.json"
       - "tsconfig*.json"
   workflow_dispatch:
@@ -36,3 +38,5 @@ jobs:
         run: npm run typecheck
       - name: Provider substitution and authorization-boundary tests
         run: npm run test:adapters
+      - name: Intelligence consultative contract boundary
+        run: npm run test:consultation
