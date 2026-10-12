@@ -273,3 +273,78 @@ O protótipo atual `preview/intelligence-consultation/` e o adaptador `Consultat
 - `Intelligence/docs/EVOLU_Intelligence_Product_Boundary_Decision_v1_1.md` — separação de produto e ownership do Lab.
 
 **Regra de execução:** nenhum desenvolvedor deve iniciar nova identidade visual, mudar o layout aprovado ou aplicar fundo à marca por conta própria. A implementação deve passar nos gates documentados sem confundir arte ilustrativa com dados jurídicos, operacionais ou de segurança verificados.
+
+## 10. Emenda funcional obrigatória — autonomia consultiva com execução humana delegada (V1.1)
+
+**Decisão confirmada em 2026-10-12:** a regra “Intelligence não executa” deve ser interpretada como **“Intelligence não executa operação empresarial sem autorização humana válida”**. A autorização é obrigatória, mas pode ser a instrução explícita dada pelo usuário durante a própria conversa depois de conhecer e compreender um plano suficientemente delimitado. Não há exigência universal de segundo clique para tarefas reversíveis de baixo risco; a Platform aplicará, contudo, suas políticas de confirmação extra, dupla aprovação ou revisão profissional quando necessário.
+
+### 10.1 Separação de atos
+
+1. **Observação local proporcional:** Genesis mapeia sinais mínimos autorizados (tempo de tarefa, erros, reedições agregadas), sem digitação bruta, captura de tela, webcam, keylogging ou inferência em cada tecla.
+2. **Oferta proativa:** a Intelligence pode **oferecer** ajuda sem autorização transacional; a aceitação da ajuda autoriza somente o início da consulta, **não** qualquer escrita operacional.
+3. **Investigação e plano:** durante a interação aceita, Intelligence recebe fatos e perguntas, consulta dados autorizados, identifica fundamentos e propõe um **plano versionado** contendo objetos, efeitos e riscos previstos, condições de execução e consequências.
+4. **Autorização humana contextualizada:** o profissional identificado instrui expressamente a execução de **um plano específico** ou de passos claramente especificados. O aceite deve estar vinculado ao ID e à revisão do plano, empresa/CNPJ, usuário, capacidades, data e prazo de validade. A UI não pode transformar “sim, preciso de ajuda” em autorização de execução.
+5. **Decisão de execução na Platform:** BFF/Platform **reverifica** sessão, autorização do usuário para cada capacidade, vínculo Tenant/Company/CNPJ, registros afetados, invariantes, aprovação adicional por classificação de risco e validade do plano, sem confiar nos dados enviados pelo browser ou na avaliação do LLM. Só a Platform executa comandos operacionais.
+6. **Resultado observável:** Intelligence acompanha o retorno por evento auditado com sucesso, parcial, erro ou não executado; nunca comunica sucesso antes da confirmação da Platform. Efeitos inesperados ou ampliação de escopo exigem nova aprovação.
+
+### 10.2 Máquina de estados de execução delegada
+
+```text
+OBSERVING -> INVITATION -> CONSULTING -> PLAN_DRAFT
+                                   |              |
+                                   |              v
+                                   |        PLAN_PRESENTED
+                                   |              |
+                                   |       [instrução humana]
+                                   |              v
+                                   |       APPROVAL_REQUESTED
+                                   |              |
+                                   |       [Platform valida]
+                                   |       /      |       \
+                                   |   DENIED   EXPIRED  APPROVED
+                                   |                      |
+                                   |                      v
+                                   |                 EXECUTING
+                                   |                      |
+                                   |           SUCCEEDED | PARTIAL | FAILED
+                                   |
+                                   +-> DISMISSED / WITHDRAWN / UNAVAILABLE
+```
+
+O motor pode fazer perguntas novas e construir o plano dinamicamente, mas não pode pular `PLAN_PRESENTED`, `APPROVAL_REQUESTED` ou a autorização efetiva da Platform. Mudança de ID/revisão/objeto/escopo invalida a aprovação. Nenhum reenvio automático de ação com efeitos duplicados: `idempotencyKey` e rechecagem servidor obrigatórios.
+
+### 10.3 Planos e permissões — contrato proposto (não conectado)
+
+`DelegationPlan.v1`: `planId`, `revision`, `tenantId`, `companyId` (grupo), `cnpjId` (estabelecimento), `affectedResourceRefs`, `steps[]` com `operation`, `expectedEffect`, `riskClass`, `reversibility`, `requiredCapabilities`, `evidenceRefs`, `expiresAt`, `approvalPolicy`.  
+`HumanPlanAuthorization.v1`: `planId`, `revision`, `actorId` (verificado no servidor), `scopeBinding`, `approvedStepIds`, `statement` afirmativo explícito, `authorizedAt`, `expiresAt` e metadados de confirmação suplementar.  
+`ExecutionHandoffDraft.v1`: somente um **pedido de validação** ao backend privado, nunca uma instrução de mutação executável emitida pelo frontend. O servidor busca o plano imutável registrado, verifica versão, escopo, principal, capacidades, política de risco, anti-replay e idempotência antes de admitir comando concreto.
+
+**Importante:** uma autorização verbal/textual (“pode fazer”) sem identificação inequívoca dos registros/efeitos/versão do plano pode ser **ambígua** e deve levar a pedido de esclarecimento, não a execução. Operações como transmissão oficial, exclusão, obrigação tributária, alteração contábil de impacto material ou transferência financeira dependem de políticas adicionais da Platform.
+
+### 10.4 UX de delegação no mesmo painel flutuante
+
+- Mostrar a **síntese revisável do plano** antes da execução: alvo, ações, dados alterados, fontes, efeitos, risco, reversibilidade e o que **não** será realizado.
+- Aceitar comando escrito ou escolha explícita; registrar a intenção junto ao estado do plano sem tratar texto livre como prova suficiente de privilégio.
+- Mostrar estados “aguardando autorização”, “validação pela Platform”, “em andamento”, “concluído”, “parcial”, “negado” e “falhou”, com IDs e horário de auditoria quando disponíveis.
+- O usuário pode cancelar um plano ainda não iniciado ou interromper antes de passos subsequentes quando tecnicamente viável. “Ajuda aceita”, “plano aprovado” e “operação concluída” são eventos distintos.
+- Manter o **mesmo layout do mockup de nove composições**, os tokens canônicos Light/Dark da Platform e a **logomarca sem fundo**. A aprovação contextual é um estado do painel vivo; não se cria um novo sistema visual.
+
+### 10.5 Entregas iniciais desta revisão
+
+- Criar modelo tipado e funções de validação **fail-closed** na Genesis para plano, autorização explícita e proposta de handoff, com testes negativos e anti-confusão de `companyId` vs `cnpjId`.
+- Iniciar acionador flutuante e painel contextual usando tokens existentes; primeiro fluxo somente **sintético** de detecção de sinal, oferta de ajuda, apresentação de plano e autorização de **simulação sem persistência ou escrita**.
+- A camada Genesis **não** fará chamadas operacionais nesse início, nem simulará no retorno do assistente que uma alteração fiscal ocorreu.
+- Concluir depois uma BFF privada e a máquina de estados de execução realmente protegida por autorizações, auditoria e policies da Platform, em uma futura revisão independente.
+
+### 10.6 Aceitação suplementar
+
+| Gate | Condição de aceitação |
+| --- | --- |
+| DELEGATE-01 | Aceitar ajuda **não** autoriza execução ou cria pedido operacional |
+| DELEGATE-02 | O mesmo plano e revisão devem ser apresentados antes de qualquer aprovação |
+| DELEGATE-03 | A aprovação deve delimitar usuário, empresa, CNPJ, capacidades, registros e passos |
+| DELEGATE-04 | Mudança de plano, escopo, validade ou revisão é rejeitada |
+| DELEGATE-05 | Ações reguladas/alto impacto exigem política de autorização adicional no servidor |
+| DELEGATE-06 | BFF/Platform são autoridade de autorização, não a UI ou LLM |
+| DELEGATE-07 | Execução parcial/falha não vira “sucesso” na mensagem da Intelligence |
+| DELEGATE-08 | Sem integração real, a prévia permanece explicitamente sintética, sem dados ou efeitos reais |
