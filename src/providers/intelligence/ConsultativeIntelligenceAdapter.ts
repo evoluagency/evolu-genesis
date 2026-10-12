@@ -27,7 +27,7 @@ function isoDay(value: string): boolean {
 }
 function checkSelection(value: ConsultationCompanySelection): void {
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (!uuid.test(value.tenantId) || !uuid.test(value.companyId) ||
+  if (!uuid.test(value.tenantId) || !uuid.test(value.companyId) || !uuid.test(value.cnpjId) ||
       !/^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$/.test(value.tenantSlug) ||
       !isoDay(value.referenceDate)) {
     throw new ConsultationContractError("consultation_invalid_selection");
@@ -74,7 +74,8 @@ export class ConsultativeIntelligenceAdapter {
       wire.company_selection = {
         tenant_id: input.companySelection.tenantId,
         tenant_slug: input.companySelection.tenantSlug,
-        company_id: input.companySelection.companyId,
+        // Intelligence V1 uses company_id for the CNPJ record ID.
+        company_id: input.companySelection.cnpjId,
         reference_date: input.companySelection.referenceDate,
       };
     }
@@ -95,7 +96,7 @@ export class ConsultativeIntelligenceAdapter {
     if (selected) {
       if (context.status !== "VERIFIED" || context.principal_verified !== true ||
           context.tenant_id !== selected.tenantId ||
-          context.company_id !== selected.companyId ||
+          context.company_id !== selected.cnpjId ||
           context.reference_date !== selected.referenceDate) {
         throw new ConsultationContractError("consultation_scope_mismatch");
       }
@@ -109,7 +110,7 @@ export class ConsultativeIntelligenceAdapter {
       responseMode: data.response_mode,
       sources,
       companyContext: selected ? "VERIFIED" : "NOT_SELECTED",
-      scopeVerified: selected !== undefined,
+      verifiedScope: selected ? "TENANT_CNPJ_ONLY" : "NONE",
       authority: "INTELLIGENCE_ADVISORY_ONLY",
       lifecycleEffect: "NONE",
       benchmarkUsedAsContext: false,
