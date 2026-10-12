@@ -9,6 +9,7 @@ const selection = {
   tenantId: "11111111-1111-4111-8111-111111111111",
   tenantSlug: "empresa-teste",
   companyId: "22222222-2222-4222-8222-222222222222",
+  cnpjId: "33333333-3333-4333-8333-333333333333",
   referenceDate: "2026-10-12",
 };
 const response = (selected = false) => ({
@@ -17,7 +18,7 @@ const response = (selected = false) => ({
   response_mode: "RETRIEVAL_INSUFFICIENT_CONTEXT",
   company_context: selected ? {
     status: "VERIFIED", principal_verified: true,
-    tenant_id: selection.tenantId, company_id: selection.companyId,
+    tenant_id: selection.tenantId, company_id: selection.cnpjId,
     reference_date: selection.referenceDate,
   } : { status: "NOT_SELECTED" },
   knowledge: { sources: [{
@@ -39,7 +40,7 @@ test("general consultation maps existing V1 response to presentation-only fields
   assert.deepEqual(received, { input: "Quais evidências faltam?", history: [] });
   assert.equal(output.answer, response().answer);
   assert.equal(output.companyContext, "NOT_SELECTED");
-  assert.equal(output.scopeVerified, false);
+  assert.equal(output.verifiedScope, "NONE");
   assert.equal(output.authority, "INTELLIGENCE_ADVISORY_ONLY");
   assert.deepEqual(output.sources, [{ sourceId: "source-1", title: "Fonte interna autorizada", domain: "tax" }]);
   assert.equal(JSON.stringify(output).includes("must-not-be-copied"), false);
@@ -57,16 +58,16 @@ test("selected company is converted to Intelligence V1 company_selection and ech
   });
   assert.deepEqual(requestBody.company_selection, {
     tenant_id: selection.tenantId, tenant_slug: selection.tenantSlug,
-    company_id: selection.companyId, reference_date: selection.referenceDate,
+    company_id: selection.cnpjId, reference_date: selection.referenceDate,
   });
-  assert.equal(output.scopeVerified, true);
+  assert.equal(output.verifiedScope, "TENANT_CNPJ_ONLY");
   assert.equal(output.companyContext, "VERIFIED");
 });
 
 test("mismatched tenant, company, reference date or unverified principal fail closed", async () => {
   for (const [name, patch] of [
     ["tenant", { tenant_id: "99999999-9999-4999-8999-999999999999" }],
-    ["company", { company_id: "99999999-9999-4999-8999-999999999999" }],
+    ["cnpj", { company_id: "99999999-9999-4999-8999-999999999999" }],
     ["date", { reference_date: "2026-10-11" }],
     ["principal", { principal_verified: false }],
     ["not selected", { status: "NOT_SELECTED" }],
@@ -129,4 +130,16 @@ test("scope input must have real date and canonical UUIDs before dispatch", asyn
     input: "Pergunta", companySelection: { ...selection, companyId: "company-1" },
   }), /consultation_invalid_selection/);
   assert.equal(count, 0);
+});
+
+test("Genesis group ID is never confused with Intelligence CNPJ company_id", async () => {
+  let body;
+  const adapter = new ConsultativeIntelligenceAdapter({
+    send: async value => { body = value; return response(true); },
+  });
+  const result = await adapter.ask({ input: "Pergunta", companySelection: selection });
+  assert.notEqual(selection.companyId, selection.cnpjId);
+  assert.equal(body.company_selection.company_id, selection.cnpjId);
+  assert.notEqual(body.company_selection.company_id, selection.companyId);
+  assert.equal(result.verifiedScope, "TENANT_CNPJ_ONLY");
 });
