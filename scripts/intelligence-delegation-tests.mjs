@@ -133,7 +133,7 @@ test("floating layer does not call services, store traces or execute operations"
   assert.doesNotMatch(overlay, /\bfetch\s*\(|\bXMLHttpRequest\s*\(|\bWebSocket\s*\(/);
   assert.doesNotMatch(overlay, /\blocalStorage\b|\bsessionStorage\b|\bsendBeacon\b/);
   assert.doesNotMatch(overlay, /\b(?:eval|Function)\s*\(/);
-  assert.match(overlay, /authorization.*simul/i);
+  assert.match(overlay, /Simular autorização/);
   assert.match(overlay, /NENHUMA EXECUÇÃO/);
   assert.match(css, /background:transparent!important/);
   assert.match(css, /var\(--card\)/);
