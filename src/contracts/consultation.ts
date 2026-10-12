@@ -7,7 +7,10 @@
 export interface ConsultationCompanySelection {
   tenantId: string;
   tenantSlug: string;
+  /** Genesis Company / Platform group identifier. Never substitute a CNPJ ID. */
   companyId: string;
+  /** Explicit canonical establishment ID; Intelligence V1 wire calls this company_id. */
+  cnpjId: string;
   referenceDate: string;
 }
 export interface ConsultationMessage {
@@ -46,8 +49,8 @@ export interface ConsultationAnswer {
   responseMode: string;
   sources: ConsultationSource[];
   companyContext: "VERIFIED" | "NOT_SELECTED";
-  /** True only for a server-confirmed selection matching the request. */
-  scopeVerified: boolean;
+  /** The existing response echoes tenant + CNPJ only, not Genesis company/group. */
+  verifiedScope: "NONE" | "TENANT_CNPJ_ONLY";
   /** Capability of this adapter is exclusively consultation, never mutation. */
   authority: "INTELLIGENCE_ADVISORY_ONLY";
   lifecycleEffect: "NONE";
