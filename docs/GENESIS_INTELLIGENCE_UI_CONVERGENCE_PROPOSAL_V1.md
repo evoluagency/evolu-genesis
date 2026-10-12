@@ -92,7 +92,7 @@ A distribuição do build pode continuar usando a infraestrutura existente; **a 
 
 ## 6. CI e franquias
 
-Os repositórios Genesis e Intelligence possuem workflows GitHub Actions e histórico de execuções bem-sucedidas; isso **não comprova saldo atual** de minutos. As franquias e o bloqueio são verificáveis por **conta proprietária / billing**, não pelo simples número de repositórios. O workflow Genesis atual é `UX-7 adapter contracts` (TypeScript + providers). A Intelligence possui `v1-internal-beta-validation` e outras trilhas de teste.
+Os repositórios Genesis e Intelligence possuem workflows GitHub Actions e histórico de execuções bem-sucedidas; isso **não comprova saldo atual** de minutos. As franquias e o bloqueio são verificáveis por **conta proprietária / billing**, não pelo simples número de repositórios. O workflow Genesis atual é `UX-7 adapter contracts` (TypeScript + providers). Seu gatilho `pull_request` pode validar esta branch pública sem minutos privados. A Intelligence possui `v1-internal-beta-validation` e outras trilhas de teste.
 
 Manter jobs curtos, `paths` seletivos, cache quando cabível, execução sob demanda para gates caros e sem deploy de produção automático; o limite de uso/ orçamento deve ser controlado antes de disparar novas execuções. A Platform esgotou seus 3.000 minutos disponíveis nesta conta; **não** tentar reexecutar seus seis workflows para apoiar esta migração.
 
@@ -124,3 +124,8 @@ These artifacts were added to this draft branch after the original proposal:
 `Genesis companyId = Platform group ID`, while `Intelligence V1 company_selection.company_id = CNPJ ID`. The correct conversion is `Genesis cnpjId → Intelligence company_id`. The response echoes tenant + CNPJ but **not** the group ID. This is why the adapter reports `verifiedScope = TENANT_CNPJ_ONLY` rather than claiming complete Company authorization. The eventual private BFF must validate the actual `cnpjId → companyId` relationship with the authoritative Platform scope and return a versioned canonical response before any real integrated UX claims full authorization.
 
 **Unfinished:** native Node/TypeScript workflow and browser checks, BFF same-origin user session, endpoint wiring, actual user JWT/RLS negative tests, private hosting, Gate B. The Intelligence Lab ownership decision v1.1 is unchanged. No live user/company data is exposed by the synthetic preview. Do **not** merge or publish it as a private authenticated product before these gates.
+
+
+### Ajuste da estratégia de CI — conta e visibilidade
+
+Verificação atual em GitHub REST: `evoluagency/evolu-genesis` é **public** e `evolu2/intelligence` é **private**. De acordo com a documentação GitHub Actions billing, GitHub-hosted **standard runners in public repositories** are free; private included minutes are charged to the repository owner. Assim, é admissível acionar o workflow UX-7 do Genesis neste PR público, sem consumir os 3.000 minutos dos repositórios privados da `evoluagency`. O CI da Intelligence privada permanece sob a franquia da conta separada `evolu2`, ainda não verificada. Fonte: https://docs.github.com/en/billing/concepts/product-billing/github-actions
