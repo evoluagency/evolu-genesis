@@ -10,7 +10,8 @@
     "homologate:browser": "node scripts/ux-browser-homologation.mjs",
     "homologate:browser:selftest": "node scripts/ux-browser-homologation.mjs --self-test",
     "test:adapters": "npm run build:preview-runtime && node scripts/ux7-adapter-contract-tests.mjs",
-    "test:consultation": "npm run build:preview-runtime && node scripts/consultation-contract-tests.mjs"
+    "test:consultation": "npm run build:preview-runtime && node scripts/consultation-contract-tests.mjs",
+    "test:delegation": "npm run build:preview-runtime && node scripts/intelligence-delegation-tests.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.0"
