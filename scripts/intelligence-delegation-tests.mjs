@@ -157,3 +157,13 @@ test("two Genesis page surfaces opt into the same independent contextual layer",
     assert.match(html, /shared-ux\/intelligence-layer\.js/);
   }
 });
+
+test("observation is disabled by default and opt-out discards collected signals", () => {
+  const overlay = readFileSync(new URL("../preview/shared-ux/intelligence-layer.js", import.meta.url), "utf8");
+  assert.match(overlay, /observeCheck\.checked = false/);
+  assert.match(overlay, /if \(!observeCheck\.checked\) return/);
+  assert.match(overlay, /observations\.length = 0/);
+  assert.match(overlay, /observeCheck\.addEventListener\("change"/);
+  assert.match(overlay, /Permitir sugestões contextuais nesta página/);
+  assert.doesNotMatch(overlay, /localStorage|sessionStorage|indexedDB/);
+});
