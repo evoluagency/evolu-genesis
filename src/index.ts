@@ -18,3 +18,12 @@ export * from "./features/company/CompanyWorkspaceController.js";
 export * from "./features/reconciliation/ReconciliationController.js";
 export * from "./features/pending-items/OfficeWorkQueueController.js";
 export * from "./features/history/HistoryController.js";
+
+// Consultation is distinct from IntelligenceProvider's four canonical analysis methods.
+export type {
+  ConsultationCompanySelection, ConsultationMessage, ConsultationInput,
+  ConsultationWireInput, ConsultationTransport, ConsultationSource, ConsultationAnswer,
+} from "./contracts/consultation.js";
+export {
+  ConsultativeIntelligenceAdapter, ConsultationContractError,
+} from "./providers/intelligence/ConsultativeIntelligenceAdapter.js";
