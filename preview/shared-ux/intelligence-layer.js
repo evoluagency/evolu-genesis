@@ -54,6 +54,16 @@
   const status = document.createElement("p");
   status.className = "intelligence-sandbox-status";
   status.textContent = "SIMULAÇÃO • Sem IA conectada, dados reais ou comandos.";
+  // Observation is OFF by default. The person enables help for this page only.
+  // This consent is never persisted, and turning it off drops all local signals.
+  const observeLabel = document.createElement("label");
+  observeLabel.className = "intelligence-observation-label";
+  const observeCheck = document.createElement("input");
+  observeCheck.type = "checkbox";
+  observeCheck.checked = false;
+  const observeCopy = document.createElement("span");
+  observeCopy.textContent = "Permitir sugestões contextuais nesta página (sem gravação de digitação)";
+  observeLabel.append(observeCheck, observeCopy);
   const stream = document.createElement("div");
   stream.className = "intelligence-stream";
   stream.setAttribute("role", "log");
@@ -85,13 +95,19 @@
   send.className = "ux-btn ux-btn-primary";
   send.textContent = "Conversar";
   form.append(label, question, send);
-  drawer.append(head, status, stream, plan, form);
+  drawer.append(head, status, observeLabel, stream, plan, form);
   root.append(invitation, drawer, trigger);
   document.body.append(root);
 
   const observations = [];
   let cooldownUntil = 0;
   let conversationAccepted = false;
+  observeCheck.addEventListener("change", () => {
+    observations.length = 0;
+    invitation.hidden = true;
+    cooldownUntil = 0;
+    if (!observeCheck.checked) root.dataset.state = drawer.hidden ? "dormant" : "consulting";
+  });
 
   function say(role, value) {
     const item = document.createElement("p");
@@ -130,6 +146,7 @@
   // Privacy boundary: only count explicit select CHANGE events, never capture values,
   // text content, keys, coordinates, screens, names, user identity or focus trace.
   document.addEventListener("change", event => {
+    if (!observeCheck.checked) return;
     if (root.contains(event.target) || !(event.target instanceof HTMLSelectElement)) return;
     if (!document.querySelector(".ux-app") || !drawer.hidden || !invitation.hidden) return;
     const time = Date.now();
