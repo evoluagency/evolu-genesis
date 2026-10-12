@@ -41,7 +41,7 @@ function human(overrides = {}) {
     ...overrides,
   };
 }
-async function rejected(fn, code) {
+function rejected(fn, code) {
   assert.throws(fn, error => error instanceof DelegationPolicyError && error.code === code);
 }
 test("explicit human instruction creates only a server-validation draft; NEVER executes", () => {
