@@ -8,7 +8,12 @@ on:
       - "src/**"
       - "scripts/ux7-adapter-contract-tests.mjs"
       - "scripts/consultation-contract-tests.mjs"
+      - "scripts/intelligence-delegation-tests.mjs"
       - "preview/intelligence-consultation/**"
+      - "preview/shared-ux/intelligence-layer.*"
+      - "preview/shared-ux/intelligence-mark-transparent.svg"
+      - "preview/tenant-advisory-workspace/index.html"
+      - "preview/tenant-fiscal-workspace/index.html"
       - "package.json"
       - "tsconfig*.json"
   workflow_dispatch:
@@ -40,3 +45,5 @@ jobs:
         run: npm run test:adapters
       - name: Intelligence consultative contract boundary
         run: npm run test:consultation
+      - name: Intelligence delegated execution authorization boundaries
+        run: npm run test:delegation
