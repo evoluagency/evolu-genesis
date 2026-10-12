@@ -108,3 +108,19 @@ Manter jobs curtos, `paths` seletivos, cache quando cabível, execução sob dem
 - [ ] **Decisão pendente:** eventual transferência do código da interface Lab para Genesis requer um ADR que substitua explicitamente a decisão V1.1 sobre owner do Lab.
 
 **Regra de release:** este documento propõe a migração, **não** marca a integração como entregue nem altera a decisão aprovada de ownership do Lab.
+
+## 8. Source implementation checkpoint — 12/10/2026
+
+**Stage: synthetic Genesis presentation + isolated consultation adapter, not connected.**
+These artifacts were added to this draft branch after the original proposal:
+
+- `preview/intelligence-consultation/index.html`, `consultation.css`, `consultation.js`: a Genesis shell-based consultation view inspired by the existing `apps/intelligence` conversation UX. It includes an in-page thread list, input, synthetic Company selection and response placeholders. **Zero fetch, storage, auth, inference or operational writes.** The existing `preview/tenant-advisory-workspace` now navigates to the preview.
+- `src/contracts/consultation.ts` and `src/providers/intelligence/ConsultativeIntelligenceAdapter.ts`: independent, browser-inert boundary to the *existing* Intelligence V1 consultative response. A private host must inject an authenticated transport; this contract does not create such a host or make live requests.
+- `scripts/consultation-contract-tests.mjs`, `npm run test:consultation`: positive/negative tests for shape, tenant/CNPJ echo, lifecycle, benchmark, response minimization and invalid inputs. The existing Genesis UX-7 Actions workflow includes the command; commits use `[skip ci]` due the exhausted/uncertain `evoluagency` account allowance.
+- Companion Intelligence [PR #22](https://github.com/evolu2/intelligence/pull/22) documents the V1 wire and adds source regression coverage for the authorization and cost boundary. Intelligence runtime and database are unchanged.
+
+**Critical legacy identity mismatch, now explicit in the adapter:**
+
+`Genesis companyId = Platform group ID`, while `Intelligence V1 company_selection.company_id = CNPJ ID`. The correct conversion is `Genesis cnpjId → Intelligence company_id`. The response echoes tenant + CNPJ but **not** the group ID. This is why the adapter reports `verifiedScope = TENANT_CNPJ_ONLY` rather than claiming complete Company authorization. The eventual private BFF must validate the actual `cnpjId → companyId` relationship with the authoritative Platform scope and return a versioned canonical response before any real integrated UX claims full authorization.
+
+**Unfinished:** native Node/TypeScript workflow and browser checks, BFF same-origin user session, endpoint wiring, actual user JWT/RLS negative tests, private hosting, Gate B. The Intelligence Lab ownership decision v1.1 is unchanged. No live user/company data is exposed by the synthetic preview. Do **not** merge or publish it as a private authenticated product before these gates.
