@@ -153,3 +153,33 @@ test("synthetic Genesis UX stays free of transport, local credentials and infere
  assert.doesNotMatch(source,/localStorage|sessionStorage|apikey|service_role|intelligence-evolu2\.vercel/);
  assert.doesNotMatch(source,/document\.cookie|fetch\(["']https?:\/\//);
 });
+
+test("context switch during asynchronous JWT retrieval prevents even the outbound BFF request",async()=>{
+  const tokenTask=deferred();let calls=0;
+  let current=snapshot();
+  const transport=new SameOriginPlatformConsultativeTransport(
+    {getAccessToken:async()=>tokenTask.promise},
+    async()=>{calls++;return ok()},
+  );
+  const controller=run(transport,()=>current);
+  const pending=controller.askExplicitly(question);
+  current={...current,locale:"en",sessionEpoch:"epoch-0002"};
+  tokenTask.resolve(token);
+  await rejects(()=>pending,"private_platform_unavailable");
+  assert.equal(calls,0,"paid inference route must never be called after a context change");
+  controller.dispose();
+});
+test("explicit invalidation during token acquisition prevents outbound requests",async()=>{
+  const tokenTask=deferred();let calls=0;
+  const transport=new SameOriginPlatformConsultativeTransport(
+    {getAccessToken:async()=>tokenTask.promise},
+    async()=>{calls++;return ok()},
+  );
+  const controller=run(transport);
+  const pending=controller.askExplicitly(question);
+  controller.invalidate();
+  tokenTask.resolve(token);
+  await rejects(()=>pending,"private_platform_unavailable");
+  assert.equal(calls,0);
+  controller.dispose();
+});
