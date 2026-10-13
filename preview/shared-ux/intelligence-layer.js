@@ -64,6 +64,23 @@
   const observeCopy = document.createElement("span");
   observeCopy.textContent = "Permitir sugestões contextuais nesta página (sem gravação de digitação)";
   observeLabel.append(observeCheck, observeCopy);
+  const modeLabel = document.createElement("label");
+  modeLabel.className = "intelligence-demo-mode";
+  modeLabel.textContent = "Simulação da intenção do motor";
+  const modeSelect = document.createElement("select");
+  modeSelect.setAttribute("aria-label", "Escolher somente um exemplo de formato de resposta");
+  for (const choice of [
+    ["ASK", "Pergunta dinâmica"],
+    ["COMPARE_SCENARIOS", "Cenários comparados"],
+    ["PRESENT_EVIDENCE", "Evidências"],
+    ["PLAN_PRESENTED", "Plano para revisão"],
+  ]) {
+    const option = document.createElement("option");
+    option.value = choice[0];
+    option.textContent = choice[1];
+    modeSelect.append(option);
+  }
+  modeLabel.append(modeSelect);
   const stream = document.createElement("div");
   stream.className = "intelligence-stream";
   stream.setAttribute("role", "log");
@@ -95,7 +112,7 @@
   send.className = "ux-btn ux-btn-primary";
   send.textContent = "Conversar";
   form.append(label, question, send);
-  drawer.append(head, status, observeLabel, stream, plan, form);
+  drawer.append(head, status, observeLabel, modeLabel, stream, plan, form);
   root.append(invitation, drawer, trigger);
   document.body.append(root);
 
@@ -166,14 +183,80 @@
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && !drawer.hidden) shut();
   });
+  // The fixtures below are synthetic. A live Intelligence service will decide
+  // intent kind, wording, questions and evidence, then a private host MUST
+  // validate with PresentationIntent.ts before calling the same renderer.
+  function exampleIntent(kind) {
+    const intent = {
+      schemaVersion: "1.0.0",
+      interactionId: "synthetic-interaction-001",
+      scope: {
+        tenantId: "11111111-1111-4111-8111-111111111111",
+        companyId: "22222222-2222-4222-8222-222222222222",
+        cnpjId: "33333333-3333-4333-8333-333333333333",
+        pageId: "genesis.synthetic",
+      },
+      kind, expiresAt: new Date(Date.now() + 300000).toISOString(),
+      executionAuthority: "NONE", lifecycleEffect: "NONE", blocks: [],
+    };
+    if (kind === "ASK") intent.blocks = [
+      {type: "TEXT", text: "Exemplo de pergunta definida pelo motor, e não por uma árvore fixa da Genesis."},
+      {type: "QUESTION", prompt: "Qual informação técnica você gostaria de esclarecer primeiro?",
+        responseKey: "requested-detail", options: [
+          "Composição do produto", "Finalidade da operação", "Outro aspecto",
+        ]},
+    ];
+    if (kind === "COMPARE_SCENARIOS") intent.blocks = [
+      {type: "SCENARIO", title: "Hipótese A (fictícia)",
+        summary: "Comparação ilustrativa de critérios, sem cálculo nem recomendação tributária.",
+        assumptions: ["Descrição técnica ainda não verificada"], risks: ["Fundamento jurídico não consultado"]},
+      {type: "NOTICE", level: "CAUTION", text: "Não há evidências jurídicas reais nesta prévia."},
+    ];
+    if (kind === "PRESENT_EVIDENCE") intent.blocks = [
+      {type: "EVIDENCE", sourceId: "source-synthetic-001", title: "Documento técnico fictício",
+        excerpt: "Fonte de interface fictícia. O motor não consultou legislação ou arquivos reais."},
+    ];
+    if (kind === "PLAN_PRESENTED") intent.blocks = [
+      {type: "PLAN", planId: "plan-synthetic-001", revision: 1,
+        summary: "Conferir o contexto e preparar dados para revisão humana.",
+        steps: [
+          {stepId: "verify-01", description: "Confirmar o produto e sua descrição", risk: "LOW"},
+          {stepId: "review-02", description: "Analisar os critérios aplicáveis", risk: "HIGH"},
+        ]},
+    ];
+    return intent;
+  }
+  function displayExample() {
+    const intent = exampleIntent(modeSelect.value);
+    plan.hidden = intent.kind !== "PLAN_PRESENTED";
+    if (!plan.hidden) {
+      planHeading.textContent = "Intenção de execução — somente simulação";
+      planCopy.textContent = "Plano sintético " + intent.blocks[0].planId +
+        " · revisão " + intent.blocks[0].revision +
+        ". A simulação não autentica nem autoriza nenhuma operação.";
+    }
+    try {
+      if (!window.EvoluIntelligenceIntentUI) throw new Error("renderer_unavailable");
+      window.EvoluIntelligenceIntentUI.render(stream, intent, (key, answer) => {
+        say("Você · escolha do exemplo " + key, answer);
+        say("Sistema de prévia", "A resposta não foi enviada à Intelligence. A próxima pergunta dependeria do motor autenticado.");
+      });
+      stream.scrollTop = stream.scrollHeight;
+      status.textContent = "EXEMPLO SINTÉTICO • Intenção " + intent.kind +
+        " · nenhuma análise ou execução real.";
+    } catch {
+      status.textContent = "FORMATO INDISPONÍVEL • Não foi possível apresentar o exemplo.";
+      plan.hidden = true;
+    }
+  }
   form.addEventListener("submit", event => {
     event.preventDefault();
     const input = question.value.trim();
     if (!input) return;
     say("Você", input);
     question.value = "";
-    say("Intelligence (prévia)", "Entendi seu pedido. A análise real exige sessão autorizada e o motor Intelligence. Posso apenas apresentar um plano sintético para você revisar; nada será executado.");
-    plan.hidden = false;
+    say("Sistema de prévia", "Consulta não enviada. O formato a seguir é um exemplo sintético, escolhido no seletor; em operação real, somente a Intelligence define a próxima interação.");
+    displayExample();
   });
   authorize.addEventListener("click", () => {
     plan.hidden = true;
