@@ -80,7 +80,8 @@ export function projectConsultativeVerificationReceipt(
      d.reasonCode!=="LOCALE_UNVERIFIED"||
      typeof e.snapshotFingerprintSha256!=="string"||
      !/^[a-f0-9]{64}$/.test(e.snapshotFingerprintSha256)||
-     !Number.isSafeInteger(e.sourceCount)||e.sourceCount<0||e.sourceCount>100||
+     typeof e.sourceCount!=="number"||!Number.isSafeInteger(e.sourceCount)||
+     e.sourceCount<0||e.sourceCount>100||
      (e.status==="NO_RETRIEVED_SOURCE"&&e.sourceCount!==0)||
      (e.status==="SERVER_SNAPSHOT_METADATA_MATCH_NOT_LEGAL_VERIFICATION"&&
       e.sourceCount===0)||
