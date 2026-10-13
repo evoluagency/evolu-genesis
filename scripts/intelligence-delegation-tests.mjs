@@ -167,6 +167,8 @@ test("observation is disabled by default and opt-out discards collected signals"
   assert.match(overlay, /if \(!observeCheck\.checked\) return/);
   assert.match(overlay, /observations\.length = 0/);
   assert.match(overlay, /observeCheck\.addEventListener\("change"/);
-  assert.match(overlay, /Permitir sugestões contextuais nesta página/);
+  const translations = readFileSync(new URL("../preview/shared-ux/intelligence-i18n.js", import.meta.url), "utf8");
+  assert.match(translations, /Permitir sugestões contextuais nesta página/);
+  assert.match(translations, /Allow contextual suggestions on this page/);
   assert.doesNotMatch(overlay, /localStorage|sessionStorage|indexedDB/);
 });
