@@ -133,8 +133,11 @@ test("floating layer does not call services, store traces or execute operations"
   assert.doesNotMatch(overlay, /\bfetch\s*\(|\bXMLHttpRequest\s*\(|\bWebSocket\s*\(/);
   assert.doesNotMatch(overlay, /\blocalStorage\b|\bsessionStorage\b|\bsendBeacon\b/);
   assert.doesNotMatch(overlay, /\b(?:eval|Function)\s*\(/);
-  assert.match(overlay, /Simular autorização/);
-  assert.match(overlay, /NENHUMA EXECUÇÃO/);
+  const translations = readFileSync(new URL("../preview/shared-ux/intelligence-i18n.js", import.meta.url), "utf8");
+  assert.match(translations, /Simular autorização/);
+  assert.match(translations, /NENHUMA EXECUÇÃO/);
+  assert.match(translations, /NO EXECUTION/);
+  assert.match(overlay, /document.addEventListener\("ux:locale"/);
   assert.match(css, /background:transparent!important/);
   assert.match(css, /var\(--card\)/);
   assert.match(css, /var\(--accent\)/);
