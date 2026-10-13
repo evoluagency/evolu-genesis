@@ -202,7 +202,8 @@
   // validate with PresentationIntent.ts before calling the same renderer.
   function exampleIntent(kind) {
     const intent = {
-      schemaVersion: "1.0.0",
+      schemaVersion: "1.1.0",
+      locale: i18n.locale(),
       interactionId: "synthetic-interaction-001",
       scope: {
         tenantId: "11111111-1111-4111-8111-111111111111",
