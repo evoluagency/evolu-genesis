@@ -178,6 +178,10 @@ async function run(){
     "for(let i=0;i<3;i++)document.dispatchEvent(new CustomEvent('evolu:activity-signal',"+
     "{detail:{kind:'REPEATED_ATTEMPT',pageId}}));})()");
    const invited=await js(cdp,state);
+   if (!invited.invitation) {
+     const detail=await js(cdp,"(()=>({page:document.querySelector('.ux-app')?.dataset.intelligencePageId,opt:document.querySelector('.intelligence-observation-label input')?.checked,root:document.querySelector('.intelligence-layer')?.dataset.state,drawerHidden:document.querySelector('.intelligence-drawer')?.hidden,invitationHidden:document.querySelector('.intelligence-invitation')?.hidden,keys:Object.keys({kind:'REPEATED_ATTEMPT',pageId:'fiscal.workspace'}).sort().join(',')}))()");
+     console.log("SEMANTIC_GATE_DIAG="+JSON.stringify(detail));
+   }
    expect(invited.invitation,p+"_"+view+"_allowlisted_contextual_invitation");
    await js(cdp,"document.querySelector('.intelligence-invitation .ux-btn:not(.ux-btn-primary)').click()");
    const dismissed=await js(cdp,state);expect(!dismissed.invitation,p+"_"+view+"_invitation_dismissed");
