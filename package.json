@@ -12,7 +12,8 @@
     "test:adapters": "npm run build:preview-runtime && node scripts/ux7-adapter-contract-tests.mjs",
     "test:consultation": "npm run build:preview-runtime && node scripts/consultation-contract-tests.mjs",
     "test:delegation": "npm run build:preview-runtime && node scripts/intelligence-delegation-tests.mjs",
-    "test:intelligence-presentation": "npm run build:preview-runtime && node scripts/intelligence-presentation-tests.mjs"
+    "test:intelligence-presentation": "npm run build:preview-runtime && node scripts/intelligence-presentation-tests.mjs",
+    "homologate:intelligence:browser": "node scripts/intelligence-browser-homologation.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.0"
