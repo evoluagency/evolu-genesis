@@ -353,11 +353,11 @@ O motor pode fazer perguntas novas e construir o plano dinamicamente, mas não p
 
 **Implementação em revisão, NÃO conectada:** `src/features/intelligence/PresentationIntent.ts`, `preview/shared-ux/intelligence-intent-ui.js` e `scripts/intelligence-presentation-tests.mjs`.
 
-**Separação estrutural:** o serviço Intelligence pode propor conteúdo e escolher a modalidade de interação, mas a Genesis conserva um catálogo fechado de componentes e validação estrita. Não há páginas estáticas novas para cada decisão do motor. O contrato aceita `SILENT`, `INVITE`, `ASK`, `EXPLAIN`, `COMPARE_SCENARIOS`, `PRESENT_EVIDENCE`, `PLAN_PRESENTED`, `UNAVAILABLE`; os blocos permitidos são `TEXT`, `QUESTION`, `EVIDENCE`, `SCENARIO`, `NOTICE`, `PLAN`. Perguntas e opções são livres **dentro de estruturas tipadas**, não uma lista fixa no front-end.
+**Separação estrutural:** o serviço Intelligence pode propor conteúdo e escolher a modalidade de interação, mas a Genesis conserva um catálogo fechado de componentes e validação estrita. Não há páginas estáticas novas para cada decisão do motor. O contrato versionado aceita `SILENT`, `INVITE`, `ASK`, `EXPLAIN`, `COMPARE_SCENARIOS`, `PRESENT_EVIDENCE`, `PLAN_PRESENTED`, `UNAVAILABLE`; os blocos permitidos são `TEXT`, `QUESTION`, `EVIDENCE`, `SCENARIO`, `NOTICE`, `PLAN`. Perguntas e opções são livres **dentro de estruturas tipadas**, não uma lista fixa no front-end.
 
 ### 11.1 Limites de segurança do contrato
 
-- `schemaVersion=1.0.0` + `interactionId` + `expiresAt` limitado a 15 minutos, com seleção exata de `tenantId`, `companyId` (grupo), `cnpjId` e `pageId`; qualquer mismatch implica rejeição.
+- `schemaVersion=1.1.0` + `locale` (`pt-BR`/`en`) vinculado ao shell + `interactionId` + `expiresAt` limitado a 15 minutos, com seleção exata de `tenantId`, `companyId` (grupo), `cnpjId` e `pageId`; qualquer mismatch implica rejeição.
 - `executionAuthority=NONE` e `lifecycleEffect=NONE` são exigidos, inclusive para apresentações de planos: um bloco `PLAN` **não** vale como autorização humana, comando, aprovação fiscal ou token.
 - Blocos desconhecidos e campos não previstos são recusados, e o resultado validado é projetado para DTOs reconhecidos; fonte, cenários e planos não podem carregar callbacks, HTML arbitrário, scripts ou URLs executáveis.
 - `EXPLAIN`, `COMPARE_SCENARIOS` e `PRESENT_EVIDENCE` exigem **referência de evidência ou aviso explícito de insuficiência**, sem criar certeza fiscal fictícia.
