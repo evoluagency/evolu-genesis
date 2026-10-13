@@ -179,7 +179,7 @@ test("explicit invalidation during token acquisition prevents outbound requests"
   const pending=controller.askExplicitly(question);
   controller.invalidate();
   tokenTask.resolve(token);
-  await rejects(()=>pending,"private_platform_unavailable");
+  await rejects(()=>pending,"consultation_cancelled");
   assert.equal(calls,0);
   controller.dispose();
 });
