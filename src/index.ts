@@ -56,3 +56,7 @@ export {
 // Authenticated-host consultation errors are mapped to localized, non-sensitive notices.
 export type { ConsultativeNoticeKind, ConsultativeHostNotice } from "./features/intelligence/ConsultativeStatus.js";
 export { describeConsultativeFailure } from "./features/intelligence/ConsultativeStatus.js";
+
+// Source-only Intelligence proof receipt: always denies unverified model answers.
+export type {ConsultativeReceiptScope, ConsultativeReceiptState} from "./features/intelligence/ConsultativeVerificationReceipt.js";
+export {ConsultativeReceiptError,projectConsultativeVerificationReceipt} from "./features/intelligence/ConsultativeVerificationReceipt.js";
