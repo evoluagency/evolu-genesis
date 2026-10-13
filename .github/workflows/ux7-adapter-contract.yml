@@ -12,6 +12,7 @@ on:
       - "scripts/intelligence-presentation-tests.mjs"
       - "scripts/platform-consultative-bridge-tests.mjs"
       - "scripts/live-platform-consultation-tests.mjs"
+      - "scripts/consultative-status-tests.mjs"
       - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
@@ -59,6 +60,8 @@ jobs:
         run: npm run test:platform-consultation
       - name: Authenticated host consultation and stale-context safety
         run: npm run test:live-platform-consultation
+      - name: Localized private-host error boundary
+        run: npm run test:consultative-status
 
   browser:
     name: Intelligence Chromium UX acceptance
