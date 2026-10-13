@@ -405,3 +405,29 @@ A camada flutuante mantém marca original com transparência alfa e herda cores 
 | L10N-06 | Gatilho ou aprovação humana enquanto idioma muda | Mesmo limite de consentimento, escopo e efeito `NONE` independentemente da língua |
 
 **Status de implementação:** sincronização PT/EN em duas superfícies sintéticas Fiscal e Assessoria; catálogo de strings e fixture por locale. A homologação visual/manual em navegador e o runtime privado bilíngue ainda dependem de gates próprios. A regra visual de identidade **Platform Light/Dark** e a marca **sempre sem fundo** permanecem integralmente válidas.
+
+## 13. Gate Chromium de interface contextual Light/Dark + PT/EN (2026-10-13)
+
+**Implementação em revisão:** `scripts/intelligence-browser-homologation.mjs` integra o workflow público `.github/workflows/ux7-adapter-contract.yml`, executado após os testes de contratos, com screenshots e relatório arquivados por sete dias. Utiliza Chrome/Chromium headless real e protocolo CDP com Node 22, sem SDKs externos ou inferência paga.
+
+**Resultado verificado:** GitHub Actions [run 38385902177](https://github.com/evoluagency/evolu-genesis/actions/runs/38385902177) no commit `2b1a6713ec3630872c3f64f23b78be339f5ce81e`, com job de contratos **PASS** e job `Intelligence Chromium UX acceptance` **PASS** (`INTELLIGENCE_BROWSER_GATE=PASS`). Evidência [artifact 11806100818](https://github.com/evoluagency/evolu-genesis/actions/runs/38385902177/artifacts/11806100818).
+
+### 13.1 Condições exercitadas em browser
+
+- Superfícies sintéticas `preview/tenant-fiscal-workspace/` e `preview/tenant-advisory-workspace/`;
+- Dois viewports (desktop 1366 × 768 e mobile 390 × 844);
+- Botão flutuante real com imagem carregada e CSS de fundo transparente;
+- Controles de idioma e tema **somente os existentes no shell Platform**, sem duplicação;
+- Painel aberto, simulação de pergunta e preservação do texto digitado;
+- Tema Dark/PT-BR → Light/EN (mesmo painel aberto) → PT-BR, com fixture dinâmica relocalizada;
+- Tokens de superfície alterando de fato a cor computada do painel na mudança de tema;
+- Geometria do painel dentro do viewport, sem overflow horizontal documentado;
+- Controle de observação explicitamente desativado por padrão, opt-in seguido de opt-out;
+- Capturas por página/viewport/tema/idioma, relatório JSON e resumo Markdown;
+- Nenhuma exceção JavaScript capturada durante as interações.
+
+### 13.2 Limites do resultado
+
+**PASS no Chromium não é homologação humana final** de identidade visual da Platform ou fidelidade às nove composições. O teste atual usa apenas **duas** superfícies sintéticas e alterna uma combinação de tema/idioma por sessão; não demonstra conteúdo jurídico real, BFF privada, RLS autenticada, migração do Lab, todos os módulos ou execução operacional. Os screenshots precisam de revisão humana contra o layout-mestre, especialmente em Light e responsivo; reconciliação de tokens do runtime Platform continua obrigatória. Nenhum merge, deploy ou mudança na `main` decorre deste gate.
+
+**Próximo marco de construção:** obter validação visual das composições, fechar a fonte canônica Light/Dark com a Platform e implementar a fronteira de transporte autenticado entre a Genesis, a Intelligence e a Platform de forma independente, com contrato de versão, locale, contexto, proveniência, rate/cost guard e teste negativo de Tenant/Company/CNPJ. Não disponibilizar endpoint de execução ou inferência contínua nesta etapa.
