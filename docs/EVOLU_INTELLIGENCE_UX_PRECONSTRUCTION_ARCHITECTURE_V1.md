@@ -472,3 +472,39 @@ Para convite à assistência, a lógica local demanda **três sinais da mesma ca
 A suíte \`scripts/platform-consultative-bridge-tests.mjs\` está conectada ao Actions público Genesis como \`npm run test:platform-consultation\`. Ela cobre autorização humana de consulta, envelope exato, UUID e grupo↔CNPJ distintos, escopo e data, tamanho UTF-8, adversarial de capabilities, custo e bloqueios, limitação do BFF \`1.0.0\`, locale divergente, futura resposta \`1.1.0\` com comprovação real do servidor e proibição de acesso direto à rede na Genesis. **Validação concluída no CI público:** [run #38388000863](https://github.com/evoluagency/evolu-genesis/actions/runs/38388000863) no commit `b084688c9bba0b6fd35f9b477224374df2e397d7`: TypeScript estrito, adaptadores, 10/10 consultas, 15/15 delegação/sensor, 23/23 apresentação/i18n e **15/15 bridge Platform** — todos aprovados. O job de Chromium também passou (`INTELLIGENCE_BROWSER_GATE=PASS`), com [evidência artifact #11806339107](https://github.com/evoluagency/evolu-genesis/actions/runs/38388000863/artifacts/11806339107). Essas provas são de contrato mockado e de prévias sintéticas, **não** prova de conexão real nem autorização de release.
 
 **Regra de produto preservada:** a Intelligence continua fora do conteúdo de cada página, sobreposta como botão e painel flutuante; cores Light/Dark, idioma PT/EN e marca sem fundo seguem exclusivamente a identidade da Platform.
+
+## 16. Coordenador de consulta autenticada — integração host-ready, sem ativação (2026-10-13)
+
+**Entrega no PR Genesis #26:**
+- \`src/features/intelligence/LivePlatformConsultation.ts\` exporta \`SameOriginPlatformConsultativeTransport\`, \`LiveConsultationCoordinator\` e tipos explícitos.
+- \`src/index.ts\` publica a API tipada de apresentação, ponte para BFF e coordenador de sessão.
+- \`scripts/live-platform-consultation-tests.mjs\` valida transporte em memória com \`fetch\` **injetado/mocado**; nenhum teste chama serviço real.
+
+### 16.1 Transporte do host, sem segundo backend
+
+Apenas o **shell autenticado** da Platform pode instanciar \`SameOriginPlatformConsultativeTransport\`, fornecendo um \`AccessTokenProvider.getAccessToken(signal)\` da sessão ativa e uma função \`SameOriginFetch\` autorizada. O destino é uma constante **relativa same-origin** \`/api/ux/intelligence/consult/v1\`; nenhuma URL externa, endpoint da Intelligence, proxy configurável pelo usuário, segredo embutido, cookie lido manualmente, \`localStorage\`, \`sessionStorage\` ou chamada automática no clique do FAB.
+
+A requisição é estritamente \`POST\`, \`credentials:"same-origin"\`, \`mode:"same-origin"\`, \`redirect:"error"\`, \`cache:"no-store"\`, \`referrerPolicy:"no-referrer"\`, \`Authorization: Bearer <token-do-host>\` e corpo do protocolo UX7B **exatamente v1.0**, sem anexar locale até que a BFF suporte a nova versão. Token somente em trânsito e nunca devolvido ao renderer, history, log ou DTO. Erro HTTP, content-type desconhecido, JSON inválido, resposta acima de **65536 bytes** ou falta de sessão retornam falha local segura, nunca corpo privilegiado.
+
+### 16.2 Contexto de sessão e isolamento contra respostas tardias
+
+O host fornece \`AuthenticatedPageSnapshot\` com:
+- seleção canônica \`tenantId\`, \`companyId\` (grupo), \`cnpjId\` (estabelecimento), \`tenantSlug\`, \`referenceDate\`, \`pageId\`;
+- locale efetivo \`pt-BR\` ou \`en\`, controlado pelo botão da Platform;
+- \`sessionEpoch\` opaco e não secreto, **rotativo em login/logout/troca de principal**.
+
+O host deve chamar \`coordinator.invalidate()\` imediatamente ao navegar ou trocar Tenant, grupo, CNPJ, competência, idioma ou sessão. A camada de coordenação compara a seleção e o epoch **antes de despachar, antes e depois de adquirir o token, e antes de devolver o resultado**. Um resultado obsoleto é descartado mesmo se a função de transporte ignorar \`AbortSignal\`. Uma consulta em andamento impede nova consulta concorrente no mesmo coordenador para evitar cobrança duplicada. A consulta dispõe de deadline de 30 segundos e não executa retries implícitos.
+
+A chamada \`askExplicitly(pergunta)\` representa **uma submissão iniciada pelo profissional**; nenhuma observação, aceite de oferta, troca de idioma ou abertura de FAB invoca esse método. O host deve assegurar que somente a interação humana concreta acione a chamada. O frontend **não pode provar sozinho** que um evento foi humano; a Platform revalida JWT, RLS, escopo, políticas e orçamento antes da inferência. Um token válido por si só não substitui consentimento, permissões ou regras server-side.
+
+### 16.3 Resposta real ainda bloqueada para exibição jurídica
+
+A BFF Platform PR #112 ainda publica \`schemaVersion="1.0.0"\` sem idioma de resposta atestado. O coordenador entrega esse payload ao \`projectPrivatePlatformConsultation()\`, que gera \`UNAVAILABLE\`, ainda que o transporte tenha retornado \`200\`. **Não** se mascara a ausência de idioma, não se traduz legislação no navegador e não se apresenta simulação como resultado real.
+
+Um contrato futuro BFF \`1.1.0\` só permitirá conteúdo visível após autenticação e confirmação independente de \`answerLocale\` + \`localeVerified=true\` ancorada no resultado da Intelligence. Mesmo nessa evolução, a resposta é \`ADVISORY_ONLY\`, a ação operacional permanece sujeita a outra autorização humana e o sistema continua \`PRE_LEARNING\`.
+
+### 16.4 Evidências e gates
+
+Os testes incluem destino/headers fixos, corpo sem campos extras, requisição só mediante \`askExplicitly\`, ausência de rede por padrão, JWT ausente, HTTP 403/503, JSON inválido, limite de 64 KiB, consulta duplicada, troca de Tenant/group/CNPJ/page/locale/data/sessionEpoch, invalidação explícita, reuso após cancelamento, mudanças durante **obtenção assíncrona do JWT antes da chamada** e rejeição de respostas tardias. \`scripts/live-platform-consultation-tests.mjs\` integrado ao Actions público.
+
+**Ainda pendente:** wiring no shell autenticado de produção, readiness da rota Platform sob flags desativadas, resposta bilíngue verdadeiramente atestada, RLS E2E com usuários autorizados, validação fiscal/proveniência, aprovação visual completa das nove composições e aprovação de merge/deploy. Nenhum endpoint adicional, migration, segredo ou chamada de inferência foi criado por este marco.
