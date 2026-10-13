@@ -5,6 +5,9 @@
  */
 (function (global) {
   "use strict";
+  const i18n=global.EvoluIntelligenceI18n;
+  if(!i18n)throw new Error("intelligence_locale_unavailable");
+  const t=(key,vars)=>i18n.t(key,vars);
   const kinds = new Set(["SILENT", "INVITE", "ASK", "EXPLAIN",
     "COMPARE_SCENARIOS", "PRESENT_EVIDENCE", "PLAN_PRESENTED", "UNAVAILABLE"]);
   const blockKinds = new Set(["TEXT", "QUESTION", "EVIDENCE", "SCENARIO", "NOTICE", "PLAN"]);
@@ -31,7 +34,8 @@
    */
   function render(host, intent, onAnswer) {
     if (!host || !intent || !kinds.has(intent.kind) ||
-        intent.schemaVersion !== "1.0.0" ||
+        intent.schemaVersion !== "1.1.0" ||
+        intent.locale !== i18n.locale() ||
         intent.lifecycleEffect !== "NONE" || intent.executionAuthority !== "NONE" ||
         !Array.isArray(intent.blocks) || intent.blocks.length > 10 ||
         !intent.blocks.every(block => block && blockKinds.has(block.type))) {
@@ -105,33 +109,33 @@
             }
             card.append(choices);
           } else {
-            card.append(element("small", null, "Responda pelo campo de conversa abaixo."));
+            card.append(element("small", null, t("rendererQuestionHint")));
           }
           break;
         case "EVIDENCE":
           card.append(element("strong", null, block.title));
           card.append(element("p", null, block.excerpt));
-          card.append(element("small", null, "Referência sintética: " + block.sourceId));
+          card.append(element("small", null, t("rendererReference", {source:block.sourceId})));
           break;
         case "SCENARIO":
           card.append(element("strong", null, block.title));
           card.append(element("p", null, block.summary));
-          card.append(element("small", null, "Premissas"));
+          card.append(element("small", null, t("rendererAssumptions")));
           addList(card, block.assumptions, "intelligence-scenario-list");
-          card.append(element("small", null, "Riscos ou pontos a confirmar"));
+          card.append(element("small", null, t("rendererRisks")));
           addList(card, block.risks, "intelligence-scenario-list");
           break;
         case "NOTICE":
           card.append(element("strong", null, block.level === "CAUTION" ?
-            "Atenção — informação insuficiente" : "Informação"));
+            t("rendererCaution") : t("rendererInfo")));
           card.append(element("p", null, block.text));
           break;
         case "PLAN":
-          card.append(element("strong", null, "Plano " + block.planId + " · rev. " + block.revision));
+          card.append(element("strong", null, t("rendererPlan", {id:block.planId,revision:block.revision})));
           card.append(element("p", null, block.summary));
           addList(card, block.steps.map(step =>
             step.description + " [" + step.risk + "]"), "intelligence-scenario-list");
-          card.append(element("small", null, "Somente proposta: sem aprovação ou execução."));
+          card.append(element("small", null, t("rendererPlanNoExecution")));
           break;
       }
       group.append(card);
