@@ -29,3 +29,15 @@
 
 .intelligence-observation-label{display:flex;align-items:flex-start;gap:9px;color:var(--muted);font-size:11px;line-height:1.5;cursor:pointer}
 .intelligence-observation-label input{width:16px;height:16px;flex:none;accent-color:var(--accent);margin:2px 0 0}
+
+/* Typed intent renderer: inherits existing Platform/Genesis theme tokens. */
+.intelligence-demo-mode{display:grid;gap:5px;font-size:11px;color:var(--muted)}
+.intelligence-demo-mode select{width:100%;background:var(--soft);color:var(--text);border:1px solid var(--line);border-radius:8px;min-height:38px;padding:7px 10px}
+.intelligence-dynamic-intent{display:grid;gap:8px}
+.intelligence-dynamic-block{border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:10px 12px;display:grid;gap:6px;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.intelligence-dynamic-block strong{font-weight:700;font-size:12px}
+.intelligence-dynamic-block p{margin:0;white-space:pre-wrap}
+.intelligence-dynamic-block small{font-size:10px;color:var(--muted)}
+.intelligence-dynamic-choices{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.intelligence-dynamic-choices button{min-height:34px}
+.intelligence-scenario-list{margin:0;padding-left:17px;color:var(--text);display:grid;gap:4px}
