@@ -10,6 +10,7 @@ on:
       - "scripts/consultation-contract-tests.mjs"
       - "scripts/intelligence-delegation-tests.mjs"
       - "scripts/intelligence-presentation-tests.mjs"
+      - "scripts/platform-consultative-bridge-tests.mjs"
       - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
@@ -53,6 +54,8 @@ jobs:
         run: npm run test:delegation
       - name: Intelligence dynamic presentation contract and DOM safety
         run: npm run test:intelligence-presentation
+      - name: Private Platform consultation bridge boundary
+        run: npm run test:platform-consultation
 
   browser:
     name: Intelligence Chromium UX acceptance
