@@ -39,7 +39,7 @@
       examplePlanSummary:"Conferir o contexto e preparar dados para revisão humana.",
       exampleStepVerify:"Confirmar o produto e sua descrição",exampleStepReview:"Analisar os critérios aplicáveis",
       rendererQuestionHint:"Responda pelo campo de conversa abaixo.",
-      rendererReference:"Referência sintética: {source}",rendererAssumptions:"Premissas",
+      rendererReference:"Fonte: {source}",rendererAssumptions:"Premissas",
       rendererRisks:"Riscos ou pontos a confirmar",rendererCaution:"Atenção — informação insuficiente",
       rendererInfo:"Informação",rendererPlan:"Plano {id} · rev. {revision}",
       rendererPlanNoExecution:"Somente proposta: sem aprovação ou execução."
@@ -78,7 +78,7 @@
       examplePlanSummary:"Review the context and prepare data for human review.",
       exampleStepVerify:"Confirm the product and its description",exampleStepReview:"Review the applicable criteria",
       rendererQuestionHint:"Answer using the conversation field below.",
-      rendererReference:"Synthetic reference: {source}",rendererAssumptions:"Assumptions",
+      rendererReference:"Source: {source}",rendererAssumptions:"Assumptions",
       rendererRisks:"Risks or issues to confirm",rendererCaution:"Caution — insufficient information",
       rendererInfo:"Information",rendererPlan:"Plan {id} · rev. {revision}",
       rendererPlanNoExecution:"Proposal only: no approval or execution."
