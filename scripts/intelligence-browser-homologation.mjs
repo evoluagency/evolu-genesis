@@ -115,6 +115,9 @@ const state="(()=>{"+
 "duplicates:document.querySelectorAll('.intelligence-layer [data-locale-toggle],.intelligence-layer [data-theme-toggle]').length,"+
 "prompt:$('.intelligence-dynamic-intent')?.innerText||'',stream:$('.intelligence-stream')?.innerText||'',"+
 "label:b?.getAttribute('aria-label'),background:bg,color:style,"+
+"announcer:$('.intelligence-sandbox-status')?.getAttribute('role'),messageId:$('.intelligence-sandbox-status')?.id,"+
+"describedBy:d?.getAttribute('aria-describedby'),invitationAnnouncer:$('.intelligence-invitation')?.getAttribute('role'),"+
+"focusClass:document.activeElement?.className||''," +
 "logoLoaded:logo?.complete&&logo?.naturalWidth>0,"+
 "x:r?.left,right:r?.right,top:r?.top,bottom:r?.bottom,"+
 "vw:innerWidth,vh:innerHeight,docWidth:document.documentElement.scrollWidth};})()";
@@ -148,8 +151,16 @@ async function run(){
    const pt=await js(cdp,state);
    expect(pt.open&&pt.prompt.includes("Qual informação técnica")&&
     pt.stream.includes("Texto original do profissional"),p+"_"+view+"_pt");
+   expect(pt.announcer==="status"&&pt.messageId==="intelligence-status"&&
+    pt.describedBy==="intelligence-status"&&pt.invitationAnnouncer==="status",
+    p+"_"+view+"_accessible_status");
    expect(pt.x>=-1&&pt.right<=w+1&&pt.top>=-1&&pt.bottom<=h+1&&pt.docWidth<=w+2,
     p+"_"+view+"_bounds");
+   await js(cdp,"document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))");
+   const escaped=await js(cdp,state);
+   expect(!escaped.open&&escaped.focusClass.includes("intelligence-trigger"),p+"_"+view+"_escape_focus_return");
+   await js(cdp,"document.querySelector('.intelligence-trigger').click()");
+   const reopened=await js(cdp,state);expect(reopened.open,p+"_"+view+"_keyboard_reopen");
    const img1=await cdp.send("Page.captureScreenshot",{format:"png"});
    const f1=p+"-"+view+"-dark-pt.png";await fs.writeFile(path.join(out,f1),Buffer.from(img1.data,"base64"));report.shots.push(f1);
    await js(cdp,"(()=>{document.querySelector('[data-theme-toggle]').click();document.querySelector('[data-locale-toggle]').click()})()");

@@ -31,6 +31,9 @@
 
   const invitation = document.createElement("div");
   invitation.className = "intelligence-invitation";
+  invitation.setAttribute("role", "status");
+  invitation.setAttribute("aria-live", "polite");
+  invitation.setAttribute("aria-atomic", "true");
   invitation.hidden = true;
   const invitationText = document.createElement("p");
   bind(invitationText, "invitation");
@@ -62,6 +65,11 @@
   head.append(heading, close);
   const status = document.createElement("p");
   status.className = "intelligence-sandbox-status";
+  status.id = "intelligence-status";
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  status.setAttribute("aria-atomic", "true");
+  drawer.setAttribute("aria-describedby", status.id);
   bind(status, "initialStatus");
   // Observation is OFF by default. The person enables help for this page only.
   // This consent is never persisted, and turning it off drops all local signals.
