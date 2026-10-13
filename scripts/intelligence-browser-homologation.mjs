@@ -181,6 +181,12 @@ async function run(){
    expect(invited.invitation,p+"_"+view+"_allowlisted_contextual_invitation");
    await js(cdp,"document.querySelector('.intelligence-invitation .ux-btn:not(.ux-btn-primary)').click()");
    const dismissed=await js(cdp,state);expect(!dismissed.invitation,p+"_"+view+"_invitation_dismissed");
+   await js(cdp,"(()=>{const pageId=document.querySelector('.ux-app').dataset.intelligencePageId;"+
+    "for(let i=0;i<3;i++)document.dispatchEvent(new CustomEvent('evolu:activity-signal',"+
+    "{detail:{kind:'REPEATED_ATTEMPT',pageId}}));})()");
+   const silent=await js(cdp,state);
+   expect(!silent.invitation,p+"_"+view+"_dismissal_cooldown");
+
 
    await js(cdp,"document.querySelector('.intelligence-observation-label input').click()");
    const off=await js(cdp,state);expect(off.optIn===false,p+"_"+view+"_opt_out");
