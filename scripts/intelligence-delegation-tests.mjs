@@ -172,3 +172,20 @@ test("observation is disabled by default and opt-out discards collected signals"
   assert.match(translations, /Allow contextual suggestions on this page/);
   assert.doesNotMatch(overlay, /localStorage|sessionStorage|indexedDB/);
 });
+
+test("context sensor accepts only typed activity signals, never generic clicks or field contents",()=>{
+  const layer=readFileSync(new URL("../preview/shared-ux/intelligence-layer.js",import.meta.url),"utf8");
+  assert.match(layer,/document\.addEventListener\("evolu:activity-signal"/);
+  assert.match(layer,/REPEATED_ATTEMPT/);
+  assert.match(layer,/VALIDATION_FAILURE/);
+  assert.match(layer,/WORKFLOW_REVISIT/);
+  assert.match(layer,/Object\.keys\(info\)\.sort\(\)\.join\(","\) !== "kind,pageId"/);
+  assert.match(layer,/info\.pageId !== activePage/);
+  assert.match(layer,/if \(!observeCheck\.checked\) return/);
+  assert.doesNotMatch(layer,/document\.addEventListener\("(click|keyup|keydown|input|change)"/);
+  assert.doesNotMatch(layer,/event\.target\.value|event\.target\.innerText|\.keyCode/);
+  for(const [page,id] of [["tenant-fiscal-workspace","fiscal.workspace"],["tenant-advisory-workspace","advisory.workspace"]]){
+    const html=readFileSync(new URL("../preview/"+page+"/index.html",import.meta.url),"utf8");
+    assert.match(html,new RegExp('data-intelligence-page-id="'+id.replace(".","\\.")+'"'));
+  }
+});
