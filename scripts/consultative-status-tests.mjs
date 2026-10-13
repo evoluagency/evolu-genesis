@@ -1,0 +1,76 @@
+import {readFileSync} from "node:fs";
+import assert from "node:assert/strict";
+import test from "node:test";
+import {describeConsultativeFailure} from
+  "../preview/runtime/features/intelligence/ConsultativeStatus.js";
+
+test("PT/EN session errors always require explicit sign-in",()=>{
+ for(const locale of ["pt-BR","en"]){
+  for(const code of ["AUTH_REQUIRED","session_unavailable","authenticated_context_required"]){
+   const result=describeConsultativeFailure({code},locale);
+   assert.equal(result.kind,"SESSION_REQUIRED");
+   assert.equal(result.nextAction,"SIGN_IN");
+   assert.equal(result.retryable,false);
+   assert.equal(result.locale,locale);
+  }
+ }
+});
+test("authorization never promotes denial to generic retry",()=>{
+ for(const code of ["SCOPE_NOT_AUTHORIZED","scope_mismatch","INGESTION_MODULE_NOT_AUTHORIZED"]){
+  const result=describeConsultativeFailure({code},"pt-BR");
+  assert.equal(result.kind,"SCOPE_DENIED");
+  assert.equal(result.nextAction,"REVIEW_SELECTION");
+ }
+});
+test("input errors require editing rather than automatic re-submission",()=>{
+ for(const code of ["INVALID_SCOPE","INVALID_REQUEST","invalid_human_consultation",
+  "INVALID_CONSULTATIVE_REQUEST","platform_request_limit"]){
+  const result=describeConsultativeFailure({code},"en");
+  assert.equal(result.kind,"INPUT_INVALID");
+  assert.equal(result.nextAction,"EDIT_QUESTION");
+ }
+});
+test("session or context change cancels without retrying paid inference",()=>{
+ for(const code of ["consultation_cancelled","consultation_context_changed",
+  "REQUEST_ABORTED","coordinator_disposed"]){
+  const result=describeConsultativeFailure({code},"pt-BR");
+  assert.equal(result.kind,"CANCELLED");
+  assert.equal(result.retryable,false);
+  assert.equal(result.nextAction,"NONE");
+ }
+});
+test("multiple questions cannot trigger parallel automatic retry",()=>{
+ const out=describeConsultativeFailure({code:"consultation_in_flight"},"en");
+ assert.equal(out.kind,"IN_PROGRESS");
+ assert.equal(out.nextAction,"NONE");
+});
+test("unknown or malformed upstream body is NEVER reflected into UI text",()=>{
+ const secret="jwt.private.secret-and-company-tax-data";
+ for(const input of [
+  {code:"NEW_SERVER_ERROR",message:secret},
+  {code:secret,message:secret},
+  {code:{nested:secret},message:secret},
+  {message:secret},new Error(secret),null,secret,
+ ]){
+  const result=describeConsultativeFailure(input,"pt-BR");
+  assert.equal(result.kind,"SERVICE_UNAVAILABLE");
+  assert.equal(result.retryable,true);
+  assert.equal(result.nextAction,"RETRY");
+  assert.equal(JSON.stringify(result).includes(secret),false);
+ }
+});
+test("translated copy does not translate or disclose user/model content",()=>{
+ const pt=describeConsultativeFailure({code:"SCOPE_NOT_AUTHORIZED"},"pt-BR");
+ const en=describeConsultativeFailure({code:"SCOPE_NOT_AUTHORIZED"},"en");
+ assert.notEqual(pt.title,en.title);
+ assert.ok(pt.detail.includes("CNPJ"));
+ assert.ok(en.detail.includes("group"));
+ assert.equal(Object.isFrozen(pt),true);
+ assert.throws(()=>describeConsultativeFailure({}, "es"),/invalid_consultative_locale/);
+});
+test("source mapper must remain independent of fetch, credentials, storage and engine",()=>{
+ const source=readFileSync(new URL(
+  "../src/features/intelligence/ConsultativeStatus.ts",import.meta.url),"utf8");
+ assert.doesNotMatch(source,/\bfetch\s*\(|\bexecute\s*\(|\bgenerateText\s*\(/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage|service_role|process\.env/);
+});
