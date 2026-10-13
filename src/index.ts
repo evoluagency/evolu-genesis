@@ -27,3 +27,28 @@ export type {
 export {
   ConsultativeIntelligenceAdapter, ConsultationContractError,
 } from "./providers/intelligence/ConsultativeIntelligenceAdapter.js";
+
+ // Scoped contextual Intelligence presentation and guarded host facade.
+export type {
+  IntelligenceLocale, IntelligenceViewScope, IntelligenceViewIntent,
+  IntelligenceViewKind, IntelligenceViewBlock,
+} from "./features/intelligence/PresentationIntent.js";
+export {
+  validateIntelligencePresentation, IntelligencePresentationError,
+} from "./features/intelligence/PresentationIntent.js";
+export type {
+  PlatformConsultativeScope, ExplicitHumanConsultation,
+  PlatformConsultativeInvocation, SafeConsultationProjection,
+} from "./features/intelligence/PlatformConsultativeViewBridge.js";
+export {
+  createPlatformConsultativeInvocation, projectPrivatePlatformConsultation,
+  PlatformConsultativeBoundaryError,
+} from "./features/intelligence/PlatformConsultativeViewBridge.js";
+export type {
+  AuthenticatedPageSnapshot, HostContextReader, ConsultativeHostTransport,
+  AccessTokenProvider, SameOriginFetch,
+} from "./features/intelligence/LivePlatformConsultation.js";
+export {
+  PLATFORM_CONSULTATIVE_ENDPOINT, LiveConsultationBoundaryError,
+  SameOriginPlatformConsultativeTransport, LiveConsultationCoordinator,
+} from "./features/intelligence/LivePlatformConsultation.js";
