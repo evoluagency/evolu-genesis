@@ -13,7 +13,7 @@ const scope = {
 };
 const now = Date.parse("2026-10-13T14:00:00.000Z");
 const base = (patch = {}) => ({
-  schemaVersion: "1.0.0", interactionId: "interaction-0001",
+  schemaVersion: "1.1.0", locale:"pt-BR", interactionId: "interaction-0001",
   kind: "ASK", scope, expiresAt: "2026-10-13T14:05:00.000Z",
   executionAuthority: "NONE", lifecycleEffect: "NONE",
   blocks: [{type: "QUESTION", prompt: "Qual a composição do produto?",
@@ -140,6 +140,9 @@ function browserPreview() {
     },
   };
   const window = {};
+  doc.documentElement = {lang:"pt-BR"};
+  const localeCode=readFileSync(new URL("../preview/shared-ux/intelligence-i18n.js",import.meta.url),"utf8");
+  vm.runInNewContext(localeCode,{window,document:doc},{timeout:1000});
   const code = readFileSync(new URL("../preview/shared-ux/intelligence-intent-ui.js",import.meta.url),"utf8");
   vm.runInNewContext(code,{window,document:doc},{timeout:1000});
   return {window,doc,elements,code};
@@ -189,12 +192,80 @@ test("synthetic layer loads intent examples but has no live execution or network
   assert.doesNotThrow(()=>new Function(overlay));
   assert.match(overlay,/EvoluIntelligenceIntentUI\.render\(/);
   assert.match(overlay,/function exampleIntent\(/);
-  assert.match(overlay,/NENHUMA EXECUÇÃO/);
+  const i18n=readFileSync(new URL("../preview/shared-ux/intelligence-i18n.js",import.meta.url),"utf8");
+  assert.match(i18n,/NENHUMA EXECUÇÃO/);
+  assert.match(i18n,/NO EXECUTION/);
+  assert.match(overlay,/document.addEventListener\("ux:locale"/);
   assert.doesNotMatch(overlay,/\bfetch\s*\(|\bXMLHttpRequest\b|\bsendBeacon\b|\blocalStorage\b|\bsessionStorage\b/);
   for(const page of ["tenant-advisory-workspace","tenant-fiscal-workspace"]){
     const html=readFileSync(new URL("../preview/"+page+"/index.html",import.meta.url),"utf8");
     assert.match(html,/intelligence-intent-ui\.js/);
-    assert.ok(html.indexOf("intelligence-intent-ui.js")<html.indexOf("intelligence-layer.js"),
+    assert.match(html,/intelligence-i18n\.js/);
+    assert.ok(html.indexOf("intelligence-i18n.js")<html.indexOf("intelligence-intent-ui.js") &&
+      html.indexOf("intelligence-intent-ui.js")<html.indexOf("intelligence-layer.js"),
       "Renderer must be available before layer initialization");
   }
+});
+
+test("source contract rejects an intent in a locale different from Platform selection",()=>{
+  const en = base({locale:"en",blocks:[{type:"QUESTION",prompt:"What is the product composition?",responseKey:"composition"}]});
+  shouldFail(en,"locale_mismatch");
+  shouldFail(base({locale:undefined}),"locale_mismatch");
+  const accepted=validateIntelligencePresentation(en,scope,now,"en");
+  assert.equal(accepted.locale,"en");
+  assert.equal(accepted.blocks[0].prompt,"What is the product composition?");
+});
+test("one shared PT/EN catalog updates labels with the Platform html lang",()=>{
+  const {window,doc}=browserPreview();
+  assert.equal(window.EvoluIntelligenceI18n.locale(),"pt-BR");
+  assert.equal(window.EvoluIntelligenceI18n.t("trigger"),"Abrir EVOLU Intelligence");
+  assert.equal(window.EvoluIntelligenceI18n.t("rendererAssumptions"),"Premissas");
+  doc.documentElement.lang="en";
+  assert.equal(window.EvoluIntelligenceI18n.locale(),"en");
+  assert.equal(window.EvoluIntelligenceI18n.t("trigger"),"Open EVOLU Intelligence");
+  assert.equal(window.EvoluIntelligenceI18n.t("rendererAssumptions"),"Assumptions");
+  assert.match(window.EvoluIntelligenceI18n.t("planSimulationBody",{planId:"p01",revision:4}),/revision 4/);
+  doc.documentElement.lang="pt-BR";
+  assert.match(window.EvoluIntelligenceI18n.t("planSimulationBody",{planId:"p01",revision:4}),/revisão 4/);
+});
+test("renderer requires matching locale and translates chrome, preserving authored answers",()=>{
+  const {window,doc,elements}=browserPreview();
+  const host=doc.createElement("div");
+  const enIntent=validateIntelligencePresentation(base({
+    locale:"en",
+    blocks:[{type:"QUESTION",prompt:"Why is this category relevant?",responseKey:"reason"}],
+  }),scope,now,"en");
+  assert.throws(()=>window.EvoluIntelligenceIntentUI.render(host,enIntent),/invalid_presentation_intent/);
+  assert.equal(host.children.length,0);
+  doc.documentElement.lang="en";
+  window.EvoluIntelligenceIntentUI.render(host,enIntent);
+  assert.ok(elements.some(x=>x.textContent==="Answer using the conversation field below."));
+  assert.ok(elements.some(x=>x.textContent==="Why is this category relevant?"));
+  doc.documentElement.lang="pt-BR";
+  assert.throws(()=>window.EvoluIntelligenceIntentUI.render(host,enIntent),/invalid_presentation_intent/);
+});
+test("all hard-coded Intelligence UI keys have PT and EN translations",()=>{
+  const {window,doc}=browserPreview();
+  const layer=readFileSync(new URL("../preview/shared-ux/intelligence-layer.js",import.meta.url),"utf8");
+  const renderer=readFileSync(new URL("../preview/shared-ux/intelligence-intent-ui.js",import.meta.url),"utf8");
+  const keys=[...layer.matchAll(/\bbind\([^,]+,\s*"([a-zA-Z]+)"/g)].map(m=>m[1])
+    .concat([...layer.matchAll(/\bt\("([a-zA-Z]+)"/g)].map(m=>m[1]))
+    .concat([...renderer.matchAll(/\bt\("([a-zA-Z]+)"/g)].map(m=>m[1]));
+  assert.ok(keys.length>28);
+  for(const locale of ["pt-BR","en"]){
+    doc.documentElement.lang=locale;
+    for(const key of new Set(keys)){
+      assert.doesNotThrow(()=>window.EvoluIntelligenceI18n.t(key),locale+" "+key);
+    }
+  }
+});
+test("Platform shell remains single owner of locale and theme toggles",()=>{
+  const shell=readFileSync(new URL("../preview/shared-ux/shell.js",import.meta.url),"utf8");
+  const layer=readFileSync(new URL("../preview/shared-ux/intelligence-layer.js",import.meta.url),"utf8");
+  assert.match(shell,/document\.dispatchEvent\(new CustomEvent\('ux:locale'/);
+  assert.match(shell,/document\.dispatchEvent\(new CustomEvent\('ux:theme'/);
+  assert.match(layer,/document\.addEventListener\("ux:locale"/);
+  assert.doesNotMatch(layer,/data-locale-toggle|data-theme-toggle/);
+  assert.match(layer,/function exampleIntent\(/);
+  assert.match(layer,/locale: i18n\.locale\(\)/);
 });
