@@ -10,6 +10,7 @@ on:
       - "scripts/consultation-contract-tests.mjs"
       - "scripts/intelligence-delegation-tests.mjs"
       - "scripts/intelligence-presentation-tests.mjs"
+      - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
       - "preview/shared-ux/intelligence-intent-ui.js"
@@ -52,3 +53,32 @@ jobs:
         run: npm run test:delegation
       - name: Intelligence dynamic presentation contract and DOM safety
         run: npm run test:intelligence-presentation
+
+  browser:
+    name: Intelligence Chromium UX acceptance
+    runs-on: ubuntu-latest
+    needs: contracts
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check host Chrome availability
+        run: which google-chrome || which chromium || which chromium-browser
+      - name: Chromium Light/Dark PT/EN contextual layer
+        run: node scripts/intelligence-browser-homologation.mjs
+      - name: Summarize evidence
+        if: always()
+        run: |
+          if test -f .local/intelligence-browser/SUMMARY.md; then
+            cat .local/intelligence-browser/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Attach synthetic screenshots and gate report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: intelligence-browser-gate
+          path: .local/intelligence-browser/
+          retention-days: 7
+          if-no-files-found: warn
