@@ -47,6 +47,7 @@ export interface ConsultativeHostTransport {
   request(
     invocation: Readonly<PlatformConsultativeInvocation>,
     signal: AbortSignal,
+    canDispatch?: () => boolean,
   ): Promise<unknown>;
 }
 export interface AccessTokenProvider {
@@ -120,8 +121,9 @@ export class SameOriginPlatformConsultativeTransport implements ConsultativeHost
     private readonly requestFetch: SameOriginFetch,
   ) {}
 
-  async request(invocation: Readonly<PlatformConsultativeInvocation>, signal: AbortSignal): Promise<unknown> {
-    if (signal.aborted) fail("consultation_cancelled");
+  async request(invocation: Readonly<PlatformConsultativeInvocation>, signal: AbortSignal,
+    canDispatch?: () => boolean): Promise<unknown> {
+    if (signal.aborted || (canDispatch && !canDispatch())) fail("consultation_cancelled");
     // Revalidate the invocation as a *request shape*; authorization is still
     // controlled solely by the Platform server under the actual JWT.
     if (invocation.service !== "intelligence" ||
@@ -131,7 +133,7 @@ export class SameOriginPlatformConsultativeTransport implements ConsultativeHost
     let token: string | null;
     try { token = await this.tokenProvider.getAccessToken(signal); }
     catch { return fail("session_unavailable"); }
-    if (signal.aborted) fail("consultation_cancelled");
+    if (signal.aborted || (canDispatch && !canDispatch())) fail("consultation_cancelled");
     if (!validBearer(token)) fail("session_unavailable");
 
     const body = JSON.stringify(invocation);
@@ -214,7 +216,9 @@ export class LiveConsultationCoordinator {
     try {
       if (stale(this.current())) fail("consultation_context_changed");
       let response: unknown;
-      try { response = await this.transport.request(invocation, controller.signal); }
+      try { response = await this.transport.request(invocation, controller.signal,
+        () => !this.disposed && !controller.signal.aborted &&
+          generation === this.generation && !stale(this.current())); }
       catch {
         if (controller.signal.aborted) fail("consultation_cancelled");
         fail("private_platform_unavailable");
