@@ -10,6 +10,7 @@ export type IntelligenceViewScope = Readonly<{
   cnpjId: string; // establishment ID
   pageId: string;
 }>;
+export type IntelligenceLocale = "pt-BR" | "en";
 export type IntelligenceViewKind =
   | "SILENT" | "INVITE" | "ASK" | "EXPLAIN" | "COMPARE_SCENARIOS"
   | "PRESENT_EVIDENCE" | "PLAN_PRESENTED" | "UNAVAILABLE";
@@ -25,7 +26,8 @@ export type IntelligenceViewBlock =
   }>[] }>;
 
 export type IntelligenceViewIntent = Readonly<{
-  schemaVersion: "1.0.0";
+  schemaVersion: "1.1.0";
+  locale: IntelligenceLocale;
   interactionId: string;
   kind: IntelligenceViewKind;
   scope: IntelligenceViewScope;
@@ -113,15 +115,19 @@ function copyBlock(v: unknown): IntelligenceViewBlock {
 /** Fail closed before rendering. Untrusted strings are plain TEXT only. */
 export function validateIntelligencePresentation(
   raw: unknown, expected: IntelligenceViewScope, now = Date.now(),
+  expectedLocale: IntelligenceLocale = "pt-BR",
 ): IntelligenceViewIntent {
   if (!record(raw)) fail("invalid_intent");
-  exactKeys(raw, ["schemaVersion", "interactionId", "kind", "scope", "expiresAt",
+  exactKeys(raw, ["schemaVersion", "interactionId", "kind", "scope", "expiresAt", "locale",
     "lifecycleEffect", "executionAuthority", "blocks"]);
-  if (raw.schemaVersion !== "1.0.0" || !id(raw.interactionId) ||
+  if (raw.schemaVersion !== "1.1.0" || !id(raw.interactionId) ||
       !["SILENT", "INVITE", "ASK", "EXPLAIN", "COMPARE_SCENARIOS",
         "PRESENT_EVIDENCE", "PLAN_PRESENTED", "UNAVAILABLE"].includes(String(raw.kind))) {
     fail("invalid_intent");
   }
+  if ((expectedLocale !== "pt-BR" && expectedLocale !== "en") ||
+      (raw.locale !== "pt-BR" && raw.locale !== "en") ||
+      raw.locale !== expectedLocale) fail("locale_mismatch");
   if (!record(raw.scope) || !record(expected)) fail("invalid_scope");
   exactKeys(raw.scope, ["tenantId", "companyId", "cnpjId", "pageId"]);
   if (!uuid(expected.tenantId) || !uuid(expected.companyId) || !uuid(expected.cnpjId) ||
@@ -151,7 +157,8 @@ export function validateIntelligencePresentation(
     fail("insufficient_evidence");
   }
   return {
-    schemaVersion: "1.0.0",
+    schemaVersion: "1.1.0",
+    locale: expectedLocale,
     interactionId: raw.interactionId as string,
     kind: raw.kind as IntelligenceViewKind,
     scope: {tenantId: expected.tenantId, companyId: expected.companyId,
