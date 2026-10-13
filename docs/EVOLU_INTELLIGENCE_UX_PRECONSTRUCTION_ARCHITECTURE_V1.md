@@ -379,3 +379,29 @@ A camada flutuante mantém marca original com transparência alfa e herda cores 
 5. Somente depois estabelecer orquestração de plano imutável, autorização humana e execução controlada pela Platform.
 
 **Estado:** comunicação visual tipada e fixtures, ainda **sem integração E2E**. Os nove layouts aprovados continuam sendo referência, mas estes componentes não constituem conclusão das nove telas.
+
+## 12. Localização PT-BR/EN vinculada ao botão único da Platform (2026-10-13)
+
+**Requisito mandatário confirmado:** a Intelligence usa **exclusivamente o controle PT/EN já disponível na Platform/Genesis**, exatamente como os temas Light/Dark. **Nenhum botão adicional** dentro da Intelligence. Ao clicar no seletor existente, a interface flutuante acompanha **imediatamente** o evento `ux:locale` do shell e o valor canônico `document.documentElement.lang`, sem reload da página.
+
+### 12.1 Contrato de responsabilidade
+
+- **Platform/Genesis shell:** única autoridade da seleção de idioma `pt-BR` ↔ `en`; o evento `ux:locale` transporta o idioma do shell. O tema usa `ux:theme` e os mesmos tokens Light/Dark, de maneira independente.
+- **Genesis / Intelligence UI:** rótulos, notificações proativas, acesso pelo botão transparente, drawer, formulários, modos, avisos, estados de autorização e instruções fixas são traduzidos via `preview/shared-ux/intelligence-i18n.js`. A tradução acontece mesmo com o painel aberto. Os exemplos sintéticos de `QUESTION`, `SCENARIO`, `EVIDENCE` e `PLAN` são renderizados novamente no idioma atual. Nenhum texto de origem tributária real é inventado ou traduzido por heurística no browser.
+- **Intelligence runtime futuro:** idioma faz parte do contexto consultivo autorizado, deve guiar a geração da resposta e seus blocos; conteúdo jurídico, documento, citação e resposta livre não podem ser falsamente rotulados como tradução equivalente. Mensagens já produzidas por um motor exigirão nova resposta/variante de idioma pelo serviço caso devam ser traduzidas. **Entrada digitada pelo usuário permanece exatamente como fornecida.**
+- **Protocolo de apresentação:** `PresentationIntent` passa à versão **`1.1.0`**, com `locale: "pt-BR" | "en"` obrigatório e validação da escolha esperada pela UI; mismatch rejeita o payload (`locale_mismatch`). O renderer também recusa intents de outro idioma. Mudança de idioma invalida apresentações antigas não localizadas; o host autenticado deverá buscar nova variante sob escopo/permissão vigentes, sem aproveitar respostas antigas sem verificação.
+- **Fallback:** se i18n não carregar ou um identificador de mensagem não existir, a interface falha de forma explícita e controlada; não mistura idiomas nem assume que o idioma será traduzido automaticamente pelo navegador.
+- **Privacidade:** o botão de idioma não habilita observação, não inicia inferência, não modifica permissões e não constitui autorização de execução.
+
+### 12.2 Aceitação
+
+| ID | Critério | Resultado esperado |
+| --- | --- | --- |
+| L10N-01 | Alternar PT/EN no seletor **existente da Platform** | Botão Intelligence, drawer aberto, texto de convite, planos sintéticos e avisos acompanham sem reload |
+| L10N-02 | Alternar EN/PT com painel aberto e histórico sintético | Mensagens de sistema com keys e exemplos atualizados; texto livre do usuário preservado |
+| L10N-03 | Trocar tema antes ou depois do idioma | Light/Dark e PT/EN independentes; nenhuma nova paleta ou controle duplicado |
+| L10N-04 | Receber intent de locale divergente | Rejeitar em `PresentationIntent.v1.1.0` e renderer; não apresentar conteúdo sem localização correspondente |
+| L10N-05 | Conteúdo jurídico real, fontes e mensagens antigas | Somente backend autorizado poderá fornecer variante equivalente; nunca tradução mecânica improvisada |
+| L10N-06 | Gatilho ou aprovação humana enquanto idioma muda | Mesmo limite de consentimento, escopo e efeito `NONE` independentemente da língua |
+
+**Status de implementação:** sincronização PT/EN em duas superfícies sintéticas Fiscal e Assessoria; catálogo de strings e fixture por locale. A homologação visual/manual em navegador e o runtime privado bilíngue ainda dependem de gates próprios. A regra visual de identidade **Platform Light/Dark** e a marca **sempre sem fundo** permanecem integralmente válidas.
