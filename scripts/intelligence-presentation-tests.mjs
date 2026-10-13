@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import vm from "node:vm";
 import { validateIntelligencePresentation, IntelligencePresentationError } from
   "../preview/runtime/features/intelligence/PresentationIntent.js";
 
@@ -119,4 +121,80 @@ test("projection does not retain mutable backend references", () => {
   raw.blocks[0].prompt="Mutado depois da validação";
   assert.equal(out.blocks[0].prompt,"Qual a composição do produto?");
   assert.notEqual(out.scope,raw.scope);
+});
+
+function browserPreview() {
+  const elements = [];
+  const doc = {
+    createElement(tag) {
+      const node = {
+        tag, children:[], dataset:{}, textContent:"", handlers:{},
+        append(...items){this.children.push(...items);},
+        addEventListener(name,fn){this.handlers[name]=fn;},
+      };
+      elements.push(node);
+      return node;
+    },
+    createDocumentFragment(){
+      return {tag:"#fragment",children:[],append(...items){this.children.push(...items);}};
+    },
+  };
+  const window = {};
+  const code = readFileSync(new URL("../preview/shared-ux/intelligence-intent-ui.js",import.meta.url),"utf8");
+  vm.runInNewContext(code,{window,document:doc},{timeout:1000});
+  return {window,doc,elements,code};
+}
+test("UI renderer supports engine-directed arbitrary question and human choices",()=>{
+  const {window,doc,elements}=browserPreview();
+  const host=doc.createElement("div");let called=0;
+  const intent=validateIntelligencePresentation(base({blocks:[
+    {type:"TEXT",text:"Qual é o contexto?"},
+    {type:"QUESTION",prompt:"Descreva a finalidade de uso, se possível.",
+      responseKey:"purpose",options:["Uso interno","Revenda"]},
+  ]}),scope,now);
+  window.EvoluIntelligenceIntentUI.render(host,intent,(_key,value)=>{
+    assert.equal(_key,"purpose");assert.equal(value,"Uso interno");called++;
+  });
+  assert.equal(called,0,"rendering must not choose or execute options");
+  const buttons=elements.filter(x=>x.tag==="button");
+  assert.equal(buttons.length,2);
+  buttons[0].handlers.click();
+  assert.equal(called,1);
+});
+test("UI renderer treats HTML-like AI strings as text, never markup",()=>{
+  const {window,doc,elements,code}=browserPreview();
+  const host=doc.createElement("div");
+  const payload=validateIntelligencePresentation(base({blocks:[
+    {type:"TEXT",text:'<img src=x onerror="alert(1)">'},
+  ]}),scope,now);
+  window.EvoluIntelligenceIntentUI.render(host,payload);
+  assert.equal(elements.filter(x=>x.tag==="img"||x.tag==="script").length,0);
+  assert.ok(elements.some(x=>x.textContent.includes("<img src=x")));
+  assert.doesNotMatch(code,/\.innerHTML\s*=|insertAdjacentHTML|new Function\s*\(|\beval\s*\(/);
+});
+test("UI renderer rejects unknown blocks and side-effect requests without changing host",()=>{
+  const {window,doc}=browserPreview();const host=doc.createElement("div");
+  for(const patch of [
+    {blocks:[{type:"EXECUTE",command:"delete"}]},
+    {lifecycleEffect:"TRAIN"},
+    {executionAuthority:"AUTO"},
+  ]){
+    assert.throws(()=>window.EvoluIntelligenceIntentUI.render(host,
+      {...base(),...patch}),/invalid_presentation_intent/);
+    assert.equal(host.children.length,0);
+  }
+});
+test("synthetic layer loads intent examples but has no live execution or network",()=>{
+  const overlay=readFileSync(new URL("../preview/shared-ux/intelligence-layer.js",import.meta.url),"utf8");
+  assert.doesNotThrow(()=>new Function(overlay));
+  assert.match(overlay,/EvoluIntelligenceIntentUI\.render\(/);
+  assert.match(overlay,/function exampleIntent\(/);
+  assert.match(overlay,/NENHUMA EXECUÇÃO/);
+  assert.doesNotMatch(overlay,/\bfetch\s*\(|\bXMLHttpRequest\b|\bsendBeacon\b|\blocalStorage\b|\bsessionStorage\b/);
+  for(const page of ["tenant-advisory-workspace","tenant-fiscal-workspace"]){
+    const html=readFileSync(new URL("../preview/"+page+"/index.html",import.meta.url),"utf8");
+    assert.match(html,/intelligence-intent-ui\.js/);
+    assert.ok(html.indexOf("intelligence-intent-ui.js")<html.indexOf("intelligence-layer.js"),
+      "Renderer must be available before layer initialization");
+  }
 });
