@@ -183,9 +183,9 @@ export function projectPrivatePlatformConsultation(
       raw.provenance[0].source !== "Intelligence.POST /api/intelligence" ||
       typeof raw.provenance[0].observedAt !== "string" ||
       !Number.isFinite(Date.parse(raw.provenance[0].observedAt)) ||
-      raw.capabilities.canApprove?.status !== "unavailable" ||
-      raw.capabilities.canExecute?.status !== "unavailable" ||
-      raw.capabilities.canLearn?.status !== "unavailable") {
+      (!obj(raw.capabilities.canApprove) || raw.capabilities.canApprove.status !== "unavailable") ||
+      (!obj(raw.capabilities.canExecute) || raw.capabilities.canExecute.status !== "unavailable") ||
+      (!obj(raw.capabilities.canLearn) || raw.capabilities.canLearn.status !== "unavailable")) {
     deny("platform_consultative_contract_mismatch");
   }
   const schema = raw.schemaVersion as "1.0.0" | "1.1.0";
