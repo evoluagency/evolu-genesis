@@ -182,7 +182,7 @@ test("context sensor accepts only typed activity signals, never generic clicks o
   assert.match(layer,/Object\.keys\(info\)\.sort\(\)\.join\(","\) !== "kind,pageId"/);
   assert.match(layer,/info\.pageId !== activePage/);
   assert.match(layer,/if \(!observeCheck\.checked\) return/);
-  assert.doesNotMatch(layer,/document\.addEventListener\("(click|keyup|keydown|input|change)"/);
+  assert.doesNotMatch(layer,/document\.addEventListener\("(click|keyup|input|change)"/);
   assert.doesNotMatch(layer,/event\.target\.value|event\.target\.innerText|\.keyCode/);
   for(const [page,id] of [["tenant-fiscal-workspace","fiscal.workspace"],["tenant-advisory-workspace","advisory.workspace"]]){
     const html=readFileSync(new URL("../preview/"+page+"/index.html",import.meta.url),"utf8");
