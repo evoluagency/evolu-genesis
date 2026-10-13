@@ -1,0 +1,155 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import {readFileSync} from "node:fs";
+import {
+  LiveConsultationBoundaryError, LiveConsultationCoordinator,
+  SameOriginPlatformConsultativeTransport, PLATFORM_CONSULTATIVE_ENDPOINT,
+} from "../preview/runtime/features/intelligence/LivePlatformConsultation.js";
+
+const scope={tenantId:"11111111-1111-4111-8111-111111111111",
+  companyId:"22222222-2222-4222-8222-222222222222",
+  cnpjId:"33333333-3333-4333-8333-333333333333",
+  tenantSlug:"tenant-alpha",referenceDate:"2026-10-13",pageId:"fiscal.workspace"};
+const snapshot=()=>({scope:{...scope},locale:"pt-BR",sessionEpoch:"epoch-0001"});
+const question="Explique a fundamentação técnica indicada para este produto";
+const raw=(patch={})=>({
+  schemaVersion:"1.0.0",tenantId:scope.tenantId,companyId:scope.companyId,cnpjId:scope.cnpjId,
+  sourceKind:"intelligence_consultative_answer",lifecycle:"PRE_LEARNING",referenceDate:scope.referenceDate,
+  decision:"ADVISORY_ONLY",answer:"Resposta sintética sem comprovação do idioma.",
+  responseMode:"MODEL",model:"synthetic",evidence:{retrievalDecision:"PASSED",retrievedSourceCount:1},
+  costGuard:{allowed:true,accountedUsd:0,code:null},
+  provenance:[{source:"Intelligence.POST /api/intelligence",observedAt:"2026-10-13T17:00:00.000Z"}],
+  capabilities:{canApprove:{status:"unavailable"},canExecute:{status:"unavailable"},canLearn:{status:"unavailable"}},
+  dataQuality:{issues:["requires_professional_review"]},...patch,
+});
+const run=(transport,reader=snapshot)=>new LiveConsultationCoordinator(reader,transport);
+const token="test.subject.signature";
+const ok=(data=raw())=>new Response(JSON.stringify(data),{
+  status:200,headers:{"content-type":"application/json; charset=utf-8"},
+});
+function deferred(){let resolve;const promise=new Promise(yes=>{resolve=yes});return {promise,resolve}}
+function rejects(fn,code){return assert.rejects(fn,e=>e instanceof LiveConsultationBoundaryError&&e.code===code)}
+
+test("construction and passive observation never cause consultation; explicit ask returns gated result",async()=>{
+ let calls=0;
+ const coordinator=run({request:async()=>{calls++;return raw()}});
+ assert.equal(calls,0);
+ const out=await coordinator.askExplicitly(question);
+ assert.equal(calls,1);assert.equal(out.state,"UNAVAILABLE");
+ assert.equal(out.intent.executionAuthority,"NONE");
+ coordinator.dispose();
+});
+test("same-origin request contains only exact Platform BFF envelope and trusted Bearer token",async()=>{
+ let path,options;
+ const t=new SameOriginPlatformConsultativeTransport(
+  {getAccessToken:async()=>token},async(p,o)=>{path=p;options=o;return ok()});
+ const controller=run(t);
+ await controller.askExplicitly(question);
+ assert.equal(path,PLATFORM_CONSULTATIVE_ENDPOINT);
+ assert.equal(path,"/api/ux/intelligence/consult/v1");
+ assert.equal(options.method,"POST");assert.equal(options.mode,"same-origin");
+ assert.equal(options.credentials,"same-origin");assert.equal(options.redirect,"error");
+ assert.equal(options.cache,"no-store");assert.equal(options.referrerPolicy,"no-referrer");
+ assert.equal(options.headers.Authorization,"Bearer "+token);
+ const body=JSON.parse(options.body);
+ assert.deepEqual(Object.keys(body).sort(),["operation","payload","service","tenantSlug"]);
+ assert.equal(body.payload.companyId,scope.companyId);assert.equal(body.payload.cnpjId,scope.cnpjId);
+ assert.equal(body.payload.question,question);assert.equal("locale" in body,false);
+ controller.dispose();
+});
+test("missing or invalid session token denies before fetch",async()=>{
+ for(const candidate of [null,"","short","has whitespace token"]){
+  let count=0;
+  const t=new SameOriginPlatformConsultativeTransport(
+   {getAccessToken:async()=>candidate},async()=>{count++;return ok()});
+  const c=run(t);
+  await rejects(()=>c.askExplicitly(question),"private_platform_unavailable");
+  assert.equal(count,0);c.dispose();
+ }
+});
+test("HTTP errors, wrong content-type and malformed JSON never leak upstream body",async()=>{
+ const responses=[
+  new Response("secret error",{status:503,headers:{"content-type":"text/plain"}}),
+  new Response("forbidden",{status:403,headers:{"content-type":"application/json"}}),
+  new Response("{}",{status:200,headers:{"content-type":"text/html"}}),
+  new Response("{ broken",{status:200,headers:{"content-type":"application/json"}}),
+ ];
+ for(const response of responses){
+  const t=new SameOriginPlatformConsultativeTransport(
+   {getAccessToken:async()=>token},async()=>response);
+  const c=run(t);
+  await rejects(()=>c.askExplicitly(question),"private_platform_unavailable");
+  c.dispose();
+ }
+});
+test("response larger than 64KiB is denied from headers or streaming bytes",async()=>{
+ const responses=[
+  new Response("{}",{status:200,headers:{"content-type":"application/json","content-length":"90000"}}),
+  new Response(JSON.stringify({body:"x".repeat(70000)}),{status:200,headers:{"content-type":"application/json"}}),
+ ];
+ for(const response of responses){
+  const t=new SameOriginPlatformConsultativeTransport(
+   {getAccessToken:async()=>token},async()=>response);
+  const c=run(t);
+  await rejects(()=>c.askExplicitly(question),"private_platform_unavailable");c.dispose();
+ }
+});
+test("pending duplicate rejects immediately, preventing accidental second inference",async()=>{
+ const task=deferred();let calls=0;
+ const c=run({request:async()=>{calls++;return task.promise}});
+ const first=c.askExplicitly(question);
+ await rejects(()=>c.askExplicitly(question),"consultation_in_flight");
+ assert.equal(calls,1);task.resolve(raw());await first;c.dispose();
+});
+test("change of tenant, group, CNPJ, page, period, slug, locale or session discards late replies",async()=>{
+ const other="99999999-9999-4999-8999-999999999999";
+ const patches=[
+  {scope:{...scope,tenantId:other}},{scope:{...scope,companyId:other}},
+  {scope:{...scope,cnpjId:other}},{scope:{...scope,pageId:"advisory.workspace"}},
+  {scope:{...scope,referenceDate:"2026-10-12"}},{scope:{...scope,tenantSlug:"tenant-beta"}},
+  {locale:"en"},{sessionEpoch:"epoch-0002"},
+ ];
+ for(const patch of patches){
+  let active=snapshot();const task=deferred();
+  const c=run({request:async()=>task.promise},()=>active);
+  const pending=c.askExplicitly(question);
+  active={...active,...patch};
+  task.resolve(raw());
+  await rejects(()=>pending,"consultation_context_changed");c.dispose();
+ }
+});
+test("explicit invalidate aborts in-flight request even if transport ignores signal",async()=>{
+ const task=deferred();let signal;
+ const c=run({request:async(_v,s)=>{signal=s;return task.promise}});
+ const pending=c.askExplicitly(question);
+ c.invalidate();assert.equal(signal.aborted,true);
+ task.resolve(raw());
+ await rejects(()=>pending,"consultation_context_changed");c.dispose();
+});
+test("new session can issue next request without ever displaying old session reply",async()=>{
+ const task=deferred();let count=0;
+ const c=run({request:async()=>{count++;return count===1?task.promise:raw()}});
+ const old=c.askExplicitly(question);c.invalidate();
+ const current=await c.askExplicitly(question);
+ assert.equal(current.state,"UNAVAILABLE");task.resolve(raw());
+ await rejects(()=>old,"consultation_context_changed");
+ assert.equal(count,2);c.dispose();
+});
+test("missing session, invalid input and disposed coordinator never invoke transport",async()=>{
+ let count=0;const t={request:async()=>{count++;return raw()}};
+ const a=run(t,()=>null);
+ await rejects(()=>a.askExplicitly(question),"authenticated_context_required");
+ const b=run(t,()=>({...snapshot(),sessionEpoch:""}));
+ await rejects(()=>b.askExplicitly(question),"authenticated_context_required");
+ const c=run(t);await assert.rejects(()=>c.askExplicitly("sim"),/invalid_human_consultation/);
+ c.dispose();await rejects(()=>c.askExplicitly(question),"coordinator_disposed");
+ assert.equal(count,0);
+});
+test("synthetic Genesis UX stays free of transport, local credentials and inference",()=>{
+ const source=readFileSync(new URL("../src/features/intelligence/LivePlatformConsultation.ts",import.meta.url),"utf8");
+ const preview=readFileSync(new URL("../preview/shared-ux/intelligence-layer.js",import.meta.url),"utf8");
+ assert.doesNotMatch(preview,/LiveConsultationCoordinator|SameOriginPlatformConsultativeTransport|fetch\s*\(/);
+ assert.match(source,/\/api\/ux\/intelligence\/consult\/v1/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage|apikey|service_role|intelligence-evolu2\.vercel/);
+ assert.doesNotMatch(source,/document\.cookie|fetch\(["']https?:\/\//);
+});
