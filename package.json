@@ -16,7 +16,8 @@
     "homologate:intelligence:browser": "node scripts/intelligence-browser-homologation.mjs",
     "test:platform-consultation": "npm run build:preview-runtime && node scripts/platform-consultative-bridge-tests.mjs",
     "test:live-platform-consultation": "npm run build:preview-runtime && node scripts/live-platform-consultation-tests.mjs",
-    "test:consultative-status": "npm run build:preview-runtime && node scripts/consultative-status-tests.mjs"
+    "test:consultative-status": "npm run build:preview-runtime && node scripts/consultative-status-tests.mjs",
+    "test:consultative-verification": "npm run build:preview-runtime && node scripts/consultative-verification-tests.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.0"
