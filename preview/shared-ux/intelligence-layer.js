@@ -174,17 +174,24 @@
     trigger.focus();
   }
 
-  // Privacy boundary: only count explicit select CHANGE events, never capture values,
-  // text content, keys, coordinates, screens, names, user identity or focus trace.
-  document.addEventListener("change", event => {
+  // Activity-scoped semantic sensors; no generic click, key, or form-value scraping.
+  // The authorized host page emits only {kind, pageId}. Unknown data is rejected.
+  // A generic user changing Company/CNPJ/period is NOT evidence of difficulty.
+  const allowedSignals = new Set(["REPEATED_ATTEMPT", "VALIDATION_FAILURE", "WORKFLOW_REVISIT"]);
+  document.addEventListener("evolu:activity-signal", event => {
     if (!observeCheck.checked) return;
-    if (root.contains(event.target) || !(event.target instanceof HTMLSelectElement)) return;
-    if (!document.querySelector(".ux-app") || !drawer.hidden || !invitation.hidden) return;
+    if (!drawer.hidden || !invitation.hidden) return;
+    const info = event.detail;
+    const activePage = document.querySelector(".ux-app")?.dataset.intelligencePageId;
+    if (!info || typeof info !== "object" || Array.isArray(info) ||
+        Object.keys(info).sort().join(",") !== "kind,pageId" ||
+        !allowedSignals.has(info.kind) || typeof activePage !== "string" ||
+        info.pageId !== activePage || !/^[a-z][a-z0-9._-]{2,80}$/.test(activePage)) return;
     const time = Date.now();
     if (time < cooldownUntil) return;
-    observations.push(time);
-    while (observations.length && observations[0] < time - 120000) observations.shift();
-    if (observations.length >= 3) {
+    observations.push({time, kind: info.kind});
+    while (observations.length && observations[0].time < time - 120000) observations.shift();
+    if (observations.filter(signal => signal.kind === info.kind).length >= 3) {
       invitation.hidden = false;
       root.dataset.state = "invitation";
       observations.length = 0;
