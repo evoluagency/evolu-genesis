@@ -11,6 +11,7 @@ on:
       - "scripts/intelligence-delegation-tests.mjs"
       - "scripts/intelligence-presentation-tests.mjs"
       - "scripts/platform-consultative-bridge-tests.mjs"
+      - "scripts/live-platform-consultation-tests.mjs"
       - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
@@ -56,6 +57,8 @@ jobs:
         run: npm run test:intelligence-presentation
       - name: Private Platform consultation bridge boundary
         run: npm run test:platform-consultation
+      - name: Authenticated host consultation and stale-context safety
+        run: npm run test:live-platform-consultation
 
   browser:
     name: Intelligence Chromium UX acceptance
