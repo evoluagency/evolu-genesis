@@ -9,8 +9,10 @@ on:
       - "scripts/ux7-adapter-contract-tests.mjs"
       - "scripts/consultation-contract-tests.mjs"
       - "scripts/intelligence-delegation-tests.mjs"
+      - "scripts/intelligence-presentation-tests.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
+      - "preview/shared-ux/intelligence-intent-ui.js"
       - "preview/shared-ux/intelligence-mark-transparent.svg"
       - "preview/tenant-advisory-workspace/index.html"
       - "preview/tenant-fiscal-workspace/index.html"
@@ -47,3 +49,5 @@ jobs:
         run: npm run test:consultation
       - name: Intelligence delegated execution authorization boundaries
         run: npm run test:delegation
+      - name: Intelligence dynamic presentation contract and DOM safety
+        run: npm run test:intelligence-presentation
