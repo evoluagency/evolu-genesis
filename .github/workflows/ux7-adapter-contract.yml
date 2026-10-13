@@ -13,6 +13,7 @@ on:
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
       - "preview/shared-ux/intelligence-intent-ui.js"
+      - "preview/shared-ux/intelligence-i18n.js"
       - "preview/shared-ux/intelligence-mark-transparent.svg"
       - "preview/tenant-advisory-workspace/index.html"
       - "preview/tenant-fiscal-workspace/index.html"
