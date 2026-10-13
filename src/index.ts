@@ -52,3 +52,7 @@ export {
   PLATFORM_CONSULTATIVE_ENDPOINT, LiveConsultationBoundaryError,
   SameOriginPlatformConsultativeTransport, LiveConsultationCoordinator,
 } from "./features/intelligence/LivePlatformConsultation.js";
+
+// Authenticated-host consultation errors are mapped to localized, non-sensitive notices.
+export type { ConsultativeNoticeKind, ConsultativeHostNotice } from "./features/intelligence/ConsultativeStatus.js";
+export { describeConsultativeFailure } from "./features/intelligence/ConsultativeStatus.js";
