@@ -164,9 +164,27 @@ async function run(){
    expect(back.label==="Abrir EVOLU Intelligence"&&back.prompt.includes("Qual informação técnica"),p+"_"+view+"_roundtrip");
    await js(cdp,"document.querySelector('.intelligence-observation-label input').click()");
    const opt=await js(cdp,state);expect(opt.optIn===true,p+"_"+view+"_opt_in");
+   // A semantic signal is recognized only in the allowed page scope,
+   // and only with explicit opt-in and without leaking field values.
+   await js(cdp,"document.querySelector('.intelligence-trigger').click()");
+   const inactive=await js(cdp,state);expect(!inactive.open,p+"_"+view+"_drawer_closed");
+   await js(cdp,"(()=>{const root=document.querySelector('.ux-app');const pageId=root.dataset.intelligencePageId;"+
+    "const emit=d=>document.dispatchEvent(new CustomEvent('evolu:activity-signal',{detail:d}));"+
+    "emit({kind:'REPEATED_ATTEMPT',pageId,value:'PRIVATE FIELD CONTENT'});"+
+    "emit({kind:'REPEATED_ATTEMPT',pageId:'another.page'});"+
+    "emit({kind:'UNKNOWN',pageId});})()");
+   const ignored=await js(cdp,state);expect(!ignored.invitation,p+"_"+view+"_reject_unknown_and_private_signal");
+   await js(cdp,"(()=>{const pageId=document.querySelector('.ux-app').dataset.intelligencePageId;"+
+    "for(let i=0;i<3;i++)document.dispatchEvent(new CustomEvent('evolu:activity-signal',"+
+    "{detail:{kind:'REPEATED_ATTEMPT',pageId}}));})()");
+   const invited=await js(cdp,state);
+   expect(invited.invitation,p+"_"+view+"_allowlisted_contextual_invitation");
+   await js(cdp,"document.querySelector('.intelligence-invitation .ux-btn:not(.ux-btn-primary)').click()");
+   const dismissed=await js(cdp,state);expect(!dismissed.invitation,p+"_"+view+"_invitation_dismissed");
+
    await js(cdp,"document.querySelector('.intelligence-observation-label input').click()");
    const off=await js(cdp,state);expect(off.optIn===false,p+"_"+view+"_opt_out");
-   report.checks.push({page:p,viewport:view,result:"PASS",ptDark:pt.color,enLight:en.color});
+   report.checks.push({page:p,viewport:view,result:"PASS",ptDark:pt.color,enLight:en.color,semanticSignal:true});
   }
   expect(report.errors.length===0,"browser_runtime_exceptions");
   report.status="PASS";
