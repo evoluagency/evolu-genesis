@@ -511,3 +511,17 @@ Os testes incluem destino/headers fixos, corpo sem campos extras, requisição s
 
 **Evidência do gate:** [GitHub Actions #38468186995](https://github.com/evoluagency/evolu-genesis/actions/runs/38468186995), commit `2469d978de7c87473db1c9b84dec3bdfa7fe9adb`, ambos jobs PASS. TypeScript e adapters PASS; **10/10 consulta, 15/15 delegação/sensor, 23/23 apresentação/i18n, 15/15 bridge BFF e 13/13 coordenador/transporte**. Chromium Light/Dark/PT/EN PASS, com [artifact #11850335627](https://github.com/evoluagency/evolu-genesis/actions/runs/38468186995/artifacts/11850335627). Os testes do transporte usam respostas injetadas; não provaram autorização JWT/RLS E2E nem ativaram a inferência.
 
+
+## 17. Host privado flutuante da Platform — piloto de adoção, não segunda UX (2026-10-13)
+
+**Integração em revisão no PR Platform #112:** a rota privada de CNPJ passou a hospedar um acionador flutuante e um painel consultivo **independentes da seleção de aba**, substituindo a renderização dos cartões Intelligence antes incluídos na página de visão geral. A página CNPJ continua sendo operacional e pertence à Platform; a Intelligence não vira nova página ou módulo lateral. O host apresenta somente o contexto autorizado e oferece consulta explícita quando o backend permitir.
+
+O arquivo `Platform/app/portal/[slug]/carteira/[cnpj]/ux-intelligence-consult-card.tsx` foi reaproveitado como **host experimental**, e não como implementação canônica definitiva. A marca reduzida e transparente da Genesis foi copiada para `Platform/public/assets/intelligence/mark-transparent.svg`. O host herda as variáveis visuais da Platform e reconhece o idioma via `html.lang`/`ux:locale`, sem criar outro seletor.
+
+**Aviso de precedência:** o **renderer dinâmico da Genesis** e as **nove composições do mockup** prevalecem. O JSX de hospedagem na Platform é uma camada piloto limitada a uma rota e não substitui a entrega de um pacote Genesis compartilhado/versionado. A revisão para produção deverá remover a duplicação visual e usar exatamente os componentes, protocolos e tokens homologados da Genesis/Platform. O estado completo Light/Dark e PT/EN no runtime privado da Platform ainda requer homologação, não pode ser inferido dos exemplos sintéticos da Genesis.
+
+**BFF/idioma:** respostas da versão 1.0.0 sem idioma atestado continuam ocultas como análise tributária, apesar de HTTP 200, para evitar falsa tradução. Somente uma versão futura com resposta realmente validada poderá ser apresentada. O gateway aceita cancelamento originado no host e protege mudanças entre abas, empresa/CNPJ, data e idioma; execução operacional continua ausente. As flags de inferência permanecem desativadas.
+
+**Evidência da alteração:** teste de fonte/TS transpile adicionado em `Platform/scripts/ux7b-intelligence-floating-host.test.cjs` ao comando `npm run test:ux7b`. Revisão estática de 13 invariantes da branch confirmada, mas **CI privado, typecheck do conjunto, prova de RLS e browser E2E não foram executados nesta etapa**. Não declarar o piloto homologado ou disponível em produção.
+
+**Fase seguinte:** publicar/consumir a mesma biblioteca de UX Genesis no host autenticado da Platform, demonstrar isolamento de usuário/Tenant/group/CNPJ e efetuar homologação visual completa antes de merge/deploy; manter sem novas páginas e sem inferência disparada pelo scanner.
