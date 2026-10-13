@@ -348,3 +348,34 @@ O motor pode fazer perguntas novas e construir o plano dinamicamente, mas não p
 | DELEGATE-06 | BFF/Platform são autoridade de autorização, não a UI ou LLM |
 | DELEGATE-07 | Execução parcial/falha não vira “sucesso” na mensagem da Intelligence |
 | DELEGATE-08 | Sem integração real, a prévia permanece explicitamente sintética, sem dados ou efeitos reais |
+
+## 11. Protocolo executável de apresentação dinâmica — fonte V1 (2026-10-13)
+
+**Implementação em revisão, NÃO conectada:** `src/features/intelligence/PresentationIntent.ts`, `preview/shared-ux/intelligence-intent-ui.js` e `scripts/intelligence-presentation-tests.mjs`.
+
+**Separação estrutural:** o serviço Intelligence pode propor conteúdo e escolher a modalidade de interação, mas a Genesis conserva um catálogo fechado de componentes e validação estrita. Não há páginas estáticas novas para cada decisão do motor. O contrato aceita `SILENT`, `INVITE`, `ASK`, `EXPLAIN`, `COMPARE_SCENARIOS`, `PRESENT_EVIDENCE`, `PLAN_PRESENTED`, `UNAVAILABLE`; os blocos permitidos são `TEXT`, `QUESTION`, `EVIDENCE`, `SCENARIO`, `NOTICE`, `PLAN`. Perguntas e opções são livres **dentro de estruturas tipadas**, não uma lista fixa no front-end.
+
+### 11.1 Limites de segurança do contrato
+
+- `schemaVersion=1.0.0` + `interactionId` + `expiresAt` limitado a 15 minutos, com seleção exata de `tenantId`, `companyId` (grupo), `cnpjId` e `pageId`; qualquer mismatch implica rejeição.
+- `executionAuthority=NONE` e `lifecycleEffect=NONE` são exigidos, inclusive para apresentações de planos: um bloco `PLAN` **não** vale como autorização humana, comando, aprovação fiscal ou token.
+- Blocos desconhecidos e campos não previstos são recusados, e o resultado validado é projetado para DTOs reconhecidos; fonte, cenários e planos não podem carregar callbacks, HTML arbitrário, scripts ou URLs executáveis.
+- `EXPLAIN`, `COMPARE_SCENARIOS` e `PRESENT_EVIDENCE` exigem **referência de evidência ou aviso explícito de insuficiência**, sem criar certeza fiscal fictícia.
+- O renderizador usa DOM e `textContent`, e callbacks de `QUESTION.options` são executados somente por clique humano, para registrar a resposta na interface. Esse callback **não** aciona Platform.
+- A avaliação acima é **camada de apresentação**, não autorização de backend. O host privado deverá validar **novamente** os payloads e permissões; apenas o motor autenticado poderá fornecer intents reais depois de Gate B e RLS E2E.
+
+### 11.2 Prévia implementada para UX, sem inferência
+
+Nas páginas sintéticas Fiscal e Assessoria, um seletor de demonstração permite escolher o **formato** de uma resposta hipotética. Um gerador local de fixtures exemplifica perguntas abertas e com opções, comparação de cenários, evidências e plano para revisão, todos explicitamente sintéticos. O conteúdo do seletor **não** representa classificação fiscal, raciocínio real ou julgamento da Intelligence. O backend futuro substituirá o gerador local de fixtures, não o componente visual.
+
+A camada flutuante mantém marca original com transparência alfa e herda cores Light/Dark do shell Platform/Genesis. Observação de alterações de seleção permanece desligada até opt-in; não há capture de valores, telemetria persistente, keylogging, captura de tela, inferência por evento, rede, secrets ou escrita operacional.
+
+### 11.3 Próximos gates
+
+1. Executar TypeScript e a nova suíte `npm run test:intelligence-presentation` no Actions público da Genesis; guardar SHA/resultado.
+2. Homologar visualmente os blocos no navegador em Light e Dark, zoom, móvel, teclado e leitura de tela; conservar a geometria do mockup e a marca sem fundo.
+3. No PR independente da Intelligence, consolidar o contrato de produção dos intents com fonte, proveniência e limites de inferência.
+4. Implementar BFF privada com autenticação e seleção canônica tenant/grupo/CNPJ/atividade; validar RLS e Gate B com usuários reais autorizados, sem tornar a prévia pública um produto autenticado.
+5. Somente depois estabelecer orquestração de plano imutável, autorização humana e execução controlada pela Platform.
+
+**Estado:** comunicação visual tipada e fixtures, ainda **sem integração E2E**. Os nove layouts aprovados continuam sendo referência, mas estes componentes não constituem conclusão das nove telas.
