@@ -269,3 +269,83 @@ test("Platform shell remains single owner of locale and theme toggles",()=>{
   assert.match(layer,/function exampleIntent\(/);
   assert.match(layer,/locale: i18n\.locale\(\)/);
 });
+
+test("open floating drawer reacts to the existing Platform PT/EN event without reload",()=>{
+  class FakeElement {
+    constructor(tag){
+      this.tag=tag;this.children=[];this.parent=null;this.dataset={};
+      this.attrs={};this.listeners={};this.textContent="";this.value="";
+      this.hidden=false;this.scrollTop=0;
+    }
+    append(...nodes){
+      for(const node of nodes){
+        if(node.tag==="#fragment"){
+          for(const child of [...node.children])this.append(child);
+          continue;
+        }
+        if(node.parent)node.parent.children=node.parent.children.filter(x=>x!==node);
+        node.parent=this;this.children.push(node);
+      }
+    }
+    replaceWith(next){
+      const parent=this.parent;
+      assert.ok(parent,"must replace connected example");
+      const i=parent.children.indexOf(this);
+      if(next.parent)next.parent.children=next.parent.children.filter(x=>x!==next);
+      parent.children[i]=next;next.parent=parent;this.parent=null;
+    }
+    replaceChildren(...nodes){for(const node of this.children)node.parent=null;this.children=[];this.append(...nodes);}
+    setAttribute(name,value){this.attrs[name]=String(value);}
+    addEventListener(name,fn){(this.listeners[name] ||= []).push(fn);}
+    focus(){}
+  }
+  const nodes=[];
+  const document={
+    documentElement:{lang:"pt-BR"},body:new FakeElement("body"),
+    currentScript:{src:"https://example.test/preview/shared-ux/intelligence-layer.js"},
+    baseURI:"https://example.test/",
+    listeners:{},
+    createElement(tag){const el=new FakeElement(tag);nodes.push(el);return el;},
+    createDocumentFragment(){return new FakeElement("#fragment");},
+    addEventListener(name,fn){(this.listeners[name] ||= []).push(fn);},
+    querySelector(selector){return selector===".ux-app" ? {} : null;},
+  };
+  const window={};
+  const ctx={document,window,URL,Date,Map,HTMLSelectElement:FakeElement};
+  for(const asset of ["intelligence-i18n.js","intelligence-intent-ui.js","intelligence-layer.js"]){
+    const source=readFileSync(new URL("../preview/shared-ux/"+asset,import.meta.url),"utf8");
+    vm.runInNewContext(source,ctx,{timeout:1200});
+  }
+  const one=cls=>{const found=nodes.find(n=>n.className===cls);assert.ok(found,cls);return found;};
+  const trigger=one("intelligence-trigger");
+  const drawer=one("intelligence-drawer");
+  assert.equal(trigger.attrs["aria-label"],"Abrir EVOLU Intelligence");
+  trigger.listeners.click[0]();
+  assert.equal(drawer.hidden,false);
+  const stream=one("intelligence-stream");
+  const form=one("intelligence-composer");
+  const question=nodes.find(n=>n.id==="intelligence-question");
+  assert.ok(question);
+  const select=one("intelligence-demo-mode").children.find(n=>n.tag==="select");
+  assert.ok(select);select.value="ASK";
+  question.value="A classificação deste NCM precisa ser conferida";
+  form.listeners.submit[0]({preventDefault(){}});
+  function treeText(node){
+    return [node.textContent,...node.children.map(treeText)].join("\n");
+  }
+  assert.match(treeText(stream),/Qual informação técnica/);
+  assert.match(treeText(stream),/A classificação deste NCM/);
+  document.documentElement.lang="en";
+  for(const cb of document.listeners["ux:locale"])cb({detail:{locale:"en"}});
+  assert.equal(trigger.attrs["aria-label"],"Open EVOLU Intelligence");
+  assert.equal(one("intelligence-observation-label").children[1].textContent,
+    "Allow contextual suggestions on this page (without recording typing)");
+  assert.match(treeText(stream),/Which technical detail would you like to clarify first/);
+  assert.doesNotMatch(treeText(stream),/Qual informação técnica/);
+  assert.match(treeText(stream),/A classificação deste NCM/,"human text is never rewritten");
+  assert.equal(drawer.hidden,false,"language change must not close active drawer");
+  document.documentElement.lang="pt-BR";
+  for(const cb of document.listeners["ux:locale"])cb({detail:{locale:"pt-BR"}});
+  assert.equal(trigger.attrs["aria-label"],"Abrir EVOLU Intelligence");
+  assert.match(treeText(stream),/Qual informação técnica/);
+});
