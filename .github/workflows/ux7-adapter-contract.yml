@@ -15,6 +15,7 @@ on:
       - "scripts/consultative-status-tests.mjs"
       - "scripts/consultative-verification-tests.mjs"
       - "scripts/consultative-attempt-tests.mjs"
+      - "scripts/consultative-signed-verification-tests.mjs"
       - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
@@ -68,6 +69,8 @@ jobs:
         run: npm run test:consultative-verification
       - name: One-shot private consultation attempt and stale-session boundary
         run: npm run test:consultative-attempt
+      - name: Signed verification presentation must remain unavailable
+        run: npm run test:consultative-signature
 
   browser:
     name: Intelligence Chromium UX acceptance
