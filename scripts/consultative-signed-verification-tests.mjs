@@ -46,3 +46,45 @@ test("matching English view uses authored English shell but stays unavailable",(
  assert.equal(out.state,"UNAVAILABLE");
  rejects(()=>project(data));
 });
+
+test("signature status in JSON is never treated as display clearance",()=>{
+ for(const patch of [
+  {signatureVerified:false},
+  {signatureMeaning:"MODEL_SELF_REPORTED"},
+  {issuerAuthorizationVerified:true},
+  {distributedReplayProtectionVerified:true},
+  {modelLanguageVerified:true},
+  {lifecycle:"LEARNING"},
+  {executionAuthority:"CAN_EXECUTE"},
+  {display:{canShowModelAnswer:true,reasonCode:"READY"}},
+ ])rejects(()=>project(response(patch)));
+});
+test("unversioned, extra, and model-controlled fields fail closed",()=>{
+ for(const patch of [
+  {schemaVersion:"1.1.0"},
+  {answer:"AI model supplied legal text"},
+  {authorization:"approved"},
+  {signature:"attacker-provided-signature"},
+  {keyId:"model-supplied"},
+  {scope:{...scope,extra:"secret"}},
+ ])rejects(()=>project(response(patch)));
+});
+test("invalid expected scope, locale or attempt identifier reject",()=>{
+ rejects(()=>project(response(),expected({locale:"es"})));
+ rejects(()=>project(response(),expected({attemptId:"other"})));
+ rejects(()=>project(response(),expected({scope:{...scope,companyId:scope.cnpjId}})));
+ rejects(()=>project(response(),expected({scope:{...scope,referenceDate:"2026-02-30"}})));
+});
+test("result has no payload, signature, identifiers, model content or metadata",()=>{
+ const text=JSON.stringify(project());
+ for(const secret of [
+  attemptId,scope.tenantId,scope.companyId,scope.cnpjId,
+  "AI model supplied legal text","model-supplied","attacker-provided-signature"
+ ])assert.equal(text.includes(secret),false,secret);
+});
+test("this consumer contains no network, key materials or signing code",()=>{
+ const source=readFileSync(new URL(
+ "../src/features/intelligence/ConsultativeSignedVerification.ts",import.meta.url),"utf8");
+ assert.doesNotMatch(source,/\bfetch\s*\(|\bgenerateText\s*\(|\bcrypto\.subtle\b/);
+ assert.doesNotMatch(source,/localStorage|sessionStorage|privateKey|service_role/);
+});
