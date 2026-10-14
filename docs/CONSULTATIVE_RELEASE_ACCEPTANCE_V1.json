@@ -53,11 +53,11 @@
       "nextProof": "Compare all authorized live host contexts, both themes/locales, accessibility and nine approved compositions."
     },
     {
-      "id": "GATE_B_REAL_SESSION_JWT_RLS",
+      "id": "INTEGRATED_CONSULTATION_JWT_RLS_E2E",
       "owner": "Platform+Intelligence",
       "state": "E2E_PENDING",
       "evidencePaths": [],
-      "nextProof": "Real user JWT -> auth.getUser -> same principal -> tenant/group/CNPJ RLS/RPC -> CompanyContext; explicit 401/403 and cross-tenant denials."
+      "nextProof": "Validate the NEW Genesis private same-origin consultation through canonical Platform group-CNPJ scope and Intelligence under a current real-user JWT, including negative cross-tenant/role cases. Historical Platform Read Gate B closure does not satisfy this integrated gate."
     },
     {
       "id": "PRIVATE_BFF_CANONICAL_SCOPE",
@@ -115,5 +115,16 @@
       "evidencePaths": [],
       "nextProof": "Independent security/product approval, versioned cross-repo manifest, protected deployment, rollback and recovery evidence."
     }
-  ]
+  ],
+  "priorGateB": {
+    "kind": "INTELLIGENCE_PLATFORM_READ_HISTORICAL_RECORD",
+    "recordedStatus": "CLOSED",
+    "recordedE2E": "PASSED",
+    "recordedAt": "2026-09-22T10:25:59Z",
+    "executionBoundary": "EVOLU_APPLICATION_SERVER",
+    "source": "evolu2/intelligence/config/platform-read-runtime.multiplus-validation.v1.json",
+    "evidenceLevel": "REPOSITORY_RECORDED_NOT_INDEPENDENTLY_REEXECUTED",
+    "integratedConsultationVerified": false,
+    "releaseAuthorization": false
+  }
 }
