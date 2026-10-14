@@ -59,3 +59,21 @@ O manifesto atual permanece `decision=BLOCKED` e `integratedConsultationVerified
 O bridge `projectPrivatePlatformConsultation` tem agora saída **somente `UNAVAILABLE`**, inclusive quando a BFF alegar `schemaVersion=1.1.0`, `answerLocale` e `localeVerified=true`. Um JSON simples, mesmo de origem same-origin, **não é** atestado de autoridade emissora Ed25519, replay de uso único distribuído, proveniência verificável ou comprovação independente de idioma. Indicadores autoafirmados como `issuerAuthorizationVerified`, `verificationBundle.display.canShowModelAnswer` e `productionReplayStoreCertified` nunca autorizam exibição. Nenhum bloco `TEXT` ou resposta do modelo pode ser produzido pelo bridge V1.
 
 A futura liberação de resposta consultiva exige um **novo contrato do host privado** que certifique todas as provas conjuntamente, restrito à mesma tentativa e identidade, com gates E2E revisados e autoridade explícita de release. Não basta reativar o antigo caminho `PRESENTABLE` ou alterar uma flag. Até lá, o resultado correto na Genesis é aviso localizado, sem inferência adicional ou retry automático. A Intelligence continua devolvendo `display.canShowModelAnswer=false` em seus bundles offline e não fornece certificação operacional.
+
+
+## Critérios verificáveis para a próxima homologação privada (pré-execução)
+
+**Pré-condições, não resultados:** nenhuma linha abaixo representa teste realizado ou certificação. A execução exige autorização de ambiente, identidade e responsáveis pela revisão; não se deve introduzir credenciais, dados reais ou cobrança nesta fase.
+
+| Caso | Estímulo controlado | Evidência exigida | Rejeição obrigatória |
+| --- | --- | --- | --- |
+| AUTH-01 | Sessão ausente, JWT expirado ou emissor divergente | HTTP/status, trilha redigida de `auth.getUser()`, identidade resolvida | Nenhuma inferência, resposta ou fonte privada |
+| RLS-01 | Tenant A tenta consultar Grupo/CNPJ do tenant B | RPC/RLS e identidade de cada leitura, logs sem dados sensíveis | 401/403 ou negação equivalente, zero conteúdo cruzado |
+| CTX-01 | Troca de sessão, Grupo, CNPJ, data ou idioma durante a tentativa | `attemptId`, `sessionEpoch` e cancelamento observados | Resultado tardio descartado, sem retry implícito |
+| COST-01 | Orçamento insuficiente e ACK de custo incerto | Contabilidade/limites e identificador de tentativa sem segredo | Nenhuma nova inferência automática |
+| SRC-01 | Proveniência ausente, inconsistente ou fonte revogada | Receipts assinados, digest e revisão humana | Sem promoção para exibição |
+| LANG-01 | `localeVerified=true` autoafirmado e texto em idioma diferente | Verificador independente do idioma efetivo | `UNAVAILABLE`, nenhum bloco `TEXT` |
+| REPLAY-01 | Duas reivindicações simultâneas do mesmo digest em instâncias distintas | Atomicidade observada, durabilidade e retenção até expiração | No máximo uma aceitação, falha incerta fechada |
+| MUT-01 | Mudança de payload entre assinatura, claim e apresentação | Snapshots imutáveis e hashes correlacionados | Nenhum contexto misto ou resposta apresentada |
+
+**Portão de aprovação:** todos os casos devem ter evidências redigidas e revisadas por responsável independente. O gate deve permanecer `BLOCKED` caso qualquer caso esteja ausente, inconclusivo ou reprovado; sucesso de CI sintético não substitui essa matriz. Mesmo com testes aprovados, a autorização de release e a verificação independente de idioma, proveniência e fidelidade fiscal/jurídica são decisões separadas. A Platform continua sem alterações antes de 01/11/2026.
