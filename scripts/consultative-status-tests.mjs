@@ -74,3 +74,38 @@ test("source mapper must remain independent of fetch, credentials, storage and e
  assert.doesNotMatch(source,/\bfetch\s*\(|\bexecute\s*\(|\bgenerateText\s*\(/);
  assert.doesNotMatch(source,/localStorage|sessionStorage|service_role|process\.env/);
 });
+
+
+test("unknown claim outcome, invalid Ed25519 proof and stale attempt never recommend retry",()=>{
+ const codes=[
+  "CONSULTATIVE_REPLAY_GUARD_UNAVAILABLE",
+  "CONSULTATIVE_SIGNATURE_NOT_VERIFIED",
+  "CONSULTATIVE_ATTEMPT_NOT_CORRELATED",
+  "CONSULTATIVE_PRESENTATION_CHECK_FAILED",
+  "INVALID_CONSULTATIVE_REPLAY_RECEIPT",
+  "INVALID_SIGNED_CONSULTATION_RESULT",
+ ];
+ for(const locale of ["pt-BR","en"]){
+  for(const code of codes){
+   const result=describeConsultativeFailure({code,message:"internal-secret-token"},locale);
+   assert.equal(result.kind,"VERIFICATION_BLOCKED");
+   assert.equal(result.nextAction,"NONE");
+   assert.equal(result.retryable,false);
+   assert.equal(result.locale,locale);
+   assert.equal(JSON.stringify(result).includes("internal-secret-token"),false);
+  }
+ }
+});
+test("generic transport errors remain separate from unknown claim outcomes",()=>{
+ const verification=describeConsultativeFailure({
+  code:"CONSULTATIVE_REPLAY_GUARD_UNAVAILABLE",
+  message:"request may already have been committed"
+ },"en");
+ const generic=describeConsultativeFailure({
+  code:"private_platform_unavailable",
+ },"en");
+ assert.equal(verification.retryable,false);
+ assert.equal(generic.kind,"SERVICE_UNAVAILABLE");
+ assert.equal(generic.nextAction,"RETRY");
+ assert.notEqual(verification.title,generic.title);
+});
