@@ -55,30 +55,33 @@ export function projectUnreleasedConsultativeReplay(
      !uuid.test(String(expected.attemptId))||
      (expected.locale!=="pt-BR"&&expected.locale!=="en"))deny();
 
-  exactKeys(raw,[
+  const parsed = raw as Record<string,unknown>;
+  exactKeys(parsed,[
     "schemaVersion","attemptId","scope","locale",
     "signatureVerified","singleUseClaimAccepted",
     "distributedReplayProtectionVerified","productionReplayStoreCertified",
     "issuerAuthorizationVerified","modelLanguageVerified",
     "lifecycle","executionAuthority","display"
   ]);
-  if(raw.schemaVersion!=="1.0.0"||
-     raw.attemptId!==expected.attemptId||
-     raw.locale!==expected.locale||
-     raw.signatureVerified!==true||
-     raw.singleUseClaimAccepted!==true||
-     raw.distributedReplayProtectionVerified!==false||
-     raw.productionReplayStoreCertified!==false||
-     raw.issuerAuthorizationVerified!==false||
-     raw.modelLanguageVerified!==false||
-     raw.lifecycle!=="PRE_LEARNING"||
-     raw.executionAuthority!=="NONE"||
-     !validScope(raw.scope)||!obj(raw.display))deny();
-  exactKeys(raw.display,["canShowModelAnswer","reasonCode"]);
-  if(raw.display.canShowModelAnswer!==false||
-     raw.display.reasonCode!=="LOCALE_UNVERIFIED")deny();
+  if(parsed.schemaVersion!=="1.0.0"||
+     parsed.attemptId!==expected.attemptId||
+     parsed.locale!==expected.locale||
+     parsed.signatureVerified!==true||
+     parsed.singleUseClaimAccepted!==true||
+     parsed.distributedReplayProtectionVerified!==false||
+     parsed.productionReplayStoreCertified!==false||
+     parsed.issuerAuthorizationVerified!==false||
+     parsed.modelLanguageVerified!==false||
+     parsed.lifecycle!=="PRE_LEARNING"||
+     parsed.executionAuthority!=="NONE"||
+     !validScope(parsed.scope)||!obj(parsed.display))deny();
+  const display = parsed.display as Record<string,unknown>;
+  exactKeys(display,["canShowModelAnswer","reasonCode"]);
+  if(display.canShowModelAnswer!==false||
+     display.reasonCode!=="LOCALE_UNVERIFIED")deny();
+  const checkedScope = parsed.scope as ConsultativeReceiptScope;
   for(const key of ["tenantId","companyId","cnpjId","referenceDate"] as const){
-    if(raw.scope[key]!==expected.scope[key])deny();
+    if(checkedScope[key]!==expected.scope[key])deny();
   }
   return Object.freeze({
     state:"UNAVAILABLE",
