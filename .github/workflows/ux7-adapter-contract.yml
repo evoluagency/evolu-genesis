@@ -19,6 +19,8 @@ on:
       - "scripts/consultative-replay-tests.mjs"
       - "scripts/consultative-wire-compat-tests.mjs"
       - "scripts/consultative-bundle-tests.mjs"
+      - "scripts/consultative-release-acceptance-tests.mjs"
+      - "docs/CONSULTATIVE_RELEASE_ACCEPTANCE_V1.json"
       - "scripts/fixtures/consultative-host-receipts-v1.json"
       - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
@@ -81,6 +83,8 @@ jobs:
         run: npm run test:consultative-wire-compat
       - name: Combined Intelligence signed/replay receipt stays unavailable
         run: npm run test:consultative-bundle
+      - name: Release cannot be approved by synthetic CI
+        run: npm run test:consultative-release-acceptance
 
   browser:
     name: Intelligence Chromium UX acceptance
