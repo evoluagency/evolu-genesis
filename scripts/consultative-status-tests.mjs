@@ -168,3 +168,18 @@ test('bundle rejection stays non-retryable',()=>{
   }
  }
 });
+
+
+test("source normalization failure after a possible model request cannot retry",()=>{
+ for(const locale of ["pt-BR","en"]){
+  const out=describeConsultativeFailure({
+   code:"CONSULTATIVE_SOURCE_NOT_VERIFIED",
+   message:"private model output and internal CNPJ must never be rendered",
+  },locale);
+  assert.equal(out.kind,"VERIFICATION_BLOCKED");
+  assert.equal(out.retryable,false);
+  assert.equal(out.nextAction,"NONE");
+  assert.equal(out.locale,locale);
+  assert.equal(JSON.stringify(out).includes("internal CNPJ"),false);
+ }
+});
