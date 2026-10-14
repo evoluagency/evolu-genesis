@@ -88,3 +88,25 @@ test("this consumer contains no network, key materials or signing code",()=>{
  assert.doesNotMatch(source,/\bfetch\s*\(|\bgenerateText\s*\(|\bcrypto\.subtle\b/);
  assert.doesNotMatch(source,/localStorage|sessionStorage|privateKey|service_role/);
 });
+
+
+test("hostile receipt access is converted into an opaque boundary error",()=>{
+ const privateDiagnostic="secret from upstream tenant and token";
+ const base=response();
+ const throwingScope=Object.defineProperty({...base},"scope",{
+  enumerable:true,get(){throw new Error(privateDiagnostic);}
+ });
+ const ownKeysTrap=new Proxy(base,{ownKeys(){throw new Error(privateDiagnostic);}});
+ const nestedScope=new Proxy(scope,{get(){throw new Error(privateDiagnostic);}});
+ const wrongExpected=Object.defineProperty({...expected()},"locale",{
+  enumerable:true,get(){throw new Error(privateDiagnostic);}
+ });
+ for(const value of [throwingScope,ownKeysTrap,{...base,scope:nestedScope}]){
+  assert.throws(()=>project(value),err=>
+   err instanceof SignedConsultationBoundaryError &&
+   !String(err.message).includes(privateDiagnostic));
+ }
+ assert.throws(()=>project(base,wrongExpected),err=>
+  err instanceof SignedConsultationBoundaryError &&
+  !String(err.message).includes(privateDiagnostic));
+});
