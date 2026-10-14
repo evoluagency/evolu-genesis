@@ -13,7 +13,7 @@ export type ConsultativeHostNotice = Readonly<{
   locale: IntelligenceLocale;
   title: string;
   detail: string;
-  nextAction: "SIGN_IN" | "REVIEW_SELECTION" | "EDIT_QUESTION" | "RETRY" | "NONE";
+  nextAction: "SIGN_IN" | "REVIEW_SELECTION" | "EDIT_QUESTION" | "NONE";
   retryable: boolean;
 }>;
 
@@ -45,8 +45,8 @@ const copies: Readonly<Record<ConsultativeNoticeKind,
     en: {title: "Verification incomplete", detail: "The signature or single-use claim could not be confirmed. No answer will be shown. A new consultation requires explicit action."},
   },
   SERVICE_UNAVAILABLE: {
-    "pt-BR": {title: "Consulta indisponível", detail: "Não foi possível validar a resposta. Nenhum resultado foi apresentado."},
-    en: {title: "Consultation unavailable", detail: "The response could not be validated. No result was presented."},
+    "pt-BR": {title: "Consulta indisponível", detail: "Não foi possível confirmar o estado da consulta. Nenhuma resposta foi apresentada. Uma nova consulta exige ação explícita."},
+    en: {title: "Consultation unavailable", detail: "The consultation state could not be confirmed. No answer was shown. A new consultation requires explicit action."},
   },
 };
 
@@ -113,10 +113,12 @@ export function describeConsultativeFailure(
     kind === "SESSION_REQUIRED" ? "SIGN_IN" :
     kind === "SCOPE_DENIED" ? "REVIEW_SELECTION" :
     kind === "INPUT_INVALID" ? "EDIT_QUESTION" :
-    kind === "SERVICE_UNAVAILABLE" ? "RETRY" : "NONE";
+    // An unknown error may follow paid inference or an ACK lost in transit.
+    // Never suggest replaying the same request without a certified idempotency gate.
+    "NONE";
   const detail = copies[kind][locale];
   return Object.freeze({
     kind, locale, title: detail.title, detail: detail.detail,
-    nextAction, retryable: nextAction === "RETRY",
+    nextAction, retryable: false,
   });
 }
