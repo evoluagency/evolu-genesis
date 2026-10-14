@@ -365,3 +365,29 @@ test("immutable host snapshots cannot be changed by a later mutable selection",a
  assert.equal(outbound,1);
  c.dispose();
 });
+
+
+test("a future locale-verified response remains hidden throughout the live coordinator",async()=>{
+ for(const locale of ["pt-BR","en"]){
+  let calls=0;
+  const answer="CONFIDENTIAL_UNATTESTED_MODEL_ANSWER";
+  const host=()=>({...snapshot(),locale});
+  const c=run({request:async()=>{
+   calls++;
+   return raw({
+    schemaVersion:"1.1.0",answerLocale:locale,localeVerified:true,
+    answer,distributedReplayProtectionVerified:true,
+    issuerAuthorizationVerified:true,productionReplayStoreCertified:true,
+    verificationBundle:{display:{canShowModelAnswer:true}},
+   });
+  }},host);
+  const out=await c.askExplicitly(question);
+  assert.equal(calls,1);
+  assert.equal(out.state,"UNAVAILABLE");
+  assert.equal(out.intent.kind,"UNAVAILABLE");
+  assert.equal(out.intent.executionAuthority,"NONE");
+  assert.equal(out.intent.blocks.some(block=>block.type==="TEXT"),false);
+  assert.doesNotMatch(JSON.stringify(out),/CONFIDENTIAL_UNATTESTED_MODEL_ANSWER/);
+  c.dispose();
+ }
+});
