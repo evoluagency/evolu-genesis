@@ -6,7 +6,7 @@ import type { IntelligenceLocale } from "./PresentationIntent.js";
 
 export type ConsultativeNoticeKind =
   | "SESSION_REQUIRED" | "SCOPE_DENIED" | "INPUT_INVALID"
-  | "CANCELLED" | "IN_PROGRESS" | "SERVICE_UNAVAILABLE";
+  | "CANCELLED" | "IN_PROGRESS" | "VERIFICATION_BLOCKED" | "SERVICE_UNAVAILABLE";
 
 export type ConsultativeHostNotice = Readonly<{
   kind: ConsultativeNoticeKind;
@@ -40,6 +40,10 @@ const copies: Readonly<Record<ConsultativeNoticeKind,
     "pt-BR": {title: "Consulta em andamento", detail: "Conclua ou cancele a consulta atual antes de iniciar outra."},
     en: {title: "Consultation in progress", detail: "Complete or cancel the current consultation before starting another."},
   },
+  VERIFICATION_BLOCKED: {
+    "pt-BR": {title: "Verificação não concluída", detail: "Não foi possível confirmar a assinatura ou a reserva de uso único. Nenhuma resposta será apresentada. Uma nova consulta exige ação explícita."},
+    en: {title: "Verification incomplete", detail: "The signature or single-use claim could not be confirmed. No answer will be shown. A new consultation requires explicit action."},
+  },
   SERVICE_UNAVAILABLE: {
     "pt-BR": {title: "Consulta indisponível", detail: "Não foi possível validar a resposta. Nenhum resultado foi apresentado."},
     en: {title: "Consultation unavailable", detail: "The response could not be validated. No result was presented."},
@@ -55,6 +59,16 @@ const invalidCodes = new Set(["INVALID_CONSULTATIVE_REQUEST", "INVALID_SCOPE",
 const cancelledCodes = new Set(["consultation_cancelled", "consultation_context_changed",
   "REQUEST_ABORTED", "coordinator_disposed"]);
 const busyCodes = new Set(["consultation_in_flight"]);
+// A store timeout can mean the claim committed but its ACK was lost.
+// Never suggest immediate or automatic retry of a possibly paid operation.
+const verificationCodes = new Set([
+  "CONSULTATIVE_REPLAY_GUARD_UNAVAILABLE",
+  "CONSULTATIVE_SIGNATURE_NOT_VERIFIED",
+  "CONSULTATIVE_ATTEMPT_NOT_CORRELATED",
+  "CONSULTATIVE_PRESENTATION_CHECK_FAILED",
+  "INVALID_CONSULTATIVE_REPLAY_RECEIPT",
+  "INVALID_SIGNED_CONSULTATION_RESULT",
+]);
 
 /**
  * Maps only explicit error.code, never raw messages, stack traces or JSON bodies.
@@ -75,6 +89,7 @@ export function describeConsultativeFailure(
     invalidCodes.has(code) ? "INPUT_INVALID" :
     cancelledCodes.has(code) ? "CANCELLED" :
     busyCodes.has(code) ? "IN_PROGRESS" :
+    verificationCodes.has(code) ? "VERIFICATION_BLOCKED" :
     "SERVICE_UNAVAILABLE";
   const nextAction: ConsultativeHostNotice["nextAction"] =
     kind === "SESSION_REQUIRED" ? "SIGN_IN" :
