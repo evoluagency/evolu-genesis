@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "EVOLU_CONSULTATIVE_RELEASE_ACCEPTANCE_V1",
+  "scope": "GENESIS_INTELLIGENCE_FIRST_AUTHENTICATED_CONSULTATIVE_RELEASE",
+  "lifecycle": "PRE_LEARNING",
+  "evidenceBasis": "SOURCE_ONLY_SYNTHETIC_CI_NO_LIVE_PROOF",
+  "decision": "BLOCKED",
+  "permissions": {
+    "deploy": false,
+    "merge": false,
+    "showModelAnswer": false,
+    "operationalWrites": false,
+    "autonomousLearning": false,
+    "paidInference": false
+  },
+  "gates": [
+    {
+      "id": "INTELLIGENCE_SCOPE_SOURCE",
+      "owner": "Intelligence",
+      "state": "SOURCE_TESTED",
+      "evidencePaths": [
+        "evolu2/intelligence/test/genesis-consultative-real-projections-integration-v1.test.mjs"
+      ],
+      "nextProof": "Verify real private-host provenance, scope and current Platform group-CNPJ membership."
+    },
+    {
+      "id": "INTELLIGENCE_SIGNED_REPLAY_CONTRACT",
+      "owner": "Intelligence",
+      "state": "SOURCE_TESTED",
+      "evidencePaths": [
+        "evolu2/intelligence/test/genesis-consultative-verification-bundle-v1.test.mjs",
+        "evolu2/intelligence/test/genesis-consultative-replay-store-conformance-v1.test.mjs"
+      ],
+      "nextProof": "Provision trusted issuer keys and demonstrate a durable distributed atomic claim with real isolated clients."
+    },
+    {
+      "id": "GENESIS_HOST_TRANSPORT_CONTRACT",
+      "owner": "Genesis",
+      "state": "SOURCE_TESTED",
+      "evidencePaths": [
+        "evoluagency/evolu-genesis/scripts/live-platform-consultation-tests.mjs"
+      ],
+      "nextProof": "Exercise same-origin private host with an authenticated user session and negative permission cases."
+    },
+    {
+      "id": "GENESIS_SYNTHETIC_PRESENTATION",
+      "owner": "Genesis",
+      "state": "SOURCE_TESTED",
+      "evidencePaths": [
+        "evoluagency/evolu-genesis/scripts/intelligence-browser-homologation.mjs",
+        "evoluagency/evolu-genesis/scripts/consultative-bundle-tests.mjs"
+      ],
+      "nextProof": "Compare all authorized live host contexts, both themes/locales, accessibility and nine approved compositions."
+    },
+    {
+      "id": "GATE_B_REAL_SESSION_JWT_RLS",
+      "owner": "Platform+Intelligence",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Real user JWT -> auth.getUser -> same principal -> tenant/group/CNPJ RLS/RPC -> CompanyContext; explicit 401/403 and cross-tenant denials."
+    },
+    {
+      "id": "PRIVATE_BFF_CANONICAL_SCOPE",
+      "owner": "Platform+Genesis+Intelligence",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Host binds CNPJ ID to canonical group ID independently, verifies entitlement and forwards only authorized minimized requests."
+    },
+    {
+      "id": "OPERATIONAL_SIGNER_AND_KEY_ROTATION",
+      "owner": "Intelligence+PrivateHost",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Authorized Ed25519 issuer, nonces tied to authenticated attempts, protected keys, rotation/revocation and same-request proof."
+    },
+    {
+      "id": "DISTRIBUTED_REPLAY_DURABILITY",
+      "owner": "Intelligence+PrivateHost",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Atomic insert-if-absent across independently launched processes, reconnect/crash recovery, TTL, partitions and lost acknowledgments in test backend."
+    },
+    {
+      "id": "INDEPENDENT_LOCALE_AND_CONTENT_CHECK",
+      "owner": "Intelligence+DomainReview",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Independent PT/EN verification and substantive legal/tax review; model-declared locale alone is not evidence."
+    },
+    {
+      "id": "EVIDENCE_PROVENANCE_AND_VALIDITY",
+      "owner": "Intelligence+DomainReview",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Verify actual official source identity, integrity, effective date and CNPJ/reference-date applicability."
+    },
+    {
+      "id": "GENESIS_LIVE_VISUAL_ACCESSIBILITY",
+      "owner": "Genesis+Platform",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Authenticated host acceptance for the nine approved compositions, tokens, transparent mark, PT/EN, Light/Dark, responsive/keyboard/screen reader."
+    },
+    {
+      "id": "PRIVACY_COST_AUDIT_AND_OBSERVABILITY",
+      "owner": "Intelligence+Genesis+PrivateHost",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Bounded cost and explicit-user inference, data minimization/retention, permission audit, alerts, and no autonomous learning or writes."
+    },
+    {
+      "id": "RELEASE_REVIEW_AND_ROLLBACK",
+      "owner": "ReleaseAuthority",
+      "state": "E2E_PENDING",
+      "evidencePaths": [],
+      "nextProof": "Independent security/product approval, versioned cross-repo manifest, protected deployment, rollback and recovery evidence."
+    }
+  ]
+}
