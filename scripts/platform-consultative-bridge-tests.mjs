@@ -213,6 +213,7 @@ test("hostile raw BFF getters and proxies fail with opaque boundary errors",()=>
  const privateText="SECRET_CNPJ_OR_JWT_DIAGNOSTIC";
  let called=0;
  const poison=()=>{called++;throw new Error(privateText)};
+ const hostileTrap=()=>{throw new Error(privateText)};
  const replaced=(record,key)=>{
   const out={...record};
   Object.defineProperty(out,key,{enumerable:true,get:poison});
@@ -226,8 +227,8 @@ test("hostile raw BFF getters and proxies fail with opaque boundary errors",()=>
   result({evidence:replaced(result().evidence,"retrievalDecision")}),
   result({capabilities:replaced(result().capabilities,"canExecute")}),
   result({provenance:[replaced(result().provenance[0],"observedAt")]}),
-  new Proxy(result(),{getOwnPropertyDescriptor:poison}),
-  result({provenance:new Proxy(result().provenance,{getPrototypeOf:poison})}),
+  new Proxy(result(),{getOwnPropertyDescriptor:hostileTrap}),
+  result({provenance:new Proxy(result().provenance,{getPrototypeOf:hostileTrap})}),
   result({costGuard:Object.assign(Object.create({allowed:true}),result().costGuard)}),
   result({provenance:[Object.assign(Object.create({source:"evil"}),result().provenance[0])]}),
  ]){
