@@ -171,6 +171,38 @@ export class SameOriginPlatformConsultativeTransport implements ConsultativeHost
  * cancels in-flight work and refuses its eventual response even if abort is
  * ignored by a transport. Host MUST call invalidate() when it changes view.
  */
+
+/**
+ * Client-side defense in depth against retrieval/mode drift between
+ * Intelligence and the private Platform host. The server is still the
+ * AUTHORITY: this check never grants scope, cost budget, or display rights.
+ */
+function assertConsultativeRetrievalConsistency(raw: unknown): void {
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
+    fail("invalid_consultative_retrieval");
+  }
+  const result = raw as Record<string, unknown>;
+  const evidence = result.evidence;
+  if (typeof evidence !== "object" || evidence === null || Array.isArray(evidence)) {
+    fail("invalid_consultative_retrieval");
+  }
+  const decision = (evidence as Record<string, unknown>).retrievalDecision;
+  const mode = result.responseMode;
+  const valid = decision === "READY" || decision === "NEEDS_CONTEXT" ||
+    decision === "EVIDENCE_INSUFFICIENT" || decision === "CONTEXT_CONFLICT";
+  if (!valid || typeof mode !== "string") fail("invalid_consultative_retrieval");
+  if (mode === "MODEL" || mode === "SAFE_FALLBACK" ||
+      mode === "AI_COST_GUARD") {
+    if (decision !== "READY") fail("invalid_consultative_retrieval");
+  } else if (mode.startsWith("RETRIEVAL_")) {
+    if (decision === "READY" || mode !== "RETRIEVAL_" + decision) {
+      fail("invalid_consultative_retrieval");
+    }
+  } else {
+    fail("invalid_consultative_retrieval");
+  }
+}
+
 export class LiveConsultationCoordinator {
   private active: AbortController | null = null;
   private generation = 0;
@@ -225,6 +257,7 @@ export class LiveConsultationCoordinator {
       }
       if (generation !== this.generation || controller.signal.aborted ||
           this.disposed || stale(this.current())) fail("consultation_context_changed");
+      assertConsultativeRetrievalConsistency(response);
       const projection = projectPrivatePlatformConsultation(response, human);
       if (generation !== this.generation || controller.signal.aborted ||
           this.disposed || stale(this.current())) fail("consultation_context_changed");
