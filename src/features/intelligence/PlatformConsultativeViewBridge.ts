@@ -83,6 +83,10 @@ function ownFields(value: unknown, keys: readonly string[]): Record<string, unkn
   if (prototype!==Object.prototype && prototype!==null) {
     deny("platform_consultative_contract_mismatch");
   }
+  const ownKeys=Reflect.ownKeys(value);
+  if (ownKeys.length>256 || ownKeys.some(key=>typeof key!=="string")) {
+    deny("platform_consultative_contract_mismatch");
+  }
   const output:Record<string,unknown> = Object.create(null);
   for (const key of keys) {
     const descriptor=Object.getOwnPropertyDescriptor(value,key);
