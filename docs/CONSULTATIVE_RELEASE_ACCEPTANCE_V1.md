@@ -1,0 +1,38 @@
+# EVOLU — Aceite da primeira release consultiva Genesis + Intelligence V1
+
+**Natureza:** matriz de decisão pré-release, não certificado operacional.  
+**Contrato compartilhado:** `docs/CONSULTATIVE_RELEASE_ACCEPTANCE_V1.json` (bytes idênticos nos PRs Intelligence #22 e Genesis #26).  
+**Ciclo:** `PRE_LEARNING`; nenhuma autorização de merge, deploy, inferência paga, exibição de resposta de modelo, escrita operacional ou aprendizagem autônoma.
+
+## Regra de interpretação
+
+O CI das duas branches executa testes sintéticos/de contrato e comprova apenas a integridade da matriz **SOURCE_ONLY**. Um CI verde não significa que o produto está homologado. O manifesto `decision=BLOCKED`, permissões `false` e os nove gates `E2E_PENDING` são resultados **esperados** nesta fase. Mudá-los para aprovado, sem um novo protocolo com evidências verificáveis e aceite humano, faz o gate atual **falhar**.
+
+O SHA Git blob do mesmo manifesto é fixado em ambos os testes. Os dois repositórios devem atualizar manifesto e testes juntos; qualquer divergência bloqueia uma CI. Um hash de fixture prova igualdade de bytes entre snapshots aprovados em código, **não** prova autenticidade, origem de dados ou autorização de release.
+
+## Trilha de conclusão com critérios verificáveis
+
+| Ordem | Gate | Responsável | Evidência necessária |
+|---|---|---|---|
+| 1 | Gate B JWT/RLS em sessão real | Intelligence + Platform | `auth.getUser`, mesmo principal, RPC/RLS usuário, Tenant/Grupo/CNPJ e casos 401/403/cross-tenant; nenhuma escrita/treinamento |
+| 2 | BFF privada com escopo canônico | Platform + Genesis + Intelligence | Mapeamento legado `company_selection.company_id = CNPJ ID`; comprovação independente da pertença ao **grupo**; limites de payload e entitlements |
+| 3 | Emissor autenticado Ed25519 | Host privado + Intelligence | Gestão/rotação/revogação de chaves, nonce ligado à sessão e resultado da mesma tentativa, assinaturas inválidas negadas |
+| 4 | Replay distribuído e durável | Host privado + Intelligence | Banco de homologação isolado, concorrência entre processos, falha/reinício, TTL, partição, ACK perdido e nenhum retry implícito |
+| 5 | Proveniência e conteúdo | Intelligence + revisão de domínio | Identidade, integridade, vigência e aplicabilidade de fontes; revisão jurídica/tributária e tratamento de insuficiência |
+| 6 | Idioma independente | Intelligence + revisão de domínio | Idioma PT/EN da resposta comprovado fora do próprio modelo e preservação do sentido técnico/legal |
+| 7 | UX no host real | Genesis + Platform | Nove composições do mockup, tokens oficiais, marca transparente, PT/EN, Light/Dark, navegação, teclado, leitura de tela e responsividade |
+| 8 | Custo, privacidade e auditoria | Intelligence + Genesis + Host | Inferência somente explícita, budget guard, logs minimizados, retenção, observabilidade e ausência de efeitos operacionais implícitos |
+| 9 | Go/no-go com rollback | Autoridade de release | Revisão independente, SHAs/deploys rastreáveis, recuperação, rollback ensaiado e aprovação expressa |
+
+## Responsabilidades e limites
+
+- **Genesis:** composição visual e apresentação tipada; verificação em browser é defesa local, não autorização de banco ou origem do modelo.
+- **Intelligence:** consultas governadas, fontes, modelo/custo, contratos de assinatura e replay. A suíte atual de replay usa mocks e **não certifica durabilidade real**.
+- **Platform/host privado:** única autoridade de identidade e dados operacionais, vínculo real Grupo↔CNPJ, autorização JWT/RLS e transporte autenticado. O PR Platform #112 é uma dependência em revisão, **não** uma autorização para modificá-lo nesta etapa.
+- **Release:** `PRE_LEARNING`, nenhum treinamento automático nem delegação operacional. O Lab continua sob responsabilidade da Intelligence.
+
+## Critério de 100%
+
+O primeiro lançamento consultivo somente poderá ser proposto depois de **todas** as nove provas externas, regressões source-only verdes, rastreabilidade de SHAs, aprovação de UX/segurança/domínio e decisão formal de release. Será necessário estabelecer um **novo protocolo de homologação confiável** para avaliar essas provas; editar um JSON ou fazer CI verde não desbloqueia o produto.
+
+**Restrição vigente:** até 1º de novembro de 2026 não alterar Platform nem seu CI. Nenhum PR desta etapa deve ser mesclado, implantado ou conectado a credenciais, banco real ou inferência paga.
