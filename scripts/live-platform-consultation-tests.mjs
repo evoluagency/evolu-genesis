@@ -391,3 +391,63 @@ test("a future locale-verified response remains hidden throughout the live coord
   c.dispose();
  }
 });
+
+
+test("retrieval and presentation validate exactly one shared copy of mutable BFF response",async()=>{
+ let ownReads=0,regularReads=0,requests=0;
+ const good=raw();
+ const hostile=new Proxy(good,{
+  get(target,key,receiver){
+   if(key==="evidence"){regularReads++;return {
+    retrievalDecision:"CONTEXT_CONFLICT",retrievedSourceCount:0
+   };}
+   return Reflect.get(target,key,receiver);
+  },
+  getOwnPropertyDescriptor(target,key){
+   if(key==="evidence"){
+    ownReads++;
+    // If two stages fetched independently the second would get an
+    // incompatible verdict and could change the reason shown in the UI.
+    return {configurable:true,enumerable:true,writable:true,
+      value:ownReads===1?{
+        retrievalDecision:"READY",retrievedSourceCount:1
+      }:{
+        retrievalDecision:"CONTEXT_CONFLICT",retrievedSourceCount:0
+      }};
+   }
+   return Reflect.getOwnPropertyDescriptor(target,key);
+  }
+ });
+ const c=run({request:async()=>{requests++;return hostile;}});
+ const out=await c.askExplicitly(question);
+ assert.equal(out.state,"UNAVAILABLE");
+ assert.equal(out.intent.kind,"UNAVAILABLE");
+ assert.equal(out.intent.executionAuthority,"NONE");
+ assert.equal(out.intent.blocks.some(block=>block.type==="TEXT"),false);
+ assert.equal(requests,1);
+ assert.equal(regularReads,0,"untrusted property getters must never be read");
+ assert.equal(ownReads,1,"retrieval and bridge must not resnapshot foreign response");
+ c.dispose();
+});
+test("retrieval accessor and poisoned proxy reject without exposing private diagnostics",async()=>{
+ const secret="PRIVATE_PLATFORM_RESPONSE_TOKEN";
+ let getters=0;
+ for(const factory of [
+  ()=>Object.defineProperty(raw(),"evidence",{enumerable:true,
+    get(){getters++;throw Error(secret);}}),
+  ()=>Object.defineProperty(raw(),"responseMode",{enumerable:true,
+    get(){getters++;throw Error(secret);}}),
+  ()=>new Proxy(raw(),{getOwnPropertyDescriptor(){throw Error(secret);}}),
+  ()=>raw({evidence:Object.defineProperty({retrievedSourceCount:1},
+    "retrievalDecision",{enumerable:true,
+      get(){getters++;throw Error(secret);}})}),
+ ]){
+  const c=run({request:async()=>factory()});
+  await assert.rejects(()=>c.askExplicitly(question),e=>
+    e instanceof LiveConsultationBoundaryError &&
+    e.code==="invalid_consultative_retrieval" &&
+    !e.message.includes(secret));
+  c.dispose();
+ }
+ assert.equal(getters,0);
+});
