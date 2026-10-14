@@ -16,6 +16,7 @@ on:
       - "scripts/consultative-verification-tests.mjs"
       - "scripts/consultative-attempt-tests.mjs"
       - "scripts/consultative-signed-verification-tests.mjs"
+      - "scripts/consultative-replay-tests.mjs"
       - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
@@ -71,6 +72,8 @@ jobs:
         run: npm run test:consultative-attempt
       - name: Signed verification presentation must remain unavailable
         run: npm run test:consultative-signature
+      - name: Replay claim remains uncertified and unavailable
+        run: npm run test:consultative-replay
 
   browser:
     name: Intelligence Chromium UX acceptance
