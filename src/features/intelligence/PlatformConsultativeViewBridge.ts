@@ -4,7 +4,10 @@
  *
  * Existing Platform v1.0.0 consult results have no attested response language,
  * so their answer MUST NOT be presented as localized Genesis Intelligence UX.
- * A future BFF v1.1.0 can attest the actual answer language explicitly.
+ * Even a future v1.1.0 localeVerified flag is NOT signed issuer proof, an
+ * independently verified answer language, a certified replay claim, or a
+ * release authorization. Until an explicit host-attested integration exists,
+ * this bridge is intentionally unable to render ANY model answer.
  */
 import {
   validateIntelligencePresentation,
@@ -100,32 +103,26 @@ export function createPlatformConsultativeInvocation(
 }
 
 export type SafeConsultationProjection = Readonly<{
-  state: "PRESENTABLE" | "UNAVAILABLE";
+  state: "UNAVAILABLE";
   /** Projection ONLY, never approval, fiscal classification or authority to act. */
   intent: IntelligenceViewIntent;
   /** Source version actually validated by this bridge, for traceability. */
   sourceSchema: "1.0.0" | "1.1.0";
 }>;
 
-function plainNotice(locale: IntelligenceLocale, reason: "BLOCKED" | "LOCALE_UNVERIFIED"): string {
+function plainNotice(locale: IntelligenceLocale, reason:
+  "BLOCKED" | "LOCALE_UNVERIFIED" | "HOST_ATTESTATION_REQUIRED"): string {
   if (locale === "en") {
-    return reason === "BLOCKED"
-      ? "The governed consultation is unavailable or blocked. No analysis was authorized for display."
-      : "The response language was not verified by the server. No analysis has been presented.";
+    if (reason === "BLOCKED") return "The governed consultation is unavailable or blocked. No analysis was authorized for display.";
+    if (reason === "LOCALE_UNVERIFIED") return "The response language was not verified by the server. No analysis has been presented.";
+    return "The private host has not certified signing authority, single-use replay protection, evidence and answer language. No analysis was presented.";
   }
-  return reason === "BLOCKED"
-    ? "A consulta governada está indisponível ou bloqueada. Nenhuma análise foi autorizada para exibição."
-    : "O idioma da resposta não foi verificado pelo servidor. Nenhuma análise foi apresentada.";
-}
-function reviewNotice(locale: IntelligenceLocale): string {
-  return locale === "en"
-    ? "Advisory content only. Verify sources, applicability and tax rules with a qualified professional before any action."
-    : "Conteúdo exclusivamente consultivo. Confira as fontes, a aplicabilidade e as regras tributárias com profissional habilitado antes de qualquer ação.";
+  if (reason === "BLOCKED") return "A consulta governada está indisponível ou bloqueada. Nenhuma análise foi autorizada para exibição.";
+  if (reason === "LOCALE_UNVERIFIED") return "O idioma da resposta não foi verificado pelo servidor. Nenhuma análise foi apresentada.";
+  return "O servidor privado ainda não certificou a assinatura, a proteção contra reutilização, as evidências e o idioma. Nenhuma análise foi apresentada.";
 }
 function intentFor(
   request: ExplicitHumanConsultation,
-  kind: "UNAVAILABLE" | "EXPLAIN",
-  text: string,
   caution: string,
   now: number,
 ): IntelligenceViewIntent {
@@ -140,14 +137,12 @@ function intentFor(
     schemaVersion: "1.1.0",
     locale: request.locale,
     interactionId: "platform-consultation-readonly",
-    kind,
+    kind: "UNAVAILABLE",
     scope,
     expiresAt: new Date(now + 5 * 60 * 1000).toISOString(),
     lifecycleEffect: "NONE",
     executionAuthority: "NONE",
-    blocks: kind === "EXPLAIN" ?
-      [{ type: "TEXT", text }, { type: "NOTICE", level: "CAUTION", text: caution }] :
-      [{ type: "NOTICE", level: "CAUTION", text: caution }],
+    blocks: [{ type: "NOTICE", level: "CAUTION", text: caution }],
   };
   return validateIntelligencePresentation(raw, scope, now, request.locale);
 }
@@ -195,22 +190,21 @@ export function projectPrivatePlatformConsultation(
     raw.model === "NONE";
   if (blockedByUpstream) {
     return { state: "UNAVAILABLE", sourceSchema: schema,
-      intent: intentFor(request, "UNAVAILABLE", "",
+      intent: intentFor(request,
         plainNotice(request.locale, "BLOCKED"), now) };
   }
-  // v1.0.0 BFF does NOT declare response locale. NEVER claim the answer
-  // is translated just because the browser locale is PT or EN.
-  if (schema !== "1.1.0" || raw.answerLocale !== request.locale ||
-      raw.localeVerified !== true) {
-    return { state: "UNAVAILABLE", sourceSchema: schema,
-      intent: intentFor(request, "UNAVAILABLE", "",
-        plainNotice(request.locale, "LOCALE_UNVERIFIED"), now) };
+  // Preserve the proposed response-size ceiling without ever displaying it.
+  if (schema === "1.1.0" && raw.answer.length > 6000) {
+    deny("platform_presentation_size_limit");
   }
-  // Version 1.1.0 is proposed for a future private BFF. Its explicit locale
-  // must be bound to an actually verified upstream response, never copied
-  // blindly from a caller-supplied selector.
-  if (raw.answer.length > 6000) deny("platform_presentation_size_limit");
-  return { state: "PRESENTABLE", sourceSchema: schema,
-    intent: intentFor(request, "EXPLAIN", raw.answer,
-      reviewNotice(request.locale), now) };
+  // Neither a valid 1.0.0 BFF envelope nor 1.1.0 localeVerified boolean
+  // is proof of independent language verification, issuer authorization or
+  // distributed replay certification. The presentational V1 bundle also
+  // explicitly returns canShowModelAnswer=false. No raw model text leaves
+  // this bridge while the integrated release gate remains blocked.
+  const reason = schema !== "1.1.0" ||
+    raw.answerLocale !== request.locale || raw.localeVerified !== true
+    ? "LOCALE_UNVERIFIED" : "HOST_ATTESTATION_REQUIRED";
+  return { state: "UNAVAILABLE", sourceSchema: schema,
+    intent: intentFor(request,plainNotice(request.locale,reason),now) };
 }
