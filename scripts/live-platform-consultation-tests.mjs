@@ -183,3 +183,58 @@ test("explicit invalidation during token acquisition prevents outbound requests"
   assert.equal(calls,0);
   controller.dispose();
 });
+
+
+test("MODEL must be preceded by Intelligence retrieval READY, not legacy PASSED",async()=>{
+  for(const decision of ["PASSED","NEEDS_CONTEXT","EVIDENCE_INSUFFICIENT",
+    "CONTEXT_CONFLICT","UNKNOWN"]){
+    const c=run({request:async()=>raw({
+      evidence:{retrievalDecision:decision,retrievedSourceCount:1}
+    })});
+    await rejects(()=>c.askExplicitly(question),"invalid_consultative_retrieval");
+    c.dispose();
+  }
+});
+
+test("RETRIEVAL_* failure mode must match exact non-READY retrieval decision",async()=>{
+  for(const patch of [
+    {responseMode:"RETRIEVAL_NEEDS_CONTEXT",
+      evidence:{retrievalDecision:"READY",retrievedSourceCount:1}},
+    {responseMode:"RETRIEVAL_NEEDS_CONTEXT",
+      evidence:{retrievalDecision:"EVIDENCE_INSUFFICIENT",retrievedSourceCount:1}},
+    {responseMode:"RETRIEVAL_CONTEXT_CONFLICT",
+      evidence:{retrievalDecision:"NEEDS_CONTEXT",retrievedSourceCount:1}},
+    {responseMode:"RETRIEVAL_NOT_A_GATE",
+      evidence:{retrievalDecision:"READY",retrievedSourceCount:1}},
+  ]){
+    const c=run({request:async()=>raw(patch)});
+    await rejects(()=>c.askExplicitly(question),"invalid_consultative_retrieval");
+    c.dispose();
+  }
+});
+
+test("cost denial and safe fallback cannot invent an eligible retrieval decision",async()=>{
+  for(const responseMode of ["AI_COST_GUARD","SAFE_FALLBACK"]){
+    const c=run({request:async()=>raw({
+      responseMode,
+      evidence:{retrievalDecision:"NEEDS_CONTEXT",retrievedSourceCount:1},
+    })});
+    await rejects(()=>c.askExplicitly(question),"invalid_consultative_retrieval");
+    c.dispose();
+  }
+});
+
+test("coherent non-READY retrieval is unavailable without rendering upstream text",async()=>{
+  for(const decision of ["NEEDS_CONTEXT","EVIDENCE_INSUFFICIENT","CONTEXT_CONFLICT"]){
+    const c=run({request:async()=>raw({
+      decision:"BLOCKED",responseMode:"RETRIEVAL_"+decision,model:"NONE",
+      costGuard:{allowed:false,accountedUsd:0,code:"RETRIEVAL_GATE"},
+      evidence:{retrievalDecision:decision,retrievedSourceCount:0}
+    })});
+    const output=await c.askExplicitly(question);
+    assert.equal(output.state,"UNAVAILABLE");
+    assert.equal(output.intent.executionAuthority,"NONE");
+    assert.doesNotMatch(JSON.stringify(output),/Resposta sintética sem comprovação/);
+    c.dispose();
+  }
+});
