@@ -23,6 +23,7 @@ export type ConsultativeReplayNotice = Readonly<{
   executionAuthority:"NONE";
 }>;
 export class ConsultativeReplayReceiptError extends Error{
+  readonly code = "INVALID_CONSULTATIVE_REPLAY_RECEIPT";
   constructor(){super("INVALID_CONSULTATIVE_REPLAY_RECEIPT");this.name="ConsultativeReplayReceiptError";}
 }
 const deny=():never=>{throw new ConsultativeReplayReceiptError();};
