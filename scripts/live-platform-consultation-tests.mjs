@@ -238,3 +238,55 @@ test("coherent non-READY retrieval is unavailable without rendering upstream tex
     c.dispose();
   }
 });
+
+
+test("explicit invalidation settles an ignored-abort transport without response or second cost",async()=>{
+ let requests=0;
+ const never=new Promise(()=>{});
+ const c=run({request:async()=>{
+  requests++;
+  if(requests===1)return never;
+  return raw();
+ }});
+ const abandoned=c.askExplicitly(question);
+ assert.equal(requests,1);
+ c.invalidate();
+ await rejects(()=>abandoned,"consultation_context_changed");
+ const fresh=await c.askExplicitly(question);
+ assert.equal(fresh.state,"UNAVAILABLE");
+ assert.equal(fresh.intent.executionAuthority,"NONE");
+ assert.equal(requests,2);
+ c.dispose();
+});
+test("dispose settles a hung transport even when the transport ignores AbortSignal",async()=>{
+ let requests=0;
+ const c=run({request:()=>{requests++;return new Promise(()=>{});}});
+ const old=c.askExplicitly(question);
+ assert.equal(requests,1);
+ c.dispose();
+ await rejects(()=>old,"consultation_context_changed");
+ await rejects(()=>c.askExplicitly(question),"coordinator_disposed");
+ assert.equal(requests,1);
+});
+test("aborted transport resolving or rejecting late never changes the next session",async()=>{
+ for(const finish of ["resolve","reject"]){
+  const first=deferred();let attempts=0;
+  const c=run({request:async()=>{
+   attempts++;
+   if(attempts===1)return first.promise;
+   return raw();
+  }});
+  const discarded=c.askExplicitly(question);
+  c.invalidate();
+  await rejects(()=>discarded,"consultation_context_changed");
+  const newResult=await c.askExplicitly(question);
+  assert.equal(newResult.state,"UNAVAILABLE");
+  if(finish==="resolve")first.resolve(raw({answer:"OLD SESSION PRIVATE ANSWER"}));
+  else first.resolve(Promise.reject(new Error("PRIVATE UPSTREAM ERROR")));
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(newResult.state,"UNAVAILABLE");
+  assert.doesNotMatch(JSON.stringify(newResult),/OLD SESSION PRIVATE ANSWER|PRIVATE UPSTREAM ERROR/);
+  assert.equal(attempts,2);
+  c.dispose();
+ }
+});
