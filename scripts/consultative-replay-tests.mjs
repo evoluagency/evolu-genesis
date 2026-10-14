@@ -112,3 +112,25 @@ test("test-only conformance report never substitutes a live signed replay receip
  denied(()=>run(raw({productionReplayStoreCertified:true})));
  denied(()=>run(raw({distributedReplayProtectionVerified:true})));
 });
+
+
+test("hostile receipt access is converted into an opaque boundary error",()=>{
+ const privateDiagnostic="secret from upstream tenant and token";
+ const base=raw();
+ const throwingScope=Object.defineProperty({...base},"scope",{
+  enumerable:true,get(){throw new Error(privateDiagnostic);}
+ });
+ const ownKeysTrap=new Proxy(base,{ownKeys(){throw new Error(privateDiagnostic);}});
+ const nestedScope=new Proxy(scope,{get(){throw new Error(privateDiagnostic);}});
+ const wrongExpected=Object.defineProperty({...expected()},"locale",{
+  enumerable:true,get(){throw new Error(privateDiagnostic);}
+ });
+ for(const value of [throwingScope,ownKeysTrap,{...base,scope:nestedScope}]){
+  assert.throws(()=>run(value),err=>
+   err instanceof ConsultativeReplayReceiptError &&
+   !String(err.message).includes(privateDiagnostic));
+ }
+ assert.throws(()=>run(base,wrongExpected),err=>
+  err instanceof ConsultativeReplayReceiptError &&
+  !String(err.message).includes(privateDiagnostic));
+});
