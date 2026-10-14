@@ -135,6 +135,19 @@ function copyResponse(raw: unknown): Record<string, unknown> {
   });
 }
 /**
+ * A single detached, frozen read of fields supplied by the private host.
+ * The snapshot is NOT authentication or a display grant. It is reused by
+ * retrieval consistency and the presentation projection to avoid rereading
+ * a foreign getter/proxy or a mutable response between stages.
+ */
+export function snapshotPrivatePlatformResponse(
+  raw: unknown,
+): Readonly<Record<string, unknown>> {
+  try { return copyResponse(raw); }
+  catch { deny("platform_consultative_contract_mismatch"); }
+}
+
+/**
  * Builds only the EXACT shape already accepted by Platform's guarded route.
  * No web fetch, token, credential, history, model selection, or execution.
  */
