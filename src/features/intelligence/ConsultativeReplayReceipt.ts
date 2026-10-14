@@ -48,6 +48,7 @@ function validScope(x:unknown):x is ConsultativeReceiptScope{
 export function projectUnreleasedConsultativeReplay(
   raw:unknown,expected:ExpectedConsultativeReplay,
 ):ConsultativeReplayNotice{
+  try {
   // Narrow untrusted roots independently for TypeScript strict and runtime safety.
   if(!obj(raw))deny();
   if(!obj(expected))deny();
@@ -93,4 +94,8 @@ export function projectUnreleasedConsultativeReplay(
       "A consulta não pode ser apresentada. A proteção contra reutilização no servidor privado e o idioma da resposta ainda não foram comprovados.",
     executionAuthority:"NONE",
   });
+  } catch {
+    // Do not expose hostile getter/proxy exceptions or untrusted diagnostics.
+    throw new ConsultativeReplayReceiptError();
+  }
 }
