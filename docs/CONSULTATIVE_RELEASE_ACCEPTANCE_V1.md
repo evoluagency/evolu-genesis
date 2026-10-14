@@ -45,3 +45,10 @@ O registro versionado `evolu2/intelligence/config/platform-read-runtime.multiplu
 **Limite da verificação atual:** esse status é evidência registrada no repositório. Nesta rodada não foram realizadas requisições autenticadas novas nem confirmação independente da implantação atual. O fechamento prévio do Gate B comprova a **leitura de contexto da Platform pela Intelligence no ambiente e cenário indicados**, não a consulta integrada da Genesis nem a BFF UX7B atual.
 
 Por isso a matriz renomeia o primeiro gate externo para `INTEGRATED_CONSULTATION_JWT_RLS_E2E`, que permanece `E2E_PENDING`. Nenhum campo `priorGateB` pode autorizar deploy, merge, resposta do modelo, inferência paga ou escrita. A próxima prova deve exercer o fluxo integrado com identidade e escopo reais e matriz de negações no host privado, somente após liberação da Platform.
+
+
+## Emenda 2026-10-14 — cancelamento local de transporte
+
+O `LiveConsultationCoordinator` encerra a **espera da interface** quando sua tentativa é invalidada ou descartada, inclusive se um adaptador injetado ignorar `AbortSignal` e nunca resolver. Respostas e exceções posteriores da tentativa antiga não alcançam a sessão nova. A invalidação explícita agora se apresenta de forma consistente como `consultation_context_changed` e mantém `retryable=false`.
+
+Esse cancelamento **não certifica** interrupção de requisição já despachada à BFF ou de inferência eventualmente iniciada/paga. Um ACK ausente ou timeout não autoriza retransmitir automaticamente a mesma consulta; isso exige contrato idempotente real, governança de custo e evidência do backend privado. Os novos testes são apenas de transporte injetado, sem rede real.
