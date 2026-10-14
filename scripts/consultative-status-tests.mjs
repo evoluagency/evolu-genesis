@@ -109,3 +109,33 @@ test("generic transport errors remain separate from unknown claim outcomes",()=>
  assert.equal(generic.nextAction,"RETRY");
  assert.notEqual(verification.title,generic.title);
 });
+
+
+test("hostile upstream code getters or proxies fail closed without retry",()=>{
+ const secret="sensitive-upstream-auth-and-tenant-data";
+ const throwing=Object.defineProperty({},"code",{
+  get(){throw new Error(secret);}
+ });
+ const proxy=new Proxy({},{
+  get(_target,key){if(key==="code")throw new Error(secret);return undefined;}
+ });
+ for(const input of [throwing,proxy]){
+  for(const locale of ["pt-BR","en"]){
+   const notice=describeConsultativeFailure(input,locale);
+   assert.equal(notice.kind,"VERIFICATION_BLOCKED");
+   assert.equal(notice.retryable,false);
+   assert.equal(notice.nextAction,"NONE");
+   assert.equal(notice.locale,locale);
+   assert.equal(JSON.stringify(notice).includes(secret),false);
+  }
+ }
+});
+test("genuine Error.code remains recognized without exposing Error.message",()=>{
+ const e=Object.assign(new Error("sensitive diagnostic"),{
+  code:"CONSULTATIVE_REPLAY_GUARD_UNAVAILABLE"
+ });
+ const result=describeConsultativeFailure(e,"pt-BR");
+ assert.equal(result.kind,"VERIFICATION_BLOCKED");
+ assert.equal(result.nextAction,"NONE");
+ assert.equal(JSON.stringify(result).includes("sensitive diagnostic"),false);
+});
