@@ -164,3 +164,46 @@ test('self-consistent forged bundle cannot replace independently expected host a
   'LOCAL_PRESENTATION_ONLY_NOT_HOST_ATTESTED');
  assert.equal(projection.executionAuthority,'NONE');
 });
+
+
+test('untrusted expected host selection is snapshotted, never read twice',()=>{
+ const hiddenDiagnostic='sensitive private host context';
+ const foreignTenant='99999999-9999-4999-8999-999999999999';
+ let reads=0;
+ const shifting=Object.defineProperty({...fixture.expected},'scope',{
+  enumerable:true,get(){
+   reads++;
+   return reads%2===1?fixture.expected.scope:{
+    ...fixture.expected.scope,tenantId:foreignTenant,
+   };
+  },
+ });
+ const hidden=Object.defineProperty({...fixture.expected},'locale',{
+  enumerable:true,get(){throw new Error(hiddenDiagnostic);}
+ });
+ const prototype=Object.assign(Object.create({authorized:true}),fixture.expected);
+ const poisonousScope=new Proxy(fixture.expected.scope,{
+  ownKeys(){throw new Error(hiddenDiagnostic);}
+ });
+ for(const ctx of [
+  shifting,hidden,prototype,
+  {...fixture.expected,scope:poisonousScope},
+  {...fixture.expected,undocumentedAccessGrant:true},
+  {...fixture.expected,scope:{...fixture.expected.scope,extra:'unsafe'}},
+ ]){
+  assert.throws(()=>project(raw(),ctx),error=>
+   error instanceof ConsultativeBundleProjectionError &&
+   !error.message.includes(hiddenDiagnostic));
+ }
+ assert.equal(reads,0,'getter must never be evaluated');
+});
+test('validated scope and locale remain fixed across both nested projections',()=>{
+ const source=raw();
+ const expected={...fixture.expected,scope:{...fixture.expected.scope}};
+ const projection=project(source,expected);
+ assert.equal(projection.state,'UNAVAILABLE');
+ assert.equal(projection.locale,'pt-BR');
+ assert.equal(projection.executionAuthority,'NONE');
+ expected.scope.tenantId='99999999-9999-4999-8999-999999999999';
+ assert.equal(projection.state,'UNAVAILABLE');
+});
