@@ -6,13 +6,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {projectUnreleasedSignedConsultation,SignedConsultationBoundaryError}
  from '../preview/runtime/features/intelligence/ConsultativeSignedVerification.js';
 import {projectUnreleasedConsultativeReplay,ConsultativeReplayReceiptError}
  from '../preview/runtime/features/intelligence/ConsultativeReplayReceipt.js';
 
-const fixture=JSON.parse(readFileSync(new URL(
- './fixtures/consultative-host-receipts-v1.json',import.meta.url),'utf8'));
+const fixtureBytes=readFileSync(new URL(
+ './fixtures/consultative-host-receipts-v1.json',import.meta.url));
+const fixture=JSON.parse(fixtureBytes.toString('utf8'));
+test('identical golden transport bytes are pinned across both repositories',()=>{
+ const sha=createHash('sha1')
+  .update('blob '+fixtureBytes.length+'\0').update(fixtureBytes).digest('hex');
+ assert.equal(sha,'f12223e71131432a1f9cb82d91cf7731388a0f59');
+});
 function clone(v){return structuredClone(v);}
 function rejectsSigned(raw,expected=fixture.expected){
  assert.throws(()=>projectUnreleasedSignedConsultation(raw,expected),SignedConsultationBoundaryError);
