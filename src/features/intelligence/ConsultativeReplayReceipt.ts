@@ -48,7 +48,10 @@ function validScope(x:unknown):x is ConsultativeReceiptScope{
 export function projectUnreleasedConsultativeReplay(
   raw:unknown,expected:ExpectedConsultativeReplay,
 ):ConsultativeReplayNotice{
-  if(!obj(raw)||!obj(expected)||!validScope(expected.scope)||
+  // Narrow untrusted roots independently for TypeScript strict and runtime safety.
+  if(!obj(raw))deny();
+  if(!obj(expected))deny();
+  if(!validScope(expected.scope)||
      !uuid.test(String(expected.attemptId))||
      (expected.locale!=="pt-BR"&&expected.locale!=="en"))deny();
 
