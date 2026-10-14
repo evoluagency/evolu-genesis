@@ -179,7 +179,9 @@ test("explicit invalidation during token acquisition prevents outbound requests"
   const pending=controller.askExplicitly(question);
   controller.invalidate();
   tokenTask.resolve(token);
-  await rejects(()=>pending,"consultation_cancelled");
+  // Explicit invalidation changes the current session incarnation.
+  // The abort-race settles it immediately as consultation_context_changed.
+  await rejects(()=>pending,"consultation_context_changed");
   assert.equal(calls,0);
   controller.dispose();
 });
