@@ -68,6 +68,11 @@ const verificationCodes = new Set([
   "CONSULTATIVE_PRESENTATION_CHECK_FAILED",
   "INVALID_CONSULTATIVE_REPLAY_RECEIPT",
   "INVALID_SIGNED_CONSULTATION_RESULT",
+  // Future private-host qualification failures. These do NOT imply that
+  // any replay adapter has been certified or connected in production.
+  "REPLAY_STORE_CONFORMANCE_FAILED",
+  "REPLAY_STORE_NOT_CERTIFIED",
+  "REPLAY_STORE_ATOMICITY_UNKNOWN",
 ]);
 
 /**
