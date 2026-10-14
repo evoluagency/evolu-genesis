@@ -16,7 +16,7 @@ const raw=(patch={})=>({
   schemaVersion:"1.0.0",tenantId:scope.tenantId,companyId:scope.companyId,cnpjId:scope.cnpjId,
   sourceKind:"intelligence_consultative_answer",lifecycle:"PRE_LEARNING",referenceDate:scope.referenceDate,
   decision:"ADVISORY_ONLY",answer:"Resposta sintética sem comprovação do idioma.",
-  responseMode:"MODEL",model:"synthetic",evidence:{retrievalDecision:"PASSED",retrievedSourceCount:1},
+  responseMode:"MODEL",model:"synthetic",evidence:{retrievalDecision:"READY",retrievedSourceCount:1},
   costGuard:{allowed:true,accountedUsd:0,code:null},
   provenance:[{source:"Intelligence.POST /api/intelligence",observedAt:"2026-10-13T17:00:00.000Z"}],
   capabilities:{canApprove:{status:"unavailable"},canExecute:{status:"unavailable"},canLearn:{status:"unavailable"}},
