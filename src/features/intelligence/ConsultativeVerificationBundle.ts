@@ -42,16 +42,18 @@ function exactKeys(v:Record<string,unknown>,keys:readonly string[]):void{
 // Freeze one host-derived selection before either receipt is interpreted.
 // Presentation consistency only: this does NOT authenticate tenant or issuer.
 function plainRecord(input:unknown,keys:readonly string[]):Readonly<Record<string,unknown>>{
- if(!obj(input))deny();
- const proto=Object.getPrototypeOf(input);
+ if(!obj(input))throw new ConsultativeBundleProjectionError();
+ const target=input as Record<string,unknown>;
+ const proto=Object.getPrototypeOf(target);
  if(proto!==Object.prototype&&proto!==null)deny();
- const present=Reflect.ownKeys(input);
+ const present=Reflect.ownKeys(target);
  if(present.length!==keys.length||
     present.some(k=>typeof k!=="string"||!keys.includes(k)))deny();
  const out:Record<string,unknown>={};
  for(const key of keys){
-  const descriptor=Object.getOwnPropertyDescriptor(input,key);
-  if(!descriptor||!descriptor.enumerable||!("value" in descriptor))deny();
+  const descriptor=Object.getOwnPropertyDescriptor(target,key);
+  if(!descriptor||!descriptor.enumerable||!("value" in descriptor))
+   throw new ConsultativeBundleProjectionError();
   out[key]=descriptor.value;
  }
  return Object.freeze(out);
@@ -61,8 +63,10 @@ function snapshotExpectedBundle(raw:unknown):ExpectedConsultativeBundle{
  const scope=plainRecord(fields.scope,[
   "tenantId","companyId","cnpjId","referenceDate",
  ]);
- if(typeof fields.attemptId!=="string"||
-    (fields.locale!=="pt-BR"&&fields.locale!=="en"))deny();
+ if(typeof fields.attemptId!=="string")
+  throw new ConsultativeBundleProjectionError();
+ if(fields.locale!=="pt-BR"&&fields.locale!=="en")
+  throw new ConsultativeBundleProjectionError();
  for(const k of ["tenantId","companyId","cnpjId","referenceDate"]){
   if(typeof scope[k]!=="string")deny();
  }
