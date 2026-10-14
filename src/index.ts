@@ -68,3 +68,7 @@ export {ConsultativeAttemptReceiptError,projectConsultativeAttemptReceipt} from 
 // Signed response metadata is NOT a client authorization or signature verification.
 export type {ExpectedSignedConsultation,SignedConsultationNotice} from "./features/intelligence/ConsultativeSignedVerification.js";
 export {SignedConsultationBoundaryError,projectUnreleasedSignedConsultation} from "./features/intelligence/ConsultativeSignedVerification.js";
+
+// Claimed replay receipts are not proof of distributed production replay safety.
+export type {ExpectedConsultativeReplay,ConsultativeReplayNotice} from "./features/intelligence/ConsultativeReplayReceipt.js";
+export {ConsultativeReplayReceiptError,projectUnreleasedConsultativeReplay} from "./features/intelligence/ConsultativeReplayReceipt.js";
