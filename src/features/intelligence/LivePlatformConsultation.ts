@@ -64,6 +64,64 @@ function snapshotId(s: AuthenticatedPageSnapshot): string {
     s.scope.cnpjId, s.scope.tenantSlug, s.scope.referenceDate, s.scope.pageId,
   ]);
 }
+// Read the host's authenticated selection as own primitive data exactly once.
+// Never invoke a foreign getter (including nested scope properties) or accept
+// hidden fields, symbols, exotic prototypes, or a mutable alias to host state.
+function ownHostFields(raw: unknown, names: readonly string[]): Record<string, unknown> {
+  if (raw === null || typeof raw !== "object" || Array.isArray(raw)) {
+    fail("authenticated_context_required");
+  }
+  const source = raw as Record<string, unknown>;
+  const proto = Object.getPrototypeOf(source);
+  if (proto !== Object.prototype && proto !== null) fail("authenticated_context_required");
+  const keys = Reflect.ownKeys(source);
+  if (keys.length !== names.length ||
+      keys.some(key => typeof key !== "string" || !names.includes(key))) {
+    fail("authenticated_context_required");
+  }
+  const values: Record<string, unknown> = Object.create(null);
+  for (const key of names) {
+    const descriptor = Object.getOwnPropertyDescriptor(source,key);
+    if (!descriptor || !descriptor.enumerable || !("value" in descriptor)) {
+      fail("authenticated_context_required");
+    }
+    values[key] = descriptor.value;
+  }
+  return values;
+}
+function snapshotHostPage(raw: unknown): AuthenticatedPageSnapshot | null {
+  if (raw === null) return null;
+  try {
+    const page=ownHostFields(raw,["scope","locale","sessionEpoch"]);
+    const scope=ownHostFields(page.scope,[
+      "tenantId","companyId","cnpjId","tenantSlug","referenceDate","pageId",
+    ]);
+    for (const field of [
+      "tenantId","companyId","cnpjId","tenantSlug","referenceDate","pageId",
+    ]) {
+      if (typeof scope[field] !== "string") fail("authenticated_context_required");
+    }
+    if (typeof page.sessionEpoch !== "string" ||
+        (page.locale !== "pt-BR" && page.locale !== "en")) {
+      fail("authenticated_context_required");
+    }
+    return Object.freeze({
+      scope:Object.freeze({
+        tenantId:scope.tenantId as string,
+        companyId:scope.companyId as string,
+        cnpjId:scope.cnpjId as string,
+        tenantSlug:scope.tenantSlug as string,
+        referenceDate:scope.referenceDate as string,
+        pageId:scope.pageId as string,
+      }),
+      locale:page.locale as IntelligenceLocale,
+      sessionEpoch:page.sessionEpoch,
+    });
+  } catch {
+    fail("authenticated_context_required");
+  }
+}
+
 function validSnapshot(s: AuthenticatedPageSnapshot | null): s is AuthenticatedPageSnapshot {
   return s !== null && typeof s.sessionEpoch === "string" &&
     s.sessionEpoch.length >= 8 && s.sessionEpoch.length <= 128 &&
@@ -265,7 +323,9 @@ export class LiveConsultationCoordinator {
   async askExplicitly(question: string): Promise<SafeConsultationProjection> {
     if (this.disposed) fail("coordinator_disposed");
     if (this.active !== null) fail("consultation_in_flight");
-    const started = this.current();
+    let started: AuthenticatedPageSnapshot | null;
+    try { started = snapshotHostPage(this.current()); }
+    catch { fail("authenticated_context_required"); }
     if (!validSnapshot(started)) fail("authenticated_context_required");
     // Only an explicit caller may use this method, e.g. form submission.
     // Observational events and accepting help MUST NOT invoke this pathway.
@@ -281,17 +341,23 @@ export class LiveConsultationCoordinator {
     this.active = controller;
     const generation = this.generation;
     const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
-    function stale(now: AuthenticatedPageSnapshot | null): boolean {
-      return !validSnapshot(now) || snapshotId(now) !== expectedId;
-    }
+    const stale = (): boolean => {
+      try {
+        const now = snapshotHostPage(this.current());
+        return !validSnapshot(now) || snapshotId(now) !== expectedId;
+      } catch {
+        // Host getter/proxy failures must never expose private diagnostics.
+        return true;
+      }
+    };
     try {
-      if (stale(this.current())) fail("consultation_context_changed");
+      if (stale()) fail("consultation_context_changed");
       let response: unknown;
       try {
         response = await settleTransportOnAbort(
           () => this.transport.request(invocation, controller.signal,
             () => !this.disposed && !controller.signal.aborted &&
-              generation === this.generation && !stale(this.current())),
+              generation === this.generation && !stale()),
           controller.signal,
         );
       } catch {
@@ -302,11 +368,11 @@ export class LiveConsultationCoordinator {
         fail("private_platform_unavailable");
       }
       if (generation !== this.generation || controller.signal.aborted ||
-          this.disposed || stale(this.current())) fail("consultation_context_changed");
+          this.disposed || stale()) fail("consultation_context_changed");
       assertConsultativeRetrievalConsistency(response);
       const projection = projectPrivatePlatformConsultation(response, human);
       if (generation !== this.generation || controller.signal.aborted ||
-          this.disposed || stale(this.current())) fail("consultation_context_changed");
+          this.disposed || stale()) fail("consultation_context_changed");
       return projection;
     } finally {
       clearTimeout(timeout);
