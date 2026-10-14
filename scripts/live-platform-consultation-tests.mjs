@@ -451,3 +451,49 @@ test("retrieval accessor and poisoned proxy reject without exposing private diag
  }
  assert.equal(getters,0);
 });
+
+
+test("malformed MIME declarations never pass the JSON response gate",async()=>{
+ for(const contentType of [
+  "text/plain; comment=application/json",
+  "application/jsonp","application/json-extra",
+  "application/json, text/html","text/html",
+ ]){
+  const t=new SameOriginPlatformConsultativeTransport(
+   {getAccessToken:async()=>token},
+   async()=>new Response(JSON.stringify(raw()),{
+    status:200,headers:{"content-type":contentType},
+   }));
+  const c=run(t);
+  await rejects(()=>c.askExplicitly(question),"private_platform_unavailable");
+  c.dispose();
+ }
+});
+test("an oversized response cannot hold UI hostage with a hung stream cancel",async()=>{
+ let cancels=0;
+ const stream=new ReadableStream({
+  start(controller){controller.enqueue(new Uint8Array(65537));},
+  cancel(){cancels++;return new Promise(()=>{});}
+ });
+ const t=new SameOriginPlatformConsultativeTransport(
+  {getAccessToken:async()=>token},
+  async()=>new Response(stream,{
+   status:200,headers:{"content-type":"application/json"},
+  }));
+ const c=run(t);
+ // The stream's cancel() is intentionally never resolved. The client must
+ // settle from the byte limit, rather than wait for its cancellation ACK.
+ const race=Promise.race([
+  c.askExplicitly(question).then(
+   ()=>{throw Error("oversized response was accepted");},
+   e=>e,
+  ),
+  new Promise(resolve=>setTimeout(()=>resolve("UNSETTLED"),250)),
+ ]);
+ const outcome=await race;
+ assert.notEqual(outcome,"UNSETTLED");
+ assert.equal(outcome instanceof LiveConsultationBoundaryError,true);
+ assert.equal(outcome.code,"private_platform_unavailable");
+ assert.equal(cancels,1);
+ c.dispose();
+});
