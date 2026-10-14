@@ -61,6 +61,7 @@ function validScope(scope:unknown):scope is ConsultativeReceiptScope{
 export function projectUnreleasedSignedConsultation(
   raw:unknown,expected:ExpectedSignedConsultation,
 ):SignedConsultationNotice {
+  try {
   if(!obj(raw)||!obj(expected)||!validScope(expected.scope)||
      (expected.locale!=="pt-BR"&&expected.locale!=="en")||
      typeof expected.attemptId!=="string"||!uuid.test(expected.attemptId))deny();
@@ -95,4 +96,8 @@ export function projectUnreleasedSignedConsultation(
       "The signed source cannot be presented until the private host independently verifies authorization, evidence and language.":
       "A fonte assinada não pode ser apresentada antes da verificação independente de autorização, evidências e idioma pelo servidor privado.",
   });
+  } catch {
+    // Do not expose hostile getter/proxy exceptions or untrusted diagnostics.
+    throw new SignedConsultationBoundaryError();
+  }
 }
