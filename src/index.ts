@@ -64,3 +64,7 @@ export {ConsultativeReceiptError,projectConsultativeVerificationReceipt} from ".
 // One-shot private-host attempt receipt, correlation-only until backend attestation.
 export type {ExpectedConsultativeAttempt,ConsultativeAttemptView} from "./features/intelligence/ConsultativeAttemptReceipt.js";
 export {ConsultativeAttemptReceiptError,projectConsultativeAttemptReceipt} from "./features/intelligence/ConsultativeAttemptReceipt.js";
+
+// Signed response metadata is NOT a client authorization or signature verification.
+export type {ExpectedSignedConsultation,SignedConsultationNotice} from "./features/intelligence/ConsultativeSignedVerification.js";
+export {SignedConsultationBoundaryError,projectUnreleasedSignedConsultation} from "./features/intelligence/ConsultativeSignedVerification.js";
