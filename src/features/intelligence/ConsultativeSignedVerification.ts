@@ -28,6 +28,7 @@ export type SignedConsultationNotice = Readonly<{
 }>;
 
 export class SignedConsultationBoundaryError extends Error {
+  readonly code = "INVALID_SIGNED_CONSULTATION_RESULT";
   constructor(){
     super("INVALID_SIGNED_CONSULTATION_RESULT");
     this.name="SignedConsultationBoundaryError";
