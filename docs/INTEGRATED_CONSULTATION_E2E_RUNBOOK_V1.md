@@ -52,3 +52,10 @@ Armazenar em local **privado e controlado**, sem anexar tokens, dados empresaria
 O manifesto atual permanece `decision=BLOCKED` e `integratedConsultationVerified=false`. Um relatório E2E futuro deverá ser avaliado por gate independente e autoridade de release; editar o manifesto estático não autoriza produto.
 
 **Restrição de mudança:** nenhuma modificação de Platform ou seu CI até **01/11/2026**. Nenhuma execução descrita aqui foi realizada nesta rodada.
+
+
+## Bloqueio de exibição no bridge Genesis V1 (revisão 2026-10-14)
+
+O bridge `projectPrivatePlatformConsultation` tem agora saída **somente `UNAVAILABLE`**, inclusive quando a BFF alegar `schemaVersion=1.1.0`, `answerLocale` e `localeVerified=true`. Um JSON simples, mesmo de origem same-origin, **não é** atestado de autoridade emissora Ed25519, replay de uso único distribuído, proveniência verificável ou comprovação independente de idioma. Indicadores autoafirmados como `issuerAuthorizationVerified`, `verificationBundle.display.canShowModelAnswer` e `productionReplayStoreCertified` nunca autorizam exibição. Nenhum bloco `TEXT` ou resposta do modelo pode ser produzido pelo bridge V1.
+
+A futura liberação de resposta consultiva exige um **novo contrato do host privado** que certifique todas as provas conjuntamente, restrito à mesma tentativa e identidade, com gates E2E revisados e autoridade explícita de release. Não basta reativar o antigo caminho `PRESENTABLE` ou alterar uma flag. Até lá, o resultado correto na Genesis é aviso localizado, sem inferência adicional ou retry automático. A Intelligence continua devolvendo `display.canShowModelAnswer=false` em seus bundles offline e não fornece certificação operacional.
