@@ -60,8 +60,8 @@ test("unknown or malformed upstream body is NEVER reflected into UI text",()=>{
  ]){
   const result=describeConsultativeFailure(input,"pt-BR");
   assert.equal(result.kind,"SERVICE_UNAVAILABLE");
-  assert.equal(result.retryable,true);
-  assert.equal(result.nextAction,"RETRY");
+  assert.equal(result.retryable,false);
+  assert.equal(result.nextAction,"NONE");
   assert.equal(JSON.stringify(result).includes(secret),false);
  }
 });
@@ -112,7 +112,7 @@ test("generic transport errors remain separate from unknown claim outcomes",()=>
  },"en");
  assert.equal(verification.retryable,false);
  assert.equal(generic.kind,"SERVICE_UNAVAILABLE");
- assert.equal(generic.nextAction,"RETRY");
+ assert.equal(generic.nextAction,"NONE");
  assert.notEqual(verification.title,generic.title);
 });
 
@@ -211,6 +211,26 @@ test("actual receipt projection failures map to no-retry UI in both languages",(
    assert.equal(notice.nextAction,"NONE");
    assert.equal(notice.retryable,false);
    assert.equal(notice.locale,locale);
+  }
+ }
+});
+
+test("an unknown lost-ACK or malformed host error is never an automatic or suggested retry",()=>{
+ const inputs=[
+  null,undefined,{code:"HOST_CONNECTION_LOST"},
+  {code:"TIMEOUT_AFTER_PROVIDER_EXECUTION"},
+  {code:"ACK_MISSING",message:"sensitive private source content"},
+  {code:"",message:"host response uncertain"},
+  new Error("uncertain backend execution"),
+ ];
+ for(const locale of ["pt-BR","en"]){
+  for(const value of inputs){
+   const notice=describeConsultativeFailure(value,locale);
+   assert.equal(notice.kind,"SERVICE_UNAVAILABLE");
+   assert.equal(notice.retryable,false);
+   assert.equal(notice.nextAction,"NONE");
+   assert.equal(notice.locale,locale);
+   assert.equal(JSON.stringify(notice).includes("private source content"),false);
   }
  }
 });
