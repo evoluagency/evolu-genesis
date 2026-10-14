@@ -87,3 +87,28 @@ test("consumer includes no HTTP, storage, private keys or inference",()=>{
  assert.doesNotMatch(src,/\bfetch\s*\(|\bgenerateText\s*\(|\.insert\s*\(|\.delete\s*\(/);
  assert.doesNotMatch(src,/localStorage|sessionStorage|process\.env|privateKey/);
 });
+
+
+test("test-only conformance report never substitutes a live signed replay receipt",()=>{
+ const report={
+  schemaVersion:"1.0.0",
+  kind:"REPLAY_STORE_TEST_HARNESS_RESULT",
+  checks:["ONE_WINNER_CONCURRENT","NO_PREMATURE_REUSE",
+   "DISTINCT_DIGEST","NAMESPACE_ISOLATION"],
+  checkedClientHandles:24,
+  actualBackendIndependenceVerified:false,
+  backendAtomicityCertified:false,
+  durabilityCertified:false,
+  expiryCertified:false,
+  failureIsolationCertified:false,
+  JWTAndRLSVerified:false,
+  authorizesDeployment:false,
+  authorizesModelDisplay:false,
+  executionAuthority:"NONE",
+ };
+ denied(()=>run(report));
+ denied(()=>run(raw({...report})));
+ denied(()=>run(raw({conformanceReport:report})));
+ denied(()=>run(raw({productionReplayStoreCertified:true})));
+ denied(()=>run(raw({distributedReplayProtectionVerified:true})));
+});
