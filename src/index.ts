@@ -60,3 +60,7 @@ export { describeConsultativeFailure } from "./features/intelligence/Consultativ
 // Source-only Intelligence proof receipt: always denies unverified model answers.
 export type {ConsultativeReceiptScope, ConsultativeReceiptState} from "./features/intelligence/ConsultativeVerificationReceipt.js";
 export {ConsultativeReceiptError,projectConsultativeVerificationReceipt} from "./features/intelligence/ConsultativeVerificationReceipt.js";
+
+// One-shot private-host attempt receipt, correlation-only until backend attestation.
+export type {ExpectedConsultativeAttempt,ConsultativeAttemptView} from "./features/intelligence/ConsultativeAttemptReceipt.js";
+export {ConsultativeAttemptReceiptError,projectConsultativeAttemptReceipt} from "./features/intelligence/ConsultativeAttemptReceipt.js";
