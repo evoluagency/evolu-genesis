@@ -72,3 +72,7 @@ export {SignedConsultationBoundaryError,projectUnreleasedSignedConsultation} fro
 // Claimed replay receipts are not proof of distributed production replay safety.
 export type {ExpectedConsultativeReplay,ConsultativeReplayNotice} from "./features/intelligence/ConsultativeReplayReceipt.js";
 export {ConsultativeReplayReceiptError,projectUnreleasedConsultativeReplay} from "./features/intelligence/ConsultativeReplayReceipt.js";
+
+// Combined signed/replay receipts are presentation-only, never a trust grant.
+export type {ExpectedConsultativeBundle,ConsultativeBundleNotice} from "./features/intelligence/ConsultativeVerificationBundle.js";
+export {ConsultativeBundleProjectionError,projectUnreleasedConsultativeBundle} from "./features/intelligence/ConsultativeVerificationBundle.js";
