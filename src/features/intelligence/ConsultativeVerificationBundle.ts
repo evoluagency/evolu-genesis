@@ -27,6 +27,7 @@ export type ConsultativeBundleNotice=Readonly<{
  executionAuthority:"NONE";
 }>;
 export class ConsultativeBundleProjectionError extends Error{
+  readonly code = "INVALID_CONSULTATIVE_VERIFICATION_BUNDLE";
  constructor(){
   super("INVALID_CONSULTATIVE_VERIFICATION_BUNDLE");
   this.name="ConsultativeBundleProjectionError";
