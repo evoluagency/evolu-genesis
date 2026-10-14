@@ -241,6 +241,7 @@ test("replay conformance lifecycle failures remain opaque and non-retryable",()=
   "CLIENT_OPEN_UNAVAILABLE",
   "CLIENT_CLOSE_UNAVAILABLE",
   "INDEPENDENT_CLIENT_HANDLES",
+  "RECONNECT_REPLAY_DENIAL",
  ]){
   for(const locale of ["pt-BR","en"]){
    const diagnostic="PRIVATE_CONNECTION_TOKEN_MUST_NOT_LEAK";
