@@ -292,3 +292,76 @@ test("aborted transport resolving or rejecting late never changes the next sessi
   c.dispose();
  }
 });
+
+
+test("foreign host getters and proxy traps fail before any paid BFF dispatch",async()=>{
+ const privateDetail="PRIVATE_JWT_OR_TENANT_METADATA";
+ const poison=()=>{throw new Error(privateDetail);};
+ const rootGetter=Object.defineProperty({...snapshot()},"sessionEpoch",{
+  enumerable:true,get:poison,
+ });
+ const scopeGetter=Object.defineProperty({...scope},"companyId",{
+  enumerable:true,get:poison,
+ });
+ const hostileProxy=new Proxy(snapshot(),{ownKeys:poison});
+ const foreign=Object.assign(Object.create({authorized:true}),snapshot());
+ const scopeProxy=new Proxy({...scope},{getOwnPropertyDescriptor:poison});
+ const malicious=[
+  rootGetter,{...snapshot(),scope:scopeGetter},hostileProxy,foreign,
+  {...snapshot(),scope:scopeProxy},
+  {...snapshot(),canExecute:true},
+  {...snapshot(),scope:{...scope,privateToken:"never trust"}},
+ ];
+ for(const hostile of malicious){
+  let calls=0;
+  const c=run({request:async()=>{calls++;return raw();}},()=>hostile);
+  await assert.rejects(()=>c.askExplicitly(question),error=>
+   error instanceof LiveConsultationBoundaryError &&
+   error.code==="authenticated_context_required" &&
+   !error.message.includes(privateDetail));
+  assert.equal(calls,0);
+  c.dispose();
+ }
+});
+test("the first host selection is not modified by a getter while building the request",async()=>{
+ let invoked=0;
+ const changing=Object.defineProperty({...scope},"cnpjId",{
+  enumerable:true,get(){
+   invoked++;
+   return invoked===1?scope.cnpjId:"99999999-9999-4999-8999-999999999999";
+  },
+ });
+ let sent=0;
+ const c=run({request:async()=>{sent++;return raw();}},
+  ()=>({...snapshot(),scope:changing}));
+ await rejects(()=>c.askExplicitly(question),"authenticated_context_required");
+ assert.equal(invoked,0);
+ assert.equal(sent,0);
+ c.dispose();
+});
+test("a hostile host replacement while token is pending rejects before network dispatch",async()=>{
+ let host=snapshot(),outbound=0;
+ const t=new SameOriginPlatformConsultativeTransport(
+  {getAccessToken:async()=>{host=Object.defineProperty({...snapshot()},"locale",{
+    enumerable:true,get(){throw new Error("PRIVATE_HOST_LOCALE");}
+   });return token;}},
+  async()=>{outbound++;return ok()},
+ );
+ const c=run(t,()=>host);
+ await rejects(()=>c.askExplicitly(question),"private_platform_unavailable");
+ assert.equal(outbound,0);
+ c.dispose();
+});
+test("immutable host snapshots cannot be changed by a later mutable selection",async()=>{
+ let host=snapshot(),outbound=0;
+ const c=run({request:async(invocation)=>{
+  outbound++;
+  assert.equal(invocation.payload.companyId,scope.companyId);
+  host={...host,scope:{...host.scope,companyId:
+   "99999999-9999-4999-8999-999999999999"}};
+  return raw();
+ }},()=>host);
+ await rejects(()=>c.askExplicitly(question),"consultation_context_changed");
+ assert.equal(outbound,1);
+ c.dispose();
+});
