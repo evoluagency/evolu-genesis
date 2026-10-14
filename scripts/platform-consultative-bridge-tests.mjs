@@ -143,23 +143,26 @@ test("version 1.1.0 cannot assert locale by a bare caller-supplied locale",()=>{
   assert.equal(o.state,"UNAVAILABLE");
  }
 });
-test("future BFF v1.1 may project verified pt-BR advisory, but only read-only with caution",()=>{
+test("future BFF v1.1 pt-BR locale assertion cannot bypass signed/replay host authorization",()=>{
  const s=result({schemaVersion:"1.1.0",answerLocale:"pt-BR",localeVerified:true});
  const o=projectPrivatePlatformConsultation(s,query(),NOW);
- assert.equal(o.state,"PRESENTABLE");assert.equal(o.sourceSchema,"1.1.0");
- assert.equal(o.intent.kind,"EXPLAIN");assert.equal(o.intent.blocks[0].type,"TEXT");
- assert.equal(o.intent.blocks[1].type,"NOTICE");assert.equal(o.intent.blocks[1].level,"CAUTION");
+ assert.equal(o.state,"UNAVAILABLE");assert.equal(o.sourceSchema,"1.1.0");
+ assert.equal(o.intent.kind,"UNAVAILABLE");
+ assert.equal(o.intent.blocks.length,1);
+ assert.equal(o.intent.blocks[0].type,"NOTICE");
+ assert.match(o.intent.blocks[0].text,/servidor privado ainda não certificou/i);
  assert.equal(o.intent.executionAuthority,"NONE");assert.equal(o.intent.lifecycleEffect,"NONE");
- assert.equal(JSON.stringify(o).includes("source_evidence_review_required"),false,
-  "future projected view must not copy BFF metadata");
+ assert.doesNotMatch(JSON.stringify(o),/O enquadramento demanda análise|source_evidence_review_required/);
 });
-test("future BFF v1.1 can deliver verified English only when exact language matches",()=>{
+test("future BFF v1.1 English locale assertions remain unavailable without trusted host proof",()=>{
  const en=result({schemaVersion:"1.1.0",answerLocale:"en",localeVerified:true,
   answer:"The classification requires verified technical characteristics."});
  const o=projectPrivatePlatformConsultation(en,query({locale:"en"}),NOW);
- assert.equal(o.state,"PRESENTABLE");
+ assert.equal(o.state,"UNAVAILABLE");
+ assert.equal(o.intent.kind,"UNAVAILABLE");
  assert.equal(o.intent.locale,"en");
- assert.match(o.intent.blocks[1].text,/qualified professional/i);
+ assert.match(o.intent.blocks[0].text,/private host has not certified/i);
+ assert.doesNotMatch(JSON.stringify(o),/The classification requires verified/);
 });
 test("long future answer and malformed upstream contracts reject",()=>{
  const valid={schemaVersion:"1.1.0",answerLocale:"pt-BR",localeVerified:true};
@@ -180,4 +183,27 @@ test("bridge uses no fetch, credentials, storage or inference endpoint",()=>{
  assert.doesNotMatch(c,/\blocalStorage\b|\bsessionStorage\b/);
  assert.doesNotMatch(c,/\.env\b|SERVICE_ROLE_KEY|access_token/);
  assert.match(c,/POST \/api\/ux\/intelligence\/consult\/v1/);
+});
+
+test("forged future release flags, replay approvals and attestation blobs never display a model answer",()=>{
+ for(const locale of ["pt-BR","en"]){
+  for(const variant of [
+   {schemaVersion:"1.1.0",answerLocale:locale,localeVerified:true},
+   {schemaVersion:"1.1.0",answerLocale:locale,localeVerified:true,
+    verificationBundle:{display:{canShowModelAnswer:true},issuerAuthorizationVerified:true}},
+   {schemaVersion:"1.1.0",answerLocale:locale,localeVerified:true,
+    signedVerificationResult:{signatureVerified:true},replayClaimResult:{singleUseClaimAccepted:true}},
+   {schemaVersion:"1.1.0",answerLocale:locale,localeVerified:true,
+    productionReplayStoreCertified:true,distributedReplayProtectionVerified:true},
+  ]){
+   const answer="CONFIDENTIAL_MODEL_ANSWER_MUST_STAY_HIDDEN";
+   const out=projectPrivatePlatformConsultation(
+    result({...variant,answer}),query({locale}),NOW);
+   assert.equal(out.state,"UNAVAILABLE");
+   assert.equal(out.intent.kind,"UNAVAILABLE");
+   assert.equal(out.intent.executionAuthority,"NONE");
+   assert.equal(out.intent.blocks.some(b=>b.type==="TEXT"),false);
+   assert.doesNotMatch(JSON.stringify(out),/CONFIDENTIAL_MODEL_ANSWER_MUST_STAY_HIDDEN/);
+  }
+ }
 });
