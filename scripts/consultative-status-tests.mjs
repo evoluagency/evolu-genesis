@@ -156,3 +156,15 @@ test("replay store qualification errors are safe, localized and never retried",(
   }
  }
 });
+
+test('bundle rejection stays non-retryable',()=>{
+ for(const code of ['CONSULTATIVE_VERIFICATION_BUNDLE_REJECTED','INVALID_CONSULTATIVE_VERIFICATION_BUNDLE']){
+  for(const locale of ['pt-BR','en']){
+   const result=describeConsultativeFailure({code,message:'internal-secret'},locale);
+   assert.equal(result.kind,'VERIFICATION_BLOCKED');
+   assert.equal(result.nextAction,'NONE');
+   assert.equal(result.retryable,false);
+   assert.equal(JSON.stringify(result).includes('internal-secret'),false);
+  }
+ }
+});
