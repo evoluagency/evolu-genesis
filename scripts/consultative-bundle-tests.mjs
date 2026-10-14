@@ -137,3 +137,30 @@ test('throwing nested getters and proxies cannot leak an upstream diagnostic',()
    !String(e.message).includes(poison));
  }
 });
+
+test('self-consistent forged bundle cannot replace independently expected host attempt',()=>{
+ const foreignAttemptId='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+ const foreignScope={...fixture.expected.scope,
+  tenantId:'99999999-9999-4999-8999-999999999999',
+  referenceDate:'2026-10-12',
+ };
+ const forged={...raw(),attemptId:foreignAttemptId,
+  signedVerificationResult:{
+   ...fixture.signedVerificationResult,attemptId:foreignAttemptId,scope:foreignScope,
+  },
+  replayClaimResult:{
+   ...fixture.replayClaimResult,attemptId:foreignAttemptId,scope:foreignScope,
+  },
+ };
+ denied(()=>project(forged,fixture.expected));
+ // Presentation-only validation is not authentication: a foreign record
+ // may be internally consistent, but must never be treated as proof.
+ const matchingForeignExpected={
+  ...fixture.expected,attemptId:foreignAttemptId,scope:foreignScope,
+ };
+ const projection=project(forged,matchingForeignExpected);
+ assert.equal(projection.state,'UNAVAILABLE');
+ assert.equal(projection.verificationStatus,
+  'LOCAL_PRESENTATION_ONLY_NOT_HOST_ATTESTED');
+ assert.equal(projection.executionAuthority,'NONE');
+});
