@@ -11,6 +11,7 @@
  */
 import {
   createPlatformConsultativeInvocation,
+  snapshotPrivatePlatformResponse,
   projectPrivatePlatformConsultation,
   type ExplicitHumanConsultation,
   type PlatformConsultativeInvocation,
@@ -369,8 +370,13 @@ export class LiveConsultationCoordinator {
       }
       if (generation !== this.generation || controller.signal.aborted ||
           this.disposed || stale()) fail("consultation_context_changed");
-      assertConsultativeRetrievalConsistency(response);
-      const projection = projectPrivatePlatformConsultation(response, human);
+      // Freeze the BFF response ONCE before inspecting retrieval or
+      // projecting it. Both validators must use this same snapshot.
+      let frozenResponse: Readonly<Record<string, unknown>>;
+      try { frozenResponse = snapshotPrivatePlatformResponse(response); }
+      catch { fail("invalid_consultative_retrieval"); }
+      assertConsultativeRetrievalConsistency(frozenResponse);
+      const projection = projectPrivatePlatformConsultation(frozenResponse, human);
       if (generation !== this.generation || controller.signal.aborted ||
           this.disposed || stale()) fail("consultation_context_changed");
       return projection;
