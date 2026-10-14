@@ -83,14 +83,17 @@ export function describeConsultativeFailure(
   // A foreign error may be a Proxy or expose a throwing code getter.
   // Never let that unsafe metadata crash the private UX notice boundary.
   let value: unknown;
+  let unreadableCode = false;
   try {
     value = error !== null && typeof error === "object" && !Array.isArray(error)
       ? (error as Record<string, unknown>).code : undefined;
   } catch {
+    unreadableCode = true;
     value = undefined;
   }
   const code = typeof value === "string" && value.length <= 80 ? value : "";
   const kind: ConsultativeNoticeKind =
+    unreadableCode ? "VERIFICATION_BLOCKED" :
     sessionCodes.has(code) ? "SESSION_REQUIRED" :
     deniedCodes.has(code) ? "SCOPE_DENIED" :
     invalidCodes.has(code) ? "INPUT_INVALID" :
