@@ -6,7 +6,7 @@ import {createHash} from 'node:crypto';
 const file=readFileSync(new URL('../docs/CONSULTATIVE_RELEASE_ACCEPTANCE_V1.json',import.meta.url));
 const manifest=JSON.parse(file.toString('utf8'));
 const blobSha=createHash('sha1').update('blob '+file.length+'\0').update(file).digest('hex');
-const EXPECTED_SHA='b411c7cce0b767132847879da6fe5eafb17ef10f';
+const EXPECTED_SHA='b7e9d36cf5cc2c318b4ea40bcf85e787a5439e03';
 const LOCAL_REPO='evoluagency/evolu-genesis';
 const REQUIRED_SOURCE_GATES=new Set([
  'INTELLIGENCE_SCOPE_SOURCE',
@@ -15,7 +15,7 @@ const REQUIRED_SOURCE_GATES=new Set([
  'GENESIS_SYNTHETIC_PRESENTATION',
 ]);
 const REQUIRED_EXTERNAL_GATES=new Set([
- 'GATE_B_REAL_SESSION_JWT_RLS',
+ 'INTEGRATED_CONSULTATION_JWT_RLS_E2E',
  'PRIVATE_BFF_CANONICAL_SCOPE',
  'OPERATIONAL_SIGNER_AND_KEY_ROTATION',
  'DISTRIBUTED_REPLAY_DURABILITY',
@@ -26,7 +26,10 @@ const REQUIRED_EXTERNAL_GATES=new Set([
  'RELEASE_REVIEW_AND_ROLLBACK',
 ]);
 const FIELDS=['schemaVersion','kind','scope','lifecycle',
- 'evidenceBasis','decision','permissions','gates'];
+ 'evidenceBasis','decision','permissions','priorGateB','gates'];
+const HISTORY_KEYS=['kind','recordedStatus','recordedE2E','recordedAt',
+ 'executionBoundary','source','evidenceLevel',
+ 'integratedConsultationVerified','releaseAuthorization'];
 const PERMISSION_KEYS=['deploy','merge','showModelAnswer',
  'operationalWrites','autonomousLearning','paidInference'];
 function exactKeys(record,keys){
@@ -49,6 +52,16 @@ function validatePreReleaseMatrix(value){
     value.decision!=='BLOCKED'||
     !exactKeys(value.permissions,PERMISSION_KEYS)||
     PERMISSION_KEYS.some(key=>value.permissions[key]!==false)||
+    !exactKeys(value.priorGateB,HISTORY_KEYS)||
+    value.priorGateB.kind!=='INTELLIGENCE_PLATFORM_READ_HISTORICAL_RECORD'||
+    value.priorGateB.recordedStatus!=='CLOSED'||
+    value.priorGateB.recordedE2E!=='PASSED'||
+    value.priorGateB.recordedAt!=='2026-09-22T10:25:59Z'||
+    value.priorGateB.executionBoundary!=='EVOLU_APPLICATION_SERVER'||
+    value.priorGateB.source!=='evolu2/intelligence/config/platform-read-runtime.multiplus-validation.v1.json'||
+    value.priorGateB.evidenceLevel!=='REPOSITORY_RECORDED_NOT_INDEPENDENTLY_REEXECUTED'||
+    value.priorGateB.integratedConsultationVerified!==false||
+    value.priorGateB.releaseAuthorization!==false||
     !Array.isArray(value.gates)||
     value.gates.length!==REQUIRED_SOURCE_GATES.size+REQUIRED_EXTERNAL_GATES.size)
   return false;
@@ -102,9 +115,12 @@ test('CI green cannot forge release approval or promote external gates',()=>{
   m=>{m.permissions.paidInference=true;},
   m=>{m.permissions.autonomousLearning=true;},
   m=>{m.permissions.operationalWrites=true;},
+  m=>{m.priorGateB.integratedConsultationVerified=true;},
+  m=>{m.priorGateB.releaseAuthorization=true;},
+  m=>{m.priorGateB.recordedStatus='CURRENT_RELEASE_APPROVED';},
   m=>{m.lifecycle='LEARNING';},
   m=>{m.evidenceBasis='CERTIFIED_PRODUCTION';},
-  m=>{m.gates.find(g=>g.id==='GATE_B_REAL_SESSION_JWT_RLS').state='SOURCE_TESTED';},
+  m=>{m.gates.find(g=>g.id==='INTEGRATED_CONSULTATION_JWT_RLS_E2E').state='SOURCE_TESTED';},
   m=>{m.gates.find(g=>g.id==='DISTRIBUTED_REPLAY_DURABILITY').state='CERTIFIED';},
   m=>{m.gates.find(g=>g.id==='GENESIS_SYNTHETIC_PRESENTATION').state='PRODUCTION_READY';},
   m=>{m.gates[0].evidencePaths=[];},
@@ -124,4 +140,14 @@ test('each unresolved operational gate states the evidence needed',()=>{
   assert.equal(gate.evidencePaths.length,0);
   assert.ok(gate.nextProof.length>=15);
  }
+});
+
+test('historical Gate B record never satisfies the new cross-repo consultation gate',()=>{
+ assert.equal(manifest.priorGateB.recordedStatus,'CLOSED');
+ assert.equal(manifest.priorGateB.recordedE2E,'PASSED');
+ assert.equal(manifest.priorGateB.integratedConsultationVerified,false);
+ assert.equal(manifest.priorGateB.releaseAuthorization,false);
+ const integrated=manifest.gates.find(g=>g.id==='INTEGRATED_CONSULTATION_JWT_RLS_E2E');
+ assert.equal(integrated?.state,'E2E_PENDING');
+ assert.deepEqual(integrated?.evidencePaths,[]);
 });
