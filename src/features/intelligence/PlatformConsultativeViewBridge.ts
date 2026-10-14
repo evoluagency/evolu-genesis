@@ -74,11 +74,67 @@ function checkExpected(request: ExplicitHumanConsultation): void {
   }
 }
 
+// Untrusted host objects must not run getters, expose inherited authority,
+// or switch a validated field before it is used in the presentation path.
+// Ignore extra BFF metadata: it is not evidence of authorization.
+function ownFields(value: unknown, keys: readonly string[]): Record<string, unknown> {
+  if (!obj(value)) deny("platform_consultative_contract_mismatch");
+  const prototype=Object.getPrototypeOf(value);
+  if (prototype!==Object.prototype && prototype!==null) {
+    deny("platform_consultative_contract_mismatch");
+  }
+  const output:Record<string,unknown> = Object.create(null);
+  for (const key of keys) {
+    const descriptor=Object.getOwnPropertyDescriptor(value,key);
+    if (!descriptor || !descriptor.enumerable || !("value" in descriptor)) {
+      deny("platform_consultative_contract_mismatch");
+    }
+    output[key]=descriptor.value;
+  }
+  return Object.freeze(output);
+}
+function copyResponse(raw: unknown): Record<string, unknown> {
+  const root=ownFields(raw,[
+    "schemaVersion","sourceKind","lifecycle","tenantId","companyId",
+    "cnpjId","referenceDate","decision","answer","responseMode","model",
+    "costGuard","evidence","capabilities","dataQuality","provenance",
+  ]);
+  const costGuard=ownFields(root.costGuard,["allowed"]);
+  const evidence=ownFields(root.evidence,["retrievalDecision"]);
+  const capabilities=ownFields(root.capabilities,["canApprove","canExecute","canLearn"]);
+  const checkStatus=(v:unknown)=>ownFields(v,["status"]);
+  if (!Array.isArray(root.provenance) || root.provenance.length!==1 ||
+      Object.getPrototypeOf(root.provenance)!==Array.prototype) {
+    deny("platform_consultative_contract_mismatch");
+  }
+  const sourceDescriptor=Object.getOwnPropertyDescriptor(root.provenance,"0");
+  if (!sourceDescriptor || !sourceDescriptor.enumerable ||
+      !("value" in sourceDescriptor)) deny("platform_consultative_contract_mismatch");
+  const provenance=ownFields(sourceDescriptor.value,["source","observedAt"]);
+  const objRoot=raw as Record<string,unknown>;
+  const locale=Object.getOwnPropertyDescriptor(objRoot,"answerLocale");
+  const verified=Object.getOwnPropertyDescriptor(objRoot,"localeVerified");
+  if ((locale && (!locale.enumerable || !("value" in locale))) ||
+      (verified && (!verified.enumerable || !("value" in verified)))) {
+    deny("platform_consultative_contract_mismatch");
+  }
+  return Object.freeze({
+    ...root,
+    costGuard,evidence,
+    capabilities:Object.freeze({
+      canApprove:checkStatus(capabilities.canApprove),
+      canExecute:checkStatus(capabilities.canExecute),
+      canLearn:checkStatus(capabilities.canLearn),
+    }),
+    provenance:Object.freeze([provenance]),
+    answerLocale:locale?.value,localeVerified:verified?.value,
+  });
+}
 /**
  * Builds only the EXACT shape already accepted by Platform's guarded route.
  * No web fetch, token, credential, history, model selection, or execution.
  */
-export function createPlatformConsultativeInvocation(
+function createPlatformConsultativeInvocationUnchecked(
   request: ExplicitHumanConsultation,
 ): PlatformConsultativeInvocation {
   checkExpected(request);
@@ -151,12 +207,13 @@ function intentFor(
  * Platform BFF. The bridge is defense in depth and NEVER substitutes server
  * auth/RLS, principal validation, origin pinning or paid-inference cost guard.
  */
-export function projectPrivatePlatformConsultation(
+function projectPrivatePlatformConsultationUnchecked(
   raw: unknown,
   request: ExplicitHumanConsultation,
   now = Date.now(),
 ): SafeConsultationProjection {
   checkExpected(request);
+  raw=copyResponse(raw);
   if (!obj(raw) || !["1.0.0", "1.1.0"].includes(String(raw.schemaVersion)) ||
       raw.sourceKind !== "intelligence_consultative_answer" ||
       raw.lifecycle !== "PRE_LEARNING" ||
@@ -207,4 +264,27 @@ export function projectPrivatePlatformConsultation(
     ? "LOCALE_UNVERIFIED" : "HOST_ATTESTATION_REQUIRED";
   return { state: "UNAVAILABLE", sourceSchema: schema,
     intent: intentFor(request,plainNotice(request.locale,reason),now) };
+}
+
+/**
+ * The public response boundary is never allowed to throw a foreign proxy or
+ * getter diagnostic. No result from this V1 bridge grants model display.
+ */
+export function projectPrivatePlatformConsultation(
+  raw:unknown,request:ExplicitHumanConsultation,now=Date.now(),
+):SafeConsultationProjection {
+  try { return projectPrivatePlatformConsultationUnchecked(raw,request,now); }
+  catch(error) {
+    if (error instanceof PlatformConsultativeBoundaryError) throw error;
+    deny("platform_consultative_contract_mismatch");
+  }
+}
+export function createPlatformConsultativeInvocation(
+  request:ExplicitHumanConsultation,
+):PlatformConsultativeInvocation {
+  try { return createPlatformConsultativeInvocationUnchecked(request); }
+  catch(error) {
+    if (error instanceof PlatformConsultativeBoundaryError) throw error;
+    deny("invalid_human_consultation");
+  }
 }
