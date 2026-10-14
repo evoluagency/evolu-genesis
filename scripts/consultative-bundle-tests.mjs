@@ -6,14 +6,7 @@ import {
 } from '../preview/runtime/features/intelligence/ConsultativeVerificationBundle.js';
 const fixture=JSON.parse(readFileSync(new URL(
  './fixtures/consultative-host-receipts-v1.json',import.meta.url),'utf8'));
-const raw=()=>({
- schemaVersion:'1.0.0',kind:'CONSULTATIVE_VERIFICATION_BUNDLE_V1',
- attemptId:fixture.expected.attemptId,
- signedVerificationResult:structuredClone(fixture.signedVerificationResult),
- replayClaimResult:structuredClone(fixture.replayClaimResult),
- lifecycle:'PRE_LEARNING',executionAuthority:'NONE',
- display:{canShowModelAnswer:false,reasonCode:'LOCALE_UNVERIFIED'},
-});
+const raw=()=>structuredClone(fixture.bundleResult);
 const project=(data=raw(),exp=fixture.expected)=>
  projectUnreleasedConsultativeBundle(data,exp);
 const denied=(f)=>assert.throws(f,ConsultativeBundleProjectionError);
@@ -112,4 +105,35 @@ test('English authored safety shell also remains unavailable',()=>{
  assert.equal(out.locale,'en');
  assert.match(out.message,/private host/);
  assert.equal(out.state,'UNAVAILABLE');
+});
+
+test('complete golden transport envelope is rejected if externally augmented',()=>{
+ assert.deepEqual(raw(),fixture.bundleResult);
+ const additions=[
+  {signature:'attacker-controlled',source:'external'},
+  {productionAuthorization:true},
+  {tenantId:'99999999-9999-4999-8999-999999999999'},
+  {retryable:true},
+ ];
+ for(const patch of additions)denied(()=>project({...raw(),...patch}));
+});
+test('throwing nested getters and proxies cannot leak an upstream diagnostic',()=>{
+ const base=raw();
+ const poison='confidential upstream exception';
+ const getter=Object.defineProperty({...base},'replayClaimResult',{
+  enumerable:true,get(){throw new Error(poison);}
+ });
+ const proxy=new Proxy(base,{
+  ownKeys(){throw new Error(poison);}
+ });
+ const nested=new Proxy(base.replayClaimResult,{
+  get(){throw new Error(poison);}
+ });
+ for(const candidate of [
+  getter,proxy,{...base,replayClaimResult:nested},
+ ]){
+  assert.throws(()=>project(candidate),e=>
+   e instanceof ConsultativeBundleProjectionError &&
+   !String(e.message).includes(poison));
+ }
 });
