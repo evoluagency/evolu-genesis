@@ -22,7 +22,8 @@
     "test:consultative-signature": "npm run build:preview-runtime && node scripts/consultative-signed-verification-tests.mjs",
     "test:consultative-replay": "npm run build:preview-runtime && node scripts/consultative-replay-tests.mjs",
     "test:consultative-wire-compat": "npm run build:preview-runtime && node scripts/consultative-wire-compat-tests.mjs",
-    "test:consultative-bundle": "npm run build:preview-runtime && node scripts/consultative-bundle-tests.mjs"
+    "test:consultative-bundle": "npm run build:preview-runtime && node scripts/consultative-bundle-tests.mjs",
+    "test:consultative-release-acceptance": "node scripts/consultative-release-acceptance-tests.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.0"
