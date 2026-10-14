@@ -43,24 +43,28 @@ export function projectUnreleasedConsultativeBundle(
  raw:unknown,expected:ExpectedConsultativeBundle,
 ):ConsultativeBundleNotice{
  try{
-  if(!obj(raw)||!obj(expected))deny();
-  exactKeys(raw,["schemaVersion","kind","attemptId",
+  if(!obj(raw))deny();
+  if(!obj(expected))deny();
+  // Structural cast occurs only after the foreign top-level record check.
+  const parsed=raw as Record<string,unknown>;
+  exactKeys(parsed,["schemaVersion","kind","attemptId",
    "signedVerificationResult","replayClaimResult","lifecycle",
    "executionAuthority","display"]);
-  if(raw.schemaVersion!=="1.0.0"||
-     raw.kind!=="CONSULTATIVE_VERIFICATION_BUNDLE_V1"||
-     raw.attemptId!==expected.attemptId||
-     raw.lifecycle!=="PRE_LEARNING"||
-     raw.executionAuthority!=="NONE"||!obj(raw.display))deny();
-  exactKeys(raw.display,["canShowModelAnswer","reasonCode"]);
-  if(raw.display.canShowModelAnswer!==false||
-     raw.display.reasonCode!=="LOCALE_UNVERIFIED")deny();
+  if(parsed.schemaVersion!=="1.0.0"||
+     parsed.kind!=="CONSULTATIVE_VERIFICATION_BUNDLE_V1"||
+     parsed.attemptId!==expected.attemptId||
+     parsed.lifecycle!=="PRE_LEARNING"||
+     parsed.executionAuthority!=="NONE"||!obj(parsed.display))deny();
+  const display=parsed.display as Record<string,unknown>;
+  exactKeys(display,["canShowModelAnswer","reasonCode"]);
+  if(display.canShowModelAnswer!==false||
+     display.reasonCode!=="LOCALE_UNVERIFIED")deny();
   // Both existing consumers perform exact-shape checks, validate group/CNPJ,
   // tenant, date, attempt and locale against SAME host-supplied expectation.
   const signed=projectUnreleasedSignedConsultation(
-   raw.signedVerificationResult,expected);
+   parsed.signedVerificationResult,expected);
   const replay=projectUnreleasedConsultativeReplay(
-   raw.replayClaimResult,expected);
+   parsed.replayClaimResult,expected);
   if(signed.state!=="UNAVAILABLE"||replay.state!=="UNAVAILABLE"||
      signed.locale!==replay.locale||
      signed.reasonCode!=="LOCALE_UNVERIFIED"||
@@ -75,5 +79,5 @@ export function projectUnreleasedConsultativeBundle(
     "A consulta permanece indisponível até que o servidor privado verifique a autoridade da assinatura, a proteção compartilhada contra reutilização, as evidências e o idioma.",
    executionAuthority:"NONE",
   });
- }catch{deny();}
+ }catch{throw new ConsultativeBundleProjectionError();}
 }
