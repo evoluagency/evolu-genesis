@@ -18,7 +18,7 @@ const fixture=JSON.parse(fixtureBytes.toString('utf8'));
 test('identical golden transport bytes are pinned across both repositories',()=>{
  const sha=createHash('sha1')
   .update('blob '+fixtureBytes.length+'\0').update(fixtureBytes).digest('hex');
- assert.equal(sha,'f12223e71131432a1f9cb82d91cf7731388a0f59');
+ assert.equal(sha,'fdd740cced9272f38c2b174e37ab57c33800658e');
 });
 function clone(v){return structuredClone(v);}
 function rejectsSigned(raw,expected=fixture.expected){
@@ -111,4 +111,18 @@ test('source-only signature claims never elevate client-side trust',()=>{
   {distributedReplayProtectionVerified:true},
   {display:{canShowModelAnswer:true,reasonCode:'READY'}}
  ])rejectsReplay({...fixture.replayClaimResult,...patch});
+});
+
+test('the shared complete envelope is exactly the pair of individual source receipts',()=>{
+ const bundle=fixture.bundleResult;
+ assert.equal(bundle.schemaVersion,'1.0.0');
+ assert.equal(bundle.kind,'CONSULTATIVE_VERIFICATION_BUNDLE_V1');
+ assert.equal(bundle.attemptId,fixture.expected.attemptId);
+ assert.deepEqual(bundle.signedVerificationResult,fixture.signedVerificationResult);
+ assert.deepEqual(bundle.replayClaimResult,fixture.replayClaimResult);
+ assert.deepEqual(bundle.display,{canShowModelAnswer:false,reasonCode:'LOCALE_UNVERIFIED'});
+ assert.equal(bundle.executionAuthority,'NONE');
+ assert.equal(bundle.lifecycle,'PRE_LEARNING');
+ assert.equal(bundle.replayClaimResult.productionReplayStoreCertified,false);
+ assert.equal(bundle.signedVerificationResult.issuerAuthorizationVerified,false);
 });
