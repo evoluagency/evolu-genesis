@@ -139,3 +139,20 @@ test("genuine Error.code remains recognized without exposing Error.message",()=>
  assert.equal(result.nextAction,"NONE");
  assert.equal(JSON.stringify(result).includes("sensitive diagnostic"),false);
 });
+
+
+test("replay store qualification errors are safe, localized and never retried",()=>{
+ for(const code of ["REPLAY_STORE_CONFORMANCE_FAILED",
+   "REPLAY_STORE_NOT_CERTIFIED","REPLAY_STORE_ATOMICITY_UNKNOWN"]){
+  for(const locale of ["pt-BR","en"]){
+   const notice=describeConsultativeFailure({
+    code,message:"db://private.example/secret/tenant-uuid"
+   },locale);
+   assert.equal(notice.kind,"VERIFICATION_BLOCKED");
+   assert.equal(notice.nextAction,"NONE");
+   assert.equal(notice.retryable,false);
+   assert.equal(notice.locale,locale);
+   assert.equal(JSON.stringify(notice).includes("db://"),false);
+  }
+ }
+});
