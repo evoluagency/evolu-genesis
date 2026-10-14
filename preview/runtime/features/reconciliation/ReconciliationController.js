@@ -46,8 +46,9 @@ export class ReconciliationController {
     async createFollowup() {
         const analysis = this.requireAnalysis();
         const item = analysis.missingContext[0];
-        if (!item)
+        if (!item) {
             throw new Error("reconciliation_followup_not_required");
+        }
         const result = await this.platform.recordPendingItem({
             tenantId: this.config.tenantId,
             companyId: this.config.companyId,
@@ -64,16 +65,18 @@ export class ReconciliationController {
         return result.item;
     }
     getCurrentContext() {
-        if (!this.context)
+        if (!this.context) {
             throw new Error("reconciliation_context_not_loaded");
+        }
         return this.context;
     }
     getCurrentAnalysis() {
         return this.requireAnalysis();
     }
     requireAnalysis() {
-        if (!this.analysis)
+        if (!this.analysis) {
             throw new Error("reconciliation_analysis_not_loaded");
+        }
         return this.analysis;
     }
 }

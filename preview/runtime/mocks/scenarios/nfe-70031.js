@@ -298,18 +298,38 @@ export const documentAnalysisContext = {
 };
 export const officePendingItems = [
     {
-        pendingItemId: "pending-office-unidentified-receipt", type: "information_request",
-        scope: { tenantId: mockTenant.tenantId, companyId: mockCompany.companyId, cnpjId: mockCnpj.cnpjId, accountingPeriodId: mockPeriod.periodId },
+        pendingItemId: "pending-office-unidentified-receipt",
+        type: "information_request",
+        scope: {
+            tenantId: mockTenant.tenantId,
+            companyId: mockCompany.companyId,
+            cnpjId: mockCnpj.cnpjId,
+            accountingPeriodId: mockPeriod.periodId
+        },
         title: "Qual a finalidade do recebimento não identificado?",
         description: "A contabilidade precisa contextualizar um crédito bancário que não equivale automaticamente a receita tributável.",
-        status: "awaiting_information", subject: { type: "FinancialMovement", id: "movement-unidentified-receipt-2026-09" }
+        status: "awaiting_information",
+        subject: {
+            type: "FinancialMovement",
+            id: "movement-unidentified-receipt-2026-09"
+        }
     },
     {
-        pendingItemId: "pending-office-material-proof", type: "document_issue",
-        scope: { tenantId: mockTenant.tenantId, companyId: mockCompany.companyId, cnpjId: mockCnpj.cnpjId, accountingPeriodId: mockPeriod.periodId },
+        pendingItemId: "pending-office-material-proof",
+        type: "document_issue",
+        scope: {
+            tenantId: mockTenant.tenantId,
+            companyId: mockCompany.companyId,
+            cnpjId: mockCnpj.cnpjId,
+            accountingPeriodId: mockPeriod.periodId
+        },
         title: "Comprovante da aquisição de materiais",
         description: "Documento de compra é evidência e deve ser conferido antes de qualquer classificação fiscal.",
-        status: "awaiting_information", subject: { type: "FiscalDocument", id: "fiscal-document-material-purchase" }
+        status: "awaiting_information",
+        subject: {
+            type: "FiscalDocument",
+            id: "fiscal-document-material-purchase"
+        }
     }
 ];
 export const pendingItemsContext = {
@@ -319,10 +339,52 @@ export const pendingItemsContext = {
     cnpjId: mockCnpj.cnpjId,
     items: [purposePendingItem, ...officePendingItems]
 };
-export const seededApprovalRecommendation = { recommendationId: "recommendation-approval-70018", analysisId: "analysis-approval-70018", type: "record_economic_purpose", title: "Registrar finalidade econômica como componente de produção", rationale: "A finalidade desta operação foi confirmada e a alteração controlada aguarda autorização formal antes de qualquer execução.", evidenceRefs: [], confidence: 0.92, requiresApproval: true, proposedChange: { economicPurpose: "production" } };
-export const seededApprovalDecision = { decisionId: "decision-approval-70018", recommendationId: seededApprovalRecommendation.recommendationId, analysisId: seededApprovalRecommendation.analysisId, decision: "accept", rationale: "Recomendação aceita para submissão ao fluxo formal de aprovação.", decidedBy: "professional-reviewer-demo", decidedAt: "2026-10-10T12:00:00Z" };
-export const seededApprovalRecord = { approvalId: "approval-70018", decisionId: seededApprovalDecision.decisionId, scope: { tenantId: mockTenant.tenantId, companyId: mockCompany.companyId, cnpjId: mockCnpj.cnpjId, accountingPeriodId: mockPeriod.periodId }, subjectType: "FiscalDocument", subjectId: "fiscal-document-70018", status: "awaiting_approval" };
-export const approvalContext = { schemaVersion: "1.0.0", tenantId: mockTenant.tenantId, approvals: [seededApprovalRecord], relatedDecisions: [seededApprovalDecision], relatedRecommendations: [seededApprovalRecommendation], capabilities: { canApprove: { status: "allowed" }, canReject: { status: "allowed" } } };
+export const seededApprovalRecommendation = {
+    recommendationId: "recommendation-approval-70018",
+    analysisId: "analysis-approval-70018",
+    type: "record_economic_purpose",
+    title: "Registrar finalidade econômica como componente de produção",
+    rationale: "A finalidade desta operação foi confirmada e a alteração controlada aguarda autorização formal antes de qualquer execução.",
+    evidenceRefs: [],
+    confidence: 0.92,
+    requiresApproval: true,
+    proposedChange: {
+        economicPurpose: "production"
+    }
+};
+export const seededApprovalDecision = {
+    decisionId: "decision-approval-70018",
+    recommendationId: seededApprovalRecommendation.recommendationId,
+    analysisId: seededApprovalRecommendation.analysisId,
+    decision: "accept",
+    rationale: "Recomendação aceita para submissão ao fluxo formal de aprovação.",
+    decidedBy: "professional-reviewer-demo",
+    decidedAt: "2026-10-10T12:00:00Z"
+};
+export const seededApprovalRecord = {
+    approvalId: "approval-70018",
+    decisionId: seededApprovalDecision.decisionId,
+    scope: {
+        tenantId: mockTenant.tenantId,
+        companyId: mockCompany.companyId,
+        cnpjId: mockCnpj.cnpjId,
+        accountingPeriodId: mockPeriod.periodId
+    },
+    subjectType: "FiscalDocument",
+    subjectId: "fiscal-document-70018",
+    status: "awaiting_approval"
+};
+export const approvalContext = {
+    schemaVersion: "1.0.0",
+    tenantId: mockTenant.tenantId,
+    approvals: [seededApprovalRecord],
+    relatedDecisions: [seededApprovalDecision],
+    relatedRecommendations: [seededApprovalRecommendation],
+    capabilities: {
+        canApprove: { status: "allowed" },
+        canReject: { status: "allowed" }
+    }
+};
 export const initialDocumentAnalysisResult = {
     schemaVersion: "1.0.0",
     analysisId: initialAnalysis.analysisId,
@@ -332,7 +394,6 @@ export const initialDocumentAnalysisResult = {
     recommendations: [],
     missingContext: initialAnalysis.missingContext
 };
-
 export const reconciliationCase = {
     reconciliationId: "reconciliation-acme-2026-09",
     tenantId: mockTenant.tenantId,
@@ -346,7 +407,11 @@ export const reconciliationEvidence = [
         evidenceId: "evidence-reconciliation-fiscal",
         type: "reconciliation_source",
         label: "Documentos fiscais importados",
-        value: { dimension: "fiscal", provider: "SIEG / XML", amount: 812440.2 },
+        value: {
+            dimension: "fiscal",
+            provider: "SIEG / XML",
+            amount: 812440.2
+        },
         source: "fiscal_documents",
         asOf: "2026-09-30",
         confidence: 1
@@ -355,7 +420,11 @@ export const reconciliationEvidence = [
         evidenceId: "evidence-reconciliation-accounting",
         type: "reconciliation_source",
         label: "Escrituração contábil",
-        value: { dimension: "accounting", provider: "Domínio / Razão", amount: 817125.54 },
+        value: {
+            dimension: "accounting",
+            provider: "Domínio / Razão",
+            amount: 817125.54
+        },
         source: "accounting_ledger",
         asOf: "2026-09-30",
         confidence: 1
@@ -364,7 +433,11 @@ export const reconciliationEvidence = [
         evidenceId: "evidence-reconciliation-management",
         type: "reconciliation_source",
         label: "Visão gerencial agregada",
-        value: { dimension: "management", provider: "Demonstrativo interno", amount: 789980 },
+        value: {
+            dimension: "management",
+            provider: "Demonstrativo interno",
+            amount: 789980
+        },
         source: "management_statement",
         asOf: "2026-09-30",
         confidence: 1
@@ -373,7 +446,11 @@ export const reconciliationEvidence = [
         evidenceId: "evidence-reconciliation-financial",
         type: "reconciliation_source",
         label: "Movimentação financeira conciliável",
-        value: { dimension: "financial", provider: "Banco", amount: 805312.11 },
+        value: {
+            dimension: "financial",
+            provider: "Banco",
+            amount: 805312.11
+        },
         source: "financial_movement",
         asOf: "2026-09-30",
         confidence: 1

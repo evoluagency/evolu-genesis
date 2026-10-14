@@ -1,5 +1,8 @@
 export * from "./domain/index.js";
 export * from "./contracts/index.js";
+export { AdapterContractError } from "./providers/adapters/GatewayTransport.js";
+export { PlatformAdapter } from "./providers/platform/PlatformAdapter.js";
+export { IntelligenceAdapter } from "./providers/intelligence/IntelligenceAdapter.js";
 export { MockPlatformProvider } from "./providers/platform/MockPlatformProvider.js";
 export { MockIntelligenceProvider } from "./providers/intelligence/MockIntelligenceProvider.js";
 export * from "./mocks/scenarios/nfe-70031.js";

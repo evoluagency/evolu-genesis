@@ -76,7 +76,12 @@ export class MockPlatformProvider {
         const purpose = this.scenarioState.economicPurpose;
         const purposeItems = purpose && purpose !== "unknown"
             ? []
-            : [{ ...purposePendingItem, status: "awaiting_information" }];
+            : [
+                {
+                    ...purposePendingItem,
+                    status: "awaiting_information"
+                }
+            ];
         const staticItems = pendingItemsContext.items.filter(item => item.pendingItemId !== purposePendingItem.pendingItemId);
         const items = [...purposeItems, ...staticItems, ...this.recordedPendingItems].filter(item => this.matchesScope(item.scope, input));
         return {
@@ -150,9 +155,10 @@ export class MockPlatformProvider {
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
-            ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
+            ...(request.accountingPeriodId
+                ? { accountingPeriodId: request.accountingPeriodId }
+                : {}),
             correlationId: `subject:${request.subjectType}:${request.subjectId}`,
-            causationId: request.decisionId,
             actor: request.actor,
             subject: {
                 type: request.subjectType,
@@ -187,7 +193,9 @@ export class MockPlatformProvider {
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
-            ...(request.item.scope.accountingPeriodId ? { accountingPeriodId: request.item.scope.accountingPeriodId } : {}),
+            ...(request.item.scope.accountingPeriodId
+                ? { accountingPeriodId: request.item.scope.accountingPeriodId }
+                : {}),
             correlationId: `subject:${request.item.subject.type}:${request.item.subject.id}`,
             actor: request.recordedBy,
             subject: { ...request.item.subject },
@@ -227,7 +235,9 @@ export class MockPlatformProvider {
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
-            ...(purposePendingItem.scope.accountingPeriodId ? { accountingPeriodId: purposePendingItem.scope.accountingPeriodId } : {}),
+            ...(purposePendingItem.scope.accountingPeriodId
+                ? { accountingPeriodId: purposePendingItem.scope.accountingPeriodId }
+                : {}),
             correlationId: `subject:FiscalDocument:${documentAnalysisContext.document.documentId}`,
             causationId: request.pendingItemId,
             actor: request.recordedBy,
@@ -287,7 +297,9 @@ export class MockPlatformProvider {
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
-            ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
+            ...(request.accountingPeriodId
+                ? { accountingPeriodId: request.accountingPeriodId }
+                : {}),
             correlationId: `subject:${request.subjectType}:${request.subjectId}`,
             causationId: request.recommendationId,
             actor: request.decidedBy,
@@ -308,10 +320,12 @@ export class MockPlatformProvider {
     }
     async recordApproval(request) {
         const decision = this.decisions.find(item => item.decisionId === request.decisionId);
-        if (!decision)
+        if (!decision) {
             throw new Error("mock_decision_not_found");
-        if (request.outcome === "approve" && decision.decision !== "accept")
+        }
+        if (request.outcome === "approve" && decision.decision !== "accept") {
             throw new Error("mock_decision_not_approvable");
+        }
         const existingIndex = this.approvals.findIndex(item => request.approvalId
             ? item.approvalId === request.approvalId
             : item.decisionId === request.decisionId);
@@ -321,11 +335,13 @@ export class MockPlatformProvider {
             companyId: request.companyId,
             cnpjId: request.cnpjId,
             ...(request.accountingPeriodId ? { periodId: request.accountingPeriodId } : {})
-        }))
+        })) {
             throw new Error("mock_approval_scope_mismatch");
+        }
         if (existing &&
-            (existing.subjectType !== request.subjectType || existing.subjectId !== request.subjectId))
+            (existing.subjectType !== request.subjectType || existing.subjectId !== request.subjectId)) {
             throw new Error("mock_approval_subject_mismatch");
+        }
         const now = new Date().toISOString();
         const scope = {
             tenantId: request.tenantId,
@@ -357,7 +373,9 @@ export class MockPlatformProvider {
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
-            ...(request.accountingPeriodId ? { accountingPeriodId: request.accountingPeriodId } : {}),
+            ...(request.accountingPeriodId
+                ? { accountingPeriodId: request.accountingPeriodId }
+                : {}),
             correlationId: `subject:${request.subjectType}:${request.subjectId}`,
             causationId: request.decisionId,
             actor: request.actor,
@@ -402,16 +420,19 @@ export class MockPlatformProvider {
                 eventId: `audit-seed-${approval.approvalId}`,
                 eventType: "approval.awaiting",
                 tenantId: approval.scope.tenantId,
-                ...(approval.scope.companyId ? { companyId: approval.scope.companyId } : {}),
+                ...(approval.scope.companyId
+                    ? { companyId: approval.scope.companyId }
+                    : {}),
                 ...(approval.scope.cnpjId ? { cnpjId: approval.scope.cnpjId } : {}),
                 ...(approval.scope.accountingPeriodId
                     ? { accountingPeriodId: approval.scope.accountingPeriodId }
                     : {}),
-                correlationId: `decision:${approval.decisionId}`,
+                correlationId: `subject:${approval.subjectType}:${approval.subjectId}`,
+                causationId: approval.decisionId,
                 actor: "system",
                 subject: {
-                    type: "ApprovalRecord",
-                    id: approval.approvalId
+                    type: approval.subjectType,
+                    id: approval.subjectId
                 },
                 occurredAt: "2026-10-10T12:00:01Z",
                 metadata: {
@@ -469,7 +490,9 @@ export class MockPlatformProvider {
             tenantId: request.tenantId,
             companyId: request.companyId,
             cnpjId: request.cnpjId,
-            ...(authorizationPeriodId ? { accountingPeriodId: authorizationPeriodId } : {}),
+            ...(authorizationPeriodId
+                ? { accountingPeriodId: authorizationPeriodId }
+                : {}),
             correlationId: `subject:${request.subjectType}:${request.subjectId}`,
             ...(request.authorization.kind === "approval_record"
                 ? { causationId: request.authorization.approvalId }
