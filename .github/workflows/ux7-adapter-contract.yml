@@ -14,6 +14,7 @@ on:
       - "scripts/live-platform-consultation-tests.mjs"
       - "scripts/consultative-status-tests.mjs"
       - "scripts/consultative-verification-tests.mjs"
+      - "scripts/consultative-attempt-tests.mjs"
       - "scripts/intelligence-browser-homologation.mjs"
       - "preview/intelligence-consultation/**"
       - "preview/shared-ux/intelligence-layer.*"
@@ -65,6 +66,8 @@ jobs:
         run: npm run test:consultative-status
       - name: Intelligence verification receipt must fail closed
         run: npm run test:consultative-verification
+      - name: One-shot private consultation attempt and stale-session boundary
+        run: npm run test:consultative-attempt
 
   browser:
     name: Intelligence Chromium UX acceptance
