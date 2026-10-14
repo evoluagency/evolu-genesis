@@ -26,7 +26,7 @@ const result=(patch={})=>({
   referenceDate:scope.referenceDate,decision:"ADVISORY_ONLY",
   answer:"O enquadramento demanda análise das características técnicas e das normas aplicáveis.",
   responseMode:"MODEL",model:"openai/gpt-oss-20b",
-  evidence:{retrievalDecision:"PASSED",retrievedSourceCount:1},
+  evidence:{retrievalDecision:"READY",retrievedSourceCount:1},
   costGuard:{allowed:true,accountedUsd:0,code:null},
   provenance:[{source:"Intelligence.POST /api/intelligence",observedAt:"2026-10-13T15:55:00.000Z"}],
   capabilities:{
