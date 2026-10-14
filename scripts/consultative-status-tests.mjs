@@ -234,3 +234,27 @@ test("an unknown lost-ACK or malformed host error is never an automatic or sugge
   }
  }
 });
+
+
+test("replay conformance lifecycle failures remain opaque and non-retryable",()=>{
+ for(const check of [
+  "CLIENT_OPEN_UNAVAILABLE",
+  "CLIENT_CLOSE_UNAVAILABLE",
+  "INDEPENDENT_CLIENT_HANDLES",
+ ]){
+  for(const locale of ["pt-BR","en"]){
+   const diagnostic="PRIVATE_CONNECTION_TOKEN_MUST_NOT_LEAK";
+   const notice=describeConsultativeFailure({
+    code:"REPLAY_STORE_CONFORMANCE_FAILED",
+    check,message:diagnostic,endpoint:"db://private-test-backend",
+   },locale);
+   assert.equal(notice.kind,"VERIFICATION_BLOCKED");
+   assert.equal(notice.retryable,false);
+   assert.equal(notice.nextAction,"NONE");
+   assert.equal(notice.locale,locale);
+   assert.equal(JSON.stringify(notice).includes(check),false);
+   assert.equal(JSON.stringify(notice).includes(diagnostic),false);
+   assert.equal(JSON.stringify(notice).includes("db://"),false);
+  }
+ }
+});
