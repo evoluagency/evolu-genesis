@@ -3,6 +3,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {describeConsultativeFailure} from
   "../preview/runtime/features/intelligence/ConsultativeStatus.js";
+import {projectUnreleasedSignedConsultation} from
+  "../preview/runtime/features/intelligence/ConsultativeSignedVerification.js";
+import {projectUnreleasedConsultativeReplay} from
+  "../preview/runtime/features/intelligence/ConsultativeReplayReceipt.js";
+import {projectUnreleasedConsultativeBundle} from
+  "../preview/runtime/features/intelligence/ConsultativeVerificationBundle.js";
 
 test("PT/EN session errors always require explicit sign-in",()=>{
  for(const locale of ["pt-BR","en"]){
@@ -181,5 +187,30 @@ test("source normalization failure after a possible model request cannot retry",
   assert.equal(out.nextAction,"NONE");
   assert.equal(out.locale,locale);
   assert.equal(JSON.stringify(out).includes("internal CNPJ"),false);
+ }
+});
+
+test("actual receipt projection failures map to no-retry UI in both languages",()=>{
+ const failures=[
+  ()=>projectUnreleasedSignedConsultation(null,null),
+  ()=>projectUnreleasedConsultativeReplay(null,null),
+  ()=>projectUnreleasedConsultativeBundle(null,null),
+ ];
+ const codes=[
+  "INVALID_SIGNED_CONSULTATION_RESULT",
+  "INVALID_CONSULTATIVE_REPLAY_RECEIPT",
+  "INVALID_CONSULTATIVE_VERIFICATION_BUNDLE",
+ ];
+ for(let index=0;index<failures.length;index++){
+  let error;
+  try{failures[index]();}catch(e){error=e;}
+  assert.equal(error?.code,codes[index]);
+  for(const locale of ["pt-BR","en"]){
+   const notice=describeConsultativeFailure(error,locale);
+   assert.equal(notice.kind,"VERIFICATION_BLOCKED");
+   assert.equal(notice.nextAction,"NONE");
+   assert.equal(notice.retryable,false);
+   assert.equal(notice.locale,locale);
+  }
  }
 });
