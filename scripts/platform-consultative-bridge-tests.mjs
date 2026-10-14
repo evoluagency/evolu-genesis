@@ -207,3 +207,57 @@ test("forged future release flags, replay approvals and attestation blobs never 
   }
  }
 });
+
+
+test("hostile raw BFF getters and proxies fail with opaque boundary errors",()=>{
+ const privateText="SECRET_CNPJ_OR_JWT_DIAGNOSTIC";
+ let called=0;
+ const poison=()=>{called++;throw new Error(privateText)};
+ const replaced=(record,key)=>{
+  const out={...record};
+  Object.defineProperty(out,key,{enumerable:true,get:poison});
+  return out;
+ };
+ for(const candidate of [
+  replaced(result(),"answer"),
+  replaced(result(),"responseMode"),
+  replaced(result(),"schemaVersion"),
+  result({costGuard:replaced(result().costGuard,"allowed")}),
+  result({evidence:replaced(result().evidence,"retrievalDecision")}),
+  result({capabilities:replaced(result().capabilities,"canExecute")}),
+  result({provenance:[replaced(result().provenance[0],"observedAt")]}),
+  new Proxy(result(),{getOwnPropertyDescriptor:poison}),
+  result({provenance:new Proxy(result().provenance,{getPrototypeOf:poison})}),
+  result({costGuard:Object.assign(Object.create({allowed:true}),result().costGuard)}),
+  result({provenance:[Object.assign(Object.create({source:"evil"}),result().provenance[0])]}),
+ ]){
+  fails(()=>projectPrivatePlatformConsultation(candidate,query(),NOW),
+   "platform_consultative_contract_mismatch");
+ }
+ assert.equal(called,0,"no foreign getter or proxy trap with get access should run");
+});
+test("projection binds a single stable copy of host response values and never shows text",()=>{
+ let getterCalls=0;
+ const candidate=result();
+ Object.defineProperty(candidate,"answerLocale",{enumerable:true,
+  get(){getterCalls++;return "pt-BR";}});
+ fails(()=>projectPrivatePlatformConsultation(candidate,query(),NOW),
+  "platform_consultative_contract_mismatch");
+ assert.equal(getterCalls,0);
+ const legitimate=result({schemaVersion:"1.1.0",answerLocale:"pt-BR",localeVerified:true});
+ const output=projectPrivatePlatformConsultation(legitimate,query(),NOW);
+ legitimate.answer="FOREIGN_MUTATION_AFTER_PROJECTION";
+ assert.equal(output.state,"UNAVAILABLE");
+ assert.equal(output.intent.blocks.some(x=>x.type==="TEXT"),false);
+ assert.doesNotMatch(JSON.stringify(output),/FOREIGN_MUTATION_AFTER_PROJECTION/);
+});
+test("invalid request objects do not leak host getter diagnostics from public invocation",()=>{
+ const privateText="PRIVATE_AUTH_HEADER_NEVER_ECHO";
+ const hostileScope={...scope};
+ Object.defineProperty(hostileScope,"tenantId",{
+  enumerable:true,get(){throw Error(privateText);}
+ });
+ assert.throws(()=>createPlatformConsultativeInvocation(query({scope:hostileScope})),
+  e=>e instanceof PlatformConsultativeBoundaryError &&
+   e.code==="invalid_human_consultation" && !e.message.includes(privateText));
+});
