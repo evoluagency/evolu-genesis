@@ -222,19 +222,23 @@ function settleTransportOnAbort(
       reject(new LiveConsultationBoundaryError("consultation_cancelled"));
     };
     signal.addEventListener("abort",onAbort,{once:true});
-    Promise.resolve().then(() => {
-      if (signal.aborted) fail("consultation_cancelled");
-      return send();
-    }).then(
-      value => {
-        signal.removeEventListener("abort",onAbort);
-        resolve(value);
-      },
-      () => {
-        signal.removeEventListener("abort",onAbort);
-        reject(new LiveConsultationBoundaryError("private_platform_unavailable"));
-      },
-    );
+    try {
+      // Preserve synchronous dispatch semantics for the trusted host.
+      // Register both Promise branches so late failure is never unhandled.
+      Promise.resolve(send()).then(
+        value => {
+          signal.removeEventListener("abort",onAbort);
+          resolve(value);
+        },
+        () => {
+          signal.removeEventListener("abort",onAbort);
+          reject(new LiveConsultationBoundaryError("private_platform_unavailable"));
+        },
+      );
+    } catch {
+      signal.removeEventListener("abort",onAbort);
+      reject(new LiveConsultationBoundaryError("private_platform_unavailable"));
+    }
   });
 }
 
