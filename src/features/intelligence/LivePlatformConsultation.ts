@@ -135,8 +135,12 @@ function validBearer(token: string | null): token is string {
     token.length <= MAX_BEARER_LENGTH && !/\s/.test(token);
 }
 async function boundedResponseJson(response: Response): Promise<unknown> {
+  const contentType=response.headers.get("content-type") ?? "";
+  // Reject misleading MIME subtypes and composite headers. An injected
+  // host response must actually identify JSON rather than merely contain
+  // the substring "application/json".
   if (response.status !== 200 ||
-      !(response.headers.get("content-type") ?? "").toLowerCase().includes("application/json")) {
+      !/^application\/json(?:[ \t]*;|[ \t]*$)/i.test(contentType.trim())) {
     fail("private_platform_unavailable");
   }
   const len = response.headers.get("content-length");
@@ -154,7 +158,9 @@ async function boundedResponseJson(response: Response): Promise<unknown> {
       if (next.done) break;
       size += next.value.byteLength;
       if (size > MAX_RESPONSE_BYTES) {
-        await reader.cancel("oversize");
+        // A malicious/read-broken stream may never settle cancel().
+        // Do not block rejection or keep the caller waiting indefinitely.
+        void reader.cancel("oversize").catch(() => {});
         fail("private_platform_response_too_large");
       }
       raw += decoder.decode(next.value, { stream: true });
