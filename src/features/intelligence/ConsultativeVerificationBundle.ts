@@ -39,13 +39,47 @@ const obj=(v:unknown):v is Record<string,unknown>=>
 function exactKeys(v:Record<string,unknown>,keys:readonly string[]):void{
  if(Object.keys(v).sort().join(",")!==[...keys].sort().join(","))deny();
 }
+// Freeze one host-derived selection before either receipt is interpreted.
+// Presentation consistency only: this does NOT authenticate tenant or issuer.
+function plainRecord(input:unknown,keys:readonly string[]):Readonly<Record<string,unknown>>{
+ if(!obj(input))deny();
+ const proto=Object.getPrototypeOf(input);
+ if(proto!==Object.prototype&&proto!==null)deny();
+ const present=Reflect.ownKeys(input);
+ if(present.length!==keys.length||
+    present.some(k=>typeof k!=="string"||!keys.includes(k)))deny();
+ const out:Record<string,unknown>={};
+ for(const key of keys){
+  const descriptor=Object.getOwnPropertyDescriptor(input,key);
+  if(!descriptor||!descriptor.enumerable||!("value" in descriptor))deny();
+  out[key]=descriptor.value;
+ }
+ return Object.freeze(out);
+}
+function snapshotExpectedBundle(raw:unknown):ExpectedConsultativeBundle{
+ const fields=plainRecord(raw,["attemptId","scope","locale"]);
+ const scope=plainRecord(fields.scope,[
+  "tenantId","companyId","cnpjId","referenceDate",
+ ]);
+ if(typeof fields.attemptId!=="string"||
+    (fields.locale!=="pt-BR"&&fields.locale!=="en"))deny();
+ for(const k of ["tenantId","companyId","cnpjId","referenceDate"]){
+  if(typeof scope[k]!=="string")deny();
+ }
+ return Object.freeze({
+  attemptId:fields.attemptId,
+  scope:scope as unknown as ConsultativeReceiptScope,
+  locale:fields.locale as IntelligenceLocale,
+ });
+}
+
 /** A response claiming success must still be shown as unavailable in V1. */
 export function projectUnreleasedConsultativeBundle(
  raw:unknown,expected:ExpectedConsultativeBundle,
 ):ConsultativeBundleNotice{
  try{
   if(!obj(raw))deny();
-  if(!obj(expected))deny();
+  const frozenExpected=snapshotExpectedBundle(expected);
   // Structural cast occurs only after the foreign top-level record check.
   const parsed=raw as Record<string,unknown>;
   exactKeys(parsed,["schemaVersion","kind","attemptId",
@@ -53,7 +87,7 @@ export function projectUnreleasedConsultativeBundle(
    "executionAuthority","display"]);
   if(parsed.schemaVersion!=="1.0.0"||
      parsed.kind!=="CONSULTATIVE_VERIFICATION_BUNDLE_V1"||
-     parsed.attemptId!==expected.attemptId||
+     parsed.attemptId!==frozenExpected.attemptId||
      parsed.lifecycle!=="PRE_LEARNING"||
      parsed.executionAuthority!=="NONE"||!obj(parsed.display))deny();
   const display=parsed.display as Record<string,unknown>;
@@ -63,19 +97,19 @@ export function projectUnreleasedConsultativeBundle(
   // Both existing consumers perform exact-shape checks, validate group/CNPJ,
   // tenant, date, attempt and locale against SAME host-supplied expectation.
   const signed=projectUnreleasedSignedConsultation(
-   parsed.signedVerificationResult,expected);
+   parsed.signedVerificationResult,frozenExpected);
   const replay=projectUnreleasedConsultativeReplay(
-   parsed.replayClaimResult,expected);
+   parsed.replayClaimResult,frozenExpected);
   if(signed.state!=="UNAVAILABLE"||replay.state!=="UNAVAILABLE"||
      signed.locale!==replay.locale||
      signed.reasonCode!=="LOCALE_UNVERIFIED"||
      replay.reasonCode!=="LOCALE_UNVERIFIED")deny();
   return Object.freeze({
    state:"UNAVAILABLE",
-   locale:expected.locale,
+   locale:frozenExpected.locale,
    reasonCode:"LOCALE_UNVERIFIED",
    verificationStatus:"LOCAL_PRESENTATION_ONLY_NOT_HOST_ATTESTED",
-   message:expected.locale==="en"?
+   message:frozenExpected.locale==="en"?
     "The consultation remains unavailable until the private host verifies its signing authority, shared replay protection, evidence and language.":
     "A consulta permanece indisponível até que o servidor privado verifique a autoridade da assinatura, a proteção compartilhada contra reutilização, as evidências e o idioma.",
    executionAuthority:"NONE",
