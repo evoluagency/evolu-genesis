@@ -203,6 +203,41 @@ function assertConsultativeRetrievalConsistency(raw: unknown): void {
   }
 }
 
+/**
+ * A transport may ignore AbortSignal (broken fetch adapter / stalled stream).
+ * Settle the caller on abort independently; late resolutions and rejections
+ * remain observed but can never become visible to the old session.
+ * This cancels UI waiting, NOT an already executed server-side inference.
+ */
+function settleTransportOnAbort(
+  send: () => Promise<unknown>, signal: AbortSignal,
+): Promise<unknown> {
+  return new Promise<unknown>((resolve,reject) => {
+    if (signal.aborted) {
+      reject(new LiveConsultationBoundaryError("consultation_cancelled"));
+      return;
+    }
+    const onAbort = () => {
+      signal.removeEventListener("abort",onAbort);
+      reject(new LiveConsultationBoundaryError("consultation_cancelled"));
+    };
+    signal.addEventListener("abort",onAbort,{once:true});
+    Promise.resolve().then(() => {
+      if (signal.aborted) fail("consultation_cancelled");
+      return send();
+    }).then(
+      value => {
+        signal.removeEventListener("abort",onAbort);
+        resolve(value);
+      },
+      () => {
+        signal.removeEventListener("abort",onAbort);
+        reject(new LiveConsultationBoundaryError("private_platform_unavailable"));
+      },
+    );
+  });
+}
+
 export class LiveConsultationCoordinator {
   private active: AbortController | null = null;
   private generation = 0;
@@ -248,10 +283,17 @@ export class LiveConsultationCoordinator {
     try {
       if (stale(this.current())) fail("consultation_context_changed");
       let response: unknown;
-      try { response = await this.transport.request(invocation, controller.signal,
-        () => !this.disposed && !controller.signal.aborted &&
-          generation === this.generation && !stale(this.current())); }
-      catch {
+      try {
+        response = await settleTransportOnAbort(
+          () => this.transport.request(invocation, controller.signal,
+            () => !this.disposed && !controller.signal.aborted &&
+              generation === this.generation && !stale(this.current())),
+          controller.signal,
+        );
+      } catch {
+        if (generation !== this.generation || this.disposed) {
+          fail("consultation_context_changed");
+        }
         if (controller.signal.aborted) fail("consultation_cancelled");
         fail("private_platform_unavailable");
       }
