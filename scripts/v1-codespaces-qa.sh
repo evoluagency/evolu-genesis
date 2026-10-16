@@ -37,6 +37,15 @@ if [[ "$actual" != "$expected" ]]; then
   echo "Wrong branch: expected $expected; got $actual" >&2
   exit 2
 fi
+# Source QA must never read credentials from ignored local env files.
+# Next.js loads .env* automatically, including during build, even when these
+# variables are absent from the invoking shell's environment.
+for candidate in .env .env.*; do
+  if [[ "$candidate" != ".env.example" && ( -e "$candidate" || -L "$candidate" ) ]]; then
+    echo "Local .env configuration detected. Use a credential-free QA checkout." >&2
+    exit 2
+  fi
+done
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "Tracked source changes present. Preserve a clean commit SHA before QA." >&2
   exit 2
