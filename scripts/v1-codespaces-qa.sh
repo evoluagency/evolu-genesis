@@ -33,7 +33,7 @@ if [[ "$actual" != "$expected" ]]; then
 fi
 
 echo "EVOLU Genesis QA — $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-echo "Repository: $(git remote get-url origin)"
+echo "Repository: evoluagency/evolu-genesis"
 echo "Branch: $actual"
 echo "HEAD: $(git rev-parse HEAD)"
 echo "Node: $(node -v); npm: $(npm -v)"
