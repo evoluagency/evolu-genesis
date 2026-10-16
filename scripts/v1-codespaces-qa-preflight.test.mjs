@@ -77,6 +77,23 @@ test('modified tracked files are rejected before QA',()=>fixture(({cwd,run})=>{
   assert.equal(r.status,2);
   assert.match(r.stderr,/Tracked source changes present/);
 }));
+test('local environment files are rejected before installing or compiling',()=>fixture(({cwd,run})=>{
+  for(const fileName of ['.env','.env.local','.env.production.local']){
+    const file=join(cwd,fileName);
+    writeFileSync(file,'SYNTHETIC_PRIVATE_LOCAL_ENV=do_not_print\\n');
+    const r=run();
+    assert.equal(r.status,2,fileName);
+    assert.match(r.stderr,/Local \\.env configuration detected/);
+    assert.doesNotMatch(r.stdout+r.stderr,/do_not_print/);
+    unlinkSync(file);
+  }
+}));
+test('a harmless tracked .env.example does not block source-only dry-run',()=>fixture(({cwd,run})=>{
+  writeFileSync(join(cwd,'.env.example'),'SYNTHETIC_PUBLIC_EXAMPLE=true\\n');
+  const r=run();
+  assert.equal(r.status,0,r.stderr);
+  assert.match(r.stdout,/DRY RUN ONLY/);
+}));
 test('live credential indicators are rejected without printing their values',()=>fixture(({run})=>{
   for(const key of sensitive){
     const r=run(['--dry-run'],{[key]:'SYNTHETIC_PRIVATE_CANARY'});
