@@ -83,7 +83,7 @@ test('local environment files are rejected before installing or compiling',()=>f
     writeFileSync(file,'SYNTHETIC_PRIVATE_LOCAL_ENV=do_not_print\\n');
     const r=run();
     assert.equal(r.status,2,fileName);
-    assert.match(r.stderr,/Local \\.env configuration detected/);
+    assert.match(r.stderr,/Local \.env configuration detected/);
     assert.doesNotMatch(r.stdout+r.stderr,/do_not_print/);
     unlinkSync(file);
   }
