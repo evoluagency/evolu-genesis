@@ -57,6 +57,8 @@ if [[ "${1}" == "--dry-run" ]]; then
   exit 0
 fi
 
+# Isolated native Node tests of this shell's own branch/secret/dirty protections.
+node --test scripts/v1-codespaces-qa-preflight.test.mjs
 npm ci --ignore-scripts --no-audit --no-fund
 npm run typecheck
 # Build just once instead of 12 repeat tsc invocations from npm test aliases.
