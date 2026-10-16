@@ -12,6 +12,12 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   echo "Manual QA only; no GitHub Actions." >&2
   exit 2
 fi
+if ! command -v node >/dev/null 2>&1 ||
+   ! command -v npm >/dev/null 2>&1 ||
+   ! command -v git >/dev/null 2>&1; then
+  echo "Node.js, npm and Git are required for SHA-linked QA." >&2
+  exit 2
+fi
 if [[ "$(node -p 'process.versions.node.split(".")[0]')" != "22" ]]; then
   echo "Node.js 22 required." >&2
   exit 2
@@ -21,7 +27,7 @@ if [[ ! -f package-lock.json ]]; then
   exit 2
 fi
 if [[ -n "${OPENAI_API_KEY:-}" || -n "${AI_GATEWAY_API_KEY:-}" ||
-      -n "${SUPABASE_SERVICE_ROLE_KEY:-}" || -n "${VERCEL_OIDC_TOKEN:-}" ]]; then
+      -n "${GROQ_API_KEY:-}" || -n "${SUPABASE_SERVICE_ROLE_KEY:-}" || -n "${VERCEL_OIDC_TOKEN:-}" ]]; then
   echo "Sensitive provider secrets detected. Use a credential-free source QA terminal." >&2
   exit 2
 fi
@@ -31,6 +37,11 @@ if [[ "$actual" != "$expected" ]]; then
   echo "Wrong branch: expected $expected; got $actual" >&2
   exit 2
 fi
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "Tracked source changes present. Preserve a clean commit SHA before QA." >&2
+  exit 2
+fi
+
 
 echo "EVOLU Genesis QA — $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 echo "Repository: evoluagency/evolu-genesis"
