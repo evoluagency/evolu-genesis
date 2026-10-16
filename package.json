@@ -9,7 +9,21 @@
     "build:preview-runtime": "tsc -p tsconfig.preview.json",
     "homologate:browser": "node scripts/ux-browser-homologation.mjs",
     "homologate:browser:selftest": "node scripts/ux-browser-homologation.mjs --self-test",
-    "test:adapters": "npm run build:preview-runtime && node scripts/ux7-adapter-contract-tests.mjs"
+    "test:adapters": "npm run build:preview-runtime && node scripts/ux7-adapter-contract-tests.mjs",
+    "test:consultation": "npm run build:preview-runtime && node scripts/consultation-contract-tests.mjs",
+    "test:delegation": "npm run build:preview-runtime && node scripts/intelligence-delegation-tests.mjs",
+    "test:intelligence-presentation": "npm run build:preview-runtime && node scripts/intelligence-presentation-tests.mjs",
+    "homologate:intelligence:browser": "node scripts/intelligence-browser-homologation.mjs",
+    "test:platform-consultation": "npm run build:preview-runtime && node scripts/platform-consultative-bridge-tests.mjs",
+    "test:live-platform-consultation": "npm run build:preview-runtime && node scripts/live-platform-consultation-tests.mjs",
+    "test:consultative-status": "npm run build:preview-runtime && node scripts/consultative-status-tests.mjs",
+    "test:consultative-verification": "npm run build:preview-runtime && node scripts/consultative-verification-tests.mjs",
+    "test:consultative-attempt": "npm run build:preview-runtime && node scripts/consultative-attempt-tests.mjs",
+    "test:consultative-signature": "npm run build:preview-runtime && node scripts/consultative-signed-verification-tests.mjs",
+    "test:consultative-replay": "npm run build:preview-runtime && node scripts/consultative-replay-tests.mjs",
+    "test:consultative-wire-compat": "npm run build:preview-runtime && node scripts/consultative-wire-compat-tests.mjs",
+    "test:consultative-bundle": "npm run build:preview-runtime && node scripts/consultative-bundle-tests.mjs",
+    "test:consultative-release-acceptance": "node scripts/consultative-release-acceptance-tests.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.0"

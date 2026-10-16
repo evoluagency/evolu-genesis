@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Prévia sintética da consultoria Intelligence na experiência Genesis.">
+  <title>NEXUS · Intelligence | Prévia Genesis</title>
+  <link rel="stylesheet" href="../shared-ux/shell.css">
+  <link rel="stylesheet" href="./consultation.css">
+  <script src="../shared-ux/shell.js" defer></script>
+  <script src="./consultation.js" defer></script>
+</head>
+<body>
+<div class="ux-app consultation-app">
+  <aside class="ux-sidebar" id="intelligenceSidebar" data-ux-sidebar aria-label="Navegação NEXUS">
+    <button class="ux-brand" type="button" data-ux-brand aria-controls="intelligenceSidebar" aria-expanded="true">
+      <span class="ux-mark" aria-hidden="true">N</span>
+      <span class="ux-brand-copy"><strong>NEXUS</strong><small>CONTABILIDADE & ASSESSORIA</small></span>
+    </button>
+    <div class="ux-tenant"><span class="ux-tenant-icon" aria-hidden="true">N</span>
+      <span class="ux-tenant-copy"><strong>NEXUS</strong><small>ESCRITÓRIO · SIMULAÇÃO</small></span>
+    </div>
+    <div class="ux-nav-group">
+      <div class="ux-nav-heading">ESCRITÓRIO</div>
+      <nav class="ux-nav" aria-label="Áreas profissionais">
+        <a class="ux-nav-link" href="../office-workspace/"><i class="ux-nav-symbol" aria-hidden="true">⌂</i><span class="ux-nav-label">Painel do Escritório</span></a>
+        <a class="ux-nav-link" href="../tenant-advisory-workspace/"><i class="ux-nav-symbol" aria-hidden="true">◎</i><span class="ux-nav-label">Assessoria Empresarial</span></a>
+        <a class="ux-nav-link active" href="./" aria-current="page"><i class="ux-nav-symbol" aria-hidden="true">✧</i><span class="ux-nav-label">Intelligence · Consultoria</span></a>
+      </nav>
+    </div>
+    <div class="ux-nav-group">
+      <div class="ux-nav-heading">CONTRATOS</div>
+      <nav class="ux-nav" aria-label="Referências da prévia">
+        <a class="ux-nav-link" href="../ux-journey/"><i class="ux-nav-symbol" aria-hidden="true">◇</i><span class="ux-nav-label">Jornada de UX</span></a>
+      </nav>
+    </div>
+    <div class="ux-sidebar-footer">Prévia inteiramente sintética. Sem login, dados reais, IA conectada, aprendizagem ou execução.</div>
+    <button class="ux-btn ux-menu-close" type="button" data-menu-close>Fechar menu</button>
+  </aside>
+
+  <main class="ux-main">
+    <header class="ux-top">
+      <div class="consultation-top">
+        <button class="ux-btn ux-mobile-menu" type="button" data-menu-open aria-controls="intelligenceSidebar" aria-expanded="false" aria-label="Abrir menu">☰</button>
+        <div><div class="ux-breadcrumb">NEXUS / Assessoria / Intelligence</div>
+          <h1 class="ux-top-title">Consultoria Intelligence</h1></div>
+      </div>
+      <div class="ux-top-right">
+        <span class="ux-tag">PRÉVIA SINTÉTICA</span>
+        <button type="button" class="ux-btn" data-theme-toggle aria-label="Alternar tema">☀</button>
+      </div>
+    </header>
+
+    <div class="ux-wrap">
+      <div class="ux-head">
+        <div><div class="ux-overline">TENANTACCESS · GENESIS UI</div>
+          <h2>Consultoria com contexto empresarial</h2>
+          <p>Estrutura visual incorporada à Genesis; análise e autorização permanecem na Intelligence e Platform.</p>
+        </div>
+      </div>
+
+      <div class="consultation-notice" role="status">
+        <strong>Sem integração ativa.</strong> A prévia usa somente uma empresa fictícia e respostas fixas de interface.
+        Nenhum texto digitado é enviado, salvo no navegador ou usado para treinamento.
+      </div>
+
+      <div class="consultation-grid">
+        <section class="ux-card consultation-history" aria-labelledby="historyTitle">
+          <div class="ux-card-header"><div><h3 id="historyTitle">Conversas nesta página</h3><p>Estado temporário, descartado ao recarregar</p></div></div>
+          <button type="button" class="ux-btn consultation-new" id="new-thread">Nova conversa</button>
+          <div class="ux-card-scroll"><ol class="consultation-thread-list" id="thread-list" aria-label="Histórico temporário"></ol></div>
+          <div class="ux-card-footer"><span class="ux-note">PERSONAL_PRIVATE: não implementado nesta prévia.</span></div>
+        </section>
+
+        <section class="ux-card consultation-workspace" aria-labelledby="chatTitle">
+          <div class="ux-card-header">
+            <div><h3 id="chatTitle">Análise consultiva</h3><p>Formulário e apresentação da resposta, sem execução</p></div>
+          </div>
+          <div class="consultation-context">
+            <label>Empresa
+              <select id="company">
+                <option value="">Contexto geral</option>
+                <option value="synthetic">ACME Industrial · empresa fictícia</option>
+              </select>
+            </label>
+            <label>Referência <input id="reference-date" type="date" value="2026-10-12"></label>
+            <span id="context-state" class="consultation-context-state">Sem contexto operacional autorizado</span>
+          </div>
+          <div class="ux-card-scroll consultation-messages" id="messages" role="log" aria-live="polite">
+            <div class="consultation-empty" id="empty-state">
+              <strong>Como posso analisar seu caso?</strong>
+              <p>Esta etapa apresenta somente a futura experiência de conversa. As respostas reais exigirão autorização e backend privado.</p>
+            </div>
+          </div>
+          <div class="consultation-composer">
+            <form id="consultation-form">
+              <label for="question">Sua pergunta</label>
+              <textarea id="question" maxlength="6000" rows="3" required placeholder="Descreva uma questão fiscal, contábil ou financeira..."></textarea>
+              <div class="consultation-actions">
+                <span class="ux-note">Enter envia · Shift+Enter quebra a linha</span>
+                <button type="submit" class="ux-btn ux-btn-primary" id="send">Visualizar resposta</button>
+              </div>
+            </form>
+          </div>
+          <div class="ux-card-footer"><span class="ux-note">Recomendação não é autorização para executar.</span></div>
+        </section>
+      </div>
+      <div class="ux-footer">
+        <span id="status" role="status">Modo de apresentação: somente fixtures sintéticas, sem rede.</span>
+        <a href="../tenant-advisory-workspace/">Voltar à Central de Assessoria</a>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

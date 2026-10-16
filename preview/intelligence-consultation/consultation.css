@@ -1,0 +1,31 @@
+.consultation-app .ux-wrap{display:flex;flex-direction:column;gap:14px;min-height:0}
+.consultation-top{display:flex;align-items:center;gap:10px;min-width:0}
+.consultation-notice{border:1px solid var(--ux-line,#436077);border-left:3px solid #d3a85c;border-radius:9px;padding:11px 15px;font-size:13px;line-height:1.55;background:var(--ux-surface,#182431)}
+.consultation-grid{display:grid;grid-template-columns:minmax(215px,0.32fr) minmax(0,1fr);gap:14px;min-height:430px;flex:1}
+.consultation-grid>.ux-card{display:flex;flex-direction:column;min-width:0;min-height:0}
+.consultation-history>.ux-card-scroll{min-height:160px;max-height:500px;overflow:auto}
+.consultation-workspace>.ux-card-scroll{min-height:180px;max-height:500px;overflow:auto}
+.consultation-new{margin:8px 14px 2px;align-self:stretch}
+.consultation-thread-list{list-style:none;padding:10px;margin:0;display:grid;gap:6px}
+.consultation-thread{display:block;width:100%;background:transparent;color:inherit;text-align:left;border:1px solid transparent;border-radius:8px;padding:10px 11px;cursor:pointer;font:inherit}
+.consultation-thread:hover,.consultation-thread:focus-visible{border-color:var(--ux-line,#4e6d80)}
+.consultation-thread.active{background:rgba(105,155,188,.15);border-color:rgba(130,174,204,.35)}
+.consultation-context{display:flex;align-items:flex-end;gap:10px;padding:12px 14px;flex-wrap:wrap;border-bottom:1px solid var(--ux-line,#405061)}
+.consultation-context label{display:grid;gap:5px;font-size:12px;min-width:155px}
+.consultation-context select,.consultation-context input,.consultation-composer textarea{background:var(--ux-surface,#172a39);color:inherit;border:1px solid var(--ux-line,#597184);border-radius:8px;padding:10px;font:inherit;max-width:100%}
+.consultation-context-state{flex:1;min-width:180px;font-size:12px;opacity:.8;padding-bottom:8px}
+.consultation-messages{padding:16px;display:flex;flex-direction:column;gap:15px;min-height:200px}
+.consultation-empty{margin:auto;max-width:430px;text-align:center;line-height:1.6;opacity:.8}
+.consultation-message{max-width:min(95%,690px);padding:12px 15px;border:1px solid var(--ux-line,#597184);border-radius:12px;line-height:1.55;overflow-wrap:anywhere}
+.consultation-message.from-user{align-self:flex-end;background:rgba(99,140,180,.14)}
+.consultation-message.from-system{align-self:flex-start}
+.consultation-message strong{font-size:12px}
+.consultation-message p{margin:8px 0 0;white-space:pre-wrap}
+.consultation-message small{display:block;margin-top:10px;opacity:.75}
+.consultation-composer{padding:14px;border-top:1px solid var(--ux-line,#405061)}
+.consultation-composer label{display:block;font-size:12px;margin-bottom:6px}
+.consultation-composer textarea{display:block;width:100%;min-height:80px;resize:vertical}
+.consultation-actions{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:10px}
+.consultation-grid .ux-card-footer{margin-top:auto}
+@media(max-width:880px){.consultation-grid{grid-template-columns:1fr}.consultation-history>.ux-card-scroll{max-height:130px}.consultation-workspace>.ux-card-scroll{max-height:none}.consultation-app .ux-wrap{overflow:visible}}
+@media(prefers-reduced-motion:reduce){.consultation-app *{scroll-behavior:auto}}

@@ -1,0 +1,17 @@
+{
+  "name": "EVOLU Genesis V1 — QA manual Node 22",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22-bookworm",
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb"
+  },
+  "remoteUser": "node",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  },
+  "postCreateCommand": "node --version && npm --version && git rev-parse --short HEAD"
+}

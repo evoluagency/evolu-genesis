@@ -7,6 +7,29 @@ on:
       - ".github/workflows/ux7-adapter-contract.yml"
       - "src/**"
       - "scripts/ux7-adapter-contract-tests.mjs"
+      - "scripts/consultation-contract-tests.mjs"
+      - "scripts/intelligence-delegation-tests.mjs"
+      - "scripts/intelligence-presentation-tests.mjs"
+      - "scripts/platform-consultative-bridge-tests.mjs"
+      - "scripts/live-platform-consultation-tests.mjs"
+      - "scripts/consultative-status-tests.mjs"
+      - "scripts/consultative-verification-tests.mjs"
+      - "scripts/consultative-attempt-tests.mjs"
+      - "scripts/consultative-signed-verification-tests.mjs"
+      - "scripts/consultative-replay-tests.mjs"
+      - "scripts/consultative-wire-compat-tests.mjs"
+      - "scripts/consultative-bundle-tests.mjs"
+      - "scripts/consultative-release-acceptance-tests.mjs"
+      - "docs/CONSULTATIVE_RELEASE_ACCEPTANCE_V1.json"
+      - "scripts/fixtures/consultative-host-receipts-v1.json"
+      - "scripts/intelligence-browser-homologation.mjs"
+      - "preview/intelligence-consultation/**"
+      - "preview/shared-ux/intelligence-layer.*"
+      - "preview/shared-ux/intelligence-intent-ui.js"
+      - "preview/shared-ux/intelligence-i18n.js"
+      - "preview/shared-ux/intelligence-mark-transparent.svg"
+      - "preview/tenant-advisory-workspace/index.html"
+      - "preview/tenant-fiscal-workspace/index.html"
       - "package.json"
       - "tsconfig*.json"
   workflow_dispatch:
@@ -36,3 +59,58 @@ jobs:
         run: npm run typecheck
       - name: Provider substitution and authorization-boundary tests
         run: npm run test:adapters
+      - name: Intelligence consultative contract boundary
+        run: npm run test:consultation
+      - name: Intelligence delegated execution authorization boundaries
+        run: npm run test:delegation
+      - name: Intelligence dynamic presentation contract and DOM safety
+        run: npm run test:intelligence-presentation
+      - name: Private Platform consultation bridge boundary
+        run: npm run test:platform-consultation
+      - name: Authenticated host consultation and stale-context safety
+        run: npm run test:live-platform-consultation
+      - name: Localized private-host error boundary
+        run: npm run test:consultative-status
+      - name: Intelligence verification receipt must fail closed
+        run: npm run test:consultative-verification
+      - name: One-shot private consultation attempt and stale-session boundary
+        run: npm run test:consultative-attempt
+      - name: Signed verification presentation must remain unavailable
+        run: npm run test:consultative-signature
+      - name: Replay claim remains uncertified and unavailable
+        run: npm run test:consultative-replay
+      - name: Synthetic consultation wire fixture boundary
+        run: npm run test:consultative-wire-compat
+      - name: Combined Intelligence signed/replay receipt stays unavailable
+        run: npm run test:consultative-bundle
+      - name: Release cannot be approved by synthetic CI
+        run: npm run test:consultative-release-acceptance
+
+  browser:
+    name: Intelligence Chromium UX acceptance
+    runs-on: ubuntu-latest
+    needs: contracts
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check host Chrome availability
+        run: which google-chrome || which chromium || which chromium-browser
+      - name: Chromium Light/Dark PT/EN contextual layer
+        run: node scripts/intelligence-browser-homologation.mjs
+      - name: Summarize evidence
+        if: always()
+        run: |
+          if test -f .local/intelligence-browser/SUMMARY.md; then
+            cat .local/intelligence-browser/SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Attach synthetic screenshots and gate report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: intelligence-browser-gate
+          path: .local/intelligence-browser/
+          retention-days: 7
+          if-no-files-found: warn
