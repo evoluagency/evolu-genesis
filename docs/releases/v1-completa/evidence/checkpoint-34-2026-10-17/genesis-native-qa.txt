@@ -1,0 +1,1331 @@
+EVOLU Genesis QA — 2026-10-17T23:35:02Z
+Repository: evoluagency/evolu-genesis
+Branch: docs/intelligence-ui-unification-plan-v1
+HEAD: e8c4342ac2aed359739b1fd59b67c0e9f0cf47ea
+Node: v22.23.3; npm: 10.9.9
+Command plan: npm ci --ignore-scripts --no-audit --no-fund
+              npm run typecheck
+              npm run build:preview-runtime
+              14 isolated source-only scripts in scripts/*.mjs
+TAP version 13
+# Subtest: actual Codespaces Bash runner has valid syntax
+ok 1 - actual Codespaces Bash runner has valid syntax
+  ---
+  duration_ms: 5.81542
+  type: 'test'
+  ...
+# Subtest: synthetic correct-branch dry-run succeeds without install or compile
+ok 2 - synthetic correct-branch dry-run succeeds without install or compile
+  ---
+  duration_ms: 204.35907
+  type: 'test'
+  ...
+# Subtest: wrong branch is rejected with exit 2
+ok 3 - wrong branch is rejected with exit 2
+  ---
+  duration_ms: 62.618613
+  type: 'test'
+  ...
+# Subtest: modified tracked files are rejected before QA
+ok 4 - modified tracked files are rejected before QA
+  ---
+  duration_ms: 55.486292
+  type: 'test'
+  ...
+# Subtest: local environment files are rejected before installing or compiling
+ok 5 - local environment files are rejected before installing or compiling
+  ---
+  duration_ms: 128.827948
+  type: 'test'
+  ...
+# Subtest: a harmless tracked .env.example does not block source-only dry-run
+ok 6 - a harmless tracked .env.example does not block source-only dry-run
+  ---
+  duration_ms: 149.10437
+  type: 'test'
+  ...
+# Subtest: live credential indicators are rejected without printing their values
+ok 7 - live credential indicators are rejected without printing their values
+  ---
+  duration_ms: 190.30663
+  type: 'test'
+  ...
+# Subtest: GitHub Actions is rejected before installing dependencies
+ok 8 - GitHub Actions is rejected before installing dependencies
+  ---
+  duration_ms: 23.524291
+  type: 'test'
+  ...
+# Subtest: missing lockfile is rejected without npm ci
+ok 9 - missing lockfile is rejected without npm ci
+  ---
+  duration_ms: 52.47531
+  type: 'test'
+  ...
+# Subtest: unsupported argument never triggers QA
+ok 10 - unsupported argument never triggers QA
+  ---
+  duration_ms: 23.420578
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 972.493304
+
+added 1 package in 775ms
+
+> @evolu/platform-ux-contracts@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @evolu/platform-ux-contracts@0.1.0 build:preview-runtime
+> tsc -p tsconfig.preview.json
+
+Running synthetic contract test: scripts/ux7-adapter-contract-tests.mjs
+UX-7 adapter contract tests: PASS
+Running synthetic contract test: scripts/consultation-contract-tests.mjs
+TAP version 13
+# Subtest: general consultation maps existing V1 response to presentation-only fields
+ok 1 - general consultation maps existing V1 response to presentation-only fields
+  ---
+  duration_ms: 2.954302
+  type: 'test'
+  ...
+# Subtest: selected company is converted to Intelligence V1 company_selection and echoed exactly
+ok 2 - selected company is converted to Intelligence V1 company_selection and echoed exactly
+  ---
+  duration_ms: 0.794833
+  type: 'test'
+  ...
+# Subtest: mismatched tenant, company, reference date or unverified principal fail closed
+ok 3 - mismatched tenant, company, reference date or unverified principal fail closed
+  ---
+  duration_ms: 0.955563
+  type: 'test'
+  ...
+# Subtest: unexpected company context in general consultation cannot be trusted
+ok 4 - unexpected company context in general consultation cannot be trusted
+  ---
+  duration_ms: 0.231021
+  type: 'test'
+  ...
+# Subtest: benchmark training and lifecycle side effects fail closed
+ok 5 - benchmark training and lifecycle side effects fail closed
+  ---
+  duration_ms: 0.666122
+  type: 'test'
+  ...
+# Subtest: no input or malformed history reaches transport
+ok 6 - no input or malformed history reaches transport
+  ---
+  duration_ms: 0.367405
+  type: 'test'
+  ...
+# Subtest: scope input must have real date and canonical UUIDs before dispatch
+ok 7 - scope input must have real date and canonical UUIDs before dispatch
+  ---
+  duration_ms: 0.475788
+  type: 'test'
+  ...
+# Subtest: Genesis group ID is never confused with Intelligence CNPJ company_id
+ok 8 - Genesis group ID is never confused with Intelligence CNPJ company_id
+  ---
+  duration_ms: 0.351335
+  type: 'test'
+  ...
+# Subtest: Genesis preview has no browser network, credential or persistence pathway
+ok 9 - Genesis preview has no browser network, credential or persistence pathway
+  ---
+  duration_ms: 2.004079
+  type: 'test'
+  ...
+# Subtest: Genesis navigation and preview explicitly preserve synthetic isolation
+ok 10 - Genesis navigation and preview explicitly preserve synthetic isolation
+  ---
+  duration_ms: 1.684462
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23.477011
+Running synthetic contract test: scripts/intelligence-delegation-tests.mjs
+TAP version 13
+# Subtest: explicit human instruction creates only a server-validation draft; NEVER executes
+ok 1 - explicit human instruction creates only a server-validation draft; NEVER executes
+  ---
+  duration_ms: 2.932001
+  type: 'test'
+  ...
+# Subtest: accepting help or implicit consent cannot authorize execution
+ok 2 - accepting help or implicit consent cannot authorize execution
+  ---
+  duration_ms: 0.604397
+  type: 'test'
+  ...
+# Subtest: blank human execution instruction cannot approve
+ok 3 - blank human execution instruction cannot approve
+  ---
+  duration_ms: 0.23035
+  type: 'test'
+  ...
+# Subtest: plan identity or revision mismatch fails closed
+ok 4 - plan identity or revision mismatch fails closed
+  ---
+  duration_ms: 0.291645
+  type: 'test'
+  ...
+# Subtest: wrong tenant, company group and CNPJ all fail closed
+ok 5 - wrong tenant, company group and CNPJ all fail closed
+  ---
+  duration_ms: 0.281906
+  type: 'test'
+  ...
+# Subtest: approval cannot add, omit, repeat or partially select steps
+ok 6 - approval cannot add, omit, repeat or partially select steps
+  ---
+  duration_ms: 0.432266
+  type: 'test'
+  ...
+# Subtest: expired, future, malformed and excessively long-lasting plans reject
+ok 7 - expired, future, malformed and excessively long-lasting plans reject
+  ---
+  duration_ms: 0.33767
+  type: 'test'
+  ...
+# Subtest: high-impact or regulated changes never bypass secondary server review
+ok 8 - high-impact or regulated changes never bypass secondary server review
+  ---
+  duration_ms: 0.228356
+  type: 'test'
+  ...
+# Subtest: duplicate steps, invalid capability and illegal plan are rejected
+ok 9 - duplicate steps, invalid capability and illegal plan are rejected
+  ---
+  duration_ms: 0.451443
+  type: 'test'
+  ...
+# Subtest: missing or spoofed actor cannot produce a handoff
+ok 10 - missing or spoofed actor cannot produce a handoff
+  ---
+  duration_ms: 0.45016
+  type: 'test'
+  ...
+# Subtest: floating layer does not call services, store traces or execute operations
+ok 11 - floating layer does not call services, store traces or execute operations
+  ---
+  duration_ms: 3.134712
+  type: 'test'
+  ...
+# Subtest: transparent Intelligence mark remains alpha PNG inside background-free SVG
+ok 12 - transparent Intelligence mark remains alpha PNG inside background-free SVG
+  ---
+  duration_ms: 0.553823
+  type: 'test'
+  ...
+# Subtest: two Genesis page surfaces opt into the same independent contextual layer
+ok 13 - two Genesis page surfaces opt into the same independent contextual layer
+  ---
+  duration_ms: 2.089065
+  type: 'test'
+  ...
+# Subtest: observation is disabled by default and opt-out discards collected signals
+ok 14 - observation is disabled by default and opt-out discards collected signals
+  ---
+  duration_ms: 0.322141
+  type: 'test'
+  ...
+# Subtest: context sensor accepts only typed activity signals, never generic clicks or field contents
+ok 15 - context sensor accepts only typed activity signals, never generic clicks or field contents
+  ---
+  duration_ms: 0.556451
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26.954882
+Running synthetic contract test: scripts/intelligence-presentation-tests.mjs
+TAP version 13
+# Subtest: dynamic open question is accepted, no predetermined question catalog
+ok 1 - dynamic open question is accepted, no predetermined question catalog
+  ---
+  duration_ms: 2.692564
+  type: 'test'
+  ...
+# Subtest: unknown backend attributes are rejected, never forwarded to renderer
+ok 2 - unknown backend attributes are rejected, never forwarded to renderer
+  ---
+  duration_ms: 0.763293
+  type: 'test'
+  ...
+# Subtest: valid dynamic choices and freeform questions coexist
+ok 3 - valid dynamic choices and freeform questions coexist
+  ---
+  duration_ms: 0.694155
+  type: 'test'
+  ...
+# Subtest: untrusted extra block fields and executable structures fail closed
+ok 4 - untrusted extra block fields and executable structures fail closed
+  ---
+  duration_ms: 0.411037
+  type: 'test'
+  ...
+# Subtest: scope is bound independently across tenant group CNPJ and page
+ok 5 - scope is bound independently across tenant group CNPJ and page
+  ---
+  duration_ms: 0.588908
+  type: 'test'
+  ...
+# Subtest: unversioned, malformed and expired intents do not render
+ok 6 - unversioned, malformed and expired intents do not render
+  ---
+  duration_ms: 0.363458
+  type: 'test'
+  ...
+# Subtest: a motor cannot smuggle operational or training effects
+ok 7 - a motor cannot smuggle operational or training effects
+  ---
+  duration_ms: 0.325939
+  type: 'test'
+  ...
+# Subtest: unsubstantiated legal analysis requires an explicit insufficiency warning or source
+ok 8 - unsubstantiated legal analysis requires an explicit insufficiency warning or source
+  ---
+  duration_ms: 0.419293
+  type: 'test'
+  ...
+# Subtest: planning stage displays a plan but is never an execution instruction
+ok 9 - planning stage displays a plan but is never an execution instruction
+  ---
+  duration_ms: 0.583028
+  type: 'test'
+  ...
+# Subtest: plan cannot appear without PLAN_PRESENTED, and duplicate steps reject
+ok 10 - plan cannot appear without PLAN_PRESENTED, and duplicate steps reject
+  ---
+  duration_ms: 0.764085
+  type: 'test'
+  ...
+# Subtest: silent action cannot contain an accidental user-visible intervention
+ok 11 - silent action cannot contain an accidental user-visible intervention
+  ---
+  duration_ms: 0.360292
+  type: 'test'
+  ...
+# Subtest: duplicate question IDs and repeated choices fail closed
+ok 12 - duplicate question IDs and repeated choices fail closed
+  ---
+  duration_ms: 0.290642
+  type: 'test'
+  ...
+# Subtest: projection does not retain mutable backend references
+ok 13 - projection does not retain mutable backend references
+  ---
+  duration_ms: 0.255436
+  type: 'test'
+  ...
+# Subtest: UI renderer supports engine-directed arbitrary question and human choices
+ok 14 - UI renderer supports engine-directed arbitrary question and human choices
+  ---
+  duration_ms: 5.895108
+  type: 'test'
+  ...
+# Subtest: UI renderer treats HTML-like AI strings as text, never markup
+ok 15 - UI renderer treats HTML-like AI strings as text, never markup
+  ---
+  duration_ms: 2.059883
+  type: 'test'
+  ...
+# Subtest: UI renderer rejects unknown blocks and side-effect requests without changing host
+ok 16 - UI renderer rejects unknown blocks and side-effect requests without changing host
+  ---
+  duration_ms: 1.926504
+  type: 'test'
+  ...
+# Subtest: synthetic layer loads intent examples but has no live execution or network
+ok 17 - synthetic layer loads intent examples but has no live execution or network
+  ---
+  duration_ms: 1.229213
+  type: 'test'
+  ...
+# Subtest: source contract rejects an intent in a locale different from Platform selection
+ok 18 - source contract rejects an intent in a locale different from Platform selection
+  ---
+  duration_ms: 0.210603
+  type: 'test'
+  ...
+# Subtest: one shared PT/EN catalog updates labels with the Platform html lang
+ok 19 - one shared PT/EN catalog updates labels with the Platform html lang
+  ---
+  duration_ms: 1.933276
+  type: 'test'
+  ...
+# Subtest: renderer requires matching locale and translates chrome, preserving authored answers
+ok 20 - renderer requires matching locale and translates chrome, preserving authored answers
+  ---
+  duration_ms: 1.955959
+  type: 'test'
+  ...
+# Subtest: all hard-coded Intelligence UI keys have PT and EN translations
+ok 21 - all hard-coded Intelligence UI keys have PT and EN translations
+  ---
+  duration_ms: 3.133766
+  type: 'test'
+  ...
+# Subtest: Platform shell remains single owner of locale and theme toggles
+ok 22 - Platform shell remains single owner of locale and theme toggles
+  ---
+  duration_ms: 0.34823
+  type: 'test'
+  ...
+# Subtest: open floating drawer reacts to the existing Platform PT/EN event without reload
+ok 23 - open floating drawer reacts to the existing Platform PT/EN event without reload
+  ---
+  duration_ms: 3.964747
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 54.171336
+Running synthetic contract test: scripts/platform-consultative-bridge-tests.mjs
+TAP version 13
+# Subtest: exact private Platform BFF invocation has no model, token, history or write operation
+ok 1 - exact private Platform BFF invocation has no model, token, history or write operation
+  ---
+  duration_ms: 2.329295
+  type: 'test'
+  ...
+# Subtest: help acceptance or passive activity cannot create an inference request
+ok 2 - help acceptance or passive activity cannot create an inference request
+  ---
+  duration_ms: 0.484584
+  type: 'test'
+  ...
+# Subtest: invalid company/group/CNPJ/date/slug/page binding rejected before transport
+ok 3 - invalid company/group/CNPJ/date/slug/page binding rejected before transport
+  ---
+  duration_ms: 0.552811
+  type: 'test'
+  ...
+# Subtest: unsupported locale and empty/short/overlong question fail before transport
+ok 4 - unsupported locale and empty/short/overlong question fail before transport
+  ---
+  duration_ms: 0.252912
+  type: 'test'
+  ...
+# Subtest: UTF-8 byte ceiling matches 2048-byte Platform BFF request limit
+ok 5 - UTF-8 byte ceiling matches 2048-byte Platform BFF request limit
+  ---
+  duration_ms: 0.259033
+  type: 'test'
+  ...
+# Subtest: existing v1 Platform response cannot be passed off as locally verified pt-BR
+ok 6 - existing v1 Platform response cannot be passed off as locally verified pt-BR
+  ---
+  duration_ms: 1.429267
+  type: 'test'
+  ...
+# Subtest: english user cannot be shown untranslated existing Platform v1 consultation
+ok 7 - english user cannot be shown untranslated existing Platform v1 consultation
+  ---
+  duration_ms: 0.490034
+  type: 'test'
+  ...
+# Subtest: blocked, failed model and cost denied results never expose advisory body
+ok 8 - blocked, failed model and cost denied results never expose advisory body
+  ---
+  duration_ms: 1.612889
+  type: 'test'
+  ...
+# Subtest: cross-tenant, group, CNPJ and date responses all fail closed
+ok 9 - cross-tenant, group, CNPJ and date responses all fail closed
+  ---
+  duration_ms: 0.69125
+  type: 'test'
+  ...
+# Subtest: untrusted capabilities or missing provenance cannot be interpreted as an approval
+ok 10 - untrusted capabilities or missing provenance cannot be interpreted as an approval
+  ---
+  duration_ms: 0.826792
+  type: 'test'
+  ...
+# Subtest: version 1.1.0 cannot assert locale by a bare caller-supplied locale
+ok 11 - version 1.1.0 cannot assert locale by a bare caller-supplied locale
+  ---
+  duration_ms: 0.527665
+  type: 'test'
+  ...
+# Subtest: future BFF v1.1 pt-BR locale assertion cannot bypass signed/replay host authorization
+ok 12 - future BFF v1.1 pt-BR locale assertion cannot bypass signed/replay host authorization
+  ---
+  duration_ms: 0.290983
+  type: 'test'
+  ...
+# Subtest: future BFF v1.1 English locale assertions remain unavailable without trusted host proof
+ok 13 - future BFF v1.1 English locale assertions remain unavailable without trusted host proof
+  ---
+  duration_ms: 0.233947
+  type: 'test'
+  ...
+# Subtest: long future answer and malformed upstream contracts reject
+ok 14 - long future answer and malformed upstream contracts reject
+  ---
+  duration_ms: 0.493911
+  type: 'test'
+  ...
+# Subtest: bridge uses no fetch, credentials, storage or inference endpoint
+ok 15 - bridge uses no fetch, credentials, storage or inference endpoint
+  ---
+  duration_ms: 0.409644
+  type: 'test'
+  ...
+# Subtest: forged future release flags, replay approvals and attestation blobs never display a model answer
+ok 16 - forged future release flags, replay approvals and attestation blobs never display a model answer
+  ---
+  duration_ms: 0.755479
+  type: 'test'
+  ...
+# Subtest: hostile raw BFF getters and proxies fail with opaque boundary errors
+ok 17 - hostile raw BFF getters and proxies fail with opaque boundary errors
+  ---
+  duration_ms: 0.574802
+  type: 'test'
+  ...
+# Subtest: projection binds a single stable copy of host response values and never shows text
+ok 18 - projection binds a single stable copy of host response values and never shows text
+  ---
+  duration_ms: 0.276496
+  type: 'test'
+  ...
+# Subtest: invalid request objects do not leak host getter diagnostics from public invocation
+ok 19 - invalid request objects do not leak host getter diagnostics from public invocation
+  ---
+  duration_ms: 0.726726
+  type: 'test'
+  ...
+# Subtest: explicit requested locale crosses the BFF invocation but cannot authorize model display
+ok 20 - explicit requested locale crosses the BFF invocation but cannot authorize model display
+  ---
+  duration_ms: 0.199212
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 28.996408
+Running synthetic contract test: scripts/live-platform-consultation-tests.mjs
+TAP version 13
+# Subtest: construction and passive observation never cause consultation; explicit ask returns gated result
+ok 1 - construction and passive observation never cause consultation; explicit ask returns gated result
+  ---
+  duration_ms: 4.05713
+  type: 'test'
+  ...
+# Subtest: same-origin request contains only exact Platform BFF envelope and trusted Bearer token
+ok 2 - same-origin request contains only exact Platform BFF envelope and trusted Bearer token
+  ---
+  duration_ms: 39.187892
+  type: 'test'
+  ...
+# Subtest: missing or invalid session token denies before fetch
+ok 3 - missing or invalid session token denies before fetch
+  ---
+  duration_ms: 2.329927
+  type: 'test'
+  ...
+# Subtest: HTTP errors, wrong content-type and malformed JSON never leak upstream body
+ok 4 - HTTP errors, wrong content-type and malformed JSON never leak upstream body
+  ---
+  duration_ms: 3.636866
+  type: 'test'
+  ...
+# Subtest: response larger than 64KiB is denied from headers or streaming bytes
+ok 5 - response larger than 64KiB is denied from headers or streaming bytes
+  ---
+  duration_ms: 2.883259
+  type: 'test'
+  ...
+# Subtest: pending duplicate rejects immediately, preventing accidental second inference
+ok 6 - pending duplicate rejects immediately, preventing accidental second inference
+  ---
+  duration_ms: 0.988905
+  type: 'test'
+  ...
+# Subtest: change of tenant, group, CNPJ, page, period, slug, locale or session discards late replies
+ok 7 - change of tenant, group, CNPJ, page, period, slug, locale or session discards late replies
+  ---
+  duration_ms: 2.372326
+  type: 'test'
+  ...
+# Subtest: explicit invalidate aborts in-flight request even if transport ignores signal
+ok 8 - explicit invalidate aborts in-flight request even if transport ignores signal
+  ---
+  duration_ms: 0.719843
+  type: 'test'
+  ...
+# Subtest: new session can issue next request without ever displaying old session reply
+ok 9 - new session can issue next request without ever displaying old session reply
+  ---
+  duration_ms: 1.260231
+  type: 'test'
+  ...
+# Subtest: missing session, invalid input and disposed coordinator never invoke transport
+ok 10 - missing session, invalid input and disposed coordinator never invoke transport
+  ---
+  duration_ms: 2.895412
+  type: 'test'
+  ...
+# Subtest: synthetic Genesis UX stays free of transport, local credentials and inference
+ok 11 - synthetic Genesis UX stays free of transport, local credentials and inference
+  ---
+  duration_ms: 1.069865
+  type: 'test'
+  ...
+# Subtest: context switch during asynchronous JWT retrieval prevents even the outbound BFF request
+ok 12 - context switch during asynchronous JWT retrieval prevents even the outbound BFF request
+  ---
+  duration_ms: 0.71318
+  type: 'test'
+  ...
+# Subtest: explicit invalidation during token acquisition prevents outbound requests
+ok 13 - explicit invalidation during token acquisition prevents outbound requests
+  ---
+  duration_ms: 0.575344
+  type: 'test'
+  ...
+# Subtest: MODEL must be preceded by Intelligence retrieval READY, not legacy PASSED
+ok 14 - MODEL must be preceded by Intelligence retrieval READY, not legacy PASSED
+  ---
+  duration_ms: 1.655308
+  type: 'test'
+  ...
+# Subtest: RETRIEVAL_* failure mode must match exact non-READY retrieval decision
+ok 15 - RETRIEVAL_* failure mode must match exact non-READY retrieval decision
+  ---
+  duration_ms: 1.267665
+  type: 'test'
+  ...
+# Subtest: cost denial and safe fallback cannot invent an eligible retrieval decision
+ok 16 - cost denial and safe fallback cannot invent an eligible retrieval decision
+  ---
+  duration_ms: 0.735984
+  type: 'test'
+  ...
+# Subtest: coherent non-READY retrieval is unavailable without rendering upstream text
+ok 17 - coherent non-READY retrieval is unavailable without rendering upstream text
+  ---
+  duration_ms: 1.454623
+  type: 'test'
+  ...
+# Subtest: explicit invalidation settles an ignored-abort transport without response or second cost
+ok 18 - explicit invalidation settles an ignored-abort transport without response or second cost
+  ---
+  duration_ms: 1.058255
+  type: 'test'
+  ...
+# Subtest: dispose settles a hung transport even when the transport ignores AbortSignal
+ok 19 - dispose settles a hung transport even when the transport ignores AbortSignal
+  ---
+  duration_ms: 2.266047
+  type: 'test'
+  ...
+# Subtest: aborted transport resolving or rejecting late never changes the next session
+ok 20 - aborted transport resolving or rejecting late never changes the next session
+  ---
+  duration_ms: 13.956124
+  type: 'test'
+  ...
+# Subtest: foreign host getters and proxy traps fail before any paid BFF dispatch
+ok 21 - foreign host getters and proxy traps fail before any paid BFF dispatch
+  ---
+  duration_ms: 0.645955
+  type: 'test'
+  ...
+# Subtest: the first host selection is not modified by a getter while building the request
+ok 22 - the first host selection is not modified by a getter while building the request
+  ---
+  duration_ms: 0.208108
+  type: 'test'
+  ...
+# Subtest: a hostile host replacement while token is pending rejects before network dispatch
+ok 23 - a hostile host replacement while token is pending rejects before network dispatch
+  ---
+  duration_ms: 0.390849
+  type: 'test'
+  ...
+# Subtest: immutable host snapshots cannot be changed by a later mutable selection
+ok 24 - immutable host snapshots cannot be changed by a later mutable selection
+  ---
+  duration_ms: 0.438718
+  type: 'test'
+  ...
+# Subtest: a future locale-verified response remains hidden throughout the live coordinator
+ok 25 - a future locale-verified response remains hidden throughout the live coordinator
+  ---
+  duration_ms: 0.932901
+  type: 'test'
+  ...
+# Subtest: retrieval and presentation validate exactly one shared copy of mutable BFF response
+ok 26 - retrieval and presentation validate exactly one shared copy of mutable BFF response
+  ---
+  duration_ms: 0.674519
+  type: 'test'
+  ...
+# Subtest: retrieval accessor and poisoned proxy reject without exposing private diagnostics
+ok 27 - retrieval accessor and poisoned proxy reject without exposing private diagnostics
+  ---
+  duration_ms: 1.289987
+  type: 'test'
+  ...
+# Subtest: malformed MIME declarations never pass the JSON response gate
+ok 28 - malformed MIME declarations never pass the JSON response gate
+  ---
+  duration_ms: 2.545329
+  type: 'test'
+  ...
+# Subtest: an oversized response cannot hold UI hostage with a hung stream cancel
+ok 29 - an oversized response cannot hold UI hostage with a hung stream cancel
+  ---
+  duration_ms: 1.313952
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 350.934477
+Running synthetic contract test: scripts/consultative-status-tests.mjs
+TAP version 13
+# Subtest: PT/EN session errors always require explicit sign-in
+ok 1 - PT/EN session errors always require explicit sign-in
+  ---
+  duration_ms: 1.470744
+  type: 'test'
+  ...
+# Subtest: authorization never promotes denial to generic retry
+ok 2 - authorization never promotes denial to generic retry
+  ---
+  duration_ms: 0.229468
+  type: 'test'
+  ...
+# Subtest: input errors require editing rather than automatic re-submission
+ok 3 - input errors require editing rather than automatic re-submission
+  ---
+  duration_ms: 0.223136
+  type: 'test'
+  ...
+# Subtest: session or context change cancels without retrying paid inference
+ok 4 - session or context change cancels without retrying paid inference
+  ---
+  duration_ms: 0.17136
+  type: 'test'
+  ...
+# Subtest: multiple questions cannot trigger parallel automatic retry
+ok 5 - multiple questions cannot trigger parallel automatic retry
+  ---
+  duration_ms: 0.147676
+  type: 'test'
+  ...
+# Subtest: unknown or malformed upstream body is NEVER reflected into UI text
+ok 6 - unknown or malformed upstream body is NEVER reflected into UI text
+  ---
+  duration_ms: 0.212707
+  type: 'test'
+  ...
+# Subtest: translated copy does not translate or disclose user/model content
+ok 7 - translated copy does not translate or disclose user/model content
+  ---
+  duration_ms: 0.5735
+  type: 'test'
+  ...
+# Subtest: source mapper must remain independent of fetch, credentials, storage and engine
+ok 8 - source mapper must remain independent of fetch, credentials, storage and engine
+  ---
+  duration_ms: 0.51405
+  type: 'test'
+  ...
+# Subtest: unknown claim outcome, invalid Ed25519 proof and stale attempt never recommend retry
+ok 9 - unknown claim outcome, invalid Ed25519 proof and stale attempt never recommend retry
+  ---
+  duration_ms: 0.463936
+  type: 'test'
+  ...
+# Subtest: generic transport errors remain separate from unknown claim outcomes
+ok 10 - generic transport errors remain separate from unknown claim outcomes
+  ---
+  duration_ms: 0.467742
+  type: 'test'
+  ...
+# Subtest: hostile upstream code getters or proxies fail closed without retry
+ok 11 - hostile upstream code getters or proxies fail closed without retry
+  ---
+  duration_ms: 0.414443
+  type: 'test'
+  ...
+# Subtest: genuine Error.code remains recognized without exposing Error.message
+ok 12 - genuine Error.code remains recognized without exposing Error.message
+  ---
+  duration_ms: 0.181939
+  type: 'test'
+  ...
+# Subtest: replay store qualification errors are safe, localized and never retried
+ok 13 - replay store qualification errors are safe, localized and never retried
+  ---
+  duration_ms: 0.242964
+  type: 'test'
+  ...
+# Subtest: bundle rejection stays non-retryable
+ok 14 - bundle rejection stays non-retryable
+  ---
+  duration_ms: 0.186738
+  type: 'test'
+  ...
+# Subtest: source normalization failure after a possible model request cannot retry
+ok 15 - source normalization failure after a possible model request cannot retry
+  ---
+  duration_ms: 0.148868
+  type: 'test'
+  ...
+# Subtest: actual receipt projection failures map to no-retry UI in both languages
+ok 16 - actual receipt projection failures map to no-retry UI in both languages
+  ---
+  duration_ms: 0.615428
+  type: 'test'
+  ...
+# Subtest: an unknown lost-ACK or malformed host error is never an automatic or suggested retry
+ok 17 - an unknown lost-ACK or malformed host error is never an automatic or suggested retry
+  ---
+  duration_ms: 0.17677
+  type: 'test'
+  ...
+# Subtest: replay conformance lifecycle failures remain opaque and non-retryable
+ok 18 - replay conformance lifecycle failures remain opaque and non-retryable
+  ---
+  duration_ms: 0.238304
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23.545057
+Running synthetic contract test: scripts/consultative-verification-tests.mjs
+TAP version 13
+# Subtest: valid receipt always results in unavailable, never in a model answer
+ok 1 - valid receipt always results in unavailable, never in a model answer
+  ---
+  duration_ms: 2.198802
+  type: 'test'
+  ...
+# Subtest: legitimate zero-hit is not interpreted as verified evidence
+ok 2 - legitimate zero-hit is not interpreted as verified evidence
+  ---
+  duration_ms: 0.362807
+  type: 'test'
+  ...
+# Subtest: English metadata must match requested language, with authored English notice
+ok 3 - English metadata must match requested language, with authored English notice
+  ---
+  duration_ms: 0.308576
+  type: 'test'
+  ...
+# Subtest: the receipt cannot promote the generated answer to presentable
+ok 4 - the receipt cannot promote the generated answer to presentable
+  ---
+  duration_ms: 0.818958
+  type: 'test'
+  ...
+# Subtest: foreign tenants, groups, CNPJs and reference dates cannot use a receipt
+ok 5 - foreign tenants, groups, CNPJs and reference dates cannot use a receipt
+  ---
+  duration_ms: 0.432537
+  type: 'test'
+  ...
+# Subtest: date, scope and stale-context updates never coerce the request identity
+ok 6 - date, scope and stale-context updates never coerce the request identity
+  ---
+  duration_ms: 0.320198
+  type: 'test'
+  ...
+# Subtest: inconsistent evidence counts, invalid digest and metadata are rejected
+ok 7 - inconsistent evidence counts, invalid digest and metadata are rejected
+  ---
+  duration_ms: 0.411688
+  type: 'test'
+  ...
+# Subtest: future schema and extra authorization or model fields fail closed
+ok 8 - future schema and extra authorization or model fields fail closed
+  ---
+  duration_ms: 0.295421
+  type: 'test'
+  ...
+# Subtest: raw legal text, model output, source metadata and fingerprint are not disclosed
+ok 9 - raw legal text, model output, source metadata and fingerprint are not disclosed
+  ---
+  duration_ms: 0.386982
+  type: 'test'
+  ...
+# Subtest: null, arrays, malformed shapes and missing fields fail closed
+ok 10 - null, arrays, malformed shapes and missing fields fail closed
+  ---
+  duration_ms: 0.469496
+  type: 'test'
+  ...
+# Subtest: source boundary contains no transport, token access, state storage or execution
+ok 11 - source boundary contains no transport, token access, state storage or execution
+  ---
+  duration_ms: 0.499151
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19.259161
+Running synthetic contract test: scripts/consultative-attempt-tests.mjs
+TAP version 13
+# Subtest: valid local correlation remains unavailable and non-authoritative
+ok 1 - valid local correlation remains unavailable and non-authoritative
+  ---
+  duration_ms: 2.805785
+  type: 'test'
+  ...
+# Subtest: separate session attempt cannot reuse the previous response
+ok 2 - separate session attempt cannot reuse the previous response
+  ---
+  duration_ms: 0.642338
+  type: 'test'
+  ...
+# Subtest: outdated or temporally impossible attempts cannot show a result
+ok 3 - outdated or temporally impossible attempts cannot show a result
+  ---
+  duration_ms: 0.456411
+  type: 'test'
+  ...
+# Subtest: tenant, group, CNPJ and reference period must match both nested scopes
+ok 4 - tenant, group, CNPJ and reference period must match both nested scopes
+  ---
+  duration_ms: 0.97548
+  type: 'test'
+  ...
+# Subtest: PT/EN switched mid-flight cannot reinterpret the previous answer
+ok 5 - PT/EN switched mid-flight cannot reinterpret the previous answer
+  ---
+  duration_ms: 0.28919
+  type: 'test'
+  ...
+# Subtest: never promote model language, legal validity or execution authority
+ok 6 - never promote model language, legal validity or execution authority
+  ---
+  duration_ms: 0.386521
+  type: 'test'
+  ...
+# Subtest: extra fields and tampered metadata are rejected rather than echoed
+ok 7 - extra fields and tampered metadata are rejected rather than echoed
+  ---
+  duration_ms: 0.432327
+  type: 'test'
+  ...
+# Subtest: safe projection never reveals nonce, fingerprint, identifiers, source or model text
+ok 8 - safe projection never reveals nonce, fingerprint, identifiers, source or model text
+  ---
+  duration_ms: 0.991831
+  type: 'test'
+  ...
+# Subtest: invalid receipt roots and missing context are rejected
+ok 9 - invalid receipt roots and missing context are rejected
+  ---
+  duration_ms: 0.517766
+  type: 'test'
+  ...
+# Subtest: consumer has no fetch, storage, credentials or inference code
+ok 10 - consumer has no fetch, storage, credentials or inference code
+  ---
+  duration_ms: 0.757162
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19.130562
+Running synthetic contract test: scripts/consultative-signed-verification-tests.mjs
+TAP version 13
+# Subtest: matching signed-result metadata never permits model display
+ok 1 - matching signed-result metadata never permits model display
+  ---
+  duration_ms: 1.541766
+  type: 'test'
+  ...
+# Subtest: cross-attempt, tenant, group, CNPJ and period metadata fail closed
+ok 2 - cross-attempt, tenant, group, CNPJ and period metadata fail closed
+  ---
+  duration_ms: 1.589075
+  type: 'test'
+  ...
+# Subtest: matching English view uses authored English shell but stays unavailable
+ok 3 - matching English view uses authored English shell but stays unavailable
+  ---
+  duration_ms: 0.354742
+  type: 'test'
+  ...
+# Subtest: signature status in JSON is never treated as display clearance
+ok 4 - signature status in JSON is never treated as display clearance
+  ---
+  duration_ms: 0.458455
+  type: 'test'
+  ...
+# Subtest: unversioned, extra, and model-controlled fields fail closed
+ok 5 - unversioned, extra, and model-controlled fields fail closed
+  ---
+  duration_ms: 0.484334
+  type: 'test'
+  ...
+# Subtest: invalid expected scope, locale or attempt identifier reject
+ok 6 - invalid expected scope, locale or attempt identifier reject
+  ---
+  duration_ms: 0.287386
+  type: 'test'
+  ...
+# Subtest: result has no payload, signature, identifiers, model content or metadata
+ok 7 - result has no payload, signature, identifiers, model content or metadata
+  ---
+  duration_ms: 0.297996
+  type: 'test'
+  ...
+# Subtest: this consumer contains no network, key materials or signing code
+ok 8 - this consumer contains no network, key materials or signing code
+  ---
+  duration_ms: 0.424161
+  type: 'test'
+  ...
+# Subtest: hostile receipt access is converted into an opaque boundary error
+ok 9 - hostile receipt access is converted into an opaque boundary error
+  ---
+  duration_ms: 0.710366
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17.920794
+Running synthetic contract test: scripts/consultative-replay-tests.mjs
+TAP version 13
+# Subtest: claimed callback is never confused with production replay certification
+ok 1 - claimed callback is never confused with production replay certification
+  ---
+  duration_ms: 1.641111
+  type: 'test'
+  ...
+# Subtest: another attempt and foreign tenant/group/CNPJ or date reject
+ok 2 - another attempt and foreign tenant/group/CNPJ or date reject
+  ---
+  duration_ms: 1.885949
+  type: 'test'
+  ...
+# Subtest: cannot elevate the replay guard or approve legal/model output
+ok 3 - cannot elevate the replay guard or approve legal/model output
+  ---
+  duration_ms: 0.564463
+  type: 'test'
+  ...
+# Subtest: PT/EN catalog notice stays local and does not reuse foreign language
+ok 4 - PT/EN catalog notice stays local and does not reuse foreign language
+  ---
+  duration_ms: 0.390638
+  type: 'test'
+  ...
+# Subtest: malformed dates, scope, extra fields and unsupported schema fail
+ok 5 - malformed dates, scope, extra fields and unsupported schema fail
+  ---
+  duration_ms: 0.565335
+  type: 'test'
+  ...
+# Subtest: returned notice includes neither private identifiers nor store metadata
+ok 6 - returned notice includes neither private identifiers nor store metadata
+  ---
+  duration_ms: 0.207087
+  type: 'test'
+  ...
+# Subtest: consumer includes no HTTP, storage, private keys or inference
+ok 7 - consumer includes no HTTP, storage, private keys or inference
+  ---
+  duration_ms: 0.421226
+  type: 'test'
+  ...
+# Subtest: test-only conformance report never substitutes a live signed replay receipt
+ok 8 - test-only conformance report never substitutes a live signed replay receipt
+  ---
+  duration_ms: 0.397161
+  type: 'test'
+  ...
+# Subtest: hostile receipt access is converted into an opaque boundary error
+ok 9 - hostile receipt access is converted into an opaque boundary error
+  ---
+  duration_ms: 1.4476
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18.281197
+Running synthetic contract test: scripts/consultative-wire-compat-tests.mjs
+TAP version 13
+# Subtest: identical golden transport bytes are pinned across both repositories
+ok 1 - identical golden transport bytes are pinned across both repositories
+  ---
+  duration_ms: 2.316412
+  type: 'test'
+  ...
+# Subtest: signature fixture provides only authored, unavailable PT notice
+ok 2 - signature fixture provides only authored, unavailable PT notice
+  ---
+  duration_ms: 0.775877
+  type: 'test'
+  ...
+# Subtest: replay fixture provides only authored, unavailable PT notice
+ok 3 - replay fixture provides only authored, unavailable PT notice
+  ---
+  duration_ms: 0.4716
+  type: 'test'
+  ...
+# Subtest: real proof cannot be replaced with a simulated test report
+ok 4 - real proof cannot be replaced with a simulated test report
+  ---
+  duration_ms: 0.642899
+  type: 'test'
+  ...
+# Subtest: cross-attempt, cross-company, wrong version and false flags reject
+ok 5 - cross-attempt, cross-company, wrong version and false flags reject
+  ---
+  duration_ms: 0.862509
+  type: 'test'
+  ...
+# Subtest: model text, private request, raw signature or evidence must never be transported
+ok 6 - model text, private request, raw signature or evidence must never be transported
+  ---
+  duration_ms: 1.448923
+  type: 'test'
+  ...
+# Subtest: source-only signature claims never elevate client-side trust
+ok 7 - source-only signature claims never elevate client-side trust
+  ---
+  duration_ms: 0.39661
+  type: 'test'
+  ...
+# Subtest: the shared complete envelope is exactly the pair of individual source receipts
+ok 8 - the shared complete envelope is exactly the pair of individual source receipts
+  ---
+  duration_ms: 0.779594
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17.825697
+Running synthetic contract test: scripts/consultative-bundle-tests.mjs
+TAP version 13
+# Subtest: source-only golden receipts together still yield unavailable notice
+ok 1 - source-only golden receipts together still yield unavailable notice
+  ---
+  duration_ms: 2.24061
+  type: 'test'
+  ...
+# Subtest: do not permit swapping signed or replay attempt identifiers
+ok 2 - do not permit swapping signed or replay attempt identifiers
+  ---
+  duration_ms: 0.933061
+  type: 'test'
+  ...
+# Subtest: scope mismatch in either receipt fails for every tenant dimension
+ok 3 - scope mismatch in either receipt fails for every tenant dimension
+  ---
+  duration_ms: 1.323409
+  type: 'test'
+  ...
+# Subtest: locale mismatch never promotes English response into Portuguese context
+ok 4 - locale mismatch never promotes English response into Portuguese context
+  ---
+  duration_ms: 1.146158
+  type: 'test'
+  ...
+# Subtest: outer bundle authority escalation and added secret fields always reject
+ok 5 - outer bundle authority escalation and added secret fields always reject
+  ---
+  duration_ms: 0.666795
+  type: 'test'
+  ...
+# Subtest: inner replay certifications or model answer display cannot be elevated
+ok 6 - inner replay certifications or model answer display cannot be elevated
+  ---
+  duration_ms: 0.481138
+  type: 'test'
+  ...
+# Subtest: unknown, missing and deceptive nested results deny without data leakage
+ok 7 - unknown, missing and deceptive nested results deny without data leakage
+  ---
+  duration_ms: 0.541911
+  type: 'test'
+  ...
+# Subtest: English authored safety shell also remains unavailable
+ok 8 - English authored safety shell also remains unavailable
+  ---
+  duration_ms: 0.303586
+  type: 'test'
+  ...
+# Subtest: complete golden transport envelope is rejected if externally augmented
+ok 9 - complete golden transport envelope is rejected if externally augmented
+  ---
+  duration_ms: 1.174251
+  type: 'test'
+  ...
+# Subtest: throwing nested getters and proxies cannot leak an upstream diagnostic
+ok 10 - throwing nested getters and proxies cannot leak an upstream diagnostic
+  ---
+  duration_ms: 0.748496
+  type: 'test'
+  ...
+# Subtest: self-consistent forged bundle cannot replace independently expected host attempt
+ok 11 - self-consistent forged bundle cannot replace independently expected host attempt
+  ---
+  duration_ms: 0.355063
+  type: 'test'
+  ...
+# Subtest: untrusted expected host selection is snapshotted, never read twice
+ok 12 - untrusted expected host selection is snapshotted, never read twice
+  ---
+  duration_ms: 0.45548
+  type: 'test'
+  ...
+# Subtest: validated scope and locale remain fixed across both nested projections
+ok 13 - validated scope and locale remain fixed across both nested projections
+  ---
+  duration_ms: 0.183803
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24.212953
+Running synthetic contract test: scripts/consultative-release-acceptance-tests.mjs
+TAP version 13
+# Subtest: both PRs pin the same complete, source-only, Git-blob acceptance manifest
+ok 1 - both PRs pin the same complete, source-only, Git-blob acceptance manifest
+  ---
+  duration_ms: 1.254941
+  type: 'test'
+  ...
+# Subtest: local SOURCE_TESTED entries refer to real repository test scripts
+ok 2 - local SOURCE_TESTED entries refer to real repository test scripts
+  ---
+  duration_ms: 0.40233
+  type: 'test'
+  ...
+# Subtest: CI green cannot forge release approval or promote external gates
+ok 3 - CI green cannot forge release approval or promote external gates
+  ---
+  duration_ms: 2.542373
+  type: 'test'
+  ...
+# Subtest: each unresolved operational gate states the evidence needed
+ok 4 - each unresolved operational gate states the evidence needed
+  ---
+  duration_ms: 0.264774
+  type: 'test'
+  ...
+# Subtest: historical Gate B record never satisfies the new cross-repo consultation gate
+ok 5 - historical Gate B record never satisfies the new cross-repo consultation gate
+  ---
+  duration_ms: 0.638441
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14.058659
+Genesis source QA passed at e8c4342ac2aed359739b1fd59b67c0e9f0cf47ea
+Inspect local generated-file changes before committing anything:
+ M preview/runtime/features/fiscal-documents/Nfe70031Controller.js
+ M preview/runtime/features/history/HistoryController.js
+ M preview/runtime/features/reconciliation/ReconciliationController.js
+ M preview/runtime/index.js
+ M preview/runtime/mocks/scenarios/nfe-70031.js
+ M preview/runtime/providers/intelligence/MockIntelligenceProvider.js
+ M preview/runtime/providers/platform/MockPlatformProvider.js
+?? preview/runtime/contracts/consultation.js
+?? preview/runtime/features/intelligence/
+?? preview/runtime/providers/adapters/
+?? preview/runtime/providers/intelligence/ConsultativeIntelligenceAdapter.js
+?? preview/runtime/providers/intelligence/IntelligenceAdapter.js
+?? preview/runtime/providers/intelligence/IntelligenceProvider.js
+?? preview/runtime/providers/platform/PlatformAdapter.js
+?? preview/runtime/providers/platform/PlatformProvider.js

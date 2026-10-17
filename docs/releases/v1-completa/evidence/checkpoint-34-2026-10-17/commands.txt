@@ -1,0 +1,5 @@
+bash scripts/v1-codespaces-qa.sh --dry-run
+bash scripts/v1-codespaces-qa.sh --run
+npm audit --json
+INTELLIGENCE_BROWSER_OUT=<evidence>/genesis-intelligence-browser npm run homologate:intelligence:browser
+UX_HOMOLOGATION_OUT=<evidence>/genesis-ux-browser npm run homologate:browser

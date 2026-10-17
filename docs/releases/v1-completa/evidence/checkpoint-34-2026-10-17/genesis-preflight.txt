@@ -1,0 +1,10 @@
+EVOLU Genesis QA — 2026-10-17T23:35:02Z
+Repository: evoluagency/evolu-genesis
+Branch: docs/intelligence-ui-unification-plan-v1
+HEAD: e8c4342ac2aed359739b1fd59b67c0e9f0cf47ea
+Node: v22.23.3; npm: 10.9.9
+Command plan: npm ci --ignore-scripts --no-audit --no-fund
+              npm run typecheck
+              npm run build:preview-runtime
+              14 isolated source-only scripts in scripts/*.mjs
+DRY RUN ONLY — no installation, compile, tests or network.

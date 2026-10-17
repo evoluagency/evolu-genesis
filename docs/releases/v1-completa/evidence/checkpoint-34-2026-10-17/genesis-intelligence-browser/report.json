@@ -1,0 +1,50 @@
+{
+  "createdAt": "2026-10-17T23:35:39.584Z",
+  "checks": [
+    {
+      "page": "tenant-fiscal-workspace",
+      "viewport": "desktop",
+      "result": "PASS",
+      "ptDark": "rgb(20, 29, 42)",
+      "enLight": "rgb(255, 255, 255)",
+      "semanticSignal": true
+    },
+    {
+      "page": "tenant-fiscal-workspace",
+      "viewport": "mobile",
+      "result": "PASS",
+      "ptDark": "rgb(20, 29, 42)",
+      "enLight": "rgb(255, 255, 255)",
+      "semanticSignal": true
+    },
+    {
+      "page": "tenant-advisory-workspace",
+      "viewport": "desktop",
+      "result": "PASS",
+      "ptDark": "rgb(20, 29, 42)",
+      "enLight": "rgb(255, 255, 255)",
+      "semanticSignal": true
+    },
+    {
+      "page": "tenant-advisory-workspace",
+      "viewport": "mobile",
+      "result": "PASS",
+      "ptDark": "rgb(20, 29, 42)",
+      "enLight": "rgb(255, 255, 255)",
+      "semanticSignal": true
+    }
+  ],
+  "shots": [
+    "tenant-fiscal-workspace-desktop-dark-pt.png",
+    "tenant-fiscal-workspace-desktop-light-en.png",
+    "tenant-fiscal-workspace-mobile-dark-pt.png",
+    "tenant-fiscal-workspace-mobile-light-en.png",
+    "tenant-advisory-workspace-desktop-dark-pt.png",
+    "tenant-advisory-workspace-desktop-light-en.png",
+    "tenant-advisory-workspace-mobile-dark-pt.png",
+    "tenant-advisory-workspace-mobile-light-en.png"
+  ],
+  "errors": [],
+  "status": "PASS",
+  "browser": "Chrome/155.0.8059.79"
+}
