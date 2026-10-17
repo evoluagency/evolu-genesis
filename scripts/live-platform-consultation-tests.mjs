@@ -54,7 +54,9 @@ test("same-origin request contains only exact Platform BFF envelope and trusted 
  const body=JSON.parse(options.body);
  assert.deepEqual(Object.keys(body).sort(),["operation","payload","service","tenantSlug"]);
  assert.equal(body.payload.companyId,scope.companyId);assert.equal(body.payload.cnpjId,scope.cnpjId);
- assert.equal(body.payload.question,question);assert.equal("locale" in body,false);
+ assert.equal(body.payload.question,question);
+  assert.equal(body.payload.locale,"pt-BR");
+  assert.equal("locale" in body,false);
  controller.dispose();
 });
 test("missing or invalid session token denies before fetch",async()=>{

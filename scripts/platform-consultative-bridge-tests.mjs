@@ -45,7 +45,8 @@ test("exact private Platform BFF invocation has no model, token, history or writ
  assert.deepEqual(inv,{
   service:"intelligence",operation:"requestConsultativeAnswerSource",tenantSlug:"tenant-alpha",
   payload:{tenantId:scope.tenantId,companyId:scope.companyId,cnpjId:scope.cnpjId,
-    referenceDate:"2026-10-13",question:"Quais evidências existem para a classificação?"},
+    referenceDate:"2026-10-13",locale:"pt-BR",
+    question:"Quais evidências existem para a classificação?"},
  });
  assert.notEqual(inv.payload.companyId,inv.payload.cnpjId);
  assert.equal(JSON.stringify(inv).includes("authorization"),false);
@@ -261,4 +262,13 @@ test("invalid request objects do not leak host getter diagnostics from public in
  assert.throws(()=>createPlatformConsultativeInvocation(query({scope:hostileScope})),
   e=>e instanceof PlatformConsultativeBoundaryError &&
    e.code==="invalid_human_consultation" && !e.message.includes(privateText));
+});
+
+test("explicit requested locale crosses the BFF invocation but cannot authorize model display",()=>{
+  const invocation=createPlatformConsultativeInvocation(query({locale:"en"}));
+  assert.equal(invocation.payload.locale,"en");
+  assert.equal(Object.hasOwn(invocation,"locale"),false);
+  const projection=projectPrivatePlatformConsultation(result(),query({locale:"en"}),NOW);
+  assert.equal(projection.state,"UNAVAILABLE");
+  assert.equal(projection.intent.executionAuthority,"NONE");
 });

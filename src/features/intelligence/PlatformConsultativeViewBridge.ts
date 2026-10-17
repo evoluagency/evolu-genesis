@@ -37,6 +37,7 @@ export type PlatformConsultativeInvocation = Readonly<{
     companyId: string; // canonical Platform business group
     cnpjId: string; // canonical Platform establishment
     referenceDate: string;
+    locale: IntelligenceLocale;
     question: string;
   }>;
 }>;
@@ -165,6 +166,7 @@ function createPlatformConsultativeInvocationUnchecked(
       companyId: s.companyId,
       cnpjId: s.cnpjId,
       referenceDate: s.referenceDate,
+      locale: request.locale,
       question: request.question.trim(),
     },
   };
