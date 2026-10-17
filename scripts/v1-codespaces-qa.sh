@@ -60,7 +60,7 @@ echo "Node: $(node -v); npm: $(npm -v)"
 echo "Command plan: npm ci --ignore-scripts --no-audit --no-fund"
 echo "              npm run typecheck"
 echo "              npm run build:preview-runtime"
-echo "              13 isolated source-only scripts in scripts/*.mjs"
+echo "              14 isolated source-only scripts in scripts/*.mjs"
 if [[ "${1}" == "--dry-run" ]]; then
   echo "DRY RUN ONLY — no installation, compile, tests or network."
   exit 0
@@ -79,6 +79,7 @@ scripts=(
   intelligence-delegation-tests.mjs
   intelligence-presentation-tests.mjs
   platform-consultative-bridge-tests.mjs
+  live-platform-consultation-tests.mjs
   consultative-status-tests.mjs
   consultative-verification-tests.mjs
   consultative-attempt-tests.mjs

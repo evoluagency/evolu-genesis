@@ -125,7 +125,7 @@ body.ux-collapsed .ux-nav-symbol{flex:0 0 24px}
  .ux-head h2{font-size:23px}
  .ux-metrics{grid-template-columns:minmax(0,1fr)}
  .ux-grid{grid-template-columns:1fr;min-height:0}
- .ux-tabs{overflow-x:auto}
+ .ux-tabs{flex-wrap:wrap;overflow-x:visible}
  .ux-row{grid-template-columns:minmax(0,1fr);gap:8px}
  .ux-row .ux-btn{justify-self:start}
  .ux-footer{display:block}
