@@ -172,6 +172,11 @@ Não alterar o relatório, screenshots ou HUMAN_REVIEW.md históricos para regis
 
 **Evidência exigida por caso:** SHA efetivamente revisado, data/hora, nome do revisor, browser/versão, viewport/zoom real, rota, papel/CNPJ/competência sintéticos, PT-BR/EN/tema, passos, esperado/obtido e PASS/FAIL/BLOCKED. HR-01…HR-05 exigem captura do indicador 200% e do conteúdo/ação final; HR-06 exige sequência ou vídeo curto de foco/rolagem/fechamento de diálogo. Sanitizar qualquer captura. Corte de texto indispensável, ação inacessível, armadilha de foco ou troca indevida de contexto impede PASS. Uma falha requer correção delimitada e nova prova apenas do caso afetado; este roteiro não autoriza release ou atesta JWT/RLS.
 
+
+**Tentativa técnica de 19/10/2026 (2026-10-19T20:46:18.259Z) — HR-01…HR-06 BLOCKED.** O pré-teste comum não carregou a aplicação: `http://127.0.0.1:8765/` retornou `net::ERR_CONNECTION_REFUSED`, e o HTTP local também não comprovou um servidor disponível. Não foi determinada a causa da conexão recusada. O navegador Chrome/CDP disponível não oferece input nativo; a revisão automática rejeitou `chrome://settings/appearance` e a observação da página interna de erro porque permite somente HTTP/HTTPS. Nenhum contorno ou emulação de zoom foi utilizado.
+
+Os seis roteiros ficaram bloqueados **antes de qualquer passo no produto**. O SHA-alvo era `2bd3d525b79db6d49662ff46d67f6e03da9425a6`; não há SHA de aplicação efetivamente carregada/revisada, captura de produto, zoom 200% observado, sequência de teclado ou defeito de interface demonstrado. **HR-01 Office: BLOCKED; HR-02 Company: BLOCKED; HR-03 Finance: BLOCKED; HR-04 Fiscal: BLOCKED; HR-05 Advisory: BLOCKED; HR-06 Company/teclado: BLOCKED.** O aceite humano continua REVIEW_REQUIRED nos seis casos. [Registro único da tentativa e das fontes novas de D8](./releases/v1-completa/evidence/human-review-2026-10-19/browser-attempt.json). Retomar esses roteiros quando houver navegador com acesso ao checkout sintético e controle nativo de zoom; não repetir a mesma tentativa bloqueada sem mudança de capacidade.
+
 ## 7. Nomenclature gate
 
 The current baseline passed a repository-wide text scan of the UX source/document set for the retired naming.
