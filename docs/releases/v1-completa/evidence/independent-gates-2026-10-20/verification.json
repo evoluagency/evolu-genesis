@@ -1,0 +1,106 @@
+{
+  "recorded_on": "2026-10-20",
+  "timezone": "America/Sao_Paulo",
+  "executor": "Codex — execução técnica local",
+  "environment": {
+    "node": "v24.19.0",
+    "typescript": "5.9.3 (ferramenta local; sem alteração de dependências do produto)"
+  },
+  "scope": "Regressão local dirigida a defeito reproduzido; não é homologação JWT/RLS, navegador, zoom 200% ou aceite humano.",
+  "preserved": {
+    "p0": "OPEN",
+    "v1": "NO_GO",
+    "financial_b": "DISABLED",
+    "g01": "PRESERVED",
+    "e2e_formally_accepted": 0,
+    "human_reviews": "HR-01…HR-06 BLOCKED / REVIEW_REQUIRED",
+    "draft_prs": true
+  },
+  "operations": {
+    "paid_inference": false,
+    "aws": false,
+    "supabase_operational_write": false,
+    "deploy": false,
+    "merge": false,
+    "flags_changed": false,
+    "infrastructure_created": false
+  },
+  "repository": "G",
+  "source_parent_commit": "70fd22945318c9f10a8e941445b8d3ade61d0eea",
+  "result": "Diálogos Company não devolviam foco nem continham as bordas Tab/Shift+Tab. Correção local devolve foco ao disparador visível/conectado ou navegação estável, recalcula após re-render e contém Tab até fechar por Escape/cancelar. Prova de funções reais extraídas por AST com fixtures de foco/evento; não é execução em navegador nem revisão HR-06.",
+  "runs": {
+    "before": {
+      "tests": 10,
+      "passed": 2,
+      "failed": 8,
+      "exit_code": 1,
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "scripts/company-dialog-focus-tests.mjs"
+      ],
+      "same_final_regression_file": true
+    },
+    "after": {
+      "tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "exit_code": 0,
+      "command": [
+        "node",
+        "--test",
+        "--test-reporter=tap",
+        "scripts/company-dialog-focus-tests.mjs"
+      ]
+    },
+    "env": {
+      "NODE_PATH": "/workspace/scratch/ff454a0b6fc8/autonomous-qa-tools/node_modules"
+    },
+    "checks": [
+      {
+        "command": [
+          "node",
+          "--check",
+          "preview/company-access-home/app.js"
+        ],
+        "exit_code": 0
+      },
+      {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exit_code": 0
+      }
+    ]
+  },
+  "tested_files": {
+    "preview/company-access-home/app.js": {
+      "parent_git_blob": "85a27d4db36dcda607e84fd48b04a6a81ebf3098",
+      "tested_git_blob": "3f3f571e9239fb91197b6516766c5b2383276e50",
+      "sha256": "0fd12733e34425b44a0dbeeb02005bf0c17f5e2a80725fbd9515c3cd73283fc3"
+    },
+    "scripts/company-dialog-focus-tests.mjs": {
+      "parent_git_blob": null,
+      "tested_git_blob": "641ddea3d05be465ad0aab6bb1316a9050dc5136",
+      "sha256": "c02263c1e16c94d243cd58afb180f2a7bf48da36d00979b6344fd629a7a77bb5"
+    },
+    "package.json": {
+      "parent_git_blob": "8f2d07dcc3b83125ad362ee37321b31f1279da2c",
+      "tested_git_blob": "9e6427889c39f9b6a7cc4ee99d384ce6cb127994",
+      "sha256": "c73d5858e2bb98bc4ceb0a7fa01fd4a45c1c756251b5ec5f3e484d66964df19c"
+    }
+  },
+  "artifacts": {
+    "company-focus-before.tap": {
+      "sha256": "c6c89ad5f60d5941df7aada82d71b003353967dd637c3cedb339460333e9080b",
+      "bytes": 13169
+    },
+    "company-focus-after.tap": {
+      "sha256": "b4502ee6dd7c3c1bfb0746553259d98b05905c52a5d5aba3e1e6881e78be5739",
+      "bytes": 2156
+    }
+  }
+}

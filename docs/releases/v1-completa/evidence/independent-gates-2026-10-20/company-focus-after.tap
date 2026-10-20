@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: closing an opened Company dialog returns focus to its connected opener
+ok 1 - closing an opened Company dialog returns focus to its connected opener
+  ---
+  duration_ms: 3.140368
+  type: 'test'
+  ...
+# Subtest: Escape closes the dialog, prevents the background action and returns focus
+ok 2 - Escape closes the dialog, prevents the background action and returns focus
+  ---
+  duration_ms: 0.857784
+  type: 'test'
+  ...
+# Subtest: Tab at the last dialog control wraps to the first
+ok 3 - Tab at the last dialog control wraps to the first
+  ---
+  duration_ms: 0.830953
+  type: 'test'
+  ...
+# Subtest: Shift+Tab at the first dialog control wraps to the last
+ok 4 - Shift+Tab at the first dialog control wraps to the last
+  ---
+  duration_ms: 0.914936
+  type: 'test'
+  ...
+# Subtest: hidden submit in the source dialog is excluded from the focus boundary
+ok 5 - hidden submit in the source dialog is excluded from the focus boundary
+  ---
+  duration_ms: 0.754919
+  type: 'test'
+  ...
+# Subtest: a Tab arriving from outside an open modal cannot remain in background content
+ok 6 - a Tab arriving from outside an open modal cannot remain in background content
+  ---
+  duration_ms: 0.67568
+  type: 'test'
+  ...
+# Subtest: removed opener falls back to a connected stable navigation control
+ok 7 - removed opener falls back to a connected stable navigation control
+  ---
+  duration_ms: 0.688839
+  type: 'test'
+  ...
+# Subtest: saving updates content before returning focus, without targeting a removed opener
+ok 8 - saving updates content before returning focus, without targeting a removed opener
+  ---
+  duration_ms: 0.850393
+  type: 'test'
+  ...
+# Subtest: read-only mode cannot open a mutation dialog or steal focus
+ok 9 - read-only mode cannot open a mutation dialog or steal focus
+  ---
+  duration_ms: 0.836332
+  type: 'test'
+  ...
+# Subtest: Escape outside a closed dialog leaves the current focus alone
+ok 10 - Escape outside a closed dialog leaves the current focus alone
+  ---
+  duration_ms: 0.686976
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 315.999524

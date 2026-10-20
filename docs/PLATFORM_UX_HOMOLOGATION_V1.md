@@ -177,6 +177,9 @@ Não alterar o relatório, screenshots ou HUMAN_REVIEW.md históricos para regis
 
 Os seis roteiros ficaram bloqueados **antes de qualquer passo no produto**. O SHA-alvo era `2bd3d525b79db6d49662ff46d67f6e03da9425a6`; não há SHA de aplicação efetivamente carregada/revisada, captura de produto, zoom 200% observado, sequência de teclado ou defeito de interface demonstrado. **HR-01 Office: BLOCKED; HR-02 Company: BLOCKED; HR-03 Finance: BLOCKED; HR-04 Fiscal: BLOCKED; HR-05 Advisory: BLOCKED; HR-06 Company/teclado: BLOCKED.** O aceite humano continua REVIEW_REQUIRED nos seis casos. [Registro único da tentativa e das fontes novas de D8](./releases/v1-completa/evidence/human-review-2026-10-19/browser-attempt.json). Retomar esses roteiros quando houver navegador com acesso ao checkout sintético e controle nativo de zoom; não repetir a mesma tentativa bloqueada sem mudança de capacidade.
 
+
+**Correção técnica local — 20/10/2026:** os diálogos Company agora restauram foco ao disparador ainda visível/conectado (ou navegação estável após re-render), contêm Tab/Shift+Tab e fecham por Escape com retorno de foco. O mesmo arquivo de regressão teve **8 FAIL / 2 PASS** no app de `70fd22945318c9f10a8e941445b8d3ade61d0eea` e **10/10 PASS** após a correção. [Código testado, comandos e logs](./releases/v1-completa/evidence/independent-gates-2026-10-20/verification.json). São funções reais extraídas por AST com fixtures locais de foco/evento; **não houve novo teste de navegador, zoom nativo, revisão humana ou aceite HR-06**. HR-01…HR-06 continuam BLOCKED / REVIEW_REQUIRED, e os registros históricos permanecem intactos.
+
 ## 7. Nomenclature gate
 
 The current baseline passed a repository-wide text scan of the UX source/document set for the retired naming.
