@@ -14,6 +14,7 @@
     "test:delegation": "npm run build:preview-runtime && node scripts/intelligence-delegation-tests.mjs",
     "test:intelligence-presentation": "npm run build:preview-runtime && node scripts/intelligence-presentation-tests.mjs",
     "test:company-dialog-focus": "node --test scripts/company-dialog-focus-tests.mjs",
+    "test:company-identity": "node --test scripts/company-cnpj-identity-tests.mjs",
     "homologate:intelligence:browser": "node scripts/intelligence-browser-homologation.mjs",
     "test:platform-consultation": "npm run build:preview-runtime && node scripts/platform-consultative-bridge-tests.mjs",
     "test:live-platform-consultation": "npm run build:preview-runtime && node scripts/live-platform-consultation-tests.mjs",

@@ -1,0 +1,19 @@
+/* Extracted Company information-row tokens; scoped to this shared slice.
+   Host owns theme/branding. No root, layout, navigation or permission rules. */
+.ux-cnpj-identity {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line, var(--border));
+  border-radius: 11px;
+  background: var(--panel2, var(--panel, var(--card)));
+  color: var(--text, var(--fg));
+  overflow-wrap: anywhere;
+}
+.ux-cnpj-identity > b { font-size: 11px; }
+.ux-cnpj-identity > small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+}

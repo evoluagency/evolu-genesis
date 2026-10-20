@@ -220,3 +220,12 @@ can be swapped without modifying:
 - domain entity names
 - user-visible workflow
 - state-machine semantics
+
+
+## Primeira fatia compartilhada: identidade do estabelecimento — 20/10/2026
+
+O bloco de identificação da aba Informações de Company foi extraído para `src/features/company/CnpjIdentityView.ts`, sob o contrato existente `CnpjEntitySummary`. A prévia continua usando seu provider sintético explícito; hosts privados devem fornecer exclusivamente DTOs autorizados e conferir escopo/permissões antes da renderização. O componente não importa provider, mock, transporte, comandos ou credenciais.
+
+`preview/shared-ux/company-identity.css` reutiliza os tokens de Company/Shell com seletores restritos à fatia e herda tema/marca do host. A prévia consome a mesma implementação pelo runtime versionado. Identidade exibe razão social, CNPJ e UF, sem inventar competência, perfil fiscal ou capacidade operacional.
+
+Testes dirigidos: 14/14 de apresentação/runtime e 10/10 regressões de foco Company; TypeScript estrito da fatia e sintaxe do app aprovados. As verificações DOM locais não são browser, zoom 200%, revisão humana, autenticação privada ou E2E. HR-01…HR-06, homologação integrada e aceites de release continuam pendentes. Nenhuma rota/página removida, redirect, deploy ou alteração de flags.

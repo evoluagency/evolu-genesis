@@ -76,3 +76,5 @@ export {ConsultativeReplayReceiptError,projectUnreleasedConsultativeReplay} from
 // Combined signed/replay receipts are presentation-only, never a trust grant.
 export type {ExpectedConsultativeBundle,ConsultativeBundleNotice} from "./features/intelligence/ConsultativeVerificationBundle.js";
 export {ConsultativeBundleProjectionError,projectUnreleasedConsultativeBundle} from "./features/intelligence/ConsultativeVerificationBundle.js";
+export { assertCnpjIdentity, renderCnpjIdentity } from "./features/company/CnpjIdentityView.js";
+export type { CnpjIdentityLocale } from "./features/company/CnpjIdentityView.js";

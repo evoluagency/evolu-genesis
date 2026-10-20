@@ -1,5 +1,6 @@
 import {
   CompanyWorkspaceController,
+  renderCnpjIdentity,
   MockPlatformProvider,
   mockTenant,
   mockCompany,
@@ -116,9 +117,11 @@ out='<div class="grid ux-grid"><div class="stack">'+box(t("docTitle"),t("docSub"
 }else if(page==="requests"){
 out='<div class="grid ux-grid"><div class="stack">'+box(t("requestTitle"),t("requestSub"),requestList())+'</div><div class="stack">'+box(t("dataQuality"),"",'<div class="notice">'+t("rationale")+'</div>')+'</div></div>';
 }else{
-out='<div class="grid ux-grid"><div class="stack">'+box(t("headingInfo"),"",'<div class="list"><div class="item"><div><b>ACME Industrial</b><small>Company · '+t("scope")+'</small></div><span class="pill good">'+t("profile")+'</span></div><div class="item"><div><b>'+t("cnpj")+'</b><small>'+(()=>{const item=activeCnpjSummary();return item?formatCnpj(item.cnpj)+" · "+(item.state||"—"):"—"})()+'</small></div></div><div class="item"><div><b>'+t("role")+'</b><small>'+t("profile")+'</small></div></div></div>')+'</div><div class="stack">'+box(t("service"),"",'<div class="notice">'+t("scope")+'</div>')+'</div></div>';
+out='<div class="grid ux-grid"><div class="stack">'+box(t("headingInfo"),"",'<div class="list"><div class="item"><div><b>ACME Industrial</b><small>Company · '+t("scope")+'</small></div><span class="pill good">'+t("profile")+'</span></div><div data-genesis-cnpj-identity-host></div><div class="item"><div><b>'+t("role")+'</b><small>'+t("profile")+'</small></div></div></div>')+'</div><div class="stack">'+box(t("service"),"",'<div class="notice">'+t("scope")+'</div>')+'</div></div>';
 }
 $("pageContent").innerHTML=out;
+ const identityHost=$("pageContent").querySelector("[data-genesis-cnpj-identity-host]");
+ if(identityHost)renderCnpjIdentity(identityHost,activeCnpjSummary(),lang);
  const detail=$("openFinancialWorkspace");if(detail)detail.href=fullFinanceHref();
  const note=$("accessModeNote");
  note.hidden=!readOnly;note.textContent=readOnly?(lang==="pt"?"Perfil de consulta: apenas visualização. Nenhum lançamento, envio ou resposta pode ser registrado nesta demonstração.":"Read-only preview: no entries, uploads or replies. This URL is not authorization."):"";
@@ -220,4 +223,3 @@ try{
   :"This establishment/period could not be opened. Return through an authorized route.")+'</div>';
 }
 })();
-
