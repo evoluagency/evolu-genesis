@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: shared Company identity preserves name, formatted CNPJ and UF
+ok 1 - shared Company identity preserves name, formatted CNPJ and UF
+  ---
+  duration_ms: 1.676351
+  type: 'test'
+  ...
+# Subtest: English labels use the host locale without changing facts
+ok 2 - English labels use the host locale without changing facts
+  ---
+  duration_ms: 0.276448
+  type: 'test'
+  ...
+# Subtest: missing UF is unavailable, never a default state
+ok 3 - missing UF is unavailable, never a default state
+  ---
+  duration_ms: 0.151669
+  type: 'test'
+  ...
+# Subtest: alphanumeric CNPJ is preserved as supplied
+ok 4 - alphanumeric CNPJ is preserved as supplied
+  ---
+  duration_ms: 0.160462
+  type: 'test'
+  ...
+# Subtest: source text uses DOM text nodes, never HTML interpolation
+ok 5 - source text uses DOM text nodes, never HTML interpolation
+  ---
+  duration_ms: 0.793808
+  type: 'test'
+  ...
+# Subtest: unavailable replaces previous identity
+ok 6 - unavailable replaces previous identity
+  ---
+  duration_ms: 0.193873
+  type: 'test'
+  ...
+# Subtest: repeated rendering replaces the row rather than duplicating it
+ok 7 - repeated rendering replaces the row rather than duplicating it
+  ---
+  duration_ms: 0.193482
+  type: 'test'
+  ...
+# Subtest: invalid cnpjId clears stale identity before rejection
+ok 8 - invalid cnpjId clears stale identity before rejection
+  ---
+  duration_ms: 0.425843
+  type: 'test'
+  ...
+# Subtest: invalid cnpj clears stale identity before rejection
+ok 9 - invalid cnpj clears stale identity before rejection
+  ---
+  duration_ms: 0.135175
+  type: 'test'
+  ...
+# Subtest: invalid legalName clears stale identity before rejection
+ok 10 - invalid legalName clears stale identity before rejection
+  ---
+  duration_ms: 0.199161
+  type: 'test'
+  ...
+# Subtest: invalid state clears stale identity before rejection
+ok 11 - invalid state clears stale identity before rejection
+  ---
+  duration_ms: 0.087853
+  type: 'test'
+  ...
+# Subtest: invalid establishmentType clears stale identity before rejection
+ok 12 - invalid establishmentType clears stale identity before rejection
+  ---
+  duration_ms: 0.075073
+  type: 'test'
+  ...
+# Subtest: tracked preview runtime matches the shared TypeScript source
+ok 13 - tracked preview runtime matches the shared TypeScript source
+  ---
+  duration_ms: 11.777285
+  type: 'test'
+  ...
+# Subtest: Company information uses the shared row and scoped styles
+ok 14 - Company information uses the shared row and scoped styles
+  ---
+  duration_ms: 0.302898
+  type: 'test'
+  ...
+# Subtest: group context uses the same identity row, preserving the establishment
+ok 15 - group context uses the same identity row, preserving the establishment
+  ---
+  duration_ms: 0.366373
+  type: 'test'
+  ...
+# Subtest: Company context keeps company semantics and host English locale
+ok 16 - Company context keeps company semantics and host English locale
+  ---
+  duration_ms: 0.160031
+  type: 'test'
+  ...
+# Subtest: existing Company name presentation is shared with the header
+ok 17 - existing Company name presentation is shared with the header
+  ---
+  duration_ms: 0.135835
+  type: 'test'
+  ...
+# Subtest: unsupported context kind clears the previous view
+ok 18 - unsupported context kind clears the previous view
+  ---
+  duration_ms: 0.155935
+  type: 'test'
+  ...
+# Subtest: unavailable establishment does not reveal an unrelated company
+ok 19 - unavailable establishment does not reveal an unrelated company
+  ---
+  duration_ms: 0.133252
+  type: 'test'
+  ...
+# Subtest: invalid context companyId is unavailable without stale output
+ok 20 - invalid context companyId is unavailable without stale output
+  ---
+  duration_ms: 0.15205
+  type: 'test'
+  ...
+# Subtest: invalid context tenantId is unavailable without stale output
+ok 21 - invalid context tenantId is unavailable without stale output
+  ---
+  duration_ms: 0.068644
+  type: 'test'
+  ...
+# Subtest: invalid context legalName is unavailable without stale output
+ok 22 - invalid context legalName is unavailable without stale output
+  ---
+  duration_ms: 0.100081
+  type: 'test'
+  ...
+# Subtest: invalid context tradeName is unavailable without stale output
+ok 23 - invalid context tradeName is unavailable without stale output
+  ---
+  duration_ms: 0.09247
+  type: 'test'
+  ...
+# Subtest: context names remain text instead of markup
+ok 24 - context names remain text instead of markup
+  ---
+  duration_ms: 0.119591
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 331.665144

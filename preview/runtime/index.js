@@ -8,4 +8,4 @@ export * from "./features/company/CompanyWorkspaceController.js";
 export * from "./features/reconciliation/ReconciliationController.js";
 export * from "./features/pending-items/OfficeWorkQueueController.js";
 export * from "./features/history/HistoryController.js";
-export { assertCnpjIdentity, renderCnpjIdentity } from "./features/company/CnpjIdentityView.js";
+export { assertCnpjIdentity, assertCompanyIdentity, companyIdentityName, renderCnpjIdentity } from "./features/company/CnpjIdentityView.js";

@@ -1,0 +1,121 @@
+{
+  "recorded_on": "2026-10-20",
+  "repository": "evoluagency/evolu-genesis",
+  "parent_commit": "411603789633492f02c92fef00716996c8c970e3",
+  "slice": "Optional enterprise identity in the existing CnpjIdentityView; Company name presentation reused from the existing header.",
+  "contracts": [
+    "CnpjEntitySummary",
+    "Pick<Company, companyId | tenantId | legalName | tradeName>"
+  ],
+  "new_backend_contracts": false,
+  "semantics": "Company preview shows Company; Platform supplies only its authorized group identity and marks it as business group. No fiscal/period/authorization rule in Genesis.",
+  "tests": {
+    "command": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "scripts/company-cnpj-identity-tests.mjs"
+    ],
+    "tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "exit_code": 0,
+    "completion_chunk": "42c16f",
+    "split": {
+      "existing_cases_affected_by_renderer_change": 14,
+      "new_context_cases": 10
+    },
+    "artifact": "component.tap"
+  },
+  "typecheck_and_emit": {
+    "command": [
+      "tsc",
+      "--strict",
+      "--exactOptionalPropertyTypes",
+      "--target",
+      "ES2022",
+      "--module",
+      "ES2022",
+      "--moduleResolution",
+      "Bundler",
+      "--lib",
+      "ES2022,DOM",
+      "--skipLibCheck",
+      "--rootDir",
+      "src",
+      "--outDir",
+      "preview/runtime",
+      "src/features/company/CnpjIdentityView.ts"
+    ],
+    "exit_code": 0,
+    "exec_chunk": "fc2a48",
+    "scope": "changed renderer and imported existing contracts/domain; not full project build"
+  },
+  "syntax": {
+    "command": [
+      "node",
+      "--check",
+      "preview/company-access-home/app.js"
+    ],
+    "exit_code": 0,
+    "exec_chunk": "2fb95b"
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "typescript": "5.9.3",
+    "NODE_PATH": "<workspace>/slice2-tools/node_modules"
+  },
+  "files": {
+    "src/features/company/CnpjIdentityView.ts": {
+      "parent_blob": "8d0ef48ccc7536412edc51566e0ffd57e3133190",
+      "candidate_blob": "c8e9fce73a49d1ffd9a1bef46f99bb1faf238bc3",
+      "sha256": "d1afa3673166e7f3a21542822b662fbf93592c077e8137d0cb21c15daf864c1a"
+    },
+    "src/index.ts": {
+      "parent_blob": "0420efd527a20b61fd8f33bda633f8398a9d08b4",
+      "candidate_blob": "207bfeae4b65174ded7e13b10b50bb828c1b5bb7",
+      "sha256": "e58b36d60853c21f1b46c83bc0292faa180489e8c9eb6af28ac0e83621a229c6"
+    },
+    "preview/runtime/features/company/CnpjIdentityView.js": {
+      "parent_blob": "475809d2c3a750fc67cca2e480fcf9006ca58a40",
+      "candidate_blob": "e152c8e33f41226b12e35db36f1b2efdeba60b30",
+      "sha256": "d178aa815aae1d434dcae1f353f62b93d426547f62e7019784b2236e73b7b01f"
+    },
+    "preview/runtime/index.js": {
+      "parent_blob": "c2dbde4669e8e6239f1b58bfbe36493c56f56e5a",
+      "candidate_blob": "056623bc71807dca868355b0a106fe19e6ddcf85",
+      "sha256": "8d5fc3f75c67d3d7010ddbd1bc5cb89a83013d563c031cbb184d42b01d531c63"
+    },
+    "preview/company-access-home/app.js": {
+      "parent_blob": "1fb18972c5c9fd7bc4ec77da7ccb20146f705063",
+      "candidate_blob": "0d3078da05b40d9605cd9c6091bce59a1838d315",
+      "sha256": "2d0cc8938e1f61c3d906729424ad0faa5dc2cb21d2a5379f3318dd69c36918e5"
+    },
+    "scripts/company-cnpj-identity-tests.mjs": {
+      "parent_blob": "87e1f910fe795c214ff3329949760bfb728d439a",
+      "candidate_blob": "b8d786a701b467a59c66eb64620f011cbfd34496",
+      "sha256": "9a57caf7689b69e3b19191c73732309f9b3865f6ec80b85c7de2fc8a00115a6f"
+    },
+    "docs/PLATFORM_CONTRACT_FIRST_UX_MIGRATION_V1.md": {
+      "parent_blob": "bb469e905856ec9689e3ad92ab997112c63582d4",
+      "candidate_blob": "8106be2a420fbe66ad9833efcf8f7229e019fafe",
+      "sha256": "2f363efdab6edc26ab9ef8cdd78e4277f74897022ee04bb079b588b1751fb398"
+    }
+  },
+  "artifact_sha256": "9a7cf88ecff55f8aa84004de88f6fe0dadb945796bbe940edd0c75cb61e9db76",
+  "preliminary_attempt": "One source-integration test initially could not find index.html in the recovered local snapshot (ENOENT). The unchanged tracked HTML was recovered from GitHub. No product defect was attributed to that incomplete snapshot; the final 24-case run passed.",
+  "limits": [
+    "DOM unit fixtures, not browser/zoom or human acceptance.",
+    "Public preview remains synthetic. No fixture/provider/network or command is imported into the shared component.",
+    "No accounting period/catalog or new renderer/route introduced. No operational activation, merge, deploy, SQL, inference or infrastructure."
+  ],
+  "preserved": {
+    "P0": "OPEN",
+    "D8": "BLOCKED",
+    "B": "DISABLED",
+    "V1": "NO_GO",
+    "draft_prs": true,
+    "formal_E2E": 0,
+    "HR01_HR06": "BLOCKED / REVIEW_REQUIRED"
+  }
+}

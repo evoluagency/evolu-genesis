@@ -1,6 +1,7 @@
 import {
   CompanyWorkspaceController,
   renderCnpjIdentity,
+  companyIdentityName,
   MockPlatformProvider,
   mockTenant,
   mockCompany,
@@ -54,7 +55,7 @@ const records=[
 ];
 const $=id=>document.getElementById(id);const t=k=>D[lang][k]||k;
 const activeCnpjSummary=()=>workspaceContext?.cnpjs.find(item=>item.cnpjId===cnpjIdByLegacy[cnpj])??null;
-const displayCompanyName=()=>workspaceContext?.company.tradeName||workspaceContext?.company.legalName||"ACME Industrial";
+const displayCompanyName=()=>workspaceContext?companyIdentityName(workspaceContext.company):"ACME Industrial";
 function formatCnpj(value){return String(value).replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,"$1.$2.$3/$4-$5")}
 function establishmentLabel(item){
  if(!item)return "";
@@ -121,7 +122,7 @@ out='<div class="grid ux-grid"><div class="stack">'+box(t("headingInfo"),"",'<di
 }
 $("pageContent").innerHTML=out;
  const identityHost=$("pageContent").querySelector("[data-genesis-cnpj-identity-host]");
- if(identityHost)renderCnpjIdentity(identityHost,activeCnpjSummary(),lang);
+ if(identityHost)renderCnpjIdentity(identityHost,activeCnpjSummary(),lang,{company:workspaceContext.company,kind:"company"});
  const detail=$("openFinancialWorkspace");if(detail)detail.href=fullFinanceHref();
  const note=$("accessModeNote");
  note.hidden=!readOnly;note.textContent=readOnly?(lang==="pt"?"Perfil de consulta: apenas visualização. Nenhum lançamento, envio ou resposta pode ser registrado nesta demonstração.":"Read-only preview: no entries, uploads or replies. This URL is not authorization."):"";

@@ -1,4 +1,5 @@
 import type { CnpjEntitySummary } from "../../contracts/index.js";
+import type { Company } from "../../domain/index.js";
 
 export type CnpjIdentityLocale = "pt" | "en";
 
@@ -21,10 +22,36 @@ export function assertCnpjIdentity(value: unknown): asserts value is CnpjEntityS
   }
 }
 
+
+/** Identity fields already supplied by Company / the authorized Platform DTO.
+ * A Platform group is labelled as a group, never silently renamed a company.
+ */
+export type CompanyIdentity = Pick<Company, "companyId" | "tenantId" | "legalName" | "tradeName">;
+
+export function assertCompanyIdentity(value: unknown): asserts value is CompanyIdentity {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error("COMPANY_IDENTITY_UNAVAILABLE");
+  }
+  const item = value as Record<string, unknown>;
+  if (typeof item.companyId !== "string" || !item.companyId ||
+      typeof item.tenantId !== "string" || !item.tenantId ||
+      typeof item.legalName !== "string" || !item.legalName.trim() ||
+      (item.tradeName !== undefined && typeof item.tradeName !== "string")) {
+    throw new Error("COMPANY_IDENTITY_UNAVAILABLE");
+  }
+}
+
+// Existing Company name presentation, shared with the preview header.
+export function companyIdentityName(company: Readonly<CompanyIdentity>): string {
+  assertCompanyIdentity(company);
+  return company.tradeName || company.legalName;
+}
+
 export function renderCnpjIdentity(
   host: HTMLElement,
   item: Readonly<CnpjEntitySummary> | null,
-  locale: CnpjIdentityLocale = "pt"
+  locale: CnpjIdentityLocale = "pt",
+  context?: Readonly<{ company: CompanyIdentity; kind: "company" | "group" }>
 ): void {
   host.replaceChildren();
   const doc = host.ownerDocument;
@@ -38,11 +65,26 @@ export function renderCnpjIdentity(
     return;
   }
   assertCnpjIdentity(item);
+  if (context) {
+    if (context.kind !== "company" && context.kind !== "group") {
+      throw new Error("COMPANY_IDENTITY_UNAVAILABLE");
+    }
+    assertCompanyIdentity(context.company);
+  }
   const row = doc.createElement("div");
   row.className = "ux-cnpj-identity";
   row.setAttribute("data-genesis-company-identity", "1.0.0");
   row.setAttribute("role", "group");
   row.setAttribute("aria-label", locale === "en" ? "Establishment" : "Estabelecimento");
+  if (context) {
+    const scope = doc.createElement("small");
+    scope.setAttribute("data-genesis-company-context", context.kind);
+    const label = context.kind === "group"
+      ? (locale === "en" ? "Business group" : "Grupo empresarial")
+      : (locale === "en" ? "Company" : "Empresa");
+    scope.textContent = label + " · " + companyIdentityName(context.company);
+    row.appendChild(scope);
+  }
   const name = doc.createElement("b");
   name.textContent = item.legalName;
   const detail = doc.createElement("small");

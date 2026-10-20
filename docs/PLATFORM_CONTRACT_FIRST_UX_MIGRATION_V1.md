@@ -229,3 +229,10 @@ O bloco de identificação da aba Informações de Company foi extraído para `s
 `preview/shared-ux/company-identity.css` reutiliza os tokens de Company/Shell com seletores restritos à fatia e herda tema/marca do host. A prévia consome a mesma implementação pelo runtime versionado. Identidade exibe razão social, CNPJ e UF, sem inventar competência, perfil fiscal ou capacidade operacional.
 
 Testes dirigidos: 14/14 de apresentação/runtime e 10/10 regressões de foco Company; TypeScript estrito da fatia e sintaxe do app aprovados. As verificações DOM locais não são browser, zoom 200%, revisão humana, autenticação privada ou E2E. HR-01…HR-06, homologação integrada e aceites de release continuam pendentes. Nenhuma rota/página removida, redirect, deploy ou alteração de flags.
+
+
+## Segunda fatia: contexto empresarial do estabelecimento — 20/10/2026
+
+O mesmo `CnpjIdentityView` recebe opcionalmente a identidade empresarial já contratada em `Company`, mantendo a assinatura anterior e os tokens. O nome de apresentação foi extraído do cabeçalho Company para `companyIdentityName`; não há segundo renderer. Company permanece identificado como empresa; o host privado Platform identifica seu DTO correspondente como grupo empresarial, valida tenant/grupo/CNPJ e projeta somente os campos disponíveis na origem. Nenhum status de negócio, competência, permissão ou vínculo é inferido pela Genesis.
+
+A leitura de competência continua dependente de catálogo contábil e de `getCompanyWorkspaceContext` conectado; referência da consulta não é competência. O escopo novo é somente identificação do contexto empresarial, sem seleção ou comandos. Foram executados 24/24 testes do componente alterado (incluindo compatibilidade da primeira fatia), TypeScript estrito e sintaxe do app; não equivalem a browser privado, RLS/JWT ou aceite visual humano. As evidências anteriores, rotas, regras operacionais e bloqueios da V1 permanecem preservados.
