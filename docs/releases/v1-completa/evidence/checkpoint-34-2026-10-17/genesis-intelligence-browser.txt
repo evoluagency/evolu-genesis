@@ -1,0 +1,5 @@
+
+> @evolu/platform-ux-contracts@0.1.0 homologate:intelligence:browser
+> node scripts/intelligence-browser-homologation.mjs
+
+INTELLIGENCE_BROWSER_GATE=PASS

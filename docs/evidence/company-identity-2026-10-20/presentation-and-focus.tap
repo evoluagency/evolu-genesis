@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: shared Company identity preserves name, formatted CNPJ and UF
+ok 1 - shared Company identity preserves name, formatted CNPJ and UF
+  ---
+  duration_ms: 3.080616
+  type: 'test'
+  ...
+# Subtest: English labels use the host locale without changing facts
+ok 2 - English labels use the host locale without changing facts
+  ---
+  duration_ms: 1.191006
+  type: 'test'
+  ...
+# Subtest: missing UF is unavailable, never a default state
+ok 3 - missing UF is unavailable, never a default state
+  ---
+  duration_ms: 0.336171
+  type: 'test'
+  ...
+# Subtest: alphanumeric CNPJ is preserved as supplied
+ok 4 - alphanumeric CNPJ is preserved as supplied
+  ---
+  duration_ms: 0.577504
+  type: 'test'
+  ...
+# Subtest: source text uses DOM text nodes, never HTML interpolation
+ok 5 - source text uses DOM text nodes, never HTML interpolation
+  ---
+  duration_ms: 3.921244
+  type: 'test'
+  ...
+# Subtest: unavailable replaces previous identity
+ok 6 - unavailable replaces previous identity
+  ---
+  duration_ms: 1.223393
+  type: 'test'
+  ...
+# Subtest: repeated rendering replaces the row rather than duplicating it
+ok 7 - repeated rendering replaces the row rather than duplicating it
+  ---
+  duration_ms: 0.301546
+  type: 'test'
+  ...
+# Subtest: invalid cnpjId clears stale identity before rejection
+ok 8 - invalid cnpjId clears stale identity before rejection
+  ---
+  duration_ms: 0.572407
+  type: 'test'
+  ...
+# Subtest: invalid cnpj clears stale identity before rejection
+ok 9 - invalid cnpj clears stale identity before rejection
+  ---
+  duration_ms: 0.791985
+  type: 'test'
+  ...
+# Subtest: invalid legalName clears stale identity before rejection
+ok 10 - invalid legalName clears stale identity before rejection
+  ---
+  duration_ms: 0.354851
+  type: 'test'
+  ...
+# Subtest: invalid state clears stale identity before rejection
+ok 11 - invalid state clears stale identity before rejection
+  ---
+  duration_ms: 0.231029
+  type: 'test'
+  ...
+# Subtest: invalid establishmentType clears stale identity before rejection
+ok 12 - invalid establishmentType clears stale identity before rejection
+  ---
+  duration_ms: 0.098948
+  type: 'test'
+  ...
+# Subtest: tracked preview runtime matches the shared TypeScript source
+ok 13 - tracked preview runtime matches the shared TypeScript source
+  ---
+  duration_ms: 16.045741
+  type: 'test'
+  ...
+# Subtest: Company information uses the shared row and scoped styles
+ok 14 - Company information uses the shared row and scoped styles
+  ---
+  duration_ms: 2.746746
+  type: 'test'
+  ...
+# Subtest: closing an opened Company dialog returns focus to its connected opener
+ok 15 - closing an opened Company dialog returns focus to its connected opener
+  ---
+  duration_ms: 7.903901
+  type: 'test'
+  ...
+# Subtest: Escape closes the dialog, prevents the background action and returns focus
+ok 16 - Escape closes the dialog, prevents the background action and returns focus
+  ---
+  duration_ms: 3.222198
+  type: 'test'
+  ...
+# Subtest: Tab at the last dialog control wraps to the first
+ok 17 - Tab at the last dialog control wraps to the first
+  ---
+  duration_ms: 2.991078
+  type: 'test'
+  ...
+# Subtest: Shift+Tab at the first dialog control wraps to the last
+ok 18 - Shift+Tab at the first dialog control wraps to the last
+  ---
+  duration_ms: 3.007925
+  type: 'test'
+  ...
+# Subtest: hidden submit in the source dialog is excluded from the focus boundary
+ok 19 - hidden submit in the source dialog is excluded from the focus boundary
+  ---
+  duration_ms: 1.731829
+  type: 'test'
+  ...
+# Subtest: a Tab arriving from outside an open modal cannot remain in background content
+ok 20 - a Tab arriving from outside an open modal cannot remain in background content
+  ---
+  duration_ms: 3.435168
+  type: 'test'
+  ...
+# Subtest: removed opener falls back to a connected stable navigation control
+ok 21 - removed opener falls back to a connected stable navigation control
+  ---
+  duration_ms: 1.387403
+  type: 'test'
+  ...
+# Subtest: saving updates content before returning focus, without targeting a removed opener
+ok 22 - saving updates content before returning focus, without targeting a removed opener
+  ---
+  duration_ms: 1.921554
+  type: 'test'
+  ...
+# Subtest: read-only mode cannot open a mutation dialog or steal focus
+ok 23 - read-only mode cannot open a mutation dialog or steal focus
+  ---
+  duration_ms: 1.768121
+  type: 'test'
+  ...
+# Subtest: Escape outside a closed dialog leaves the current focus alone
+ok 24 - Escape outside a closed dialog leaves the current focus alone
+  ---
+  duration_ms: 2.167516
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1297.232157

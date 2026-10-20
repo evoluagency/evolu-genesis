@@ -1,0 +1,351 @@
+{
+  "generatedAt": "2026-10-17T23:35:46.008Z",
+  "browser": "Chrome/155.0.8059.79",
+  "selfTest": false,
+  "environment": "local_http_ok",
+  "gates": {
+    "T13": [
+      {
+        "page": "office",
+        "status": "PASS"
+      },
+      {
+        "page": "company",
+        "status": "PASS"
+      },
+      {
+        "page": "finance",
+        "status": "PASS"
+      },
+      {
+        "page": "fiscal",
+        "status": "PASS"
+      },
+      {
+        "page": "advisory",
+        "status": "PASS"
+      }
+    ],
+    "T14": [
+      {
+        "page": "office",
+        "viewport": "1440x900",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "office",
+        "viewport": "1366x768",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "office",
+        "viewport": "1280x720",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "office",
+        "viewport": "short",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "office",
+        "viewport": "mobile",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "office",
+        "viewport": "zoom200-equivalent",
+        "status": "REVIEW",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "company",
+        "viewport": "1440x900",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "company",
+        "viewport": "1366x768",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "company",
+        "viewport": "1280x720",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "company",
+        "viewport": "short",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "company",
+        "viewport": "mobile",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "company",
+        "viewport": "zoom200-equivalent",
+        "status": "REVIEW",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "finance",
+        "viewport": "1440x900",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "finance",
+        "viewport": "1366x768",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "finance",
+        "viewport": "1280x720",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "finance",
+        "viewport": "short",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "finance",
+        "viewport": "mobile",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "finance",
+        "viewport": "zoom200-equivalent",
+        "status": "REVIEW",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "fiscal",
+        "viewport": "1440x900",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "fiscal",
+        "viewport": "1366x768",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "fiscal",
+        "viewport": "1280x720",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "fiscal",
+        "viewport": "short",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "fiscal",
+        "viewport": "mobile",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "fiscal",
+        "viewport": "zoom200-equivalent",
+        "status": "REVIEW",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "advisory",
+        "viewport": "1440x900",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "advisory",
+        "viewport": "1366x768",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "advisory",
+        "viewport": "1280x720",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "advisory",
+        "viewport": "short",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "advisory",
+        "viewport": "mobile",
+        "status": "PASS",
+        "overflowX": false,
+        "clipped": []
+      },
+      {
+        "page": "advisory",
+        "viewport": "zoom200-equivalent",
+        "status": "REVIEW",
+        "overflowX": false,
+        "clipped": []
+      }
+    ],
+    "T15": [
+      {
+        "page": "office",
+        "status": "PASS"
+      },
+      {
+        "page": "company",
+        "status": "PASS"
+      },
+      {
+        "page": "finance",
+        "status": "PASS"
+      },
+      {
+        "page": "fiscal",
+        "status": "PASS"
+      },
+      {
+        "page": "advisory",
+        "status": "PASS"
+      }
+    ],
+    "T16": [
+      {
+        "page": "office",
+        "status": "PASS",
+        "regions": 3,
+        "focusables": 32,
+        "fail": 0
+      },
+      {
+        "page": "company",
+        "status": "REVIEW",
+        "regions": 0,
+        "focusables": 19,
+        "fail": 0
+      },
+      {
+        "page": "finance",
+        "status": "PASS",
+        "regions": 1,
+        "focusables": 20,
+        "fail": 0
+      },
+      {
+        "page": "fiscal",
+        "status": "PASS",
+        "regions": 3,
+        "focusables": 26,
+        "fail": 0
+      },
+      {
+        "page": "advisory",
+        "status": "PASS",
+        "regions": 3,
+        "focusables": 20,
+        "fail": 0
+      }
+    ],
+    "T17": [
+      {
+        "page": "office",
+        "status": "PASS",
+        "activeNav": 1,
+        "synthetic": true
+      },
+      {
+        "page": "company",
+        "status": "PASS",
+        "activeNav": 1,
+        "synthetic": true
+      },
+      {
+        "page": "finance",
+        "status": "PASS",
+        "activeNav": 1,
+        "synthetic": true
+      },
+      {
+        "page": "fiscal",
+        "status": "PASS",
+        "activeNav": 1,
+        "synthetic": true
+      },
+      {
+        "page": "advisory",
+        "status": "PASS",
+        "activeNav": 1,
+        "synthetic": true
+      }
+    ]
+  },
+  "runtimeErrors": [],
+  "summary": {
+    "automated": {
+      "T13": "PASS",
+      "T14": "REVIEW",
+      "T15": "PASS",
+      "T16": "REVIEW",
+      "T17": "PASS"
+    },
+    "final": {
+      "T13": "REVIEW_REQUIRED",
+      "T14": "REVIEW_REQUIRED",
+      "T15": "REVIEW_REQUIRED",
+      "T16": "REVIEW_REQUIRED",
+      "T17": "REVIEW_REQUIRED"
+    },
+    "status": "AUTOMATED_PASS_REVIEW_REQUIRED"
+  }
+}

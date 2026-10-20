@@ -1,0 +1,3 @@
+From https://github.com/evoluagency/evolu-genesis
+ * branch            docs/intelligence-ui-unification-plan-v1 -> FETCH_HEAD
+   3283340..e8c4342  docs/intelligence-ui-unification-plan-v1 -> origin/docs/intelligence-ui-unification-plan-v1

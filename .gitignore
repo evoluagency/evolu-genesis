@@ -1,1 +1,11 @@
 .local/
+
+# Codespaces/npm local dependencies and caches
+node_modules/
+.npm/
+*.log
+
+# Private local configuration; keep public examples only
+.env
+.env.*
+!.env.example

@@ -1,0 +1,43 @@
+/* Uses the existing Genesis/Platform shell tokens in BOTH Light and Dark.
+ * The official Intelligence symbol has alpha; no colored logo background. */
+.intelligence-layer{position:fixed;z-index:45;right:clamp(13px,2.4vw,34px);bottom:clamp(13px,2.4vw,28px);display:flex;align-items:flex-end;flex-direction:column;gap:11px;pointer-events:none;color:var(--text);font:inherit}
+.intelligence-layer>*{pointer-events:auto}
+.intelligence-trigger{display:grid;place-items:center;width:60px;height:60px;flex:none;background:transparent!important;border:0!important;border-radius:0;box-shadow:none!important;padding:6px;cursor:pointer}
+.intelligence-trigger img{display:block;width:48px;height:48px;object-fit:contain;background:transparent;border:0}
+.intelligence-trigger:hover img{transform:translateY(-2px)}
+.intelligence-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.intelligence-invitation{position:relative;max-width:min(360px,calc(100vw - 26px));padding:14px 15px;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow);line-height:1.5}
+.intelligence-invitation p{margin:0 0 10px;font-size:12px}
+.intelligence-invitation button{margin-right:6px}
+.intelligence-drawer{display:flex;flex-direction:column;gap:11px;width:min(410px,calc(100vw - 25px));max-height:min(72dvh,780px);overflow:hidden;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow);padding:15px}
+.intelligence-layer [hidden]{display:none!important}
+.intelligence-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.intelligence-drawer-head strong{font-size:15px}
+.intelligence-sandbox-status{margin:0;padding:7px 9px;background:var(--soft);border-radius:8px;color:var(--muted);font-size:10px}
+.intelligence-stream{overflow:auto;min-height:100px;max-height:320px;display:grid;align-content:start;gap:9px;padding:2px;scrollbar-color:var(--line) transparent}
+.intelligence-speech{display:grid;gap:5px;padding:11px;margin:0;background:var(--soft);border:1px solid var(--line);border-radius:11px;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.intelligence-speech strong{color:var(--accent);font-size:11px}
+.intelligence-plan{border:1px solid var(--accent);border-radius:11px;padding:12px;background:var(--accent-soft);font-size:12px;line-height:1.5}
+.intelligence-plan strong{display:block}.intelligence-plan p{margin:7px 0 12px}
+.intelligence-composer{display:grid;gap:7px;border-top:1px solid var(--line);padding-top:10px}
+.intelligence-composer label{font-size:11px;font-weight:650}
+.intelligence-composer textarea{width:100%;max-width:100%;min-height:58px;resize:vertical;background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:10px;color:var(--text);font:inherit}
+.intelligence-composer button{justify-self:end}
+.intelligence-composer textarea:focus-visible,.intelligence-layer button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:767px){.intelligence-layer{z-index:45;right:12px;bottom:12px}.intelligence-drawer{width:calc(100vw - 24px);max-height:70dvh}.intelligence-trigger{width:56px;height:56px}}
+@media(prefers-reduced-motion:reduce){.intelligence-trigger img{transform:none!important}}
+
+.intelligence-observation-label{display:flex;align-items:flex-start;gap:9px;color:var(--muted);font-size:11px;line-height:1.5;cursor:pointer}
+.intelligence-observation-label input{width:16px;height:16px;flex:none;accent-color:var(--accent);margin:2px 0 0}
+
+/* Typed intent renderer: inherits existing Platform/Genesis theme tokens. */
+.intelligence-demo-mode{display:grid;gap:5px;font-size:11px;color:var(--muted)}
+.intelligence-demo-mode select{width:100%;background:var(--soft);color:var(--text);border:1px solid var(--line);border-radius:8px;min-height:38px;padding:7px 10px}
+.intelligence-dynamic-intent{display:grid;gap:8px}
+.intelligence-dynamic-block{border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:10px 12px;display:grid;gap:6px;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.intelligence-dynamic-block strong{font-weight:700;font-size:12px}
+.intelligence-dynamic-block p{margin:0;white-space:pre-wrap}
+.intelligence-dynamic-block small{font-size:10px;color:var(--muted)}
+.intelligence-dynamic-choices{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.intelligence-dynamic-choices button{min-height:34px}
+.intelligence-scenario-list{margin:0;padding-left:17px;color:var(--text);display:grid;gap:4px}

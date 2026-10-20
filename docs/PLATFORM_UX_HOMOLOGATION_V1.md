@@ -149,6 +149,37 @@ Runner self-test evidence in the engineering environment:
 
 Therefore the final browser homologation must be executed on an unrestricted local Chrome/Chromium installation before the UX V1 freeze.
 
+## 6.2 Seis revisões humanas remanescentes — 19/10/2026
+
+**Estado: REVIEW_REQUIRED nos seis casos; nenhuma aprovação humana registrada.** Fonte preservada: [relatório CP34](./releases/v1-completa/evidence/checkpoint-34-2026-10-17/genesis-ux-browser/report.json) no SHA **9866b657380465d421b0d4f7fdb6a21c98eecaf1**, gerado em 2026-10-17T23:35:46.008Z. Seus **44 PASS / 6 REVIEW são verificações automatizadas**, não seis jornadas V1 E2E ou aceite humano dos demais gates. São exatamente cinco linhas T14/zoom200-equivalent e a linha T16/company (zero regiões de tabela/lista detectadas, 19 controles, zero falhas de foco programático).
+
+Não alterar o relatório, screenshots ou HUMAN_REVIEW.md históricos para registrar uma execução futura. Os IDs UX T14/T16 abaixo são rótulos visuais Genesis, distintos de T01–T18 da matriz V1.
+
+**Preparação comum:** checkout local no SHA acima, dados/providers sintéticos existentes, Chrome/Chromium já instalado e sem sessão de cliente real. Servir o checkout apenas em loopback, por exemplo `python -m http.server 8765 --bind 127.0.0.1 --directory .`, e abrir as rotas abaixo em http://127.0.0.1:8765. Não usar host operacional, criar infraestrutura ou repetir a suíte completa. Se a política do navegador impedir HTTP local, registrar BLOCKED, não FAIL ou PASS do produto.
+
+**HR-01…HR-05:** iniciar em janela desktop de referência 1440×900 e zoom 100%; usar o controle de zoom real do navegador para **200%**, comprovado pelo indicador/menu do próprio navegador. Não aceitar viewport 720×450, escala de screenshot, CSS zoom ou emulação como substitutos. Repetir a verificação com sidebar aberta/fechada, PT-BR/EN e tema disponível, alcançando os controles e o final do conteúdo. Para estas interfaces de tabelas, rolagem interna utilizável é permitida; nenhuma informação ou ação pode ficar inacessível.
+
+| Caso / linha original | Rota sintética | Ação e critério específico de aprovação | Estado |
+| --- | --- | --- | --- |
+| HR-01 — UX T14 / office | `/preview/office-workspace/?tab=queue&cnpj=m&period=2026-09` | Abrir a fila; expandir/recolher a sidebar; alcançar primeiro e último item e seus controles sem sobreposição ou corte. | REVIEW_REQUIRED |
+| HR-02 — UX T14 / company | `/preview/company-access-home/?cnpj=a&period=2026-09` | Conferir seletores de CNPJ/competência, atalhos e cartões; abrir/cancelar um diálogo sintético; manter rótulos, ações e contexto acessíveis. | REVIEW_REQUIRED |
+| HR-03 — UX T14 / finance | `/preview/company-financial-workspace/?role=company&cnpj=m&period=2026-09&activity=moves` | Percorrer movimentos e rolagem horizontal/vertical disponível; alcançar a última linha e ações; conservar CNPJ/competência e limites do papel. | REVIEW_REQUIRED |
+| HR-04 — UX T14 / fiscal | `/preview/tenant-fiscal-workspace/?tab=received&cnpj=m&period=2026-09` | Percorrer documentos recebidos, filtros e detalhe; alcançar informação e controles sem corte, colisão ou perda de contexto. | REVIEW_REQUIRED |
+| HR-05 — UX T14 / advisory | `/preview/tenant-advisory-workspace/?tab=contexts&cnpj=m&period=2026-09` | Percorrer contextos, evidências e diálogo disponíveis; preservar texto/ações e a distinção entre evidência, revisão e conclusão não liberada. | REVIEW_REQUIRED |
+| HR-06 — UX T16 / company | `/preview/company-access-home/?cnpj=a&period=2026-09` | Usar somente Tab/Shift+Tab, Enter/Espaço, setas e Escape: percorrer todos os controles visíveis, abrir/fechar diálogos e verificar retorno de foco, indicador visível e ausência de armadilha. | REVIEW_REQUIRED |
+
+**Critério adicional HR-06:** o foco programático do relatório não comprova navegação real por teclado. Observar a sequência efetiva de Tab/Shift+Tab e todos os controles, inclusive em zoom 200%. Se a página inicial realmente não oferecer tabela/lista, registrar essa condição e percorrer o conteúdo/fluxo disponível; a ausência de uma região no seletor do runner, isoladamente, não aprova nem reprova acessibilidade. Se houver tabela, lista longa ou paginação no fluxo, comprovar primeira/última linha e todas as ações por teclado e ponteiro.
+
+**Evidência exigida por caso:** SHA efetivamente revisado, data/hora, nome do revisor, browser/versão, viewport/zoom real, rota, papel/CNPJ/competência sintéticos, PT-BR/EN/tema, passos, esperado/obtido e PASS/FAIL/BLOCKED. HR-01…HR-05 exigem captura do indicador 200% e do conteúdo/ação final; HR-06 exige sequência ou vídeo curto de foco/rolagem/fechamento de diálogo. Sanitizar qualquer captura. Corte de texto indispensável, ação inacessível, armadilha de foco ou troca indevida de contexto impede PASS. Uma falha requer correção delimitada e nova prova apenas do caso afetado; este roteiro não autoriza release ou atesta JWT/RLS.
+
+
+**Tentativa técnica de 19/10/2026 (2026-10-19T20:46:18.259Z) — HR-01…HR-06 BLOCKED.** O pré-teste comum não carregou a aplicação: `http://127.0.0.1:8765/` retornou `net::ERR_CONNECTION_REFUSED`, e o HTTP local também não comprovou um servidor disponível. Não foi determinada a causa da conexão recusada. O navegador Chrome/CDP disponível não oferece input nativo; a revisão automática rejeitou `chrome://settings/appearance` e a observação da página interna de erro porque permite somente HTTP/HTTPS. Nenhum contorno ou emulação de zoom foi utilizado.
+
+Os seis roteiros ficaram bloqueados **antes de qualquer passo no produto**. O SHA-alvo era `2bd3d525b79db6d49662ff46d67f6e03da9425a6`; não há SHA de aplicação efetivamente carregada/revisada, captura de produto, zoom 200% observado, sequência de teclado ou defeito de interface demonstrado. **HR-01 Office: BLOCKED; HR-02 Company: BLOCKED; HR-03 Finance: BLOCKED; HR-04 Fiscal: BLOCKED; HR-05 Advisory: BLOCKED; HR-06 Company/teclado: BLOCKED.** O aceite humano continua REVIEW_REQUIRED nos seis casos. [Registro único da tentativa e das fontes novas de D8](./releases/v1-completa/evidence/human-review-2026-10-19/browser-attempt.json). Retomar esses roteiros quando houver navegador com acesso ao checkout sintético e controle nativo de zoom; não repetir a mesma tentativa bloqueada sem mudança de capacidade.
+
+
+**Correção técnica local — 20/10/2026:** os diálogos Company agora restauram foco ao disparador ainda visível/conectado (ou navegação estável após re-render), contêm Tab/Shift+Tab e fecham por Escape com retorno de foco. O mesmo arquivo de regressão teve **8 FAIL / 2 PASS** no app de `70fd22945318c9f10a8e941445b8d3ade61d0eea` e **10/10 PASS** após a correção. [Código testado, comandos e logs](./releases/v1-completa/evidence/independent-gates-2026-10-20/verification.json). São funções reais extraídas por AST com fixtures locais de foco/evento; **não houve novo teste de navegador, zoom nativo, revisão humana ou aceite HR-06**. HR-01…HR-06 continuam BLOCKED / REVIEW_REQUIRED, e os registros históricos permanecem intactos.
+
 ## 7. Nomenclature gate
 
 The current baseline passed a repository-wide text scan of the UX source/document set for the retired naming.

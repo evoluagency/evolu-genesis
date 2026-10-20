@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-19T20:46:18.259Z",
+  "reviewer": "Codex — agente técnico; não é aceite humano",
+  "result": "ENVIRONMENT_BLOCKED",
+  "purpose": "Registrar o pré-teste comum de HR-01…HR-06, sem reexecutar QA aprovado ou criar novo checkpoint.",
+  "source": {
+    "repository": "evoluagency/evolu-genesis",
+    "pr": 26,
+    "branch": "docs/intelligence-ui-unification-plan-v1",
+    "target_source_sha": "2bd3d525b79db6d49662ff46d67f6e03da9425a6",
+    "actually_reviewed_application_sha": null,
+    "procedure": "docs/PLATFORM_UX_HOMOLOGATION_V1.md#62-seis-revisões-humanas-remanescentes--19102026",
+    "procedure_blob_sha": "8f67b06d6724370c46f816b7d8f6dc1e2315ba7c",
+    "historical_runtime_sha": "9866b657380465d421b0d4f7fdb6a21c98eecaf1",
+    "historical_report_unchanged": true
+  },
+  "environment": {
+    "browser": "Chrome / cloud CDP",
+    "browser_version": null,
+    "native_computer_apis_available": false,
+    "permitted_url_protocols": [
+      "http:",
+      "https:"
+    ],
+    "attempted_origin": "http://127.0.0.1:8765/",
+    "server_scope": "servidor temporário de pré-teste, diretório vazio, loopback; não continha o produto",
+    "application_materialized": false,
+    "application_loaded": false,
+    "authenticated_session_used": false,
+    "viewport_observed": null,
+    "native_zoom_observed": null,
+    "target_zoom_percent": 200,
+    "customer_data_used": false
+  },
+  "observed_actions": [
+    {
+      "action": "Consultar inventário do navegador",
+      "observed": "Chrome CDP disponível; nenhum aplicativo nativo habilitado.",
+      "type": "tool_documentation"
+    },
+    {
+      "action": "Abrir chrome://settings/appearance para acessar o zoom nativo",
+      "observed": "Browser Use rejected this action due to browser security policy. The requested URL protocol is not allowed. Allowed protocols: http:, https:.",
+      "type": "automatic_approval_rejection"
+    },
+    {
+      "action": "Iniciar pré-teste HTTP somente em loopback e abrir http://127.0.0.1:8765/",
+      "observed": "Browser Use cannot open http://127.0.0.1:8765 in tab 3. Browser reported: net::ERR_CONNECTION_REFUSED",
+      "type": "browser_navigation_error"
+    },
+    {
+      "action": "Verificar disponibilidade do pré-teste por HTTP local no terminal",
+      "observed": "URLError: <urlopen error [Errno 111] Connection refused>. A disponibilidade do servidor não foi comprovada.",
+      "type": "local_preflight_error"
+    },
+    {
+      "action": "Consultar documentação de troubleshooting e tentar observar a aba de erro existente",
+      "observed": "A aba estava em chrome-error://chromewebdata/. A observação foi rejeitada pelo controle de URL, que permite apenas http: e https:.",
+      "type": "automatic_approval_rejection"
+    },
+    {
+      "action": "Encerrar sessões temporárias de servidor",
+      "observed": "Sessões 25871 e 37441 encerradas por Ctrl-C; nenhum serviço provisionado.",
+      "type": "cleanup"
+    }
+  ],
+  "interpretation": {
+    "root_cause_of_local_connection_refusal": "não determinada; não atribuir a política de rede, inexistência do produto ou defeito de interface",
+    "native_zoom_capability": "não disponível nas APIs autorizadas desta sessão; não foi substituído por viewport, CSS ou escala de imagem",
+    "screenshots": "nenhuma captura de produto obtida; a observação da página interna de erro também foi rejeitada",
+    "security_policy_bypassed": false,
+    "product_defect_demonstrated": false,
+    "code_change_justified": false,
+    "human_signoff": false
+  },
+  "cases": [
+    {
+      "id": "HR-01",
+      "page": "Office",
+      "route": "/preview/office-workspace/?tab=queue&cnpj=m&period=2026-09",
+      "status": "BLOCKED",
+      "attempted_phase": "pré-requisitos comuns, antes de carregar a aplicação",
+      "product_steps_executed": [],
+      "expected": "conteúdo e controles acessíveis com zoom nativo real de 200%, sidebar/PT-BR/EN/tema conforme roteiro",
+      "observed": "aplicação não carregada; zoom 200% não aplicado nem observado; nenhuma interação com controles do produto",
+      "target_source_sha": "2bd3d525b79db6d49662ff46d67f6e03da9425a6",
+      "actually_reviewed_application_sha": null,
+      "evidence": [
+        "observed_actions",
+        "environment",
+        "interpretation"
+      ],
+      "defect": null,
+      "technical_result": "BLOCKED — não é PASS/FAIL do produto",
+      "human_review_state": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "HR-02",
+      "page": "Company",
+      "route": "/preview/company-access-home/?cnpj=a&period=2026-09",
+      "status": "BLOCKED",
+      "attempted_phase": "pré-requisitos comuns, antes de carregar a aplicação",
+      "product_steps_executed": [],
+      "expected": "conteúdo e controles acessíveis com zoom nativo real de 200%, sidebar/PT-BR/EN/tema conforme roteiro",
+      "observed": "aplicação não carregada; zoom 200% não aplicado nem observado; nenhuma interação com controles do produto",
+      "target_source_sha": "2bd3d525b79db6d49662ff46d67f6e03da9425a6",
+      "actually_reviewed_application_sha": null,
+      "evidence": [
+        "observed_actions",
+        "environment",
+        "interpretation"
+      ],
+      "defect": null,
+      "technical_result": "BLOCKED — não é PASS/FAIL do produto",
+      "human_review_state": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "HR-03",
+      "page": "Finance",
+      "route": "/preview/company-financial-workspace/?role=company&cnpj=m&period=2026-09&activity=moves",
+      "status": "BLOCKED",
+      "attempted_phase": "pré-requisitos comuns, antes de carregar a aplicação",
+      "product_steps_executed": [],
+      "expected": "conteúdo e controles acessíveis com zoom nativo real de 200%, sidebar/PT-BR/EN/tema conforme roteiro",
+      "observed": "aplicação não carregada; zoom 200% não aplicado nem observado; nenhuma interação com controles do produto",
+      "target_source_sha": "2bd3d525b79db6d49662ff46d67f6e03da9425a6",
+      "actually_reviewed_application_sha": null,
+      "evidence": [
+        "observed_actions",
+        "environment",
+        "interpretation"
+      ],
+      "defect": null,
+      "technical_result": "BLOCKED — não é PASS/FAIL do produto",
+      "human_review_state": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "HR-04",
+      "page": "Fiscal",
+      "route": "/preview/tenant-fiscal-workspace/?tab=received&cnpj=m&period=2026-09",
+      "status": "BLOCKED",
+      "attempted_phase": "pré-requisitos comuns, antes de carregar a aplicação",
+      "product_steps_executed": [],
+      "expected": "conteúdo e controles acessíveis com zoom nativo real de 200%, sidebar/PT-BR/EN/tema conforme roteiro",
+      "observed": "aplicação não carregada; zoom 200% não aplicado nem observado; nenhuma interação com controles do produto",
+      "target_source_sha": "2bd3d525b79db6d49662ff46d67f6e03da9425a6",
+      "actually_reviewed_application_sha": null,
+      "evidence": [
+        "observed_actions",
+        "environment",
+        "interpretation"
+      ],
+      "defect": null,
+      "technical_result": "BLOCKED — não é PASS/FAIL do produto",
+      "human_review_state": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "HR-05",
+      "page": "Advisory",
+      "route": "/preview/tenant-advisory-workspace/?tab=contexts&cnpj=m&period=2026-09",
+      "status": "BLOCKED",
+      "attempted_phase": "pré-requisitos comuns, antes de carregar a aplicação",
+      "product_steps_executed": [],
+      "expected": "conteúdo e controles acessíveis com zoom nativo real de 200%, sidebar/PT-BR/EN/tema conforme roteiro",
+      "observed": "aplicação não carregada; zoom 200% não aplicado nem observado; nenhuma interação com controles do produto",
+      "target_source_sha": "2bd3d525b79db6d49662ff46d67f6e03da9425a6",
+      "actually_reviewed_application_sha": null,
+      "evidence": [
+        "observed_actions",
+        "environment",
+        "interpretation"
+      ],
+      "defect": null,
+      "technical_result": "BLOCKED — não é PASS/FAIL do produto",
+      "human_review_state": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "HR-06",
+      "page": "Company / keyboard and focus",
+      "route": "/preview/company-access-home/?cnpj=a&period=2026-09",
+      "status": "BLOCKED",
+      "attempted_phase": "pré-requisitos comuns, antes de carregar a aplicação",
+      "product_steps_executed": [],
+      "expected": "navegação real por teclado, foco visível e retorno após diálogo, inclusive com zoom real de 200%",
+      "observed": "aplicação não carregada; zoom 200% não aplicado nem observado; nenhuma interação com controles do produto",
+      "target_source_sha": "2bd3d525b79db6d49662ff46d67f6e03da9425a6",
+      "actually_reviewed_application_sha": null,
+      "evidence": [
+        "observed_actions",
+        "environment",
+        "interpretation"
+      ],
+      "defect": null,
+      "technical_result": "BLOCKED — não é PASS/FAIL do produto",
+      "human_review_state": "REVIEW_REQUIRED"
+    }
+  ],
+  "d8_new_information_check": {
+    "status": "BLOCKED",
+    "cp35_source_sha": "ffbe2e25c93e3c01f9f5058a872c9193a12f2b46",
+    "cp35_blob_sha": "f33ee88052710119227c2f51c31365c2594406d5",
+    "request_status_in_source": "NÃO ENVIADA",
+    "sources": [
+      {
+        "source": "platform PR comments",
+        "comment_count": 25,
+        "latest_created_at": "2026-10-18T23:08:43Z",
+        "latest_updated_at": "2026-10-18T23:08:43Z"
+      },
+      {
+        "source": "intel PR comments",
+        "comment_count": 22,
+        "latest_created_at": "2026-10-18T23:08:42Z",
+        "latest_updated_at": "2026-10-18T23:08:42Z"
+      },
+      {
+        "source": "genesis PR comments",
+        "comment_count": 7,
+        "latest_created_at": "2026-10-17T23:54:34Z",
+        "latest_updated_at": "2026-10-17T23:54:34Z"
+      },
+      {
+        "source": "Gmail — busca direcionada no dia 2026-10-19",
+        "query": "after:2026/10/19 -in:spam -in:trash {\"evolu-platform-homologacao\" \"D8\" \"CP35\" \"homologação integrada\"}",
+        "results": 0,
+        "next_page_token": null
+      }
+    ],
+    "conclusion": "Nenhum retorno novo encontrado nas fontes consultadas; não constitui busca universal em canais externos.",
+    "repeated_vercel_or_supabase_audit": false,
+    "operational_write_authorization": false
+  },
+  "preservation": {
+    "financial_local_acceptance_unchanged": true,
+    "financial_suites_rerun": false,
+    "p0": "OPEN",
+    "financial_b_operational": "DISABLED",
+    "v1": "NO_GO",
+    "infrastructure_created": false,
+    "operational_database_writes": false,
+    "external_inference": false,
+    "aws_used": false,
+    "deployment_or_merge": false
+  },
+  "resolution": {
+    "d8": "Responsável pela release encaminha a solicitação existente ao dono da infraestrutura, para identificação nominal do ambiente e retorno dos sete itens do CP35.",
+    "hr": "Responsável pela revisão UX/acessibilidade executa os roteiros existentes em Chrome/Chromium com acesso ao checkout sintético local e controle nativo de zoom 200%; registrar a execução efetiva e o aceite humano separadamente.",
+    "no_new_infrastructure_required": true
+  }
+}

@@ -1,0 +1,22 @@
+
+> @evolu/platform-ux-contracts@0.1.0 homologate:browser
+> node scripts/ux-browser-homologation.mjs
+
+{
+  automated: {
+    T13: 'PASS',
+    T14: 'REVIEW',
+    T15: 'PASS',
+    T16: 'REVIEW',
+    T17: 'PASS'
+  },
+  final: {
+    T13: 'REVIEW_REQUIRED',
+    T14: 'REVIEW_REQUIRED',
+    T15: 'REVIEW_REQUIRED',
+    T16: 'REVIEW_REQUIRED',
+    T17: 'REVIEW_REQUIRED'
+  },
+  status: 'AUTOMATED_PASS_REVIEW_REQUIRED',
+  runtimeErrors: 0
+}

@@ -1,0 +1,131 @@
+{
+  "recorded_on": "2026-10-20",
+  "repository": "evoluagency/evolu-genesis",
+  "parent_commit": "f397dc4dbada3105d32d455d60a94ab1a787bfb5",
+  "scope": "Shared read-only Company information identity row extracted under existing CnpjEntitySummary; no provider/auth/permission changes.",
+  "environment": {
+    "node": "v24.19.0",
+    "typescript": "5.9.3",
+    "NODE_PATH": "<workspace>/ux-local-tools/node_modules"
+  },
+  "tests": {
+    "command": [
+      "node",
+      "--test",
+      "--test-reporter=tap",
+      "scripts/company-cnpj-identity-tests.mjs",
+      "scripts/company-dialog-focus-tests.mjs"
+    ],
+    "tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "exit_code": 0,
+    "source_exec_chunk": "955346",
+    "split": {
+      "new_identity_and_runtime": 14,
+      "existing_dialog_focus": 10
+    },
+    "artifact": "presentation-and-focus.tap"
+  },
+  "typecheck_and_runtime_emit": {
+    "command": [
+      "tsc",
+      "--strict",
+      "--exactOptionalPropertyTypes",
+      "--target",
+      "ES2022",
+      "--module",
+      "ES2022",
+      "--moduleResolution",
+      "Bundler",
+      "--lib",
+      "ES2022,DOM",
+      "--skipLibCheck",
+      "--rootDir",
+      "src",
+      "--outDir",
+      "preview/runtime",
+      "src/features/company/CnpjIdentityView.ts"
+    ],
+    "exit_code": 0,
+    "source_exec_chunk": "d5d4a2",
+    "scope": "new component and imported existing contracts/domain only; not full project build"
+  },
+  "preview_syntax": {
+    "command": [
+      "node",
+      "--check",
+      "preview/company-access-home/app.js"
+    ],
+    "exit_code": 0,
+    "source_exec_chunk": "177b7f"
+  },
+  "files": {
+    "src/features/company/CnpjIdentityView.ts": {
+      "parent_git_blob": null,
+      "tested_git_blob": "8d0ef48ccc7536412edc51566e0ffd57e3133190",
+      "sha256": "6695005d04ae74c5f8fe6e470e7ced98d52d68f5c466cc2958cb0419331639e6"
+    },
+    "preview/shared-ux/company-identity.css": {
+      "parent_git_blob": null,
+      "tested_git_blob": "5fd4ea116872ff358442503d8b3045396b9384fd",
+      "sha256": "9f0d2be1b0d07d6f561b6feb11a7e58b603c2467f7112820af146461011f559a"
+    },
+    "src/index.ts": {
+      "parent_git_blob": "7e69cc155e08257581cb472ca8af12cfd7d2ed62",
+      "tested_git_blob": "0420efd527a20b61fd8f33bda633f8398a9d08b4",
+      "sha256": "b7d813175784ad5820dfceb427b8863c8db5128341ee23183f999d7556342703"
+    },
+    "preview/runtime/features/company/CnpjIdentityView.js": {
+      "parent_git_blob": null,
+      "tested_git_blob": "475809d2c3a750fc67cca2e480fcf9006ca58a40",
+      "sha256": "46e7d4ce8e875c26ec681c7dec1a562e402753935bf4f5e78832dbaa861216e0"
+    },
+    "preview/runtime/index.js": {
+      "parent_git_blob": "cde12885f209fc7619b8b69b20425b0492418059",
+      "tested_git_blob": "c2dbde4669e8e6239f1b58bfbe36493c56f56e5a",
+      "sha256": "e7e598627e591871c1692020621c7c37c346e41c3a3763826ed8838bb7f1f42c"
+    },
+    "preview/company-access-home/app.js": {
+      "parent_git_blob": "3f3f571e9239fb91197b6516766c5b2383276e50",
+      "tested_git_blob": "1fb18972c5c9fd7bc4ec77da7ccb20146f705063",
+      "sha256": "7c773a3c678d433d6b04a7d208d95ded5008c86a75d4ae1eff47aee82e1640a6"
+    },
+    "preview/company-access-home/index.html": {
+      "parent_git_blob": "22a5e7cee2efa0f5097ae804758332ed153fb1c6",
+      "tested_git_blob": "721612d5c0db37dbbc3e69bf35321560b562df2c",
+      "sha256": "185551954dc8ac26e225f210bcddd68cd2f930c0e48d20266d42e96893097b22"
+    },
+    "scripts/company-cnpj-identity-tests.mjs": {
+      "parent_git_blob": null,
+      "tested_git_blob": "87e1f910fe795c214ff3329949760bfb728d439a",
+      "sha256": "e7c34aa7b220805599ab4b2e80f1b70134c3326c1406c1d00ddea1671ed66be2"
+    },
+    "package.json": {
+      "parent_git_blob": "9e6427889c39f9b6a7cc4ee99d384ce6cb127994",
+      "tested_git_blob": "ba1258aa73f57e585772a8f0f549bb9f58a8db4c",
+      "sha256": "db1e3aca0db24085eff904d3304529a9c84cadb0fcbadcba45154615420e96c2"
+    },
+    "docs/PLATFORM_CONTRACT_FIRST_UX_MIGRATION_V1.md": {
+      "parent_git_blob": "661e9e084c6cfa6f9e183012c36fbc7d15a508e3",
+      "tested_git_blob": "bb469e905856ec9689e3ad92ab997112c63582d4",
+      "sha256": "9f899011ab31f6fc0cdddd0dc9898f09145070612dc5cd958576a8e913aba2d8"
+    }
+  },
+  "artifact_sha256": "6fcdb81105b263fcbe507cc24800a33b0e734d26a13f69897bfa712d54edc4e6",
+  "limits": [
+    "DOM unit fixtures, not real browser/zoom or human UX acceptance.",
+    "Public preview keeps explicitly synthetic provider. The shared renderer imports types only and contains no fixture, provider, request, command or authorization logic.",
+    "Host owns theme, locale and authorization; runtime generated from the shared source; no public preview connected to a real backend.",
+    "No routes/files removed or redirected; no deploy, merge, flags, SQL, inference, cloud resources or AWS."
+  ],
+  "preserved": {
+    "hr_01_hr_06": "BLOCKED / REVIEW_REQUIRED",
+    "g01": "PRESERVED",
+    "g02_g12": "NO_FORMAL_ACCEPTANCE",
+    "financial_b": "DISABLED",
+    "p0": "OPEN",
+    "v1": "NO_GO",
+    "draft_prs": true
+  }
+}
